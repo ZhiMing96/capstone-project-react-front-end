@@ -8,13 +8,13 @@ import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
-import Home from './Home.js'
-import Jobs from './Jobs.js'
-import Events from './Events.js'
-import Articles from './Articles.js'
-import Skills from './Skills.js'
-import Login from './Login.js'
-import SignUp from './SignUp.js'
+import Home from '../Pages/Home/Home.js'
+import Jobs from '../Pages/Jobs/Jobs.js'
+import Events from '../Pages/Events/Events.js'
+import Articles from '../Pages/Articles/Articles.js'
+import Skills from '../Pages/Skills/Skills.js'
+import Login from '../Pages/Login/Login.js'
+import SignUp from '../Pages/SignUp/SignUp.js'
 
 
 
