@@ -1,5 +1,6 @@
 import React from 'react';
 import SignUpView from './SignUpView.js'
+const axios = require('../../api/api')
 
 
 
@@ -13,10 +14,15 @@ class SignUp extends React.Component {
     this.state = {
       email: '',
       password:'',
+      username:'',
+      firstName:'',
+      lastName:'',
       emailValid: false,
       passwordValid: false,
+      usernameValid:false,
       formValid: false,
-      submitForm:false
+      submitForm:false,
+      errorMessage: ''
     }
 
   }
@@ -28,10 +34,10 @@ class SignUp extends React.Component {
     const value = e.target.value;
     this.setState({[name]: value}, 
       () => { this.validateField(name, value) });
+    
   }
 
   validateField(fieldName, value) {
-    let fieldValidationErrors = this.state.formErrors;
     let emailValid = this.state.emailValid;
     let passwordValid = this.state.passwordValid;
   
@@ -51,17 +57,37 @@ class SignUp extends React.Component {
   }
   
   validateForm() {
-    this.setState({formValid: this.state.emailValid && this.state.passwordValid});
-    //GOT PROBLEM formValid is false even thou emailValid and passwordValid are true
-    console.log(this.state.formValid,this.state.emailValid,this.state.passwordValid);
+    this.setState({formValid: this.state.emailValid && this.state.passwordValid}); //note: async
+    
   }
 
   handleSubmit(event) { 
     this.setState({submitForm:true}) // only render errors when form is submitted
     console.log("Form submitted");
     event.preventDefault();
-    if (this.state.formValid){
-      // API FROM ERN TEK
+    if (this.state.formValid){ //ensure that form has been validated
+      axios.post_api('/user/register',{
+        "email": this.state.email,
+        "password":  this.state.password,
+        "username": this.state.username,
+        "first_name": this.state.firstName,
+        "last_name": this.state.lastName
+        })
+      .then((response) => {
+        console.log(response.data.response_code)
+        this.setState({errorMessage: ''})
+        //todo: navigate to login page + display successful registering message
+
+        if(response.data.response_code == 410){
+          this.setState({errorMessage: response.data.response_message})
+        }        
+  
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({errorMessage: "Error registering user."})
+
+      })
     } 
   }
   

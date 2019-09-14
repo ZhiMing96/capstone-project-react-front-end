@@ -10,7 +10,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { getThemeProps } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -54,6 +53,14 @@ export default function SignUpView(props) {
             Sign up
           </Typography>
           <form className={classes.form} onSubmit={(event) =>props.handleSubmit(event)}>
+            
+            {props.state.errorMessage != '' &&//there is error present
+                <Typography variant="body2" style={{color: "red",marginTop:"-16px", marginBottom:"16px"}} >
+                {props.state.errorMessage}
+                </Typography> 
+            }
+
+
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -76,6 +83,17 @@ export default function SignUpView(props) {
                     id="lastName"
                     label="Last Name"
                     name="lastName"
+                  
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
                   
                 />
               </Grid>

@@ -34,7 +34,8 @@ TabContainer.propTypes = {
 class NavTabs extends React.Component {
 
   state = {
-    value: false
+    value: false,
+    message: ''
   };
 
   handleChange = (event, value) => {
