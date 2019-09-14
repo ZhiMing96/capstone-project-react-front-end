@@ -1,0 +1,33 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+.Digest{
+    margin-left: 20%;
+    margin-right: 20%;
+    background-color: brown;
+    border: 30px red solid;
+
+}
+
+.Header{
+    text-align: center;
+    
+}
+.Heading1{
+    text-align: left;
+    border-left: 20px blue solid;
+}
+
+.Highlight_Image{
+    height: 300px;
+    width: 90%;
+    
+
+}
+.jobListings{
+    text-align: left;
+    color: aqua;
+    border: aqua solid;
+}
