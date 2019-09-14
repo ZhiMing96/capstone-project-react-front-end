@@ -54,11 +54,9 @@ export default function LoginView(props) {
 
         <form className={classes.form} onSubmit={(event) =>props.handleSubmit(event)}>
 
-         
-          
           {!props.state.valid &&
-            <Typography variant="caption" style={{color: "red"}} >
-              Email address and password does not match.
+            <Typography variant="body2" style={{color: "red"}} >
+              Email address/username and password does not match.
             </Typography> 
           }
         
@@ -67,11 +65,12 @@ export default function LoginView(props) {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="identifier"
+            label="Email Address or Username"
+            name="identifier"
+            autoComplete="identifier"
             autoFocus
+            onChange={(event) => props.handleChange(event)}
           />
           <TextField
             variant="outlined"
@@ -83,6 +82,7 @@ export default function LoginView(props) {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={(event) => props.handleChange(event)}
           />
           
           <Button
