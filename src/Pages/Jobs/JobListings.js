@@ -19,6 +19,13 @@ function JobListings(props) {
     
         const listings = getJobListings(); 
         console.log(listings);
+
+        const allListings = getJobListings();
+        const litings = allListings.map(list => (
+            <div key={list.uuid}>
+                <h2>{list.title}</h2>
+            </div>
+        ));
     
         return (
             <div>

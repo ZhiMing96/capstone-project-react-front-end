@@ -35,7 +35,7 @@ class Jobs extends Component {
   getJobsQuery = () => {
     var query = `localhost:3000/jobs/search?keyword=${this.state.searchValue}&limit=5&employmentType=${this.state.employmentType}&salary=${this.state.minSalary}`
     console.log("From get Jobs Query: " + query);
-    
+
     const test_query = `https://api.mycareersfuture.sg/v2/jobs?search=${this.state.searchValue}&limit=10&page=0&sortBy=new_posting_date` 
 
     this.setState({
@@ -58,25 +58,69 @@ class Jobs extends Component {
     this.getJobsQuery();
   }
 
+  // componentDidMount(){
+  //   this.setState({
+  //     proceed : false
+  //   })
+  // }
+  // updateStatus(){
+
+  //   const status = this.state.proceed;
+  //   if(status){
+  //     this.setState({
+  //       proceed : false
+  //     })
+  //   }
+  // }
+
   render() {
-    
+    const listingsUrl = this.state.queryUrl;
+    console.log("From Render Listings: " + listingsUrl)
     const proceed = this.state.proceed;
 
-    if(!proceed){
-      return (
-        <div>   
-          <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
+    if(proceed){
+      return(
+        <div>
+          {/* <div>
+            <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
+          </div> */}
+          <div>
+            <JobListings jobListingsUrl={ listingsUrl }></JobListings>
+          </div>
         </div>
       )
     } else {
-      const listingsUrl = this.state.queryUrl;
-      console.log("From Render Listings: " + listingsUrl);
       return(
         <div>
-          <JobListings jobListingsUrl={ listingsUrl }></JobListings>
+          <div>
+            <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
+          </div>
         </div>
       )
     }
+   
+
+
+
+    // var proceed = this.state.proceed;
+    // console.log(proceed);
+
+    // if(!proceed){
+    //   return (
+    //     <div>   
+    //       <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
+    //     </div>
+    //   )
+    // } else {
+    //   const listingsUrl = this.state.queryUrl;
+    //   console.log("From Render Listings: " + listingsUrl);
+      
+    //   return(
+    //     <div>
+    //       <JobListings jobListingsUrl={ listingsUrl }></JobListings>
+    //     </div>
+    //   )
+    // }
   }
 }
 

@@ -6,8 +6,8 @@
 .Digest{
     margin-left: 20%;
     margin-right: 20%;
-    background-color: brown;
-    border: 30px red solid;
+    background-color: rgb(204, 159, 159);
+    border: 30px rgb(156, 123, 233) solid;
 
 }
 
@@ -26,8 +26,10 @@
     
 
 }
-.jobListings{
+.jobListing{
     text-align: left;
-    color: aqua;
-    border: aqua solid;
+    margin: 15px;
+    padding: 15px;
+    border:rgb(180, 43, 180) solid;
+    background-color: aliceblue;
 }

@@ -68,7 +68,7 @@ const employmentTypes = [
             <h2> Jobs </h2>
             <form onSubmit={props.handleSubmit}>
             <div>
-            <Box>
+            {/* <Box> */}
                 <TextField
                   maxWidth 
                   id="outlined-full-width"
@@ -77,17 +77,19 @@ const employmentTypes = [
                   margin="normal"
                   variant="outlined"
                   name="searchValue"
-                  required="true"
+                  required
+
                   // fullWidth
                   onChange={(event) => props.handleOnChange(event)}/>
-              </Box>
+              {/* </Box> */}
 
-              <Container maxWidth="xs" >
+              {/* <Container maxWidth="xs" > */}
                 <TextField
                   id="employementType"
                   select
                   label="Select"
-                  required= "true"
+                  required
+                  
                   value={props.state.employmentType}
                   name='employmentType'
                   onChange={(event) => props.handleOnChange(event)}
@@ -105,7 +107,7 @@ const employmentTypes = [
                       </MenuItem>
                   ))}
                   </TextField>
-              </Container>
+              {/* </Container> */}
 
                 <TextField
                   id="outlined-number"
@@ -120,7 +122,8 @@ const employmentTypes = [
                   }}
                   margin="normal"
                   variant="outlined"
-                  required="true"
+                  required
+                  
                   />
                 <p>{props.state.minSalary}</p>
             </div>
