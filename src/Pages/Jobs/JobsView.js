@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
@@ -40,6 +41,12 @@ const employmentTypes = [
       display: 'flex',
       flexWrap: 'wrap',
     },
+    paper: {
+      marginTop: theme.spacing(2),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
     textField: {
       marginLeft: theme.spacing(1),
       // marginRight: theme.spacing(1),
@@ -64,7 +71,10 @@ const employmentTypes = [
 
 
     return(
-        <div>
+      <Container component="main" maxWidth="xs">
+      <CssBaseline />
+        <div className={classes.paper}>
+        
             <h2> Jobs </h2>
             <form onSubmit={props.handleSubmit}>
             <div>
@@ -85,7 +95,7 @@ const employmentTypes = [
 
               {/* <Container maxWidth="xs" > */}
                 <TextField
-                  id="employementType"
+                  id="employmentType"
                   select
                   label="Select"
                   required
@@ -111,7 +121,7 @@ const employmentTypes = [
 
                 <TextField
                   id="outlined-number"
-                  label="Minmum Salary"
+                  label="Minimum Salary"
                   value={props.state.minSalary}
                   name="minSalary"
                   onChange={(event)=> props.handleOnChange(event)}
@@ -125,7 +135,7 @@ const employmentTypes = [
                   required
                   
                   />
-                <p>{props.state.minSalary}</p>
+                {/* <p>{props.state.minSalary}</p> */}
             </div>
             <Button type="submit" onSubmit={props.handleSubmit} variant="contained" color="secondary" className={classes.button}>
               Submit
@@ -133,6 +143,7 @@ const employmentTypes = [
             </form>
       
         </div>
+      </Container>
     )
 
   }
