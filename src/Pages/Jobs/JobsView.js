@@ -79,8 +79,7 @@ const employmentTypes = [
             <form onSubmit={props.handleSubmit}>
             <div>
             {/* <Box> */}
-                <TextField
-                  maxWidth 
+                <TextField 
                   id="outlined-full-width"
                   label="Search Jobs"
                   type="search"
@@ -88,8 +87,7 @@ const employmentTypes = [
                   variant="outlined"
                   name="searchValue"
                   required
-
-                  // fullWidth
+                  fullWidth
                   onChange={(event) => props.handleOnChange(event)}/>
               {/* </Box> */}
 
