@@ -8,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import { Container } from '@material-ui/core';
 import { flexbox } from '@material-ui/system';
 import Box from '@material-ui/core/Box';
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import JobListings from './JobListings';
 
 const employmentTypes = [
     {
@@ -135,9 +137,10 @@ const employmentTypes = [
                   />
                 {/* <p>{props.state.minSalary}</p> */}
             </div>
-            <Button type="submit" onSubmit={props.handleSubmit} variant="contained" color="secondary" className={classes.button}>
+            <Button type="submit" onSubmit={props.handleSubmit} variant="contained" color="secondary" className={classes.button} >
               Submit
             </Button>
+            
             </form>
       
         </div>

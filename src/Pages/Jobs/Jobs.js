@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 
 import JobsView from './JobsView';
 import JobListings from './JobListings';
+import { BrowserRouter as Router, Route, Link, StaticRouter, Redirect } from "react-router-dom";
 
 
 
@@ -10,13 +11,15 @@ import JobListings from './JobListings';
 class Jobs extends Component {
   
   constructor(props){
+
     super(props);
+    this.load = false;
     this.state = {
       searchValue : "",
       minSalary: 0,
       employmentType: "fullTime",
-      queryUrl: "",
-      proceed: false,
+      queryUrl: this.props.defaultUrl,
+      
     }
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -34,93 +37,66 @@ class Jobs extends Component {
 
   getJobsQuery = () => {
     var query = `localhost:3000/jobs/search?keyword=${this.state.searchValue}&limit=5&employmentType=${this.state.employmentType}&salary=${this.state.minSalary}`
+    
     console.log("From get Jobs Query: " + query);
 
     const test_query = `https://api.mycareersfuture.sg/v2/jobs?search=${this.state.searchValue}&limit=10&page=0&sortBy=new_posting_date` 
 
     this.setState({
+      urlChanged: true,
       queryUrl : test_query,
-      proceed: true,
+      // proceed: true,
     })
-
-  }
-
-  // componentDidMount(){
-  //   this.getJobsQuery();
-  //   console.log("From Component Did Mount: " + this.state.queryUrl)
-  // }
-
-  
-  
-  handleSubmit = event => {
+    this.load = true; 
     
-    alert(`${this.state.searchValue} with ${this.state.employmentType} with ${this.state.minSalary}`)
-    this.getJobsQuery();
+
   }
 
-  // componentDidMount(){
-  //   this.setState({
-  //     proceed : false
-  //   })
-  // }
-  // updateStatus(){
+  resetLoadListings = () => {
+    this.load = false;
+  }
 
-  //   const status = this.state.proceed;
-  //   if(status){
-  //     this.setState({
-  //       proceed : false
-  //     })
-  //   }
-  // }
+  handleSubmit = event => {
+    console.log("Entered Handle Submit")
+    alert(`${this.state.searchValue} with ${this.state.employmentType} with ${this.state.minSalary}`)
+    const result = this.getJobsQuery();
+    
+  }
 
   render() {
-    const listingsUrl = this.state.queryUrl;
-    console.log("From Render Listings: " + listingsUrl)
-    const proceed = this.state.proceed;
+    console.log("ENTERED RENDER")
+    console.log(this.load)
 
-    if(proceed){
+    const { queryUrl, urlChanged } = this.state
+
+    const loadListings = this.load;
+    console.log("Props : " + loadListings)
+    console.log("From Render Listings: " + queryUrl)
+    console.log("Default URL: " + this.props.defaultUrl);
+
+   
+    if(!loadListings){
+      console.log("LOADING Seach Jobs");
       return(
+        
         <div>
-          {/* <div>
-            <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
-          </div> */}
-          <div>
-            <JobListings jobListingsUrl={ listingsUrl }></JobListings>
-          </div>
+          {/* <h2>Loading search Jobs..</h2> */}
+          <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
         </div>
       )
     } else {
+      console.log("LOADING Job Listings ");
       return(
         <div>
-          <div>
-            <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
-          </div>
+          <Redirect to="/jobs/jobListings" />
+          <h2>TESTING</h2>
+          <Route 
+          path="/jobs/jobListings" render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
+          />
         </div>
       )
-    }
-   
-
-
-
-    // var proceed = this.state.proceed;
-    // console.log(proceed);
-
-    // if(!proceed){
-    //   return (
-    //     <div>   
-    //       <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
-    //     </div>
-    //   )
-    // } else {
-    //   const listingsUrl = this.state.queryUrl;
-    //   console.log("From Render Listings: " + listingsUrl);
       
-    //   return(
-    //     <div>
-    //       <JobListings jobListingsUrl={ listingsUrl }></JobListings>
-    //     </div>
-    //   )
-    // }
+    }
   }
 }
 

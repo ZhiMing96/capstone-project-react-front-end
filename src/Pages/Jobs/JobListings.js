@@ -1,38 +1,73 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function JobListings(props) {
 
-        console.log("From JobListingsJS - Jobs Lisiting Url: " + props.jobListingsUrl);
+        // console.log("From JobListingsJS - Jobs Lisiting Url: " + props.jobListingsUrl);
 
-        function getJobListings() {
-            const results = [];
-            fetch(`${props.jobListingsUrl}`)
-            .then(res => res.json())
-            .then(response => {
-                const results = response.results;
+        const [allListings, setAllListings] = useState([]);
+        
+        useState(() => {
+            axios.get(`${props.jobListingsUrl}`)
+                .then(response => {
+                // console.log(response.data)
+                const results = response.data.results;
                 console.log("results from job listing");
                 console.log(results);
-                }); 
+                setAllListings(results);
+                props.resetLoadListing();
+                })
+                .catch(err => {
+                console.error(err);
             
-            return results;
-        }
-    
-        const listings = getJobListings(); 
-        console.log(listings);
+            });      
+        })
+        
+        console.log("allListings: ")
+        console.log(allListings);
 
-        const allListings = getJobListings();
-        const litings = allListings.map(list => (
-            <div key={list.uuid}>
-                <h2>{list.title}</h2>
-            </div>
-        ));
-    
-        return (
+
+
+        // if(allListings != null){
+        //     console.log("All Listings : ")
+        //     console.log(allListings);
+        //     const listings = allListings.map(list => {
+        //         console.log("List : ")
+        //         console.log(list);
+        //         return (
+        //             <div key={list.uuid}>
+        //                 <h2>{list.title}</h2>
+        //             </div>
+        //         )
+        //     });
+
+        // }
+        
+        
+
+        if(allListings != null){
+            return (
+                <div>
+                    <h2> Job Listings </h2>
+                    {allListings.map(list => {
+                        return (
+                            <div key={list.uuid} className="jobListing">
+                                <h2>{list.title}</h2>
+                            </div>
+                        )
+                    })}
+                    {
+                        
+                    }
+                    
+                </div>
+            )
+        } else {
+            return (
             <div>
-                <h2> Job Listings </h2>
-                <h2>  </h2>
-            </div>
-        )
+                <h1> No Job Listings</h1>
+            </div>);
+        }
 
     
 }
