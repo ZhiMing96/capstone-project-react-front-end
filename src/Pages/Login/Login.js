@@ -1,7 +1,8 @@
 import React from 'react';
 import LoginView from './LoginView'
-const axios = require('../../api/api')
-
+import { connect } from "react-redux";
+import { doLogin } from "../../redux/actions/auth";
+import api from '../../api.js'
 
 class Login extends React.Component {
   constructor (props) {
@@ -12,7 +13,7 @@ class Login extends React.Component {
     this.state = {
         identifier:'' ,
         password:'',
-        valid: true
+        errorMessage: ''
     }
   }
 
@@ -22,27 +23,45 @@ class Login extends React.Component {
     this.setState({[name]: value});
   }
 
+  async setUserDetails(token) {
+    await api.auth.details(token) 
+    .then(response => {
+      let user = response.data.user
+      this.props.doLogin( response.data.user_details) //link to store action to hydrate store, connect             
+    }).catch(error => {
+                
+    })
+  }
+
   // This method will be sent to the child component
-  handleSubmit(event) { 
+  async handleSubmit(event) { 
     console.log("Form submitted")
     event.preventDefault()
-    axios.post_api('/user/login',{
+    await api.auth.login({
         "identifier": this.state.identifier,
         "password":  this.state.password
         })
     .then((response) => {
         console.log(response.data.response_code)
-        console.log(response.data.auth_key)
-        let auth_key= response.data.auth_key
-        window.localStorage.setItem('userId', auth_key);
-        //todo: deal with store?
+
+        if(response.data.response_code === 200){
+          this.setState({valid: true})
+          let auth_token= response.data.user.token
+          window.localStorage.setItem('authToken', auth_token);
+          this.setUserDetails(auth_token)
+          //todo: navigate to login page + display successful registering message.. should be done by   
+          
+        } else {
+          this.setState({errorMessage: 'Email address/username and password does not match.'})
+        }
+
     })
     .catch(error => {
-        this.setState({valid: false })
+      this.setState({errorMessage:'Error in user login.'})
         console.log(error);
         
     })
-
+    
   }
   
 
@@ -52,4 +71,8 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+//export default Login;
+export default connect(
+    null,
+    { doLogin }
+  )(Login);
