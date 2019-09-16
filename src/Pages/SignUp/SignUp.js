@@ -1,6 +1,8 @@
 import React from 'react';
 import SignUpView from './SignUpView.js'
-const axios = require('../../api/api')
+import api from '../../api.js'
+import { connect } from "react-redux";
+import { doLogin } from "../../redux/actions/auth";
 
 
 
@@ -61,12 +63,22 @@ class SignUp extends React.Component {
     
   }
 
-  handleSubmit(event) { 
+  async setUserDetails(token) {
+    await api.auth.details(token) 
+    .then(response => {
+      let user = response.data.user
+      this.props.doLogin(user) //link to store action to hydrate store, connect             
+    }).catch(error => {
+                
+    })
+  }
+
+  async handleSubmit(event) { 
     this.setState({submitForm:true}) // only render errors when form is submitted
     console.log("Form submitted");
     event.preventDefault();
     if (this.state.formValid){ //ensure that form has been validated
-      axios.post_api('/user/register',{
+      await api.auth.register({
         "email": this.state.email,
         "password":  this.state.password,
         "username": this.state.username,
@@ -74,11 +86,17 @@ class SignUp extends React.Component {
         "last_name": this.state.lastName
         })
       .then((response) => {
-        console.log(response.data.response_code)
-        this.setState({errorMessage: ''})
-        //todo: navigate to login page + display successful registering message
+        console.log(response)
+        this.setState({errorMessage: ''}) //reset
 
-        if(response.data.response_code == 410){
+        if(response.data.response_code === 200){
+          let auth_token= response.data.token.token
+          window.localStorage.setItem('authToken', auth_token);
+          this.setUserDetails(auth_token)
+          //todo: navigate to home page + display successful registering message
+        }
+
+        else if(response.data.response_code === 410){
           this.setState({errorMessage: response.data.response_message})
         }        
   
@@ -98,4 +116,9 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+
+//export default SignUp;
+export default connect(
+  null,
+  { doLogin }
+)(SignUp);

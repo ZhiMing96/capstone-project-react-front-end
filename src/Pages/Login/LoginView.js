@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
-import { Link as RouterLink, Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Link as RouterLink} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
@@ -54,9 +54,9 @@ export default function LoginView(props) {
 
         <form className={classes.form} onSubmit={(event) =>props.handleSubmit(event)}>
 
-          {!props.state.valid &&
+          {props.state.errorMessage !=='' &&//there is error present
             <Typography variant="body2" style={{color: "red"}} >
-              Email address/username and password does not match.
+              {props.state.errorMessage}
             </Typography> 
           }
         

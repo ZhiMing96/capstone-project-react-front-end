@@ -15,6 +15,7 @@ import Articles from '../Pages/Articles/Articles.js'
 import Skills from '../Pages/Skills/Skills.js'
 import Login from '../Pages/Login/Login.js'
 import SignUp from '../Pages/SignUp/SignUp.js'
+import { connect } from "react-redux";
 
 
 
@@ -107,5 +108,9 @@ NavTabs.propTypes = {
   theme: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => {
+  return { articles: state.articles };
+};
 
-export default (NavTabs);
+//export default (NavTabs);
+export default connect(mapStateToProps)(NavTabs);
