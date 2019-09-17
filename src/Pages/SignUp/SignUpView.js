@@ -18,7 +18,8 @@ const useStyles = makeStyles(theme => ({
       },
     },
     paper: {
-      marginTop: theme.spacing(8),
+      marginTop: theme.spacing(5),
+      marginBottom: theme.spacing(5),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -86,17 +87,7 @@ export default function SignUpView(props) {
                   
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="username"
-                    label="Username"
-                    name="username"
-                  
-                />
-              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                     error={props.state.submitForm && !props.state.emailValid}
@@ -115,7 +106,20 @@ export default function SignUpView(props) {
                 }
                 
               </Grid>
-              <Grid item xs={12}>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                  
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
                 <TextField
                     error={ props.state.submitForm &&!props.state.passwordValid}
                     variant="outlined"

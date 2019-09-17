@@ -8,16 +8,17 @@ import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
-import Home from '../Pages/Home/Home.js'
-import Jobs from '../Pages/Jobs/Jobs.js'
-import Events from '../Pages/Events/Events.js'
-import Articles from '../Pages/Articles/Articles.js'
-import Skills from '../Pages/Skills/Skills.js'
-import Login from '../Pages/Login/Login.js'
-import SignUp from '../Pages/SignUp/SignUp.js'
+import Home from '../Pages/Home'
+import Jobs from '../Pages/Jobs/Jobs'
+import Events from '../Pages/Events'
+import Articles from '../Pages/Articles'
+import Skills from '../Pages/Skills'
+import Login from '../Pages/Login'
+import SignUp from '../Pages/SignUp'
+import Profile from '../Pages/Profile'
 import { connect } from "react-redux";
-
-
+import PersonIcon from '@material-ui/icons/Person';
+import Fab from '@material-ui/core/Fab';
 
 function TabContainer({ children, dir }) {
   return (
@@ -32,12 +33,19 @@ TabContainer.propTypes = {
   dir: PropTypes.string.isRequired
 };
 
+
 class NavTabs extends React.Component {
 
-  state = {
-    value: false,
-    message: ''
-  };
+  constructor (props) {
+    super(props);
+    
+    this.state = {
+      value: false,
+      message: ''
+    };
+    console.log(this.props)
+  }
+  
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -48,12 +56,11 @@ class NavTabs extends React.Component {
   };
 
   render() {
-    const { classes, theme } = this.props;
 
     return (
 
       <BrowserRouter>
-        <AppBar position="static" color="default" >
+        <AppBar position="sticky" color="default"  >
         <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}>
         <Grid container direction="row" alignItems="center" justify="flex-end" >
           <Grid item >
@@ -72,15 +79,20 @@ class NavTabs extends React.Component {
             <Tab label="Jobs" component={Link} to="/jobs" />
             <Tab label="Events" component={Link} to="/events" />
             <Tab label="Articles" component={Link} to="/articles" />
+            {this.props.username ==='' ? null:
             <Tab label="Skills" component={Link} to="/skills" />
-
+            }
           
           </Tabs>
           </Grid>
-        <Grid item   >
-
-      {/* the tab indicator disappears when login button is clicked */}
-        <Button variant="contained" color="primary" component={Link} to="/auth/signIn" onClick = {()=> this.setState({value: false})}> Login </Button>
+        <Grid item onClick = {()=> this.setState({value: false})}>
+          {this.props.username ==='' ? 
+          
+          <Button variant="contained" color="primary" component={Link} to="/auth/signIn" > Login </Button> :
+          <Fab size="small" color="primary" aria-label="profile" component={Link} to="/profile" style={{margin:10}}>
+            <PersonIcon />
+          </Fab>        
+          }
         </Grid>
       </Grid>
       </Toolbar>
@@ -95,6 +107,7 @@ class NavTabs extends React.Component {
             <Route path="/skills" component={Skills} />
             <Route path="/auth/signin" component={Login} />
             <Route path="/auth/signup" component={SignUp} />
+            <Route path="/profile" component={Profile} />
             
         </Switch>
       
@@ -103,13 +116,15 @@ class NavTabs extends React.Component {
   }
 }
 
-NavTabs.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
-
 const mapStateToProps = state => {
-  return { articles: state.articles };
+  return { 
+    first_name: state.auth.first_name,
+    last_name: state.auth.last_name,
+    username: state.auth.username,
+    email: state.auth.email
+    
+   }
+  
 };
 
 //export default (NavTabs);
