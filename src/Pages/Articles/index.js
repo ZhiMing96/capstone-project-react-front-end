@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(2),
     margin: 'auto',
-    maxWidth: 500,
+    maxWidth: 700,
   },
   image: {
     width: 128,
@@ -61,11 +61,11 @@ function GetArticles({setArticles, articles, classes})
       <h1> Articles </h1>
       {articles.map((article,index) => (
           <div key={index}>
-            <a href={article.link} style={{textDecoration: 'none', color: 'black'}}>
+            {/* <a href={article.link} style={{textDecoration: 'none', color: 'black'}}> */}
             <Paper className={classes.paper}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <ButtonBase className={classes.image}>
+                  <ButtonBase className={classes.image} href={article.link} style={{textDecoration: 'none', color: 'black'}}>
                     <GetImage url={article._links['wp:featuredmedia'][0].href} classes={classes}/>
                   </ButtonBase>
                 </Grid>
@@ -73,28 +73,28 @@ function GetArticles({setArticles, articles, classes})
                   <Grid item xs container direction="column" spacing={2}>
                     <Grid item xs>
                       <Typography gutterBottom variant="subtitle1">
-                        Standard license
-                      </Typography>
-                      <Typography variant="body2" gutterBottom>
-                        Full resolution 1920x1080 • JPEG
+                        {article.title.rendered}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        ID: 1030114
+                        {article.acf.seo_meta_description}
                       </Typography>
                     </Grid>
                     <Grid item>
-                      <Typography variant="body2" style={{ cursor: 'pointer' }}>
-                        Remove
+                      <Typography variant="body2" style={{ cursor: 'pointer' }} >
+                        <a href={article.acf['cta-url']} style={{textDecoration: 'none', color: 'black'}}>
+                          {article.acf['text_-_hyperlinked']}
+                        </a>
+                        
                       </Typography>
                     </Grid>
                   </Grid>
                   <Grid item>
-                    <Typography variant="subtitle1">$19.00</Typography>
+                    <Typography variant="subtitle1">Status: {article.type}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
             </Paper>
-            </a>
+            {/* </a> */}
             </div> 
           ))}
     </div>
