@@ -92,7 +92,7 @@ function GetArticles({setArticles, articles, classes})
                     <Typography variant="subtitle1">Status: {article.type}</Typography>
                   </Grid>
                 </Grid>
-              </Grid>
+              </Grid>    
             </Paper>
             {/* </a> */}
             </div> 

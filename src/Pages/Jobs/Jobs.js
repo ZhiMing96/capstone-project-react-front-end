@@ -74,10 +74,12 @@ class Jobs extends Component {
     const loadListings = this.load;
     console.log("Props : " + loadListings)
     console.log("From Render Listings: " + queryUrl)
-    console.log("Default URL: " + this.props.defaultUrl);
+    // console.log("Default URL: " + this.props.defaultUrl);
+
+    //console.log("proceed = " + this.props.proceed);
 
    
-    if(!loadListings){
+    if(!loadListings ){
       console.log("LOADING Seach Jobs");
       return(
         
@@ -85,9 +87,9 @@ class Jobs extends Component {
           {/* <h2>Loading search Jobs..</h2> */}
           <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
 
-          {/* <Route 
-          exact path="/jobs/jobListings" render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
-          /> */}
+          <Route 
+           path="/jobs/jobListings" render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
+          />
         </div>
       )
     } else {
@@ -95,10 +97,15 @@ class Jobs extends Component {
       return(
         <div>
           <Redirect to="/jobs/jobListings" />
-          <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
+          {/* <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/> */}
+          
           <Route 
-          exact path="/jobs/jobListings" render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
+          exact
+          path="/jobs/jobListings" 
+          render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
           />
+          
+          
 
           {/* <Route exact path="/jobs" render={() => <Jobs loadListings = {false} /> }/> */}
         </div>
