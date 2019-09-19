@@ -10,15 +10,20 @@ import Typography from '@material-ui/core/Typography';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import Home from '../Pages/Home'
 import Jobs from '../Pages/Jobs/Jobs'
+import JobListings from '../Pages/Jobs/JobListings'
 import Events from '../Pages/Events'
 import Articles from '../Pages/Articles'
 import Skills from '../Pages/Skills'
 import Login from '../Pages/Login'
 import SignUp from '../Pages/SignUp'
-import Profile from '../Pages/Profile'
+
 import { connect } from "react-redux";
 import PersonIcon from '@material-ui/icons/Person';
 import Fab from '@material-ui/core/Fab';
+import IconButton from '@material-ui/core/IconButton';
+import AccountCircle from '@material-ui/icons/AccountCircle'
+import { makeStyles } from '@material-ui/core/styles';
+import Profile from '../Pages/Profile/index'
 
 
 class NavTabs extends React.Component {
@@ -49,6 +54,9 @@ class NavTabs extends React.Component {
       <BrowserRouter>
         <AppBar position="sticky" color="default"  >
         <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}>
+        <IconButton edge="start" style={{marginRight: 2}} color="inherit" aria-label="menu">
+            <AccountCircle />
+        </IconButton>
         <Grid container direction="row" alignItems="center" justify="flex-end" >
           <Grid item >
               
@@ -85,10 +93,10 @@ class NavTabs extends React.Component {
       </Toolbar>
       </AppBar>
 
-
+{/* render={() => <Jobs loadListings = {false} /> } */}
         <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/jobs" render={() => <Jobs loadListings = {false} /> }/>
+            <Route path="/jobs" component={Jobs}/>
             <Route path="/events" component={Events} />
             <Route path="/articles" component={Articles} />
             <Route path="/skills" component={Skills} />
