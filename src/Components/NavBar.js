@@ -16,28 +16,26 @@ import Articles from '../Pages/Articles'
 import Skills from '../Pages/Skills'
 import Login from '../Pages/Login'
 import SignUp from '../Pages/SignUp'
-
+import Profile from '../Pages/Profile'
 import { connect } from "react-redux";
 import PersonIcon from '@material-ui/icons/Person';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import { makeStyles } from '@material-ui/core/styles';
-import Profile from '../Pages/Profile/index'
+
 
 
 class NavTabs extends React.Component {
 
   constructor (props) {
     super(props);
-    
     this.state = {
       value: false,
-      message: ''
+      message: '',
     };
     console.log(this.props)
   }
-  
+
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -52,9 +50,9 @@ class NavTabs extends React.Component {
     return (
 
       <BrowserRouter>
-        <AppBar position="sticky" color="default"  >
+        <AppBar position="sticky" color="default">
         <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}>
-        <IconButton edge="start" style={{marginRight: 2}} color="inherit" aria-label="menu">
+        <IconButton edge="start" style={{marginRight: 2}} color="inherit" aria-label="menu" component={Link} to="/profile"> 
             <AccountCircle />
         </IconButton>
         <Grid container direction="row" alignItems="center" justify="flex-end" >
@@ -63,37 +61,37 @@ class NavTabs extends React.Component {
           </Grid>
           <Grid item >
         
-          <Tabs
-            value={this.state.value}
-            onChange={this.handleChange}
-            indicatorColor="primary"
-            textColor ="primary"
-            variant ='fullWidth'
-          >
+            <Tabs
+              value={this.state.value}
+              onChange={this.handleChange}
+              indicatorColor="primary"
+              textColor ="primary"
+              variant ='fullWidth'
+            >
 
-            <Tab label="Jobs" component={Link} to="/jobs" />
-            <Tab label="Events" component={Link} to="/events" />
-            <Tab label="Articles" component={Link} to="/articles" />
-            {this.props.username ==='' ? null:
-            <Tab label="Skills" component={Link} to="/skills" />
-            }
+              <Tab label="Jobs" component={Link} to="/jobs" />
+              <Tab label="Events" component={Link} to="/events" />
+              <Tab label="Articles" component={Link} to="/articles" />
+              {this.props.username ==='' ? null:
+              <Tab label="Skills" component={Link} to="/skills" />
+              }
           
-          </Tabs>
+            </Tabs>
           </Grid>
-        <Grid item onClick = {()=> this.setState({value: false})}>
-          {this.props.username ==='' ? 
+          <Grid item onClick = {()=> this.setState({value: false})}>
+            {this.props.username ==='' ? 
           
-          <Button variant="contained" color="primary" component={Link} to="/auth/signIn" > Login </Button> :
-          <Fab size="small" color="primary" aria-label="profile" component={Link} to="/profile" style={{margin:10}}>
+            <Button variant="contained" color="primary" component={Link} to="/auth/signIn" > Login </Button> :
+            <Fab size="small" color="primary" aria-label="profile" component={Link} to="/profile" style={{margin:10}}>
             <PersonIcon />
-          </Fab>        
-          }
+            </Fab>        
+            }
+          </Grid>
         </Grid>
-      </Grid>
       </Toolbar>
       </AppBar>
 
-{/* render={() => <Jobs loadListings = {false} /> } */}
+
         <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/jobs" component={Jobs}/>
