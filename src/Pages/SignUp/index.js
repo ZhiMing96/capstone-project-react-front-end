@@ -1,11 +1,9 @@
 import React from 'react';
 import SignUpView from './SignUpView.js'
 import api from '../../api.js'
-import { connect } from "react-redux";
-import { doLogin } from "../../redux/actions/auth";
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import Login from '../Login'
-
+import SnackBar from '../../Components/Snackbar'
 
 
 class SignUp extends React.Component {
@@ -14,7 +12,7 @@ class SignUp extends React.Component {
     // Bind the this context to the handler function
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
+    this.handleClose = this.handleClose.bind(this);
     this.state = {
       email: '',
       password:'',
@@ -27,7 +25,8 @@ class SignUp extends React.Component {
       formValid: false,
       submitForm:false,
       errorMessage: '',
-      redirect:false
+      redirect:false,
+      errorSnackbar: false
     }
 
   }
@@ -35,7 +34,6 @@ class SignUp extends React.Component {
   // This method will be sent to the child component
   //for validation onChange for input fields
   handleChange (e) {
-    console.log(e.target.value)
     const name = e.target.name;
     const value = e.target.value;
     this.setState({[name]: value}, 
@@ -87,8 +85,6 @@ class SignUp extends React.Component {
         })
       .then((response) => {
         console.log(response)
-        this.setState({errorMessage: ''}) //reset
-
         if(response.data.response_code === 200){
           console.log("return success.. should redirect")
            //direct to login page to login
@@ -97,16 +93,26 @@ class SignUp extends React.Component {
 
         else if(response.data.response_code === 410){
           this.setState({errorMessage: response.data.response_message})
+          this.setState({errorSnackbar: true})
         }        
   
       })
       .catch(error => {
         console.log(error);
         this.setState({errorMessage: "Error registering user."})
+        this.setState({errorSnackbar: true})
 
       })
     } 
   }
+
+  handleClose (reason)  {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({errorSnackbar: false})
+
+  };
   
 
   render () {
@@ -114,13 +120,20 @@ class SignUp extends React.Component {
       <BrowserRouter>
       {this.state.redirect? 
       <div>
+        
         <Redirect to={{
           pathname: '/auth/signin',
-          state: { redirectMessage: true }
+          state: { redirectMessage: true } //doesnt work
       }} /> 
-      <Route path="/auth/signin" component={Login} />
+      <Route path="/auth/signin" render ={()=> <Login  registerSnackbar={true}/>} />
       </div> : 
       <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>}
+      <SnackBar
+        open={this.state.errorSnackbar}
+        handleClose={this.handleClose}
+        variant="error"
+        message={this.state.errorMessage}
+        />
     </BrowserRouter>
     );
 

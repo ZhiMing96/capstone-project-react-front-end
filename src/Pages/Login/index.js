@@ -3,6 +3,8 @@ import LoginView from './LoginView'
 import { connect } from "react-redux";
 import { doLogin } from "../../redux/actions/auth";
 import api from '../../api.js'
+import SnackBar from '../../Components/Snackbar'
+
 
 class Login extends React.Component {
   constructor (props) {
@@ -10,11 +12,15 @@ class Login extends React.Component {
     // Bind the this context to the handler function
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.state = {
         identifier:'' ,
         password:'',
-        errorMessage: ''
+        errorMessage: '',
+        registerSnackbar:props.registerSnackbar,
+        errorSnackbar: false
     }
+    console.log(this.state)
   }
 
   handleChange (e) {
@@ -27,7 +33,7 @@ class Login extends React.Component {
     await api.auth.details(token) 
     .then(response => {
       let user = response.data.user
-      this.props.doLogin( response.data.user_details) //link to store action to hydrate store, connect             
+      this.props.doLogin( user) //link to store action to hydrate store, connect             
     }).catch(error => {
                 
     })
@@ -45,31 +51,61 @@ class Login extends React.Component {
         console.log(response.data.response_code)
 
         if(response.data.response_code === 200){
-          this.setState({valid: true})
           let auth_token= response.data.user.token
           window.localStorage.setItem('authToken', auth_token);
           this.setUserDetails(auth_token)
-          //todo: navigate to login page + display successful registering message.. should be done by   
+             
           
         } else {
           this.setState({errorMessage: 'Email address/username and password does not match.'})
+          this.setState({errorSnackbar: true})
+          console.log(this.state)
         }
 
     })
     .catch(error => {
       this.setState({errorMessage:'Error in user login.'})
-        console.log(error);
+      this.setState({errorSnackbar: true})
+      
         
     })
     
   }
-  
 
+  handleClose (reason)  {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({registerSnackbar: false})
+    this.setState({errorSnackbar: false})
+
+  };
+
+  
   render () {
-    return(<LoginView handleSubmit = {this.handleSubmit} state={this.state} handleChange={this.handleChange}/>);
+    return(
+    <div>
+        <SnackBar
+        open={this.state.registerSnackbar}
+        handleClose={this.handleClose}
+        variant="success"
+        message="Successfully registered. Please login with your new account."
+        />
+        <SnackBar
+        open={this.state.errorSnackbar}
+        handleClose={this.handleClose}
+        variant="error"
+        message={this.state.errorMessage}
+        />
+        
+      
+      <LoginView handleSubmit = {this.handleSubmit} state={this.state} handleChange={this.handleChange}/>
+    </div>
+    );
     
   }
 }
+
 
 //export default Login;
 export default connect(

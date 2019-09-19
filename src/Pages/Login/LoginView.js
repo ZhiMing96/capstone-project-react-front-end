@@ -53,12 +53,6 @@ export default function LoginView(props) {
         </Typography>
 
         <form className={classes.form} onSubmit={(event) =>props.handleSubmit(event)}>
-
-          {props.state.errorMessage !=='' &&//there is error present
-            <Typography variant="body2" style={{color: "red"}} >
-              {props.state.errorMessage}
-            </Typography> 
-          }
         
           <TextField
             variant="outlined"
