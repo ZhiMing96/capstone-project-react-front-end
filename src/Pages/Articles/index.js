@@ -77,6 +77,7 @@ function GetArticles({setArticles, articles, classes})
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
                         {article.acf.seo_meta_description}
+                        Keywords: {article.acf.seo_keywords}
                       </Typography>
                     </Grid>
                     <Grid item>
