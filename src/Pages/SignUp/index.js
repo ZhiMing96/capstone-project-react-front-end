@@ -3,6 +3,8 @@ import SignUpView from './SignUpView.js'
 import api from '../../api.js'
 import { connect } from "react-redux";
 import { doLogin } from "../../redux/actions/auth";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import Login from '../Login'
 
 
 
@@ -24,7 +26,8 @@ class SignUp extends React.Component {
       usernameValid:false,
       formValid: false,
       submitForm:false,
-      errorMessage: ''
+      errorMessage: '',
+      redirect:false
     }
 
   }
@@ -32,6 +35,7 @@ class SignUp extends React.Component {
   // This method will be sent to the child component
   //for validation onChange for input fields
   handleChange (e) {
+    console.log(e.target.value)
     const name = e.target.name;
     const value = e.target.value;
     this.setState({[name]: value}, 
@@ -63,13 +67,9 @@ class SignUp extends React.Component {
     
   }
 
-  async setUserDetails(token) {
-    await api.auth.details(token) 
-    .then(response => {
-      let user = response.data.user
-      this.props.doLogin(user) //link to store action to hydrate store, connect             
-    }).catch(error => {
-                
+  setRedirect = () => {
+    this.setState({
+      redirect: true
     })
   }
 
@@ -90,10 +90,9 @@ class SignUp extends React.Component {
         this.setState({errorMessage: ''}) //reset
 
         if(response.data.response_code === 200){
-          let auth_token= response.data.token.token
-          window.localStorage.setItem('authToken', auth_token);
-          this.setUserDetails(auth_token)
-          //todo: navigate to home page + display successful registering message
+          console.log("return success.. should redirect")
+           //direct to login page to login
+          this.setRedirect()
         }
 
         else if(response.data.response_code === 410){
@@ -111,14 +110,23 @@ class SignUp extends React.Component {
   
 
   render () {
-    return(<SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>);
+    return(
+      <BrowserRouter>
+      {this.state.redirect? 
+      <div>
+        <Redirect to={{
+          pathname: '/auth/signin',
+          state: { redirectMessage: true }
+      }} /> 
+      <Route path="/auth/signin" component={Login} />
+      </div> : 
+      <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>}
+    </BrowserRouter>
+    );
+
     
   }
 }
 
 
-//export default SignUp;
-export default connect(
-  null,
-  { doLogin }
-)(SignUp);
+export default SignUp;

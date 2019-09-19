@@ -73,6 +73,7 @@ export default function SignUpView(props) {
                     id="firstName"
                     label="First Name"
                     autoFocus
+                    onChange={(event) => props.handleChange(event)}
                   
                 />
               </Grid>
@@ -84,7 +85,7 @@ export default function SignUpView(props) {
                     id="lastName"
                     label="Last Name"
                     name="lastName"
-                  
+                    onChange={(event) => props.handleChange(event)}
                 />
               </Grid>
 
@@ -115,7 +116,7 @@ export default function SignUpView(props) {
                     id="username"
                     label="Username"
                     name="username"
-                  
+                    onChange={(event) => props.handleChange(event)}
                 />
               </Grid>
               
