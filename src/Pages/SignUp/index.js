@@ -111,6 +111,7 @@ class SignUp extends React.Component {
 
   render () {
     return(
+      <div>
       <BrowserRouter>
       {this.state.redirect? 
       <div>
@@ -120,8 +121,10 @@ class SignUp extends React.Component {
       }} /> 
       <Route path="/auth/signin" component={Login} />
       </div> : 
-      <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>}
+      null}
     </BrowserRouter>
+    <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>
+    </div>
     );
 
     
