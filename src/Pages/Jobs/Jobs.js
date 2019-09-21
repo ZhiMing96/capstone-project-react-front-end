@@ -14,6 +14,7 @@ class Jobs extends Component {
 
     super(props);
     this.load = false;
+    
     this.state = {
       searchValue : "",
       minSalary: 0,
@@ -25,6 +26,7 @@ class Jobs extends Component {
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
 
   handleOnChange = event => {
     const name = event.target.name;
@@ -72,16 +74,22 @@ class Jobs extends Component {
     const loadListings = this.load;
     console.log("Props : " + loadListings)
     console.log("From Render Listings: " + queryUrl)
-    console.log("Default URL: " + this.props.defaultUrl);
+    // console.log("Default URL: " + this.props.defaultUrl);
+
+    //console.log("proceed = " + this.props.proceed);
 
    
-    if(!loadListings){
+    if(!loadListings ){
       console.log("LOADING Seach Jobs");
       return(
         
         <div>
           {/* <h2>Loading search Jobs..</h2> */}
           <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/>
+
+          <Route 
+           path="/jobs/jobListings" render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
+          />
         </div>
       )
     } else {
@@ -89,15 +97,23 @@ class Jobs extends Component {
       return(
         <div>
           <Redirect to="/jobs/jobListings" />
-          <h2>TESTING</h2>
+          {/* <JobsView handleOnChange= {this.handleOnChange} handleSubmit={this.handleSubmit} state={this.state}/> */}
+          
           <Route 
-          path="/jobs/jobListings" render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
+          exact
+          path="/jobs/jobListings" 
+          render ={()=> <JobListings  jobListingsUrl={queryUrl} resetLoadListing={this.resetLoadListings}/>}
           />
+          
+          
+
+          {/* <Route exact path="/jobs" render={() => <Jobs loadListings = {false} /> }/> */}
         </div>
       )
       
     }
   }
 }
+
 
 export default Jobs;

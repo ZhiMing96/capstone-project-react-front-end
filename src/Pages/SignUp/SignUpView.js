@@ -55,11 +55,6 @@ export default function SignUpView(props) {
           </Typography>
           <form className={classes.form} onSubmit={(event) =>props.handleSubmit(event)}>
             
-            {props.state.errorMessage !== '' &&//there is error present
-                <Typography variant="body2" style={{color: "red",marginTop:"-16px", marginBottom:"16px"}} >
-                {props.state.errorMessage}
-                </Typography> 
-            }
 
 
             <Grid container spacing={2}>
