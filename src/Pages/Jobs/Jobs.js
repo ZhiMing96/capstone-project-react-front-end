@@ -60,7 +60,7 @@ class Jobs extends Component {
 
   handleSubmit = event => {
     console.log("Entered Handle Submit")
-    alert(`${this.state.searchValue} with ${this.state.employmentType} with ${this.state.minSalary}`)
+    // alert(`${this.state.searchValue} with ${this.state.employmentType} with ${this.state.minSalary}`)
     const result = this.getJobsQuery();
     
   }

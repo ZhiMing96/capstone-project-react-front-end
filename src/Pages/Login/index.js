@@ -35,7 +35,7 @@ class Login extends React.Component {
       let user = response.data.user
       this.props.doLogin( user) //link to store action to hydrate store, connect             
     }).catch(error => {
-                
+       console.log(error);
     })
   }
 

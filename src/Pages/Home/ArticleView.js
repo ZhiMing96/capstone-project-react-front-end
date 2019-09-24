@@ -11,6 +11,7 @@ function ArticleView( ) {
         
     },[])
 
+    console.log("articles: ");
     console.log(article);
 
     if(article){
@@ -20,7 +21,11 @@ function ArticleView( ) {
                 <h2>{article.title.rendered}</h2>
                 <div className="">
                     <a href={article.link}>
-                        <img src={article.acf.carousel_images[0].sizes["medium_large"]} />
+                        {article.acf.carousel_images
+                        ? <img src={article.acf.carousel_images[0].sizes["medium_large"]} />
+                        : <img src="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/advertisement-businessman-hands-533444-1920x560.jpg"/>
+                        }
+                        
                     </a>  
                 </div>
                 <div className="">
