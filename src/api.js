@@ -2,11 +2,11 @@
 import axios from 'axios'
 
 const auth = {
-    register: params => axios.post('/auth/register', params),
-    details: token => axios.get('/auth/current/', {
+    register: params => axios.post('http://localhost:3000/auth/register', params),
+    details: token => axios.get('http://localhost:3000/auth/current', {
         headers: {'Authorization': 'Token '+ token}
     }),
-    login: params => axios.post('/auth/login',params),
+    login: params => axios.post('http://localhost:3000/auth/login',params),
     // etc.
   }
   

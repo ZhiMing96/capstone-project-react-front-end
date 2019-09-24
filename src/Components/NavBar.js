@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -10,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import Home from '../Pages/Home'
 import Jobs from '../Pages/Jobs/Jobs'
-import JobListings from '../Pages/Jobs/JobListings'
 import Events from '../Pages/Events'
 import Articles from '../Pages/Articles'
 import Skills from '../Pages/Skills'
@@ -19,10 +17,8 @@ import SignUp from '../Pages/SignUp'
 import Profile from '../Pages/Profile'
 import { connect } from "react-redux";
 import PersonIcon from '@material-ui/icons/Person';
-import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle'
-
+import Logout from './Logout'
 
 
 class NavTabs extends React.Component {
@@ -32,6 +28,7 @@ class NavTabs extends React.Component {
     this.state = {
       value: false,
       message: '',
+      onProfilePage: false
     };
     console.log(this.props)
   }
@@ -39,22 +36,25 @@ class NavTabs extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ value });
+    this.setState({onProfilePage: false})
   };
 
   handleChangeIndex = index => {
-    this.setState({ value: index });
+    this.setState({ value: index })
+   
   };
+  handleLogout = () => {
+    this.props.history.push("/auth/signin");
+  };
+
 
   render() {
 
     return (
-
-      <BrowserRouter>
+      <div>
+      
         <AppBar position="sticky" color="default">
         <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}>
-        <IconButton edge="start" style={{marginRight: 2}} color="inherit" aria-label="menu" component={Link} to="/profile"> 
-            <AccountCircle />
-        </IconButton>
         <Grid container direction="row" alignItems="center" justify="flex-end" >
           <Grid item >
               
@@ -78,15 +78,34 @@ class NavTabs extends React.Component {
           
             </Tabs>
           </Grid>
+          <Grid item onClick = {()=> 
+          
+            {this.setState({value: false});
+            this.setState({onProfilePage: true})
+            }}>
+
+            
+            
+          </Grid>
+
           <Grid item onClick = {()=> this.setState({value: false})}>
             {this.props.username ==='' ? 
           
-            <Button variant="contained" color="primary" component={Link} to="/auth/signIn" > Login </Button> :
-            <Fab size="small" color="primary" aria-label="profile" component={Link} to="/profile" style={{margin:10}}>
+            <Button variant="contained" color="primary" component={Link} to="/auth/signin" > Login </Button> :
+
+            <div>
+            <IconButton style={{margin:10}} color={this.state.onProfilePage? "primary":"inherit"} aria-label="menu" component={Link} to="/profile" size="large" onClick = {()=> 
+            {this.setState({value: false});
+            this.setState({onProfilePage: true})
+            }}>
+
             <PersonIcon />
-            </Fab>        
+            </IconButton>
+
+            <Logout handleLogout={this.handleLogout}/>
+            </div>
             }
-          </Grid>
+            </Grid>
         </Grid>
       </Toolbar>
       </AppBar>
@@ -103,8 +122,8 @@ class NavTabs extends React.Component {
             <Route path="/profile" component={Profile} />
             
         </Switch>
+        </div>
       
-      </BrowserRouter>
     );
   }
 }
