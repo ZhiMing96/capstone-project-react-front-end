@@ -6,6 +6,7 @@ import api from '../../api.js'
 import SnackBar from '../../Components/Snackbar'
 
 
+
 class Login extends React.Component {
   constructor (props) {
     super(props);
@@ -17,7 +18,7 @@ class Login extends React.Component {
         identifier:'' ,
         password:'',
         errorMessage: '',
-        registerSnackbar:props.registerSnackbar,
+        registerSnackbar: this.props.location.state && this.props.location.state.registerSnackbar,
         errorSnackbar: false
     }
     console.log(this.state)
@@ -112,3 +113,4 @@ export default connect(
     null,
     { doLogin }
   )(Login);
+  

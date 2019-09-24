@@ -11,8 +11,12 @@ function App() {
   return (
     <div className="App"> 
     
-      <NavBar className="App-header"/>
-    
+      <BrowserRouter>
+        <Route 
+          path='/'
+          render={ props => <NavBar {...props} />}
+        />
+      </BrowserRouter>
       
     </div>
   );

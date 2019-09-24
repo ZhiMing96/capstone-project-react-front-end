@@ -1,7 +1,7 @@
 import React from 'react';
 import SignUpView from './SignUpView.js'
 import api from '../../api.js'
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect,Switch } from "react-router-dom";
 import Login from '../Login'
 import SnackBar from '../../Components/Snackbar'
 
@@ -117,27 +117,30 @@ class SignUp extends React.Component {
 
   render () {
     return(
-      <BrowserRouter>
+      
+     <div>
       {this.state.redirect? 
-      <div>
-        
+      
+      
         <Redirect to={{
           pathname: '/auth/signin',
-          state: { redirectMessage: true } //doesnt work
+          state: { registerSnackbar: true }
       }} /> 
-      <Route path="/auth/signin" render ={()=> <Login  registerSnackbar={true}/>} />
-      </div> : 
-      <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>}
+      /*<Route path="/auth/signin" render ={()=> <Login  registerSnackbar={true}/>} />*/
+      
+       : 
+       <div>
+      <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>
       <SnackBar
-        open={this.state.errorSnackbar}
-        handleClose={this.handleClose}
-        variant="error"
-        message={this.state.errorMessage}
-        />
-    </BrowserRouter>
+          open={this.state.errorSnackbar}
+          handleClose={this.handleClose}
+          variant="error"
+          message={this.state.errorMessage}
+      />
+      </div>
+    }
+      </div>
     );
-
-    
   }
 }
 
