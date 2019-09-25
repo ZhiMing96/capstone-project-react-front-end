@@ -2,8 +2,7 @@ import React, { useEffect } from 'react'
 import { Grid, Paper, makeStyles, Drawer, AppBar, CssBaseline, List, Typography, Divider, ListItem, ListItemIcon, ListItemText, Avatar, Box, Button } from '@material-ui/core'
 import { AccountBox, BookmarksIcon, ListAlt, Group }from '@material-ui/icons'
 import Bookmarks from '../Pages/Profile/Bookmarks';
-import Manage from '../Pages/Profile/Manage';
-import Skills from '../Pages/Skills';
+import Skills from '../Pages/Profile/Skills';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 
 
@@ -22,20 +21,20 @@ const useStyles = makeStyles(theme => ({
 
 const profileArray = [
   {
-  name: "MANANGE PROFILE",
-  url: "/profile/manage"
+  name: "PROFILE",
+  url: "/profile"
   },
   {
-  name: "VIEW BOOKMARKS",
+  name: "BOOKMARKS",
   url: "/profile/bookmarks"
   },
   {
-  name: "MANAGE SKILL",
+  name: "SKILLS",
   url: "/profile/skills"
   },
   {
-  name: "MANAGE MEETUPS",
-  url: "/profile/meetups"
+  name: "SOCIAL ACTIVITY",
+  url: "/profile/social"
   },
 ]
 
