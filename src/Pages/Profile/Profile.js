@@ -1,7 +1,6 @@
 import React from 'react'
-import { Grid, Typography, Box, Paper } from '@material-ui/core'
-
-function Manage() {
+import { Grid, Typography, Box } from '@material-ui/core'
+function Profile() {
     return (
         <div>
             <Grid container >
@@ -11,11 +10,11 @@ function Manage() {
                         m={1} 
                         letterSpacing={3}
                     >
-                        EDIT PROFILE 
+                        Profile 
                     </Box>
                 </Typography>
             </Grid>
         </div>
     )
 }
-export default Manage;
+export default Profile;

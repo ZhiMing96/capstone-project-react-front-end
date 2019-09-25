@@ -11,7 +11,7 @@ import Home from '../Pages/Home'
 import Jobs from '../Pages/Jobs/Jobs'
 import Events from '../Pages/Events'
 import Articles from '../Pages/Articles'
-import Skills from '../Pages/Skills'
+import Skills from '../Pages/Profile/Skills'
 import Login from '../Pages/Login'
 import SignUp from '../Pages/SignUp'
 import Profile from '../Pages/Profile'
@@ -72,10 +72,6 @@ class NavTabs extends React.Component {
               <Tab label="Jobs" component={Link} to="/jobs" />
               <Tab label="Events" component={Link} to="/events" />
               <Tab label="Articles" component={Link} to="/articles" />
-              {this.props.username ==='' ? null:
-              <Tab label="Skills" component={Link} to="/skills" />
-              }
-          
             </Tabs>
           </Grid>
           <Grid item onClick = {()=> 
@@ -94,7 +90,7 @@ class NavTabs extends React.Component {
             <Button variant="contained" color="primary" component={Link} to="/auth/signin" > Login </Button> :
 
             <div>
-            <IconButton style={{margin:10}} color={this.state.onProfilePage? "primary":"inherit"} aria-label="menu" component={Link} to="/profile" size="large" onClick = {()=> 
+            <IconButton style={{margin:10}} color={this.state.onProfilePage? "primary":"inherit"} aria-label="menu" component={Link} to="/profile"  onClick = {()=> 
             {this.setState({value: false});
             this.setState({onProfilePage: true})
             }}>
@@ -116,7 +112,6 @@ class NavTabs extends React.Component {
             <Route path="/jobs" component={Jobs}/>
             <Route path="/events" component={Events} />
             <Route path="/articles" component={Articles} />
-            <Route path="/skills" component={Skills} />
             <Route path="/auth/signin" component={Login} />
             <Route path="/auth/signup" component={SignUp} />
             <Route path="/profile" component={Profile} />
