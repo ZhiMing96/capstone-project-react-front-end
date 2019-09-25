@@ -74,7 +74,6 @@ SnackbarContentWrapper.propTypes = {
     iconVariant: PropTypes.string,
     message: PropTypes.string,
   }).isRequired,
-  className: PropTypes.string.isRequired,
   message: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
   variant: PropTypes.oneOf(["success", "error"]).isRequired
