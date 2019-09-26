@@ -27,12 +27,14 @@ class CurrentSkillsView extends React.Component {
     this.handleRemove = this.handleRemove.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.deleteState = this.deleteState.bind(this);
+    this.handleSelectedSkill = this.handleSelectedSkill.bind(this);
     this.state = {
       message:'' ,
       variant:'',
       skills: [],
       delete:false,
-      openDialog:false
+      openDialog:false,
+      newSkills:[]
     }
   }
 
@@ -125,6 +127,19 @@ class CurrentSkillsView extends React.Component {
   
   };
 
+  handleSelectedSkill(newSkill){ 
+    var id = newSkill.id
+    var currentSkills = this.state.skills
+    if(currentSkills.some(skill => skill.id === id)){
+      console.log(newSkill.skill + " is already in current skills");
+    }else{
+      console.log(newSkill.skill + " is now added to skills");
+      this.setState(prevState=>({ skills: prevState.skills.push(newSkill)}))
+      this.setState(prevState=>({ newSkills: prevState.newSkills.push(newSkill)}))
+    }
+
+  }
+
   deleteState(){
     this.setState(prevState=>({ delete: !prevState.delete}))
     console.log(this.state.delete)
@@ -152,7 +167,7 @@ class CurrentSkillsView extends React.Component {
           <Grid item style={{ width:'100%', paddingLeft:'2.5%', paddingRight:'2.5%'}}>
             <Grid container style={{justifyContent:'space-between'}}> {/*for search box and delete icon*/}
               <Grid item xs={9} md={9} style={{textAlign:'left'}}>
-                <AddSkills />
+                <AddSkills handleSelectedSkill={this.handleSelectedSkill} skills={this.state.skills}/>
               </Grid>
               <Grid item>
                 <IconButton className={classes.button} aria-label="delete" onClick={this.deleteState} style={{textAlign:'right'}}>
