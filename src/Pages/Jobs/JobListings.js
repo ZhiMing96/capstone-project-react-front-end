@@ -1,52 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { makeStyles, Grid, Paper, Container, Typography, ButtonBase, Button, CssBaseline} from '@material-ui/core'
-import { Bookmark as BookmarkIcon, Delete as DeleteIcon} from '@material-ui/icons';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import api from '../../api';
 
+import React, { Fragment, useState, useEffect, useRef } from 'react'
+import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, IconButton, Snackbar} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+import {Bookmark as BookmarkIcon, BookmarkOutlined as BookmarkOutlinedIcon} from '@material-ui/icons';
+import CloseIcon from '@material-ui/icons/Close';
+
+const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,
-      margin:'auto',
-      padding:20,
-    //   backgroundColor: "transparent",
     },
     paper: {
-      padding: theme.spacing(2),
-      margin: 'auto',
-      maxWidth: 500,
-    //   boxShadow: "none",
-    //   overflow: "hidden"
+      padding: theme.spacing(1),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+      margin: 30
     },
     image: {
-      width: 128,
-      height: 128,
-    },
+        width: 128,
+        height: 128,
+      },
     img: {
-      margin: 'auto',
-      display: 'block',
-      maxWidth: '100%',
-      maxHeight: '100%',
+        margin: 'auto',
+        display: 'block',
+        maxWidth: '100%',
+        maxHeight: '100%',
     },
-    rightIcon: {
-        marginLeft: theme.spacing(1),
+    close: {
+        padding: theme.spacing(0.5),
     },
   }));
 
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
-
 function addBookmark(job){
-    console.log("Entered Add Bookmarks");
 
+    console.log("Entered Add Bookmarks");
+    console.log(`adding bookmark for ${job.title}`)
     axios.post("/users/bookmarks/add", {
         newBookmark: {job},
         token: "" //GET USER TOKEN
@@ -59,147 +53,176 @@ function addBookmark(job){
         })
 }
 
-function JobListings(props) {
+function removeBookmark(listing){
+   
+        console.log(`REMOVING BOOKMARK with uuid ${listing.uuid} and title ${listing.title} `);
+        
+        axios.get(`localhost:3000/bookmarks/remove?uuid=${listing.uuid}`)
+        .then(response => {
+            console.log(response)
+        })
+        .catch(err => {
+            console.error(err)
+        })
 
-    // console.log("From JobListingsJS - Jobs Lisiting Url: " + props.jobListingsUrl);
+    }
 
-    const [allListings, setAllListings] = useState([]);
-    const [bookmarkedJob, setBookmarkedJob] = useState({});
-    const [open, setOpen] = useState(false);
+
+ function JobListings(props) {
+    console.log("ENTERED JOBLISTING COMPONENT")
     console.log(props)
-    
-    useEffect(() => {
-        axios.get(`${props.jobListingsUrl}`)
-            .then(response => {
-            console.log(response.data)
-            const results = response.data.results;
-            console.log("results from job listing");
-            console.log(results);
-           setAllListings(results);
-            props.resetLoadListing();
-            })
-            .catch(err => {
-            console.error(err);
-            });      
-    }, [])
+    const queueRef = useRef([]);
+    const [open, setOpen] = useState(false);
+    const [messageInfo, setMessageInfo] = useState(undefined);
 
-    function handleClickOpen(listing) {
-        setOpen(true);
+    const listings = props.listings
+
+    const classes = useStyles();
+    console.log(listings);
+
+    
+    
+   
+
+    const processQueue = () => {
+        if (queueRef.current.length > 0) {
+            setMessageInfo(queueRef.current.shift());
+            setOpen(true);
+        }
+    };
+    
+    const handleClick = (listing) => {
         console.log("Entered Handle Click open")
         console.log(listing);
         addBookmark(listing);
+
+        const message = `${listing.title} added to bookmarks!`
+
+        queueRef.current.push({
+            message,
+            key: new Date().getTime(),  
+        });
+
+        if (open) {
+            // immediately begin dismissing current message
+            // to start showing new one
+            setOpen(false);
+        } else {
+            processQueue();
+        }
     };
-    
-    const handleClose = () => {
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
         setOpen(false);
-        };
-    
-    const classes = useStyles();
+    };
 
-    if(allListings != null){
-        return (
-            <div>
-                <h2> Job Listings </h2> 
-                
-                <div className={classes.root}>
-                    {allListings.map(list => (
-                        <div key={list.uuid}>
-                            <CssBaseline />
-                            <Paper className={classes.paper}>
-                                <Grid container spacing={2}>
-                                    <Grid item>
-                                    <a href={list.metadata.jobDetailsUrl} style={{textDecoration: 'none', color: 'black'}}>
-                                    <ButtonBase className={classes.image}>
-                                        <img className={classes.img} alt="complex" src="https://pbs.twimg.com/profile_images/784240735277060098/lhMmgjx6_400x400.jpg" />
-                                    </ButtonBase>
-                                    </a>
-                                    </Grid>
-                                    <Grid item xs={12} sm container>
-                                    <Grid item xs container direction="column" spacing={2}>
-                                        <Grid item xs>
-                                        <Typography gutterBottom variant="subtitle1">
+    const handleExited = () => {
+        processQueue();
+    };
+        
+    return (
+        <Fragment>
+        <CssBaseline />
+        <Grid container>
+        
+        <Grid item xs={12}> 
+        {listings
+        ? listings.map((list,index) => (
+            <div key={index}>
+                <Paper className={classes.paper} elevation={2}>
+                    <Grid container spacing={2}>
+                        <Grid item>                                   
+                            <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl}>
+                                {list.postedCompany && list.postedCompany.logoUploadPath
+                                ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
+                                : <img className={classes.img} src={defaultIcon} />
+                                }
+                                
+                            </ButtonBase>
+                        </Grid>
+                        <Grid item container xs={12} sm >
+                            <Grid item xs={9}>
+                                <Grid item xs>
+                                    <Typography variant="body1">
+                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10}}>
+                                            { list.postedCompany 
+                                                ? list.postedCompany.name
+                                                : ""
+                                            }
+                                        </Box>
+                                    </Typography>
+                                    <Typography>
+                                        <Box letterSpacing={2} align="left" style={{marginLeft:10}} >
                                             {list.title}
-                                        </Typography>
-                                        <Typography variant="body2" gutterBottom>
-                                            Expiry Date: {list.metadata.expiryDate}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary">
-                                            ID: 1030114
-                                        </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                        <Typography variant="body2" style={{ cursor: 'pointer' }}>
-                                            Remove
-                                        </Typography>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item>
-                                        <Typography variant="subtitle1">
-                                            {list.salary ? `Up to $${list.salary.maximum}` : "Amount Unavailable"}
-                                        </Typography>
-                                        <Button 
-                                            variant="contained" 
-                                            color="primary" 
-                                            className={classes.button} 
-                                            size="small"
-                                            onClick={ () =>handleClickOpen(list)}
-                                            >
-                                            Bookmark
-                                            <BookmarkIcon className={classes.rightIcon} />
-                                        </Button>
-                                        <Dialog
-                                        open={open}
-                                        TransitionComponent={Transition}
-                                        keepMounted
-                                        onClose={handleClose}
-                                        aria-labelledby="alert-dialog-slide-title"
-                                        aria-describedby="alert-dialog-slide-description"
-                                        // BackdropProps={{
-                                        //     classes: {
-                                        //         root: classes.root
-                                        //         }
-                                        // }}
-                                        // PaperProps ={{
-                                        //     classes: {
-                                        //         root: classes.paper
-                                        //     }
-                                        // }}
-                                    >
-                                        <DialogTitle id="alert-dialog-slide-title">{`${list.title} has been added to you bookmarks!`}</DialogTitle>
-                                        <DialogActions>
-                                        
-                                        <Button 
-                                            nClick={handleClose} 
-                                            color="primary" 
-                                            href="/profile/bookmarks">
-                                        View Bookmarks 
-                                        </Button>
-                                        
-                                        <Button onClick={handleClose} color="primary" >
-                                        Continue
-                                        </Button>
-                                
-                                        </DialogActions>
-                                    </Dialog>
-                                    </Grid>
-                                    </Grid>
+                                        </Box>
+                                    </Typography>
+                                    <Typography variant="body2" align="left" style={{marginLeft:10}}>
+                                        Expiry Date: {list.metadata.expiryDate}
+                                    </Typography>
+                                    <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
+                                        {list.salary ? `Up to $${list.salary.maximum}` : "Amount Unavailable"}
+                                    </Typography>
                                 </Grid>
-                                </Paper>
-                                
-                        </div>
-                        
-                    ))}
-                </div>
-        </div>
-        )
-    } else {
-        return (
-        <div>
-            <h1> No Job Listings</h1>
-        </div>);
-    }
+                            </Grid>
+                            <Grid item xs>
+                                <Button
+                                    className={classes.button} 
+                                    size="small"
+                                    onClick={ () => handleClick(list)}
+                                    >
+                                    Bookmark
+                                    <BookmarkIcon className={classes.rightIcon} />
+                                </Button>
+                                <Snackbar
+                                    key={messageInfo ? messageInfo.key : undefined}
+                                    anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                    }}
+                                    open={open}
+                                    autoHideDuration={5000}
+                                    onClose={handleClose}
+                                    onExited={handleExited}
+                                    ContentProps={{
+                                    'aria-describedby': 'message-id',
+                                    }}
+                                    message={<span id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
+                                    action={[
 
-    
+                                    // <Button color="secondary" size="small" onClick={() => removeBookmark(list)}>
+                                    //     UNDO
+                                    // </Button>,
+                                    <Button color="secondary" size="small" href="/profile/bookmarks">
+                                        View
+                                    </Button>,
+                                    <IconButton
+                                        key="close"
+                                        aria-label="close"
+                                        color="inherit"
+                                        className={classes.close}
+                                        onClick={handleClose}
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                    ]}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </div>
+        ))
+        : <div></div>
+        }
+            
+            </Grid>
+        </Grid>
+        
+        
+    </Fragment>
+    )
 }
-
 export default JobListings;

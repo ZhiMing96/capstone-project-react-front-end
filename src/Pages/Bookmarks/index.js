@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import {ExpandMore as ExpandMoreIcon} from '@material-ui/icons';
 
-
+const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -31,12 +31,15 @@ const useStyles = makeStyles(theme => ({
 function getBookmarks(token, setBookmarks){
       //call API To get a list of Jobs
       
-    axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Product%20Management&limit=5&page=0&sortBy=new_posting_date')
+    axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Business%20Analyst&limit=5&page=0&sortBy=new_posting_date')
     .then(response=>{
         const data = response.data
         console.log(data.results)
         const list = data.results
         setBookmarks(list);
+    })
+    .catch(err=>{
+        console.error(err)
     })
 }
 
@@ -93,9 +96,13 @@ function Bookmarks() {
                 <div key={index}>
                     <Paper className={classes.paper} elevation={2}>
                         <Grid container spacing={2}>
-                            <Grid item>
+                            <Grid item>                                   
                                 <ButtonBase className={classes.image}>
-                                    <img className={classes.img} alt="complex" src="https://s3-ap-southeast-1.amazonaws.com/ojmp-data/68881d549ee1afe9975b6c43de876af4.jpg" />
+                                    {list.postedCompany.logoUploadPath
+                                    ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
+                                    : <img className={classes.img} src={defaultIcon} />
+                                    }
+                                    
                                 </ButtonBase>
                             </Grid>
                             <Grid item container xs={12} sm >
