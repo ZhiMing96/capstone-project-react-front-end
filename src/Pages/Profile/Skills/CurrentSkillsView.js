@@ -4,11 +4,11 @@ import { Grid, Typography, Box } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { borders } from '@material-ui/system';
-import api from '../../api.js'
-import SnackBar from '../../Components/Snackbar'
+import api from '../../../api.js'
+import SnackBar from '../../../Components/Snackbar'
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core';
-import AddBoxIcon from '@material-ui/icons/AddBox';
+import AddSkills from './AddSkills'
 
 
 const styles = makeStyles(theme=>({
@@ -26,15 +26,13 @@ class CurrentSkillsView extends React.Component {
     super(props);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.deleteState = this.deleteState.bind(this);
-    this.addState = this.addState.bind(this);
     this.state = {
       message:'' ,
       variant:'',
       skills: [],
       delete:false,
-      add:false
+      openDialog:false
     }
   }
 
@@ -57,7 +55,8 @@ class CurrentSkillsView extends React.Component {
         {
             "id": "34",
             "skill": "ABR"
-        },{
+        },
+        {
         
         "id": "1232",
         "skill": "Cellular"
@@ -84,14 +83,6 @@ class CurrentSkillsView extends React.Component {
   componentDidMount(){
     this.getSkills();
   }
-
-  handleClick(event,skill){
-    event.preventDefault()
-    event.stopPropagation()
-    
-  }
-
-
 
   async handleRemove (skillName,event) {
     event.preventDefault()
@@ -138,53 +129,50 @@ class CurrentSkillsView extends React.Component {
     this.setState(prevState=>({ delete: !prevState.delete}))
     console.log(this.state.delete)
   }
-  addState(){
-    this.setState(prevState=>({ add: !prevState.add}))
-    console.log(this.state.add)
-  }
-
-  
+ 
   render () {
   const { classes } = this.props;
   return(
     <div>
-      <Grid container direction="column" spacing ={2}>
-        <Grid item>
-          <Grid container  justify="space-between">
-          <Grid item>
+      <Grid container direction="row" style={{width:'100%'}}> {/*for your skills and search box and delete icon*/}
+        <Grid item xs={12} md ={12}>
           <Typography component="div">
               <Box 
                 fontSize="h6.fontSize" 
-                m={1} 
+                m={2}
                 letterSpacing={2}
+                textAlign='left'
               >
               
               YOUR SKILLS 
               </Box>
               </Typography>
           </Grid>
-          <Grid item>  
-            <IconButton className={classes.button} aria-label="delete" onClick={this.addState}>
-              <AddBoxIcon />
-            </IconButton>
-            <IconButton className={classes.button} aria-label="delete" onClick={this.deleteState}>
-              <DeleteIcon />
-            </IconButton>
+
+          <Grid item style={{ width:'100%', paddingLeft:'2.5%', paddingRight:'2.5%'}}>
+            <Grid container style={{justifyContent:'space-between'}}> {/*for search box and delete icon*/}
+              <Grid item xs={9} md={9} style={{textAlign:'left'}}>
+                <AddSkills />
+              </Grid>
+              <Grid item>
+                <IconButton className={classes.button} aria-label="delete" onClick={this.deleteState} style={{textAlign:'right'}}>
+                  <DeleteIcon fontSize="large" />
+                </IconButton>
+              </Grid>
             </Grid>
           </Grid>
+
         </Grid>
-        <Grid item className={classes.root}>
-        {this.state.delete ? 
-          this.state.skills.map(skill =>(
-            <Chip variant="outlined" color="primary" label={skill.skill}  clickable='false' style={{ margin:4}} onDelete={event=>this.handleRemove(skill.skill,event)}/>))
-          :
-          this.state.skills.map(skill =>(
-            <Chip variant="outlined" color="primary" label={skill.skill} clickable='false' style={{ margin:4}}/>
-        ))}  
-        
+
+        <Grid container className={classes.root} style={{ padding:'2.5%'}}>
+          {this.state.delete ? 
+            this.state.skills.map(skill =>(
+              <Chip variant="outlined" color="primary" label={skill.skill}  clickable='false' style={{ margin:4}} onDelete={event=>this.handleRemove(skill.skill,event)}/>))
+            :
+            this.state.skills.map(skill =>(
+              <Chip variant="outlined" color="primary" label={skill.skill} clickable='false' style={{ margin:4}} />
+          ))}  
         </Grid>
-      
-      </Grid>
 
       <SnackBar
         open={this.state.message!==''}
@@ -192,6 +180,7 @@ class CurrentSkillsView extends React.Component {
         variant={this.state.variant}
         message={this.state.message}
       />
+      
 
     </div>
     
