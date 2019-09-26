@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Sidebar from '../../Components/Sidebar';
 import Grid from '@material-ui/core/Grid';
 import { Paper, Typography, Box } from '@material-ui/core';
-import Bookmarks from './Bookmarks';
+import Bookmarks from '../Bookmarks/index';
 import Skills from './Skills';
 import Profile from './Profile'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
@@ -52,8 +52,9 @@ function main() {
           </Switch>
         </Grid> 
    
+      </Grid>
     </Grid>
-    </div>
+
   );
 }
 

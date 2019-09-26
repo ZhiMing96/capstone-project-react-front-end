@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Grid, Paper, makeStyles, Drawer, AppBar, CssBaseline, List, Typography, Divider, ListItem, ListItemIcon, ListItemText, Avatar, Box, Button } from '@material-ui/core'
 import { AccountBox, BookmarksIcon, ListAlt, Group }from '@material-ui/icons'
-import Bookmarks from '../Pages/Profile/Bookmarks';
+
 import Skills from '../Pages/Profile/Skills';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 
