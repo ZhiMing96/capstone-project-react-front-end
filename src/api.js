@@ -8,11 +8,19 @@ const auth = {
     }),
     login: params => axios.post('http://localhost:3000/auth/login',params),
     // etc.
-  }
-  
+}
+
+const skills ={
+  get: token => axios.get('http://localhost:3000/skills/all', {
+    headers: {'Authorization': 'Token '+ token}
+  }),
+  match: params => axios.get('http://localhost:3000/skills/match', params),
+  add: params => axios.post('http://localhost:3000/skills/add', params),
+  remove: params => axios.post('http://localhost:3000/skills/remove', params),
+}
   
   
   export default {
     auth,
-    
+    skills,
   }
