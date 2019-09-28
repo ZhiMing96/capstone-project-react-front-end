@@ -95,7 +95,7 @@ async function getSuggestions(value) {
     "skill": "hello world"
   },] //(this works, dummy)
 */
-  await api.skills.match({ "skill": value })
+  await api.skills.match(value)
     .then(response => {
       if (response.data.response_code === 200) {
         return response.data.skills
@@ -136,7 +136,7 @@ export default function IntegrationAutosuggest(props) {
     if(value === null || value ===''){
       return
     }
-    setSuggestions(await getSuggestions(value));
+    setSuggestions(await getSuggestions(value).then(response => {return response}).catch(error => {return}));
   };
 
   const handleSuggestionsClearRequested = () => {

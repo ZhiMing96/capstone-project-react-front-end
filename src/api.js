@@ -14,7 +14,11 @@ const skills ={
   get: token => axios.get('http://localhost:3000/skills/all', {
     headers: {'Authorization': 'Token '+ token}
   }),
-  match: params => axios.get('http://localhost:3000/skills/match', params),
+  match: value => axios.get('http://localhost:3000/skills/match', {
+    data: {
+      skills: String(value)
+    }
+  }),
   add: params => axios.post('http://localhost:3000/skills/add', params),
   remove: params => axios.post('http://localhost:3000/skills/remove', params),
 }
