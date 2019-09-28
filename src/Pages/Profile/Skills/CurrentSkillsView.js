@@ -36,8 +36,8 @@ class CurrentSkillsView extends React.Component {
     await api.skills.get(window.localStorage.getItem('authToken'))
       .then(response => {
         this.setState({
-          skills: [
-            {
+          skills: response.data.skill_list //api return array
+            /*[{
               "id": "1232",
               "skill": "Cellular"
             },
@@ -52,8 +52,8 @@ class CurrentSkillsView extends React.Component {
             {
               "id": "34",
               "skill": "ABR"
-            },
-          ]
+            },]*/
+           //dummy
         })
       }).catch(error => {
 
@@ -111,6 +111,7 @@ class CurrentSkillsView extends React.Component {
   handleSelectedSkill(newSkill) {
     var id = newSkill.id
     var currentSkills = this.state.skills
+    console.log(currentSkills)
     if (currentSkills.some(skill => skill.id === id)) {
       console.log(newSkill.skill + " is already in current skills");
     } else {
@@ -147,7 +148,7 @@ class CurrentSkillsView extends React.Component {
         </Grid>
 
         <Grid container className={classes.root} style={{ padding: '2.5%' }}>
-          {
+          { 
             this.state.skills.map(skill => (<CustomisedChip skill={skill} handleRemove={this.handleRemove}/>))
           }
         </Grid>

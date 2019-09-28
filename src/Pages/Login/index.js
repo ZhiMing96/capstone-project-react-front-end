@@ -34,7 +34,8 @@ class Login extends React.Component {
     await api.auth.details(token) 
     .then(response => {
       let user = response.data.user
-      this.props.doLogin( user) //link to store action to hydrate store, connect             
+      this.props.doLogin( user) //link to store action to hydrate store, connect     
+      this.props.history.push("/");        
     }).catch(error => {
        console.log(error);
     })
@@ -55,8 +56,7 @@ class Login extends React.Component {
           let auth_token= response.data.user.token
           window.localStorage.setItem('authToken', auth_token);
           this.setUserDetails(auth_token)
-             
-          
+         
         } else {
           this.setState({errorMessage: 'Email address/username and password does not match.'})
           this.setState({errorSnackbar: true})

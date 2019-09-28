@@ -73,9 +73,8 @@ function renderInputComponent(inputProps) {
 }
 
 async function getSuggestions(value) {
-  console.log('getting suggestions')
-  console.log(value)
-  return [{
+  console.log('getting suggestions : ' + value)
+  /*return [{
     "id": "1232",
     "skill": "Cellular"
   },
@@ -95,7 +94,7 @@ async function getSuggestions(value) {
     "id": "1",
     "skill": "hello world"
   },] //(this works, dummy)
-
+*/
   await api.skills.match({ "skill": value })
     .then(response => {
       if (response.data.response_code === 200) {
@@ -114,7 +113,8 @@ export default function IntegrationAutosuggest(props) {
   const classes = useStyles();
   const [state, setState] = React.useState('');
   const [stateSuggestions, setSuggestions] = React.useState([]);
-  const [currentSkills, setSkills] = React.useState([{
+  const [currentSkills, setSkills] = React.useState(props.skills)
+  /*React.useState([{
     "id": "1232",
     "skill": "Cellular"
   },
@@ -129,9 +129,10 @@ export default function IntegrationAutosuggest(props) {
   {
     "id": "34",
     "skill": "ABR"
-  },]);//dummy (supposed to be [])
+  },]);//dummy */
 
   const handleSuggestionsFetchRequested = async ({ value }) => {
+    console.log("HandleSuggestionsFetchRequested")
     if(value === null || value ===''){
       return
     }
@@ -139,10 +140,12 @@ export default function IntegrationAutosuggest(props) {
   };
 
   const handleSuggestionsClearRequested = () => {
+    console.log("handleSuggestionsClearRequest")
     setSuggestions([]);
   };
 
   const handleChange = () => (event, { newValue, method }) => {
+    console.log("handleChange")
     setState(newValue)
   }
 
@@ -153,7 +156,7 @@ export default function IntegrationAutosuggest(props) {
   };
 
   const renderSuggestion = (suggestion, { query, isHighlighted }) => {
-    console.log('rendering suggestion')
+    console.log('rendering suggestion: ' + suggestion.skill)
     const matches = match(suggestion.skill, query);
     const parts = parse(suggestion.skill, matches);
 
