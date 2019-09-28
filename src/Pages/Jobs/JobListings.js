@@ -38,15 +38,22 @@ const useStyles = makeStyles(theme => ({
   }));
 
 function addBookmark(job){
+    const token = window.localStorage.getItem('authToken');
+    console.log(token);
 
+    const options ={
+        headers: { 'Authorization' : 'Token '+ token }
+    }
     console.log("Entered Add Bookmarks");
     console.log(`adding bookmark for ${job.title}`)
-    axios.post("/users/bookmarks/add", {
-        newBookmark: {job},
-        token: "" //GET USER TOKEN
-        })
+    axios.post("http://localhost:3000/jobs/bookmarks/add", {
+        job_uuid: job.uuid
+        }, options)
         .then(response => {
-            console.log("BOOKMARK ADDED SUCCESSFULLY ");
+            console.log(response);
+            if(response.data.response_code==="200"){
+                console.log("BOOKMARK ADDED SUCCESSFULLY ");
+            }
         })
         .catch(error =>{
             console.log(error);

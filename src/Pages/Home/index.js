@@ -49,7 +49,10 @@ class Home extends Component {
 
   componentDidMount(){
     this.getJobTitle();
+    
   }
+
+  
 
   render() {
     const listings = this.state.jobListing;
