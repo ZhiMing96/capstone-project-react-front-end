@@ -28,10 +28,16 @@ const useStyles = makeStyles(theme => ({
     },
   }));
 
-function getBookmarks(token, setBookmarks){
-      //call API To get a list of Jobs
+function getBookmarks(setBookmarks){
+
+    const token = window.localStorage.getItem('authToken');
+    console.log(token);
+    const options ={
+        headers: {"Authorization" : "Token " + token}
+    }
       
-    axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Business%20Analyst&limit=5&page=0&sortBy=new_posting_date')
+    //axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Business%20Analyst&limit=5&page=0&sortBy=new_posting_date')
+    axios.get('http://localhost:3000/jobs/bookmarks/all',{},options)
     .then(response=>{
         const data = response.data
         console.log(data.results)
@@ -52,27 +58,31 @@ function Bookmarks() {
         getBookmarks("",setBookmarks);
     },[])
 
-    const deleteBookmark = (index) => {
+    const deleteBookmark = (index,bookmark) => {
         console.log('before remove = ');
         console.log(bookmarks);
 
         const updatedList = [...bookmarks.slice(0,index),...bookmarks.slice(index+1,bookmarks.length)]
         console.log("after remove = ");
         console.log(updatedList);
-        
-    
-        
-        axios.post('',{newList:updatedList})
+        const token = window.localStorage.getItem('authToken');
+
+        const options ={
+            headers: {"Authorization" : "Token " + token}
+        }
+        axios.post('http://localhost:3000/jobs/bookmarks/remove',{
+                "bookmark_id": bookmark.bookmarkId //to be implemented
+        }, options)
         .then(response => {
             console.log(response)
-            //IF RESPONSE CODE IS OKAY THEN UPDATE LIST
-            setBookmarks(updatedList);
-            //ELSE THROW ERROR 
+            if(response.data.response_code === '200'){
+                setBookmarks(updatedList);
+                console.log('bookmark deleted successfully')
+            }
         })
         .catch(err => {
             console.error(err)
         })
-
     }
 
     return (
@@ -125,7 +135,7 @@ function Bookmarks() {
                                 </Grid>
                                 <Grid item xs>
                                     <Button size="small" colour="inherit" onClick={()=>{
-                                        deleteBookmark(index)
+                                        deleteBookmark(index,list)
                                     }}>
                                         Remove
                                     </Button>
