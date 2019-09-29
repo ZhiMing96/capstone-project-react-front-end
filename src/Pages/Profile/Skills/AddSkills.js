@@ -74,7 +74,6 @@ function IntegrationAutosuggest(props) {
   const [stateSuggestions, setSuggestions] = React.useState([]);
   
   const handleSuggestionsFetchRequested = ({ value }) => {
-    console.log("HandleSuggestionsFetchRequested")
     if(value === null || value ===''){
       handleSuggestionsClearRequested()
     }
@@ -95,17 +94,15 @@ function IntegrationAutosuggest(props) {
   };
 
   const handleSuggestionsClearRequested = () => {
-    console.log("handleSuggestionsClearRequest")
+
     setSuggestions([]);
   };
 
   const handleChange = () => (event, { newValue, method }) => {
-    console.log("handleChange")
     setState(newValue)
   }
 
   const handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    console.log(suggestion.skill + " onSuggestionSelected");
     if (props.currentSkills.some(skill => skill.id === suggestion.id)) {
       console.log(suggestion.skill + " is already in current skills");
     } else {
@@ -123,7 +120,6 @@ function IntegrationAutosuggest(props) {
   };
 
   const renderSuggestion = (suggestion, { query, isHighlighted }) => {
-    console.log('rendering suggestion: ' + suggestion.skill)
     const matches = match(suggestion.skill, query);
     const parts = parse(suggestion.skill, matches);
 

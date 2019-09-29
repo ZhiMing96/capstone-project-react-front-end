@@ -62,10 +62,9 @@ class CurrentSkillsView extends React.Component {
 
   render() {
     const { classes } = this.props;
-
-    
-
+    this.props.updateSkill()
     return (
+      
       <div>
         <Grid container direction="row" style={{ width: '100%' }}> {/*for your skills and search box and delete icon*/}
           <Grid item xs={12} md={12}>
