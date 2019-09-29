@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Autosuggest from 'react-autosuggest';
 import api from '../../../api.js'
@@ -10,9 +9,9 @@ import parse from 'autosuggest-highlight/parse';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
-import { Box } from '@material-ui/core';
+import { connect } from "react-redux";
+import {addSkill, removeSkill} from '../../../redux/actions/skill'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -60,10 +59,7 @@ function renderInputComponent(inputProps) {
         },
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton
-              edge="end">
-              <AddBoxIcon />
-            </IconButton>
+              <AddBoxIcon edge="end"/>
           </InputAdornment>),
       }}
       {...other}
@@ -72,88 +68,62 @@ function renderInputComponent(inputProps) {
   );
 }
 
-async function getSuggestions(value) {
-  console.log('getting suggestions')
-  console.log(value)
-  return [{
-    "id": "1232",
-    "skill": "Cellular"
-  },
-  {
-    "id": "8493",
-    "skill": "Sporting Goods"
-  },
-  {
-    "id": "4433",
-    "skill": "Information Security Policy"
-  },
-  {
-    "id": "34",
-    "skill": "ABR"
-  },
-  {
-    "id": "1",
-    "skill": "hello world"
-  },] //(this works, dummy)
-
-  await api.skills.match({ "skill": value })
-    .then(response => {
-      if (response.data.response_code === 200) {
-        return response.data.skills
-      } else {
-        var error = response.data.response_message
-        return []
-      }
-    }).catch(error => {
-      var error = "Error retrieving data"
-      return []
-    })
-};
-
-export default function IntegrationAutosuggest(props) {
+function IntegrationAutosuggest(props) {
   const classes = useStyles();
   const [state, setState] = React.useState('');
   const [stateSuggestions, setSuggestions] = React.useState([]);
-  const [currentSkills, setSkills] = React.useState([{
-    "id": "1232",
-    "skill": "Cellular"
-  },
-  {
-    "id": "8493",
-    "skill": "Sporting Goods"
-  },
-  {
-    "id": "4433",
-    "skill": "Information Security Policy"
-  },
-  {
-    "id": "34",
-    "skill": "ABR"
-  },]);//dummy (supposed to be [])
-
-  const handleSuggestionsFetchRequested = async ({ value }) => {
+  
+  const handleSuggestionsFetchRequested = ({ value }) => {
+    console.log("HandleSuggestionsFetchRequested")
     if(value === null || value ===''){
-      return
+      handleSuggestionsClearRequested()
     }
-    setSuggestions(await getSuggestions(value));
+    console.log(value)
+    api.skills.match({ "skill": value })
+    .then(response => {
+      if (response.data.response_code === 200) {
+        setSuggestions(response.data.skills)
+      } else {
+        var error = response.data.response_message
+        setSuggestions([])
+      }
+    }).catch(error => {
+      var error = "Error retrieving data"
+      setSuggestions( [])
+    })
+    
   };
 
   const handleSuggestionsClearRequested = () => {
+    console.log("handleSuggestionsClearRequest")
     setSuggestions([]);
   };
 
   const handleChange = () => (event, { newValue, method }) => {
+    console.log("handleChange")
     setState(newValue)
   }
 
   const handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
     console.log(suggestion.skill + " onSuggestionSelected");
-    props.handleSelectedSkill(suggestion)
-    setSkills(props.skills) //update skills state
+    if (props.currentSkills.some(skill => skill.id === suggestion.id)) {
+      console.log(suggestion.skill + " is already in current skills");
+    } else {
+      console.log(suggestion.skill + " is now added to skills");
+      props.addSkill(suggestion) //store
+      api.skills.add({
+        "skill_add": 
+        [
+          suggestion
+        ]
+        
+      }
+      )
+    }
   };
 
   const renderSuggestion = (suggestion, { query, isHighlighted }) => {
-    console.log('rendering suggestion')
+    console.log('rendering suggestion: ' + suggestion.skill)
     const matches = match(suggestion.skill, query);
     const parts = parse(suggestion.skill, matches);
 
@@ -167,7 +137,7 @@ export default function IntegrationAutosuggest(props) {
           ))}
 
         </span>
-        {currentSkills.some(skill => skill.id === suggestion.id) &&
+        {props.currentSkills.some(skill => skill.id === suggestion.id) &&
           <span style={{ marginLeft: '10px' }}>
             <Chip label="Added" color='primary' size='small' />
           </span>
@@ -182,7 +152,7 @@ export default function IntegrationAutosuggest(props) {
     onSuggestionsFetchRequested: handleSuggestionsFetchRequested,
     onSuggestionsClearRequested: handleSuggestionsClearRequested,
     getSuggestionValue: () => { return state },
-    renderSuggestion,
+    renderSuggestion: renderSuggestion,
     alwaysRenderSuggestions: true,
     onBlur: handleSuggestionsClearRequested,
     onSuggestionSelected: handleSuggestionSelected,
@@ -214,3 +184,15 @@ export default function IntegrationAutosuggest(props) {
     </div>
   )
 }
+
+const mapStateToProps = state => {
+  return { 
+    currentSkills: state.skill.skills,
+   }
+  
+};
+
+export default connect(
+  mapStateToProps,
+  { addSkill, removeSkill }
+) (IntegrationAutosuggest); 

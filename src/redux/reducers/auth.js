@@ -3,8 +3,8 @@ import { AUTH_LOGIN, AUTH_LOGOUT } from "../actions/types";
 const initialState = {
   first_name: '',
   last_name: '',
-  //username: '',
-  username: 'username', //to simulate user has logined
+  username: '',
+  //username: 'username', //to simulate user has logined
   email: ''
   
 };
@@ -23,11 +23,11 @@ export default function (state = initialState, action) {
       };
     case AUTH_LOGOUT:
       console.log("logout")
-      //return initialState;
-      return {
+      return initialState;
+      /*return {
         ...state, 
         username: '',
-      };
+      };*/
       
     default:
       return state;

@@ -6,66 +6,22 @@ import SnackBar from '../../../Components/Snackbar'
 import { makeStyles } from '@material-ui/core';
 import AddSkills from './AddSkills'
 import CustomisedChip from '../../../Components/CustomisedChip'
-
-
-const styles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-
-}));
-
+import { connect } from "react-redux";
+import {addSkill, removeSkill,updateSkill} from '../../../redux/actions/skill'
 
 class CurrentSkillsView extends React.Component {
   constructor(props) {
     super(props);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleSelectedSkill = this.handleSelectedSkill.bind(this);
     this.state = {
       message: '',
       variant: '',
-      skills: [],
-      newSkills: []
     }
   }
 
-  async getSkills() {
-    await api.skills.get(window.localStorage.getItem('authToken'))
-      .then(response => {
-        this.setState({
-          skills: [
-            {
-              "id": "1232",
-              "skill": "Cellular"
-            },
-            {
-              "id": "8493",
-              "skill": "Sporting Goods"
-            },
-            {
-              "id": "4433",
-              "skill": "Information Security Policy"
-            },
-            {
-              "id": "34",
-              "skill": "ABR"
-            },
-          ]
-        })
-      }).catch(error => {
-
-        console.log('issue w token')
-      })
-  }
-
-  componentDidMount() {
-    this.getSkills();
-  }
-
-  async handleRemove(skillName, event) {
+  async handleRemove(skill, event) {
+    const skillName = skill.skill
     event.preventDefault()
     console.log("Skill to remove: " + skillName)
     await api.skills.remove({ "skill_remove": skillName })
@@ -75,11 +31,7 @@ class CurrentSkillsView extends React.Component {
         if (response.data.response_code === 200) {
           this.setState({ variant: 'success' })
           this.setState({ message: skillName + ' removed from your skills.' })
-          this.setState(prevState => ({
-            skills: prevState.skills.filter(function (value, index, arr) {
-              return value.skill !== skillName;
-            })
-          }))
+          this.props.removeSkill(skill) //redux
 
         } else if (response.data.response_code === 400) {
           this.setState({ variant: 'error' })
@@ -108,21 +60,11 @@ class CurrentSkillsView extends React.Component {
 
   };
 
-  handleSelectedSkill(newSkill) {
-    var id = newSkill.id
-    var currentSkills = this.state.skills
-    if (currentSkills.some(skill => skill.id === id)) {
-      console.log(newSkill.skill + " is already in current skills");
-    } else {
-      console.log(newSkill.skill + " is now added to skills");
-      this.setState(prevState => ({ skills: prevState.skills.push(newSkill) }))
-      this.setState(prevState => ({ newSkills: prevState.newSkills.push(newSkill) }))
-    }
-
-  }
-
   render() {
     const { classes } = this.props;
+
+    
+
     return (
       <div>
         <Grid container direction="row" style={{ width: '100%' }}> {/*for your skills and search box and delete icon*/}
@@ -141,14 +83,14 @@ class CurrentSkillsView extends React.Component {
           </Grid>
 
           <Grid item style={{ width: '100%', paddingLeft: '2.5%', paddingRight: '2.5%' }}>
-            <AddSkills handleSelectedSkill={this.handleSelectedSkill} skills={this.state.skills} />
+            <AddSkills />
           </Grid>
 
         </Grid>
 
-        <Grid container className={classes.root} style={{ padding: '2.5%' }}>
-          {
-            this.state.skills.map(skill => (<CustomisedChip skill={skill} handleRemove={this.handleRemove}/>))
+        <Grid container style={{ padding: '2.5%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap',}}>
+          { 
+            this.props.currentSkills.map(skill => (<CustomisedChip skill={skill} handleRemove={this.handleRemove}/>))
           }
         </Grid>
 
@@ -166,5 +108,14 @@ class CurrentSkillsView extends React.Component {
   }
 }
 
-export default withStyles(styles)(CurrentSkillsView);
-
+const mapStateToProps = state => {
+  return { 
+    currentSkills: state.skill.skills,
+   }
+  
+};
+ 
+export default connect(
+  mapStateToProps,
+  { addSkill, removeSkill, updateSkill }
+)(CurrentSkillsView);
