@@ -1,11 +1,13 @@
 
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, IconButton, Snackbar} from '@material-ui/core'
+import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon } from '@material-ui/icons';
+import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon, Room as LocationIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import ListingView from './ListingView';
+import { green } from '@material-ui/core/colors';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
@@ -16,16 +18,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,
+      width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
     },
     paper: {
       padding: theme.spacing(1),
       textAlign: 'center',
       color: theme.palette.text.secondary,
-      margin: 30
+      margin: 20
     },
     image: {
-        width: 128,
-        height: 128,
+        width: 64,
+        height: 64,
       },
     img: {
         margin: 'auto',
@@ -39,7 +44,7 @@ const useStyles = makeStyles(theme => ({
     smallIcons: {
         width: 15,
         height: 12,
-        marginTop: 5,
+        margin: 2,
     }
   }));
 
@@ -89,6 +94,12 @@ function removeBookmark(listing){
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [listings, setListings] = useState([]);
 
+    const lackingSkills = [
+        'Account Management', 
+        'Business Development', 
+        'Customer Service'
+    ]
+
 
     const classes = useStyles();
     
@@ -97,6 +108,37 @@ function removeBookmark(listing){
         console.log(results);
         setListings(results);
     },listings)
+
+    const getDate =(date) => {
+        const list = date.split('-')
+        const month= list[1];
+        switch(month) {
+            case "1":
+                return (`${list[2]} Jan ${list[0]}`)
+            case "2":
+                return (`${list[2]} Feb ${list[0]}`)
+            case "3":
+                return (`${list[2]} Mar ${list[0]}`)
+            case "4":
+                return (`${list[2]} Apr ${list[0]}`)
+            case "5":
+                return (`${list[2]} May ${list[0]}`)
+            case "6":
+                return (`${list[2]} Jun ${list[0]}`)
+            case "7":
+                return (`${list[2]} Jul ${list[0]}`)
+            case "8":
+                return (`${list[2]} Aug ${list[0]}`)
+            case "9":
+                return (`${list[2]} Sep ${list[0]}`)
+            case "10":
+                return (`${list[2]} Oct ${list[0]}`)
+            case "11":
+                return (`${list[2]} Nov ${list[0]}`)
+            case "12":
+                return (`${list[2]} Dec ${list[0]}`)
+        }
+    }
     
     
     const processQueue = () => {
@@ -148,23 +190,28 @@ function removeBookmark(listing){
         ? listings.map((list,index) => (
             <div key={index}>
                 <Paper className={classes.paper} elevation={2}>
+                    <Box display="flex" flexWrap="wrap">
                     <Grid container spacing={2}>
-                        <Grid item>                                   
-                            <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl}>
-                                {list.postedCompany && list.postedCompany.logoUploadPath
-                                ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
-                                : <img className={classes.img} src={defaultIcon} />
-                                }
-                                
+                        <Grid item xs={12} sm={2}>                                   <Box display={{ xs: 'none', sm: 'block' }}>
+                            <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank">
+                                    {list.postedCompany && list.postedCompany.logoUploadPath
+                                    ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
+                                    : <img className={classes.img} src={defaultIcon} />
+                                    }
                             </ButtonBase>
+                        </Box>
+                            
                         </Grid>
-                        <Grid item container xs={12} sm >
-                            <Grid item xs={9}>
+                        <Grid item container xs={12} sm={9} md={10} >
+                            <Grid item xs={12} md={9}>
                                 <Grid item xs>
-                                    <Typography variant="body1">
-                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10}}>
+                                    <Typography variant="body1"> 
+                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10}} >
                                             { list.postedCompany 
-                                                ? list.postedCompany.name
+                                                ? 
+                                                <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
+                                                    {list.postedCompany.name}
+                                                </a>
                                                 : ""
                                             }
                                         </Box>
@@ -174,18 +221,34 @@ function removeBookmark(listing){
                                             {list.title}
                                         </Box>
                                     </Typography>
-                                    <Typography variant="body2">
-                                        <Box align="left" style={{marginLeft:10}} >
+                                    <Typography style={{fontSize:12}}>
+                                        <Box align="left" style={{marginLeft:10}} display={{ 'xs':'none', 'sm':'block'}} >
                                             {
                                                 list.address.postalCode != ""
-                                                ? `${list.address.block} ${list.address.street} S${list.address.postalCode}`
+                                                ? 
+                                                <Grid container alignItems="flex-start">
+                                                    <Grid item>
+                                                        <LocationIcon style={{width:15, height:15}} /> 
+                                                    </Grid>
+                                                    <Grid item>
+                                                        {list.address.block} {list.address.street} S{list.address.postalCode}
+                                                    </Grid>
+                                                </Grid>
                                                 : ""
                                             }
                                         </Box>
                                     </Typography>
-                                    <Typography variant="caption" display="inline">
+                                    <Typography variant="caption" display="inline" >
                                         <Box align="left" style={{marginLeft:10}}>
-                                            <NearMeIcon className={classes.smallIcons} /> {list.address.districts[0].region} <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType} <EventIcon className={classes.smallIcons} /> {list.minimumYearsExperience} years exp
+                                            <Grid container md={6} sm={7} xs={12} alignItem="flex-start" justify="flex-start" > 
+                                                <Grid item sm={4} xs={4} container> <NearMeIcon className={classes.smallIcons} /> {list.address.districts[0].region} 
+                                                </Grid>
+                                                <Grid item sm={4} xs={4} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType}
+                                                </Grid>
+                                                <Grid item sm={4} xs={6} container justify="flex-start"> 
+                                                <EventIcon className={classes.smallIcons} /> {list.minimumYearsExperience} years exp
+                                                </Grid>
+                                            </Grid>
                                             
                                         </Box>
                                     </Typography>
@@ -196,53 +259,103 @@ function removeBookmark(listing){
                                     </Typography>
 
                                     <Typography variant="body2">
-                                        <Box align="left" style={{marginLeft:10}}>
-                                            Expiry Date: {list.metadata.expiryDate}
+                                        <Box align="left" style={{marginLeft:10, fontSize:12}}>
+                                            Expiry Date: {getDate(list.metadata.expiryDate)}
                                         </Box>
                                     </Typography>
-                                    
                                     <Typography variant="body2" >
-                                        <Box align="left" style={{marginLeft:10}}>
-                                            Top 3 Lacking Skills: Account Management, Business Development, Customer Service
+                                        <Box align="left" style={{fontSize:12, marginTop:5}} alignItems="flex-start" display={{'xs':'none', 'sm':'block'}}>
+                                            <Grid container alignItems="flex-start" style={{marginLeft:9}}>
+                                                <Grid item >
+                                                <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
+                                                </Grid>
+                                                <Grid item>
+                                                    Lacking Skills:&nbsp;
+                                                </Grid>
+                                                {lackingSkills.map((skill)=>(
+                                                    <div key={skill}>
+                                                        <Grid item>
+                                                             {skill} &nbsp;
+                                                        </Grid>
+                                                    </div>
+                                                ))}
+                                                
+                                            </Grid>
+                                            
+                                           
                                         </Box>
                                     </Typography>
-                                    
                                 </Grid>
                             </Grid>
-                            <Grid item xs>
-                                <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
-                                    {list.salary 
-                                        ? 
-                                        <div>
-                                            <strong>${list.salary.minimum}</strong> to <strong> ${list.salary.maximum}
-                                            </strong>  {list.salary.type.salaryType} 
-                                        </div>
-                                        : "Salary Undisclosed"}
-                                </Typography>
-                                <Typography variant="caption">
-                                    <Box align="left" style={{marginLeft:10}}>
-                                        {list.schemes.length!=0
-                                        ? 
-                                            <div>
-                                                <DoneIcon className={classes.smallIcons}/> {list.schemes[0].scheme.scheme} available
-                                            </div> 
-                                        : ""
-                                        }
+                            <Grid item xs={12} md={3} container>
+                                    
+                                <Grid item md={12} sm={6} xs>
+                                    <Box display={{ xs: 'none', md: 'block' }}>
+                                        <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
+                                            {list.salary 
+                                                ? 
+                                                <div>
+                                                    <strong>${list.salary.minimum}</strong> to <strong> ${list.salary.maximum}
+                                                    </strong> <span style={{fontSize:10}}>{list.salary.type.salaryType}</span>  
+                                                </div>
+                                                : "Salary Undisclosed"}
+                                        </Typography>
                                     </Box>
-                                </Typography>
-                                <Typography variant="body2">
-                                    <Box align="left" style={{marginLeft:10}}>
-                                        Recommended [TBC]
-                                    </Box>
-                                </Typography>
-                                <Button
-                                    className={classes.button} 
-                                    size="small"
-                                    onClick={ () => handleClick(list)}
-                                    >
-                                    Bookmark
-                                    <BookmarkIcon className={classes.rightIcon} />
-                                </Button>
+                                    <Typography variant="caption">
+                                        <Box align="left" style={{marginLeft:10}}>
+                                            {list.schemes.length!=0
+                                            ? //{list.schemes[0].scheme.scheme} 
+                                                <div  tyle={{}}>
+                                                    <a href="https://www.wsg.gov.sg/programmes-and-initiatives/wsg-career-support-programme-individuals.html" style={{textDecoration:"none", color:"green"}} target="_blank">
+                                                        <Grid container xs={12}>
+                                                            <Box display="inline" alignContent="flex-start">
+                                                                <DoneIcon className={classes.smallIcons} style={{height:18, margin:0}}/> Government Scheme Support
+                                                            </Box>
+                                                        </Grid>
+                                                    </a>
+                                                </div> 
+                                            : ""
+                                            }
+                                        </Box>
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <Box align="left" style={{marginLeft:10}}>
+                                            Recommended
+                                        </Box>
+                                    </Typography>
+                                </Grid>
+                                <Grid item md={12} sm={6} xs container alignItems="flex-end" justify="flex-end" direction="column">
+                                    <Grid item>
+                                        <Box display={{ xs: 'block', md: 'none' }} justifyContent="flex-end">
+                                            <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
+                                            {list.salary 
+                                                ? 
+                                                <div>
+                                                    <p>
+                                                    <strong>${list.salary.minimum}</strong> to <strong> ${list.salary.maximum}
+                                                    </strong> <span style={{fontSize:10, margin:0}}>{list.salary.type.salaryType}</span>
+                                                    </p>
+                                                      
+                                                </div>
+                                                : "Salary Undisclosed"}
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item>
+                                        <Box display="flex" justifyContent="flex-end">
+                                            <Button
+                                                className={classes.button} 
+                                                size="small"
+                                                onClick={ () => handleClick(list)}
+
+                                                >
+                                                Bookmark
+                                                <BookmarkIcon className={classes.rightIcon} />
+                                            </Button>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                
                                 <Snackbar
                                     key={messageInfo ? messageInfo.key : undefined}
                                     anchorOrigin={{
@@ -258,10 +371,6 @@ function removeBookmark(listing){
                                     }}
                                     message={<span id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
                                     action={[
-
-                                    // <Button color="secondary" size="small" onClick={() => removeBookmark(list)}>
-                                    //     UNDO
-                                    // </Button>,
                                     <Button color="secondary" size="small" href="/profile/bookmarks">
                                         View
                                     </Button>,
@@ -279,6 +388,9 @@ function removeBookmark(listing){
                             </Grid>
                         </Grid>
                     </Grid>
+
+                    </Box>
+                    
                 </Paper>
             </div>
         ))
