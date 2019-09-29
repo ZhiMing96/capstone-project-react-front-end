@@ -3,8 +3,9 @@ import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, IconButton, Snackbar} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import {Bookmark as BookmarkIcon, BookmarkOutlined as BookmarkOutlinedIcon} from '@material-ui/icons';
+import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
+import ListingView from './ListingView';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
@@ -35,6 +36,11 @@ const useStyles = makeStyles(theme => ({
     close: {
         padding: theme.spacing(0.5),
     },
+    smallIcons: {
+        width: 15,
+        height: 12,
+        marginTop: 5,
+    }
   }));
 
 function addBookmark(job){
@@ -81,16 +87,18 @@ function removeBookmark(listing){
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState(undefined);
+    const [listings, setListings] = useState([]);
 
-    const listings = props.listings
 
     const classes = useStyles();
-    console.log(listings);
-
+    
+    useEffect(()=>{
+        const results = props.searchResults
+        console.log(results);
+        setListings(results);
+    },listings)
     
     
-   
-
     const processQueue = () => {
         if (queueRef.current.length > 0) {
             setMessageInfo(queueRef.current.shift());
@@ -166,15 +174,67 @@ function removeBookmark(listing){
                                             {list.title}
                                         </Box>
                                     </Typography>
-                                    <Typography variant="body2" align="left" style={{marginLeft:10}}>
-                                        Expiry Date: {list.metadata.expiryDate}
+                                    <Typography variant="body2">
+                                        <Box align="left" style={{marginLeft:10}} >
+                                            {
+                                                list.address.postalCode != ""
+                                                ? `${list.address.block} ${list.address.street} S${list.address.postalCode}`
+                                                : ""
+                                            }
+                                        </Box>
                                     </Typography>
-                                    <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
-                                        {list.salary ? `Up to $${list.salary.maximum}` : "Amount Unavailable"}
+                                    <Typography variant="caption" display="inline">
+                                        <Box align="left" style={{marginLeft:10}}>
+                                            <NearMeIcon className={classes.smallIcons} /> {list.address.districts[0].region} <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType} <EventIcon className={classes.smallIcons} /> {list.minimumYearsExperience} years exp
+                                            
+                                        </Box>
                                     </Typography>
+                                    <Typography variant="caption" >
+                                        <Box align="left" style={{marginLeft:10}}>
+                                            Competition Level: 
+                                        </Box>
+                                    </Typography>
+
+                                    <Typography variant="body2">
+                                        <Box align="left" style={{marginLeft:10}}>
+                                            Expiry Date: {list.metadata.expiryDate}
+                                        </Box>
+                                    </Typography>
+                                    
+                                    <Typography variant="body2" >
+                                        <Box align="left" style={{marginLeft:10}}>
+                                            Top 3 Lacking Skills: Account Management, Business Development, Customer Service
+                                        </Box>
+                                    </Typography>
+                                    
                                 </Grid>
                             </Grid>
                             <Grid item xs>
+                                <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
+                                    {list.salary 
+                                        ? 
+                                        <div>
+                                            <strong>${list.salary.minimum}</strong> to <strong> ${list.salary.maximum}
+                                            </strong>  {list.salary.type.salaryType} 
+                                        </div>
+                                        : "Salary Undisclosed"}
+                                </Typography>
+                                <Typography variant="caption">
+                                    <Box align="left" style={{marginLeft:10}}>
+                                        {list.schemes.length!=0
+                                        ? 
+                                            <div>
+                                                <DoneIcon className={classes.smallIcons}/> {list.schemes[0].scheme.scheme} available
+                                            </div> 
+                                        : ""
+                                        }
+                                    </Box>
+                                </Typography>
+                                <Typography variant="body2">
+                                    <Box align="left" style={{marginLeft:10}}>
+                                        Recommended [TBC]
+                                    </Box>
+                                </Typography>
                                 <Button
                                     className={classes.button} 
                                     size="small"
