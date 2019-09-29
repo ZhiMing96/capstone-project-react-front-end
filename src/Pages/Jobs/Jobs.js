@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography } from '@material-ui/core';
-import { Search as SearchIcon } from '@material-ui/icons';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase } from '@material-ui/core';
+import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon } from '@material-ui/icons';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -46,8 +46,9 @@ const employmentTypes = [
         padding: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        width: 400,
         flexGrow: 1,
+        marginTop: 20,
+        // marginBottom:0,
     },
     input: {
         marginLeft: theme.spacing(1),
@@ -79,10 +80,12 @@ const employmentTypes = [
     menu: {
         width: 200,
     },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
+    iconButton: {
+        padding: 10,
+    },
+    button: {
+        margin: theme.spacing(1),
+        fontWeight:"bold",
     },
   }));
 
@@ -96,9 +99,14 @@ function Jobs () {
         employmentType:"",
         skills:[],
         proceed: false,
+        queryString: "",
     });
 
-    const classes=useState();
+    const url = "http://localhost:3000/jobs/search?" 
+
+    const token= window.localStorage.getItem('authToken');
+
+    const classes=useStyles();
 
     const handleChange = name => event => {
         setState({ ...state, [name]: (event.target.value) });
@@ -117,168 +125,172 @@ function Jobs () {
         setState({ ...state, open: false });
     };
 
-    const resetSearch = () =>{
-        setSearchResults([]);
-        console.log( "Search Results should be Empty Now")
-        console.log(searchResults);
-    }
-    
-
     const handleSubmit = event => {
         console.log("Entered Handle Submit")
-        // IMPT DONT DELETE!! THIS  IS FOR INTEGRATION WITH EXPRESS 
-        // const url = `localhost:3000/jobs/search?keyword=${state.keyword ? state.keyword : ""}${state.minSalary!=null? `&minSalary=${state.minSalary}`: ""}${state.employmentType ? `&employmentType=${state.employmentType}` : ""}`
-        // console.log(url);
+        
         event.preventDefault();
-        const url = `https://api.mycareersfuture.sg/v2/jobs?search=${state.keyword}${state.employmentType ? `&employmentTypes=${state.employmentType}` : ""}${state.minSalary!=null? `&salary=${state.minSalary}`: ""}&limit=7&page=0&sortBy=new_posting_date`
+        var tempString = state.queryString;
+        
+        tempString += state.keyword ? ('search=' + state.keyword) :'';
+        tempString += state.employmentType ? ('&employmentTypes=' + state.employmentType ) :'';
+        tempString += state.minSalary ? ('&salary=' + state.salary) :'';
 
-        console.log(url)
-
-        axios.get(url)
+        console.log("Query String = " + tempString);
+        setState({ ...state, queryString: tempString });
+        
+        const query=url+tempString
+        console.log(query);
+        
+        axios.get(query, {headers: {"Authorization" : "Token"+token}})
         .then(res=>{   
             const result = res.data.results;
-            console.log(result);
             setSearchResults(result);
-            setState({...state, proceed:true})
+            console.log(result);
         })
         .catch(err=>{
-            console.error(err);
+            console.error(err);  
         })
     }
 
     useEffect(()=>{
-        console.log("ENTERED USE EFFECT")
-        if(state.proceed === true){
-            setState({
-                ...state, proceed: false
-            })
-        }
+       
     },[])
 
-    console.log('searchResults =')
-    console.log(searchResults)
+    console.log('searchResults.length = ' + searchResults.length);
+
+    console.log("queryString= "+ state.queryString)
+    
 
   return (
     
     <div>
+        <Container>
         <CssBaseline/>
-        <Grid container xs={12} alignItems="flex-start" alignContent="flex-start">
+        <Grid container xs={12} alignContent="flex-start">
             <Grid item xs={12} >
             <form onSubmit={handleSubmit}>
-                <Grid container justify="center" xs={12} >
-                    <Grid item sm={7} xs={12} style={{ marginLeft:10, marginRight:10 }}>
-                        <TextField
-                        label="Required"
-                        style={{ marginTop: 40}}
-                        placeholder="Enter Keyword"
-                        fullWidth
-                        variant="outlined"
-                        InputLabelProps={{
-                        shrink: true,}}
+                <Paper className={classes.root} elevation={1}>
+                    <InputBase
+                        className={classes.input}
+                        placeholder="Search For a Job"
+                        required
                         value={state.keyword}
                         onChange={handleChange('keyword')}
-                        required
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid item sm={4} xs={12}  alignItems="baseline" alignContent="flex-start"> 
-                        {/* <Grid container item xs={12} spacing={2}> */}
-                            {/* <Grid item sm={7} xs={12} alignItems="flex-start" alignContent="flex-start"> */}
-                                <Button variant="outlined" onClick={handleClickOpen} style={{marginRight:30, marginTop:40}} size="medium">
-                                    Filters
-                                </Button>
-                            {/* </Grid> */}
-                            
-                                <IconButton style={{marginLeft:30, marginTop:40,marginRight:30 }} type="submit">
-                                    <SearchIcon fontSize="large"/>
-                                </IconButton>
-                            {/* </Grid> */}
-                        {/* </Grid> */}
-                    </Grid>
-                    {/* <Grid item xs={1}>
+                    />
+                    <Box display={{ xs: 'block', sm: 'none' }}>
+                        <IconButton color="primary" className={classes.iconButton} onClick={handleClickOpen}>
+                            <FilterListIcon />
+                        </IconButton>
+                    </Box>
+                    <Box display={{ xs: 'none', sm: 'block' }}>
+                        <Button color="primary" onClick={handleClickOpen} style={{marginRight:10}} size="medium">
+                                Filters
+                        </Button>
+                    </Box>
+                    
+                    <Divider className={classes.divider} orientation="vertical" />
+                    <IconButton className={classes.iconButton} type="submit">
+                        <SearchIcon />
+                    </IconButton>
+                </Paper>
+                
+                <Dialog
+                    disableBackdropClick disableEscapeKeyDown 
+                    open={state.open}
+                    onClose={handleClose}
+                    fullWidth
+                >
+                    <DialogTitle>{"Refine Your Search!"}</DialogTitle>
+                    <DialogContent>
                         
-                    </Grid> */}
-                </Grid>
-                
-                
-            
-                    <Dialog
-                        disableBackdropClick disableEscapeKeyDown 
-                        open={state.open}
-                        onClose={handleClose}
-                        fullWidth
-                    >
-                        <DialogTitle>{"Refine Your Search!"}</DialogTitle>
-                        <DialogContent>
-                            
-                                <TextField
-                                    id="standard-number"
-                                    fullWidth
-                                    label="Enter Min Salary"
-                                    value={state.minSalary}
-                                    onChange={handleChange('minSalary')}
-                                    type="number"
-                                    className={classes.textField}
-                                    margin="normal"
-                                    
-                                /> <br/>
-                                <TextField
-                                    select
-                                    label="Select Employment Type"
-                                    className={classes.textField}
-                                    value={state.employmentType}
-                                    onChange={handleChange('employmentType')}
-                                    SelectProps={{
-                                    MenuProps: {
-                                        className: classes.menu,
-                                    },
-                                    }}
-                                    margin="normal"
-                                    fullWidth	
-                                >
-                                    {employmentTypes.map(option => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose} color="primary">
-                                Continue
-                            </Button>
-                        </DialogActions>
-                    </Dialog>    
+                            <TextField
+                                id="standard-number"
+                                fullWidth
+                                label="Enter Min Salary"
+                                value={state.minSalary}
+                                onChange={handleChange('minSalary')}
+                                type="number"
+                                className={classes.textField}
+                                margin="normal"
+                                
+                            /> <br/>
+                            <TextField
+                                select
+                                label="Select Employment Type"
+                                className={classes.textField}
+                                value={state.employmentType}
+                                onChange={handleChange('employmentType')}
+                                SelectProps={{
+                                MenuProps: {
+                                    className: classes.menu,
+                                },
+                                }}
+                                margin="normal"
+                                fullWidth	
+                            >
+                                {employmentTypes.map(option => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Continue
+                        </Button>
+                    </DialogActions>
+                </Dialog>    
                 </form>   
             </Grid>
         </Grid>
-        
-        {searchResults.length != 0
+
+        {searchResults.length != 0 
         ? 
         <div>
-            
-            {/* <Redirect to="/jobs/jobListings"/>
-           
-            <Route 
-                exact
-                path="/jobs/jobListings"  
-                render={()=>( )} 
-            />    */}
-
-            <JobListings listings={searchResults} resetSearch={resetSearch} />  
-            
-        </div> 
-        :           
+            <Router>
+                <Redirect to={`/jobs/listings/${state.queryString}`}/>
+                
+                <Route path="/jobs/listings" render={()=> <JobListings searchResults={searchResults}/>}/> 
+                
+            </Router>
+        </div>
+        :
+        token 
+        ? //USER WITH ACCOUNT           
         <div>
-            <Grid container spacing={2} justify="center">
-                <Grid item>
+            What Others Are Searching
+            Because you viewed "" 
+            you might have missed
+        </div>
+        : //USER WITHOUT ACCOUNT 
+        <div> 
+            <CssBaseline/>
+            <br/>
+            <Divider variant="middle" style={{marginBottom:10}}/>
+            <Paper style={{marginBottom:10}}>
+                <Typography>
+                    Dont have an account yet? Sign Up Now!
+                </Typography>
+            </Paper>
+            <Paper>
+                <Typography>
+                    Quick Search!
+                </Typography>
+                <ButtonBase>
+                    
+                </ButtonBase>
+            </Paper>
+
+            <Grid container spacing={2} justify="flex-start" style={{marginTop:10}}>
+                <Grid item xs={6}>
                     <Paper>
                         <Typography>
                             In Demand Jobs
                         </Typography>
                     </Paper>
                 </Grid>
-                <Grid item>
+                <Grid item xs={6}>
                     <Paper>
                         <Typography>
                             Popular Jobs
@@ -287,7 +299,8 @@ function Jobs () {
                 </Grid>
             </Grid>
         </div>
-        }  
+        } 
+    </Container> 
     </div>
     
   )
