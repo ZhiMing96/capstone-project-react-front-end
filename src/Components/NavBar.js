@@ -84,7 +84,7 @@ class NavTabs extends React.Component {
           </Grid>
 
           <Grid item onClick = {()=> this.setState({value: false})}>
-            {this.props.username ==='' ? 
+            {this.props.userId ==='' ? 
           
             <Button variant="contained" color="primary" component={Link} to="/auth/signin" > Login </Button> :
 
@@ -124,11 +124,7 @@ class NavTabs extends React.Component {
 
 const mapStateToProps = state => {
   return { 
-    first_name: state.auth.first_name,
-    last_name: state.auth.last_name,
-    username: state.auth.username,
-    email: state.auth.email
-    
+    userId: state.auth.user_id,
    }
   
 };

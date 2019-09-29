@@ -1,9 +1,9 @@
 import { AUTH_LOGIN, AUTH_LOGOUT } from "./types";
 //import history from "../history";
 
-export const doLogin = details => ({
+export const doLogin = userId => ({
   type: AUTH_LOGIN,
-  payload: details
+  payload: userId
   
 });
 

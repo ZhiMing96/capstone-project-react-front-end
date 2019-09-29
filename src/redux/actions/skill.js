@@ -10,6 +10,7 @@ export const addSkill = (skill) =>({
     payload: skill
   })
   
-  export const updateSkill = () =>({
+  export const updateSkill = (skills) =>({
     type: UPDATE_SKILL,
+    payload: skills,
   })

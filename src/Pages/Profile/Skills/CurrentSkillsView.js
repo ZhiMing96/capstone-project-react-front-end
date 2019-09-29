@@ -1,13 +1,30 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import { Grid, Typography, Box } from '@material-ui/core'
 import api from '../../../api.js'
 import SnackBar from '../../../Components/Snackbar'
-import { makeStyles } from '@material-ui/core';
+import { withStyles,makeStyles } from '@material-ui/core/styles';
 import AddSkills from './AddSkills'
 import CustomisedChip from '../../../Components/CustomisedChip'
 import { connect } from "react-redux";
 import {addSkill, removeSkill,updateSkill} from '../../../redux/actions/skill'
+
+const styles = theme => ({
+  '@global': {
+    body: {
+      backgroundColor: theme.palette.common.white,
+    },
+  },
+  paper: {
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(5),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+})
+
+
+
 
 class CurrentSkillsView extends React.Component {
   constructor(props) {
@@ -18,6 +35,14 @@ class CurrentSkillsView extends React.Component {
       message: '',
       variant: '',
     }
+  }
+  
+  componentDidMount(){
+    api.skills.get().then(res=>{
+      if (res.data.response_code===200){
+        this.props.updateSkill(res.data.skill_list) //return array
+      }
+    }).catch()
   }
 
   async handleRemove(skill, event) {
@@ -62,45 +87,45 @@ class CurrentSkillsView extends React.Component {
 
   render() {
     const { classes } = this.props;
-    this.props.updateSkill()
+    
     return (
-      
       <div>
-        <Grid container direction="row" style={{ width: '100%' }}> {/*for your skills and search box and delete icon*/}
-          <Grid item xs={12} md={12}>
-            <Typography component="div">
-              <Box
-                fontSize="h6.fontSize"
-                m={2}
-                letterSpacing={2}
-                textAlign='left'
-              >
+        <div className={classes.paper}>
+          <Grid container direction="row" style={{ width: '100%' }}> {/*for your skills and search box and delete icon*/}
+            <Grid item xs={12} md={12}>
+              <Typography component="div">
+                <Box
+                  fontSize="h6.fontSize"
+                  m={2}
+                  letterSpacing={2}
+                  textAlign='left'
+                >
 
-                YOUR SKILLS
+                  YOUR SKILLS
               </Box>
-            </Typography>
+              </Typography>
+            </Grid>
+
+            <Grid item style={{ width: '100%', paddingLeft: '2.5%', paddingRight: '2.5%', marginTop: '24px' }}>
+              <AddSkills />
+            </Grid>
+
           </Grid>
 
-          <Grid item style={{ width: '100%', paddingLeft: '2.5%', paddingRight: '2.5%' }}>
-            <AddSkills />
+          <Grid container style={{ padding: '2.5%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', }}>
+            {
+              this.props.currentSkills.map(skill => (<CustomisedChip skill={skill} handleRemove={this.handleRemove} />))
+            }
           </Grid>
 
-        </Grid>
+          <SnackBar
+            open={this.state.message !== ''}
+            handleClose={this.handleClose}
+            variant={this.state.variant}
+            message={this.state.message}
+          />
 
-        <Grid container style={{ padding: '2.5%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap',}}>
-          { 
-            this.props.currentSkills.map(skill => (<CustomisedChip skill={skill} handleRemove={this.handleRemove}/>))
-          }
-        </Grid>
-
-        <SnackBar
-          open={this.state.message !== ''}
-          handleClose={this.handleClose}
-          variant={this.state.variant}
-          message={this.state.message}
-        />
-
-
+        </div>
       </div>
 
     );
@@ -108,13 +133,13 @@ class CurrentSkillsView extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { 
+  return {
     currentSkills: state.skill.skills,
-   }
-  
+  }
+
 };
- 
+
 export default connect(
   mapStateToProps,
   { addSkill, removeSkill, updateSkill }
-)(CurrentSkillsView);
+) (withStyles(styles, { withTheme: true}) (CurrentSkillsView));

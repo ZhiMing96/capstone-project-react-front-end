@@ -125,7 +125,6 @@ export default function SignUpView(props) {
                     label="Password"
                     type="password"
                     id="password"
-                    value = {props.state.password}
                     onChange={(event) => props.handleChange(event)}
                 />
 

@@ -31,10 +31,10 @@ class Login extends React.Component {
   }
 
   async setUserDetails(token) {
-    await api.auth.details(token) 
+    await api.profile.get() 
     .then(response => {
-      let user = response.data.user
-      this.props.doLogin( user) //link to store action to hydrate store, connect     
+      let userId = response.data.profile.user_id
+      this.props.doLogin( userId) //link to store action to hydrate store, connect     
       this.props.history.push("/");        
     }).catch(error => {
        console.log(error);

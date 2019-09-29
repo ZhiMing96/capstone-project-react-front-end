@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { Paper, Typography, Box } from '@material-ui/core';
 import Bookmarks from '../Bookmarks';
 import Skills from './Skills/';
-import Profile from './Profile'
+import Profile from './PublicProfile/'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 
 
@@ -15,7 +15,7 @@ function main() {
       <Grid item sm={3} wrap="wrap">
           <Sidebar/> 
       </Grid>
-      <Grid item sm={9} xs={11} style={{width:'100%', paddingRight:'2%'}}>
+      <Grid item sm={9} xs={11} style={{width:'100%', paddingRight:'2%', paddingLeft:'2%'}}>
         {/*<Typography component="div">
           <Box 
             fontSize="h6.fontSize" 

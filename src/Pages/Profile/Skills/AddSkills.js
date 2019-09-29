@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import { connect } from "react-redux";
 import {addSkill, removeSkill} from '../../../redux/actions/skill'
+import SnackBar from '../../../Components/Snackbar'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,6 +73,8 @@ function IntegrationAutosuggest(props) {
   const classes = useStyles();
   const [state, setState] = React.useState('');
   const [stateSuggestions, setSuggestions] = React.useState([]);
+  const [stateMessage, setMessage] = React.useState('');
+  const [stateVariant, setVariant] = React.useState('');
   
   const handleSuggestionsFetchRequested = ({ value }) => {
     if(value === null || value ===''){
@@ -94,7 +97,6 @@ function IntegrationAutosuggest(props) {
   };
 
   const handleSuggestionsClearRequested = () => {
-
     setSuggestions([]);
   };
 
@@ -102,20 +104,36 @@ function IntegrationAutosuggest(props) {
     setState(newValue)
   }
 
+  const handleClose = (reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setMessage('')
+
+  };
+
+
   const handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
     if (props.currentSkills.some(skill => skill.id === suggestion.id)) {
       console.log(suggestion.skill + " is already in current skills");
+      setVariant('error')
+      setMessage(suggestion.skill + " is already in your current skills.")
     } else {
       console.log(suggestion.skill + " is now added to skills");
-      props.addSkill(suggestion) //store
+      
       api.skills.add({
-        "skill_add": 
-        [
-          suggestion
-        ]
-        
-      }
-      )
+        "skill_add": [suggestion.skill]
+      }).then(response => {
+        if (response.data.response_code ===200){
+          props.addSkill(suggestion); //store
+        }else {
+          setVariant('error')
+          setMessage('Error adding skills.')
+        }
+      }).catch(error => {
+        setVariant('error')
+        setMessage('Error adding skills.')
+      })
     }
   };
 
@@ -177,6 +195,12 @@ function IntegrationAutosuggest(props) {
           </Paper>
         )}
       />
+      <SnackBar
+            open={stateMessage !== ''}
+            handleClose={handleClose}
+            variant={stateVariant}
+            message={stateMessage}
+          />
     </div>
   )
 }
