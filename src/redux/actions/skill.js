@@ -1,4 +1,4 @@
-import { ADD_SKILL, REMOVE_SKILL } from "./types";
+import { ADD_SKILL, REMOVE_SKILL,UPDATE_SKILL } from "./types";
 
 export const addSkill = (skill) =>({
     type: ADD_SKILL,
@@ -11,5 +11,5 @@ export const addSkill = (skill) =>({
   })
   
   export const updateSkill = () =>({
-    type: REMOVE_SKILL,
+    type: UPDATE_SKILL,
   })

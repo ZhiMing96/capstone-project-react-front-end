@@ -21,9 +21,9 @@ export default function (state = initialState, action) {
         skills: state.skills.filter(obj => { return obj.id !== skill.id })
       };
     case UPDATE_SKILL:
-      console.log(skill)
       api.skills.get(window.localStorage.getItem('authToken'))
       .then(response => {
+        console.log("hydrated w skills")
         return {skills: response.data.skill_list} //api return array
       }).catch(error => {
 
