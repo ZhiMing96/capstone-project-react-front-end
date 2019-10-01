@@ -19,8 +19,8 @@ const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,
       width: '100%',
-        maxWidth: 360,
-        backgroundColor: theme.palette.background.paper,
+      maxWidth: 360,
+      backgroundColor: theme.palette.background.paper,
     },
     paper: {
       padding: theme.spacing(1),
@@ -29,8 +29,8 @@ const useStyles = makeStyles(theme => ({
       margin: 20
     },
     image: {
-        width: 64,
-        height: 64,
+        width: 'auto',
+        height: 'auto',
       },
     img: {
         margin: 'auto',
@@ -192,15 +192,15 @@ function removeBookmark(listing){
                 <Paper className={classes.paper} elevation={2}>
                     <Box display="flex" flexWrap="wrap">
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={2}>                                   <Box display={{ xs: 'none', sm: 'block' }}>
-                            <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank">
-                                    {list.postedCompany && list.postedCompany.logoUploadPath
-                                    ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
-                                    : <img className={classes.img} src={defaultIcon} />
-                                    }
-                            </ButtonBase>
-                        </Box>
-                            
+                        <Grid item xs={12} sm={2}>
+                            <Box display={{ xs: 'none', sm: 'block' }}>
+                                <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank">
+                                        {list.postedCompany && list.postedCompany.logoUploadPath
+                                        ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
+                                        : <img className={classes.img} src={defaultIcon} />
+                                        }
+                                </ButtonBase>
+                            </Box>
                         </Grid>
                         <Grid item container xs={12} sm={9} md={10} >
                             <Grid item xs={12} md={9}>

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { doLogin } from "../../redux/actions/auth";
 import api from '../../api.js'
 import SnackBar from '../../Components/Snackbar'
+import LoginIcon from '@material-ui/icons/Input'
 
 
 
@@ -34,7 +35,7 @@ class Login extends React.Component {
     await api.profile.get() 
     .then(response => {
       let userId = response.data.profile.user_id
-      this.props.doLogin( userId) //link to store action to hydrate store, connect     
+      this.props.doLogin(userId) //link to store action to hydrate store, connect     
       this.props.history.push("/");        
     }).catch(error => {
        console.log(error);

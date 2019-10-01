@@ -8,6 +8,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { doLogout } from "../redux/actions/auth";
 import { connect } from "react-redux";
+import { IconButton, Hidden } from '@material-ui/core';
+import LogoutIcon from '@material-ui/icons/ExitToApp'
+
 
 function Logout(props) {
     const [open, setOpen] = React.useState(false);
@@ -30,10 +33,16 @@ function Logout(props) {
   
     return (
       <span>
-        
-        <Button variant="contained" color="primary" style={{marginLeft:10}} onClick={handleClickOpen}> 
-        Logout 
-        </Button>
+        <Hidden xsDown>
+          <Button variant="contained" color="primary" style={{marginLeft:10}} onClick={handleClickOpen}> 
+          Logout 
+          </Button>
+        </Hidden>
+        <Hidden smUp>
+          <IconButton variant="contained" color="primary" style={{marginLeft:10}} onClick={handleClickOpen}>
+            <LogoutIcon/>
+          </IconButton>
+        </Hidden>
         
         <Dialog
           open={open}
