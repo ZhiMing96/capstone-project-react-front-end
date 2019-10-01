@@ -31,7 +31,8 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3),
   },
   submit: {
-    margin: theme.spacing(5, 0, 2),
+    margin: theme.spacing(5,2,0,0),
+    width:'100px'
   },
   error: {
     textAlign: 'left !important' //cannot lol
@@ -42,6 +43,11 @@ const useStyles = makeStyles(theme => ({
   },
   leftIcon: {
     marginRight: theme.spacing(1),
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 280,
   },
 
 }));
@@ -75,8 +81,6 @@ function UserDetailsView(props) {
   console.log(profileState)
   const [submitState, setSubmit] = React.useState(false)
   const [emailValid, setEmailValid] = React.useState(true)
-  const [snackBarMessage, setSnackBarMessage] = React.useState('')
-  const [snackBarVariant, setSnackBarVariant] = React.useState('')
 
   const handleSubmit = (event) => {
     setSubmit(true) //render email validation error if present
@@ -86,13 +90,14 @@ function UserDetailsView(props) {
         .then(res => {
           if (res.data.response_code === 200) {
             console.log('success')
-            setSnackBarVariant('success')
-            setSnackBarMessage('Details saved successfully.')
+            props.handleSnackBarVariant('success')
+            props.handleSnackBarMessage('Details saved successfully.')
             props.updateProfile(profileState) //update store
+            props.changeState()
           } else {
             console.log('error')
-            setSnackBarVariant('error')
-            setSnackBarMessage('Error saving details.')
+            props.handleSnackBarVariant('error')
+            props.handleSnackBarMessage('Error saving details.')
           }
         }).catch(console.log('error'))
     }
@@ -104,16 +109,13 @@ function UserDetailsView(props) {
     }
   }
 
-  const handleClose = () => {
-    setSnackBarMessage('');
-  };
 
   return (
     <div>
       <CssBaseline />
       <div className={classes.paper}>
 
-        <Grid container direction="row" style={{ width: '100%' , textAlign:'left'}}>
+        <Grid container direction="row" style={{ width: '100%', textAlign: 'left' }}>
           <Grid item xs={12} md={12}>
             <Typography component="div">
               <Box display="flex" alignItems="flex-start">
@@ -123,15 +125,11 @@ function UserDetailsView(props) {
                   letterSpacing={2}
                   textAlign='left'
                   flexGrow={1}
+                  color="primary.main"
+                  fontWeight="fontWeightBold"
                 >
 
                   EDIT PROFILE
-                </Box>
-                <Box m={2}>
-                  <Button variant="outlined" color="primary" className={classes.button} onClick={props.changeState}>
-                    <EditIcon className={classes.leftIcon} />
-                    Edit
-                  </Button>
                 </Box>
               </Box>
             </Typography>
@@ -142,8 +140,8 @@ function UserDetailsView(props) {
           <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
 
             <form className={classes.form} onSubmit={(event) => { handleSubmit(event) }}>
-              <Grid container spacing={2} style={{ width:'100%', justify:'center'}}>
-                <Grid item xs={12} sm={6}>
+              <Grid container style={{ width: '100%', justify: 'center' }}>
+                <Grid item xs={12} md={6}>
                   <TextField
 
                     variant="outlined"
@@ -151,24 +149,28 @@ function UserDetailsView(props) {
                     id="firstName"
                     label="First Name"
                     value={profileState.first_name}
+                    className={classes.textField}
+                    margin="normal"
                     autoFocus
                     onChange={handleChange('first_name')}
 
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} >
+                <Grid item xs={12} md={6} >
                   <TextField
                     variant="outlined"
                     required
                     id="lastName"
                     label="Last Name"
+                    className={classes.textField}
+                    margin="normal"
                     value={profileState.last_name}
                     name="lastName"
                     onChange={handleChange('last_name')}
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} md={6}>
                   <TextField
                     error={submitState && !emailValid}
                     variant="outlined"
@@ -177,6 +179,8 @@ function UserDetailsView(props) {
                     label="Email Address"
                     name="email"
                     value={profileState.email}
+                    className={classes.textField}
+                    margin="normal"
                     onChange={handleChange('email')}
                   />
                   {submitState && !emailValid &&
@@ -187,7 +191,7 @@ function UserDetailsView(props) {
 
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} md={6}>
                   <TextField
                     variant="outlined"
                     required
@@ -195,33 +199,38 @@ function UserDetailsView(props) {
                     label="Username"
                     name="username"
                     value={profileState.username}
+                    className={classes.textField}
+                    margin="normal"
                     onChange={handleChange('username')}
                   />
                 </Grid>
 
               </Grid>
-              <Grid container style={{alignContent:'center'}}>
-              <Button 
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                style={{alignSelf:'center'}}
-                size='large'
-              >
-                Save
+              <Grid container style={{ alignContent: 'center' }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  style={{ alignSelf: 'center' }}
+                >
+                  Save
+              </Button>
+              <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  style={{ alignSelf: 'center' }}
+                  onClick={props.changeState}
+                >
+                  Cancel
               </Button>
               </Grid>
             </form>
           </Grid>
         </Grid>
       </div>
-      <SnackBar
-        open={snackBarMessage !== ''}
-        handleClose={handleClose}
-        variant={snackBarVariant}
-        message={snackBarMessage}
-      />
+      
     </div>
 
   )

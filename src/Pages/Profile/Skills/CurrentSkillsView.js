@@ -99,6 +99,8 @@ class CurrentSkillsView extends React.Component {
                   m={2}
                   letterSpacing={2}
                   textAlign='left'
+                  color="primary.main"
+                  fontWeight="fontWeightBold"
                 >
 
                   YOUR SKILLS
