@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 200,
+        width: 280,
     },
     button: {
         marginRight: theme.spacing(1),
@@ -78,6 +78,8 @@ export default function ReadOnlyView(props) {
                                     letterSpacing={2}
                                     textAlign='left'
                                     flexGrow={1}
+                                    color="primary.main"
+                                    fontWeight="fontWeightBold"
                                 >
                                     BASIC PROFILE
                                 </Box>
@@ -94,8 +96,8 @@ export default function ReadOnlyView(props) {
                     <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
 
                         <form className={classes.form} >
-                            <Grid container spacing={2} style={{ width:'100%', textAlign:'left'}}>
-                                <Grid item xs={12} sm={6}>
+                            <Grid container style={{ width:'100%', textAlign:'left'}}>
+                                <Grid item xs={12} md={6}>
                                     <TextField
                                         label="First Name"
                                         value={profileState.first_name}
@@ -107,7 +109,7 @@ export default function ReadOnlyView(props) {
                                     />
 
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} md={6}>
                                     <TextField
                                         label="Last Name"
                                         value={profileState.last_name}
@@ -119,7 +121,7 @@ export default function ReadOnlyView(props) {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} md={6}>
                                     <TextField
                                         label="Email Address"
                                         value={profileState.email}
@@ -131,7 +133,7 @@ export default function ReadOnlyView(props) {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} md={6}>
                                     <TextField
                                         label="Username"
                                         value={profileState.username}
@@ -147,6 +149,7 @@ export default function ReadOnlyView(props) {
                         </form>
                     </Grid>
                 </Grid>
+                
             </div>
         </div>
 
