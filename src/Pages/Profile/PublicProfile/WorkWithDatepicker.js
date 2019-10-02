@@ -50,6 +50,14 @@ submit: {
     margin: theme.spacing(5,2,0,0),
     width:'100px'
 },
+description:{
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 280,
+    ['@media (min-width:920px)']:{
+        width: 710,
+    },
+},
 }));
 
 
@@ -68,6 +76,7 @@ function WorkWithDatepicker(props) {
         description:''
     })
     const [submitState, setSubmit] = React.useState(false);
+    const[dateValid, setDateValid] = React.useState(false);
 
     //initialise
     useEffect(() => {
@@ -78,7 +87,7 @@ function WorkWithDatepicker(props) {
         }).catch(err => {
             console.log('error initialising w user work experience')
         })
-    }, props.works)
+    }, [])
 
     const handleSnackBarMessage =(m)=> {
         setSnackBarMessage(m)
@@ -114,17 +123,20 @@ function WorkWithDatepicker(props) {
         console.log(event)
         
         if (name==='start_date'){
+            console.log(selectedStartDate)
             var date = new Date(event)
             setNewWork({
                 ...newWork,
-                start_date: date.getFullYear() + '-' + date.getMonth()+ '-' + 1
+                start_date: date.getFullYear().toString() + '-' + (date.getMonth()+1).toString()+ '-' + '1'
             })
+            checkDateValid(date,'start')
         }else if( name==='end_date'){
             var date = new Date(event)
             setNewWork({
                 ...newWork,
-                end_date: date.getFullYear() + '-' + date.getMonth()+ '-' + 1
+                end_date: date.getFullYear().toString() + '-' + (date.getMonth()+1).toString()+ '-' + '1'
             })
+            checkDateValid(date,'end')
         }else{
             setNewWork({ ...newWork, [name]: event.target.value });
         }
@@ -133,17 +145,24 @@ function WorkWithDatepicker(props) {
         //maybe check date valid?
         
     }
-    const checkDateValid = () =>{
-        var startDate = new Date(selectedStartDate)
-        var endDate = new Date(selectedEndDate)
-        return startDate.getTime() <= endDate.getTime()
+    const checkDateValid = (date, string) =>{
+        if(string === 'start'){
+            var startDate = new Date(date)
+            var endDate = new Date(newWork.end_date)
+            setDateValid(startDate.getTime() <= endDate.getTime())
+        }else{
+            var endDate = new Date(date)
+            var startDate = new Date(newWork.start_date)
+            setDateValid(startDate.getTime() <= endDate.getTime())
+        }
+        console.log(startDate, endDate, dateValid)
 
     }
 
     const handleSubmit = (event) => {
         setSubmit(true) //render email validation error if present
         event.preventDefault()
-        if (checkDateValid()) {
+        if (dateValid) {
           api.work.add(newWork)
             .then(res => {
               if (res.data.response_code === 200) {
@@ -197,17 +216,19 @@ function WorkWithDatepicker(props) {
                                 >
                                     WORK EXPERIENCE
                                 </Box>
+                                {addState?null:
                                 <Box m={2}>
                                     <Button variant="outlined" color="primary" className={classes.button} onClick={handleClickAdd}>
                                         <AddIcon className={classes.leftIcon} />
                                         Add
                                     </Button>
                                 </Box>
+                                }
                             </Box>
                         </Typography>
                     </Grid>
 
-                    <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }} xs={12}>
+                    <Grid item style={{ width:"100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
                     {addState?
                         <form className={classes.form} onSubmit={handleSubmit}>
                             <Grid container style={{ width:'100%', textAlign:'left'}}>
@@ -268,14 +289,20 @@ function WorkWithDatepicker(props) {
                                 />
                                 </MuiPickersUtilsProvider>
                                 </Grid>
+                                {!dateValid && submitState? 
+                                <Typography variant="caption" style={{color: "red"}} className = {classes.error}>
+                                    Start Date cannot be after End Date!
+                                </Typography> 
+                                :null}
 
                                 <Grid item xs={12} md={12}>
                                     <TextField
                                         variant="outlined"
-                                        fullWidth
                                         label="Description"
-                                        className={classes.textField}
-                                        style ={{minHeight: '60px'}}
+                                        className={classes.description}
+                                        
+                                        multiline
+                                        rows="4"
                                         margin="normal"
                                         onChange={handleChange('description')}
 

@@ -27,13 +27,28 @@ import {
 
 const useStyles = makeStyles(theme => ({
     item: {
-        paddingRight: theme.spacing(13)
+        paddingRight: theme.spacing(8),
+        ['@media (min-width:920px)']:{
+            paddingRight: theme.spacing(10)
+        },
     },
     submit: {
         margin: theme.spacing(5, 2, 2, 0),
         width: '100px'
     },
-    
+    textField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 280,
+    },
+    description:{
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 280,
+        ['@media (min-width:920px)']:{
+            width: 710,
+        },
+    },
 }));
 
 function CustomisedListItem(props) {
@@ -47,6 +62,9 @@ function CustomisedListItem(props) {
     const [selectedStartDate, handleStartDateChange] = React.useState(null);
     const [selectedEndDate, handleEndDateChange] = React.useState(null);
     const [submitState, setSubmit] = React.useState(false);
+    const[dateValid, setDateValid] = React.useState(false);
+
+
     const [state, setState] = React.useState({
         record_id: '',
         job_title: '',
@@ -65,14 +83,18 @@ function CustomisedListItem(props) {
             var date = new Date(event)
             setState({
                 ...state,
-                start_date: date.getFullYear() + '-' + date.getMonth() + '-' + 1
+                start_date: date.getFullYear().toString() + '-' + (date.getMonth()+1).toString()+ '-' + '1'
             })
+            checkDateValid(date,'start')
+
         } else if (name === 'end_date') {
             var date = new Date(event)
             setState({
                 ...state,
-                end_date: date.getFullYear() + '-' + date.getMonth() + '-' + 1
+                end_date: date.getFullYear().toString() + '-' + (date.getMonth()+1).toString()+ '-' + '1'
             })
+            checkDateValid(date,'end')
+
         } else {
             setState({ ...state, [name]: event.target.value });
         }
@@ -81,17 +103,24 @@ function CustomisedListItem(props) {
         //maybe check date valid?
 
     }
-    const checkDateValid = () => {
-        var startDate = new Date(selectedStartDate)
-        var endDate = new Date(selectedEndDate)
-        return startDate.getTime() <= endDate.getTime()
+    const checkDateValid = (date, string) =>{
+        if(string === 'start'){
+            var startDate = new Date(date)
+            var endDate = new Date(state.end_date)
+            setDateValid(startDate.getTime() <= endDate.getTime())
+        }else{
+            var endDate = new Date(date)
+            var startDate = new Date(state.start_date)
+            setDateValid(startDate.getTime() <= endDate.getTime())
+        }
+        console.log(startDate, endDate, dateValid)
 
     }
 
     const handleSubmit = (event) => {
         setSubmit(true) //render email validation error if present
         event.preventDefault()
-        if (checkDateValid()) {
+        if (dateValid) {
             api.work.update(state)
                 .then(res => {
                     if (res.data.response_code === 200) {
@@ -226,13 +255,21 @@ function CustomisedListItem(props) {
                             </MuiPickersUtilsProvider>
                         </Grid>
 
+                        {!dateValid && submitState? 
+                                <Typography variant="caption" style={{color: "red"}} className = {classes.error}>
+                                    Start Date cannot be after End Date!
+                                </Typography> 
+                        :null}
+
+
                         <Grid item xs={12} md={12}>
                             <TextField
                                 variant="outlined"
-                                fullWidth
                                 label="Description"
-                                className={classes.textField}
-                                style={{ minHeight: '60px' }}
+                                className={classes.description}
+                
+                                multiline
+                                rows="4"
                                 margin="normal"
                                 onChange={handleChange('description')}
                                 value={state.description}
@@ -289,28 +326,31 @@ function CustomisedListItem(props) {
                                 <Typography
                                     component="div"
                                     variant="subtitle1"
-                                    className={classes.inline}
+                                    
                                     color="textPrimary"
                                     gutterBottom
                                     style={{ lineHeight: 'inherit' }}
                                 >
                                     {props.item.company_name} | {startDate} to {endDate}
                                 </Typography>
+                                <Grid container wrap="nowrap">
                                 <Typography
                                     component="div"
                                     variant="body2"
-                                    className={classes.inline}
+                                    
                                     color="textSecondary"
+                                    style={{display:'flex', flexWrap:'wrap'}}
                                 >
                                     {props.item.description}
                                 </Typography>
+                                </Grid>
                             </React.Fragment>
                         }
                     />
 
                     <ListItemSecondaryAction >
-                        <Grid>
-                            <IconButton aria-label="edit" onClick={handleEdit}>
+                        <Grid container direction='column' justify='flex-start' alignItems='flex-end'>
+                            <IconButton edge="end" aria-label="edit" onClick={handleEdit}>
                                 <EditIcon />
                             </IconButton>
                             <IconButton edge="end" aria-label="delete" onClick={handleDelete}>
