@@ -19,11 +19,11 @@ const employmentTypes = [
       label: 'Permanent'
     },
     {
-      value: 'Full Time',
+      value: 'Full%20Time',
       label: 'Full-Time'
     },  
     {
-      value: 'Part Time',
+      value: 'Part%20Time',
       label: 'Part-Time'
     },
     {
@@ -31,7 +31,7 @@ const employmentTypes = [
       label: 'Contract'
     },
     {
-      value: 'Flexi Work',
+      value: 'Flexi%20Work',
       label: 'Flexi-Work'
     },
     {
@@ -75,6 +75,7 @@ const employmentTypes = [
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
       width: 500,
+      minWidth:40,
     },
     dense: {
       marginTop: theme.spacing(2),
@@ -85,6 +86,7 @@ const employmentTypes = [
     container: {
         display: 'flex',
         flexWrap: 'wrap',
+        width: 'auto',
     },
     formControl: {
         margin: theme.spacing(1),
@@ -114,9 +116,10 @@ function Jobs () {
         minSalary: null,
         keyword: "",
         employmentType:"",
+        categories: "",
         skills:[],
         proceed: false,
-        queryString: "",
+        queryString:"",
     });
 
     const url = "http://localhost:3000/jobs/search?" 
@@ -146,11 +149,12 @@ function Jobs () {
         console.log("Entered Handle Submit")
         
         event.preventDefault();
-        var tempString = state.queryString;
+        var tempString = ""
         
-        tempString += state.keyword ? ('search=' + state.keyword) :'';
-        tempString += state.employmentType ? ('&employmentTypes=' + state.employmentType ) :'';
+        tempString += state.keyword != "" ? ('keyword=' + state.keyword) :'';
+        tempString += state.employmentType != "" ? ('&employment_type=' + state.employmentType ) :'';
         tempString += state.minSalary ? ('&salary=' + state.salary) :'';
+        tempString += state.categories != "" ? ('&categories=' + state.categories) :'';
 
         console.log("Query String = " + tempString);
         setState({ ...state, queryString: tempString });
@@ -162,6 +166,7 @@ function Jobs () {
         .then(res=>{   
             const result = res.data.results;
             setSearchResults(result);
+            console.log("RESULTS FROM API CALL IN JOBS.JS: ")
             console.log(result);
         })
         .catch(err=>{
@@ -169,13 +174,8 @@ function Jobs () {
         })
     }
 
-    useEffect(()=>{
-       
-    },[])
+    searchResults ? console.log('searchResults.length = ' + searchResults.length) : console.log("No Results")
 
-    console.log('searchResults.length = ' + searchResults.length);
-
-    console.log("queryString= "+ state.queryString)
     
 
   return (
@@ -212,28 +212,30 @@ function Jobs () {
                 </Paper>
                 
                 <Dialog
-                    disableBackdropClick disableEscapeKeyDown 
+                    // disableBackdropClick 
+                    disableEscapeKeyDown 
                     open={state.open}
                     onClose={handleClose}
                     fullWidth
+                    maxWidth="sm"
                 >
                     <DialogTitle>{"Refine Your Search!"}</DialogTitle>
-                    <DialogContent>
-                        
+                    <DialogContent >
+                        <form className={classes.container} noValidate autoComplete="off">
                             <TextField
                                 id="standard-number"
-                                fullWidth
+                                style={{width: 'fit-content'}}
                                 label="Enter Min Salary"
                                 value={state.minSalary}
                                 onChange={handleChange('minSalary')}
                                 type="number"
                                 className={classes.textField}
-                                margin="normal"
+                                margin="dense"
                                 
                             /> <br/>
                             <TextField
                                 select
-                                label="Select Employment Type"
+                                label="Employment Type"
                                 className={classes.textField}
                                 value={state.employmentType}
                                 onChange={handleChange('employmentType')}
@@ -242,8 +244,8 @@ function Jobs () {
                                     className: classes.menu,
                                 },
                                 }}
-                                margin="normal"
-                                fullWidth	
+                                margin="dense"
+                                fullWidth
                             >
                                 {employmentTypes.map(option => (
                                     <MenuItem key={option.value} value={option.value}>
@@ -251,6 +253,7 @@ function Jobs () {
                                     </MenuItem>
                                 ))}
                             </TextField>
+                        </form>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
@@ -262,7 +265,7 @@ function Jobs () {
             </Grid>
         </Grid>
 
-        {searchResults.length != 0 
+        { searchResults && searchResults.length != 0 
         ? 
         <div>
             <Router>

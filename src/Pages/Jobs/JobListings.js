@@ -11,9 +11,6 @@ import { green } from '@material-ui/core/colors';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -88,11 +85,11 @@ function removeBookmark(listing){
 
  function JobListings(props) {
     console.log("ENTERED JOBLISTING COMPONENT")
-    console.log(props)
+    // console.log(props)
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState(undefined);
-    const [listings, setListings] = useState([]);
+    const [listings, setListings] = useState("");
 
     const lackingSkills = [
         'Account Management', 
@@ -100,14 +97,15 @@ function removeBookmark(listing){
         'Customer Service'
     ]
 
-
     const classes = useStyles();
     
     useEffect(()=>{
+        console.log("ENTERED USE EFFECT IN JOBLISTING");
         const results = props.searchResults
         console.log(results);
         setListings(results);
-    },listings)
+
+    },[props.searchResults])
 
     const getDate =(date) => {
         const list = date.split('-')
@@ -154,11 +152,10 @@ function removeBookmark(listing){
         addBookmark(listing);
 
         const message = `${listing.title} added to bookmarks!`
-
         queueRef.current.push({
             message,
             key: new Date().getTime(),  
-        });
+        }); 
 
         if (open) {
             // immediately begin dismissing current message
@@ -224,7 +221,7 @@ function removeBookmark(listing){
                                     <Typography style={{fontSize:12}}>
                                         <Box align="left" style={{marginLeft:10}} display={{ 'xs':'none', 'sm':'block'}} >
                                             {
-                                                list.address.postalCode != ""
+                                                list.address && list.address.postalCode != ""
                                                 ? 
                                                 <Grid container alignItems="flex-start">
                                                     <Grid item>
@@ -240,8 +237,8 @@ function removeBookmark(listing){
                                     </Typography>
                                     <Typography variant="caption" display="inline" >
                                         <Box align="left" style={{marginLeft:10}}>
-                                            <Grid container md={6} sm={7} xs={12} alignItem="flex-start" justify="flex-start" > 
-                                                <Grid item sm={4} xs={4} container> <NearMeIcon className={classes.smallIcons} /> {list.address.districts[0].region} 
+                                            <Grid item container md={6} sm={7} xs={12} alignItem="flex-start" justify="flex-start" > 
+                                                <Grid item sm={4} xs={4} container> <NearMeIcon className={classes.smallIcons} /> {list.address && list.address.districts[0] &&list.address.districts[0].region} 
                                                 </Grid>
                                                 <Grid item sm={4} xs={4} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType}
                                                 </Grid>
@@ -355,36 +352,10 @@ function removeBookmark(listing){
                                         </Box>
                                     </Grid>
                                 </Grid>
+                                <Box boxShadow={0}>
                                 
-                                <Snackbar
-                                    key={messageInfo ? messageInfo.key : undefined}
-                                    anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
-                                    }}
-                                    open={open}
-                                    autoHideDuration={5000}
-                                    onClose={handleClose}
-                                    onExited={handleExited}
-                                    ContentProps={{
-                                    'aria-describedby': 'message-id',
-                                    }}
-                                    message={<span id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
-                                    action={[
-                                    <Button color="secondary" size="small" href="/profile/bookmarks">
-                                        View
-                                    </Button>,
-                                    <IconButton
-                                        key="close"
-                                        aria-label="close"
-                                        color="inherit"
-                                        className={classes.close}
-                                        onClick={handleClose}
-                                    >
-                                        <CloseIcon />
-                                    </IconButton>
-                                    ]}
-                                />
+                                </Box>
+                                
                             </Grid>
                         </Grid>
                     </Grid>
@@ -399,7 +370,36 @@ function removeBookmark(listing){
             
             </Grid>
         </Grid>
-        
+        <Snackbar
+            key={messageInfo ? messageInfo.key : undefined}
+            anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+            }}
+            style={{boxShadow: "none"}}
+            open={open}
+            autoHideDuration={5000}
+            onClose={handleClose}
+            onExited={handleExited}
+            ContentProps={{
+            'aria-describedby': 'message-id',
+            }}
+            message={<span style={{boxShadow:"none"}} id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
+            action={[
+            <Button color="secondary" size="small" href="/profile/bookmarks">
+                View
+            </Button>,
+            <IconButton
+                key="close"
+                aria-label="close"
+                color="inherit"
+                className={classes.close}
+                onClick={handleClose}
+            >
+                <CloseIcon />
+            </IconButton>
+            ]}
+        />
         
     </Fragment>
     )
