@@ -113,8 +113,6 @@ function Bookmarks() {
     ]
 
 
-    
-
     const processQueue = () => {
         if (queueRef.current.length > 0) {
             setMessageInfo(queueRef.current.shift());

@@ -275,7 +275,7 @@ function WorkWithDatepicker(props) {
                         </form> :null}
 
 
-                        {props.works.length !== 0? 
+                        {props.works && props.works.length !== 0? 
                         <List className={classes.root}>
                             {props.works.map((experience,index) => {
                                 return (

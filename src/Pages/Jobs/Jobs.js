@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase } from '@material-ui/core';
-import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon } from '@material-ui/icons';
+import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -39,6 +39,19 @@ const employmentTypes = [
       label: 'Temporary'
     }
     
+  ]
+
+  const carouselImgs = [
+      {
+        name: "Career Guidance",
+        imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/Bear_Website.jpg",
+        link: ""
+      },
+      {
+        name: "Career Matching",
+        imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/CareersConnectBannerBLUE2.png",
+        link: ""
+      }
   ]
 
   const useStyles = makeStyles(theme => ({
@@ -86,6 +99,10 @@ const employmentTypes = [
     button: {
         margin: theme.spacing(1),
         fontWeight:"bold",
+    },
+    img: {
+        width:'100%' ,
+        height:'100%',
     },
   }));
 
@@ -259,9 +276,19 @@ function Jobs () {
         token 
         ? //USER WITH ACCOUNT           
         <div>
-            What Others Are Searching
-            Because you viewed "" 
-            you might have missed
+            <div className={classes.root}>
+                <img src={carouselImgs[0].imgUrl} className={classes.img} />
+            </div>
+            <Grid container spacing={3} style={{marginTop:20}}>
+                <Grid item xs={12} sm={6}>
+                    <Paper className={classes.root}>
+                    </Paper>   
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Paper className={classes.root}>
+                    </Paper>
+                </Grid>
+            </Grid>
         </div>
         : //USER WITHOUT ACCOUNT 
         <div> 

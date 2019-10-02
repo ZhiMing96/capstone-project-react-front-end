@@ -20,10 +20,9 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu'
 import Logout from './Logout';
 import { Hidden } from '@material-ui/core';
-import EventsIcon from '@material-ui/icons/InsertInvitation';
-import ArticlesIcon from '@material-ui/icons/MenuBook';
-import JobsIcon from '@material-ui/icons/BusinessCenter';
 import LoginIcon from '@material-ui/icons/Input';
+import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
+import Backdrop from '../Components/MobileSideBar/Backdrop';
 
 
 class NavTabs extends React.Component {
@@ -38,10 +37,18 @@ class NavTabs extends React.Component {
     };
     console.log(this.props)
 
-    console.log("SIDEBAR STATE: ");
-    console.log(this.props.openSideBar)
   }
 
+  drawerTogglerClickHandler = () => {
+    this.setState((prevState) => {
+      return {
+        sideBarOpen: !prevState.sideBarOpen
+    }});
+  }
+  
+  backdropClickHandler = () => {
+    this.setState({sideBarOpen : false});
+  }
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -58,17 +65,42 @@ class NavTabs extends React.Component {
 
 
   render() {
+    const token = window.localStorage.getItem('authToken');
+    console.log(token)
+
+    let responsiveSideBar;
+    let backdrop;
+
+    if(this.state.sideBarOpen){
+      // responsiveSideBar = <MobileSideBar show={openSideBar}/>;
+      backdrop = <Backdrop click={this.backdropClickHandler}/>
+    }
 
     return (
       <div>
-      
-        <AppBar position="sticky" color="default">
-        <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}>
+        <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler}/>
+        {backdrop}
+        <AppBar position="sticky" color="default" style={{zIndex:50}}>
+        {/* <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}> */}
+        <Toolbar>
         <Grid container direction="row" alignItems="center" justify="flex-start" >
-          <Grid item xs={2} sm>
+          {
+            token 
+            ?
+            <Hidden smUp>
+              <Grid item sm={1}>
+                <IconButton onClick={this.drawerTogglerClickHandler}>
+                  <MenuIcon/>
+                </IconButton>
+              </Grid>
+            </Hidden>
+            : <div></div>
+          }
+          <Grid item xs={2} sm={3}>
               LOGO
           </Grid>
-          <Grid item xs={6} sm container>
+          <Hidden xsDown>
+          <Grid item xs={5} md={7} container justify="flex-end">
             <Tabs
               value={this.state.value}
               onChange={this.handleChange}
@@ -77,55 +109,55 @@ class NavTabs extends React.Component {
               variant ='fullWidth'
               
             >
-              <Hidden xsDown>
+              
                 <Tab label="Jobs" component={Link} to="/jobs" />
                 <Tab label="Events" component={Link} to="/events" />
                 <Tab label="Articles" component={Link} to="/articles" />
-              </Hidden>
-              <Hidden smUp>
+              
+              {/* <Hidden smUp>
                 <Tab icon={<JobsIcon/>} style={{minWidth:0}} component={Link} to="/jobs" />
                 <Tab icon={<EventsIcon/>} style={{minWidth:0}} component={Link} to="/events" />
                 <Tab icon={<ArticlesIcon/>} style={{minWidth:0}} component={Link} to="/articles" />
-              </Hidden>
+              </Hidden> */}
             </Tabs>
-          
-          <Grid item onClick = {()=> 
-          
-            {this.setState({value: false});
-            this.setState({onProfilePage: true})
-            }}>
+            <Grid item onClick = {()=> 
             
-          </Grid>
-          </Grid>
-
-          <Grid item onClick = {()=> this.setState({value: false})} container xs={3} justify="flex-end">
-            {this.props.userId ==='' 
-            ? 
-            <div>
-              <Hidden xsDown>
-                <Button variant="contained" color="primary" component={Link} to="/auth/signin" > Login 
-                </Button>
-              </Hidden>
-              <Hidden smUp>
-                <IconButton ariant="contained" color="primary" component={Link} to="/auth/signin">
-                  <LoginIcon/>
-                </IconButton>
-              </Hidden>
-            </div>
-            :
-            <div>
-            <IconButton style={{margin:10}} color={this.state.onProfilePage? "primary":"inherit"} aria-label="menu" component={Link} to="/profile"  onClick = {()=> 
-            {this.setState({value: false});
-            this.setState({onProfilePage: true})
-            }}>
-
-            <PersonIcon />
-            </IconButton>
-
-            <Logout handleLogout={this.handleLogout}/>
-            </div>
-            }
+              {this.setState({value: false});
+              this.setState({onProfilePage: true})
+              }}>
+              
             </Grid>
+          </Grid>
+          </Hidden>
+
+          <Grid item onClick = {()=> this.setState({value: false})} container xs={8} sm={4} md={2} justify="flex-end" >
+            <Grid item>
+              {this.props.userId ==='' 
+              ? 
+              <div>
+                <Hidden xsDown>
+                  <Button variant="contained" color="primary" component={Link} to="/auth/signin" > Login 
+                  </Button>
+                </Hidden>
+                <Hidden smUp>
+                  <IconButton variant="contained" color="primary" component={Link} to="/auth/signin">
+                    <LoginIcon/>
+                  </IconButton>
+                </Hidden>
+              </div>
+              :
+              <div>
+              <IconButton style={{marginRight:10}} color={this.state.onProfilePage? "primary":"inherit"} aria-label="menu" component={Link} to="/profile"  onClick = {()=> 
+              {this.setState({value: false});
+              this.setState({onProfilePage: true})
+              }}>
+                <PersonIcon />
+              </IconButton>
+              <Logout handleLogout={this.handleLogout}/>
+              </div>
+              }
+            </Grid>
+          </Grid>
         </Grid>
       </Toolbar>
       </AppBar>

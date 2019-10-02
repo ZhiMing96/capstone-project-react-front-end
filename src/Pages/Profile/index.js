@@ -16,41 +16,41 @@ function Main(props) {
     console.log("PRINTING PROPS OF PROFILE PAGE")
     console.log(props);
 
-    const[openSideBar, setOpenSideBar] = useState(false);
-    const drawerTogglerClickHandler = () =>{
-      setOpenSideBar(!openSideBar);
-    }
+    // const[openSideBar, setOpenSideBar] = useState(false);
+    // const drawerTogglerClickHandler = () =>{
+    //   setOpenSideBar(!openSideBar);
+    // }
 
-    const backdropClickHandler = () => {
-      setOpenSideBar(false);
-    }
+    // const backdropClickHandler = () => {
+    //   setOpenSideBar(false);
+    // }
 
-    let responsiveSideBar;
-    let backdrop;
+    // let responsiveSideBar;
+    // let backdrop;
 
-    if(openSideBar){
-      // responsiveSideBar = <MobileSideBar show={openSideBar}/>;
-      backdrop = <Backdrop click={backdropClickHandler}/>
-    }
+    // if(openSideBar){
+    //   // responsiveSideBar = <MobileSideBar show={openSideBar}/>;
+    //   backdrop = <Backdrop click={backdropClickHandler}/>
+    // }
 
     return(
       <div style={{height:'100%'}}>
 
-        <MobileSideBar show={openSideBar} backdropClickHandler={backdropClickHandler}/>
-        {backdrop}
+        {/* <MobileSideBar show={openSideBar} backdropClickHandler={backdropClickHandler}/> */}
+        {/* {backdrop} */}
         <Grid container style={{width: '100%'}} >
               <Hidden xsDown>
                 <Grid item className="sidebar" sm={3} wrap="wrap">
                     <Sidebar/> 
                 </Grid>
               </Hidden>
-              <Hidden smUp>
+              {/* <Hidden smUp>
                 <Grid item sm={1}>
                   <IconButton onClick={drawerTogglerClickHandler}>
                     <MenuIcon/>
                   </IconButton>
                 </Grid>
-              </Hidden>
+              </Hidden> */}
               <Grid item sm={9} xs={12} style={{width:'100%', paddingRight:'2%', paddingLeft:'2%'}}>
                 {/*<Typography component="div">
                   <Box 
