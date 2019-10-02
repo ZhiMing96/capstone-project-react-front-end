@@ -8,7 +8,7 @@ import SnackBar from '../../../Components/Snackbar'
 import api from '../../../api'
 import AddIcon from '@material-ui/icons/Add';
 import List from '@material-ui/core/List';
-import { CustomisedListItem } from '../../../Components/CustomisedListItem';
+import CustomisedListItem  from '../../../Components/CustomisedListItem';
 
 const useStyles = makeStyles(theme => ({
     '@global': {

@@ -13,8 +13,9 @@ export default function (state = initialState, action) {
           work: [...state.work, work]
         }
       case REMOVE_WORK:
+          console.log(work)
         return {
-          work: state.work.filter(obj => { return obj.id !== work.record_id })
+          work: state.work.filter(obj => { console.log(obj); return obj.record_id !== work })
         };
       case UPDATE_WORK:
           return {work: work};

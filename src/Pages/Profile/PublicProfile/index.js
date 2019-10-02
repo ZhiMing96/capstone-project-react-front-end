@@ -12,6 +12,7 @@ function Profile() {
   const [snackBarVariant, setSnackBarVariant] = React.useState('')
 
     const changeProfileState = ()=>{
+        console.log("change")
         const currentState = editProfileState
         setEditProfileState(!currentState)
     }

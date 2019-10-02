@@ -8,7 +8,7 @@ import SnackBar from '../../../Components/Snackbar'
 import api from '../../../api'
 import AddIcon from '@material-ui/icons/Add';
 import List from '@material-ui/core/List';
-import { CustomisedListItem } from '../../../Components/CustomisedListItem';
+import CustomisedListItem  from '../../../Components/CustomisedListItem';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     DatePicker,
@@ -56,8 +56,8 @@ submit: {
 function WorkWithDatepicker(props) {
     const classes = useStyles();
     const [addState, setAddState] = React.useState(false)
-    const [selectedStartDate, handleStartDateChange] = React.useState(new Date());
-    const [selectedEndDate, handleEndDateChange] = React.useState(new Date());
+    const [selectedStartDate, handleStartDateChange] = React.useState(null);
+    const [selectedEndDate, handleEndDateChange] = React.useState(null);
     const [snackBarMessage, setSnackBarMessage] = React.useState('')
     const [snackBarVariant, setSnackBarVariant] = React.useState('')
     const [newWork, setNewWork] = React.useState({
@@ -80,28 +80,50 @@ function WorkWithDatepicker(props) {
         })
     }, props.works)
 
+    const handleSnackBarMessage =(m)=> {
+        setSnackBarMessage(m)
+    }
+
+    const handleSnackBarVariant= (v)=>{
+        setSnackBarVariant(v)
+    }
+    
+    
     const handleClose = () => {
         setSnackBarMessage('');
       };
     
     const handleClickAdd=()=>{
         const currentState = addState
+        if(addState ===true){
+            handleStartDateChange(null)
+            handleEndDateChange(null)
+            setNewWork({
+                job_title:'',
+                company_name:'',
+                start_date: '',
+                end_date:'',
+                description:''
+            })
+        }
         setAddState(!currentState)
+
     }
 
     const handleChange = name => (event) => {
         console.log(event)
+        
         if (name==='start_date'){
             var date = new Date(event)
             setNewWork({
                 ...newWork,
-                start_date: date.getMonth() +' '+ date.getFullYear()
+                start_date: date.getFullYear() + '-' + date.getMonth()+ '-' + 1
             })
         }else if( name==='end_date'){
             var date = new Date(event)
             setNewWork({
                 ...newWork,
-                end_date: date.getMonth() +' '+ date.getFullYear()
+                end_date: date.getFullYear() + '-' + date.getMonth()+ '-' + 1
             })
         }else{
             setNewWork({ ...newWork, [name]: event.target.value });
@@ -128,7 +150,14 @@ function WorkWithDatepicker(props) {
                 console.log('success')
                 setSnackBarVariant('success')
                 setSnackBarMessage('Work experience added successfully.')
-                props.addWork(newWork) //update store
+                api.work.get().then(res => {
+                    props.updateWork(res.data.work_experience) //array of obj
+                })
+                //props.addWork(newWork) //update store
+                //props.addWork({
+                //    ...newWork,
+                //      record_id: res.data.record_id
+                //})
                 setAddState(false)
                 setNewWork({
                     job_title:'',
@@ -137,6 +166,8 @@ function WorkWithDatepicker(props) {
                     end_date:'',
                     description:''
                 })
+                handleStartDateChange(null)
+                handleEndDateChange(null)
               } else {
                 console.log('error')
                 setSnackBarVariant('error')
@@ -176,7 +207,7 @@ function WorkWithDatepicker(props) {
                         </Typography>
                     </Grid>
 
-                    <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
+                    <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }} xs={12}>
                     {addState?
                         <form className={classes.form} onSubmit={handleSubmit}>
                             <Grid container style={{ width:'100%', textAlign:'left'}}>
@@ -244,7 +275,7 @@ function WorkWithDatepicker(props) {
                                         fullWidth
                                         label="Description"
                                         className={classes.textField}
-                                        style ={{minHeight: '20px'}}
+                                        style ={{minHeight: '60px'}}
                                         margin="normal"
                                         onChange={handleChange('description')}
 
@@ -279,7 +310,7 @@ function WorkWithDatepicker(props) {
                         <List className={classes.root}>
                             {props.works.map((experience,index) => {
                                 return (
-                                    <CustomisedListItem item={experience} isLastItem={props.works.length -1 === index}/>   
+                                    <CustomisedListItem item={experience} isLastItem={props.works.length -1 === index} handleSnackBarMessage={handleSnackBarMessage} handleSnackBarVariant={handleSnackBarVariant} />   
                                 )
                             })}        
                         </List> : null}
