@@ -6,8 +6,8 @@ const initialState = {
 };
 
 function compare( a, b ) {
-  aDate = new Date(a.start_date)
-  bDate = new Date(b.start_date)
+  var aDate = new Date(a.start_date)
+  var bDate = new Date(b.start_date)
   if ( aDate <= bDate ){
     return 1;
   }
