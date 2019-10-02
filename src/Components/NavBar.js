@@ -24,6 +24,8 @@ import EventsIcon from '@material-ui/icons/InsertInvitation';
 import ArticlesIcon from '@material-ui/icons/MenuBook';
 import JobsIcon from '@material-ui/icons/BusinessCenter';
 import LoginIcon from '@material-ui/icons/Input';
+import api from  '../api';
+import {doLogin} from  '../redux/actions/auth'
 
 
 class NavTabs extends React.Component {
@@ -40,6 +42,17 @@ class NavTabs extends React.Component {
 
     console.log("SIDEBAR STATE: ");
     console.log(this.props.openSideBar)
+    
+  }
+
+  componentDidMount(){
+    if(window.localStorage.getItem('authToken') !==null){
+      api.profile.get() 
+      .then(response => {
+      let userId = response.data.profile.user_id
+      this.props.doLogin(userId) //HYDRATE
+    })
+  }
   }
 
 
@@ -156,4 +169,4 @@ const mapStateToProps = state => {
 };
 
 //export default (NavTabs);
-export default connect(mapStateToProps)(NavTabs);
+export default connect(mapStateToProps, { doLogin })(NavTabs);

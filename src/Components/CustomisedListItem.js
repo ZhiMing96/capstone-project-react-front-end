@@ -182,6 +182,7 @@ function CustomisedListItem(props) {
                 end_date: props.item.end_date,
                 description: props.item.description
             })
+            setDateValid(true)
         } else {
             setEditState(false)
             setState({
@@ -192,6 +193,7 @@ function CustomisedListItem(props) {
                 end_date: '',
                 description: ''
             })
+            setDateValid(false)
         }
 
 
