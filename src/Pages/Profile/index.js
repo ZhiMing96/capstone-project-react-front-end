@@ -5,11 +5,12 @@ import { Paper, Typography, Box, Hidden, IconButton } from '@material-ui/core';
 import Bookmarks from '../Bookmarks';
 import Skills from './Skills/';
 import Profile from './PublicProfile/'
-import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Link, Route, BrowserRouter, Switch,Redirect } from 'react-router-dom';
 import './index.css';
 import MobileSideBar from '../../Components/MobileSideBar/MobileSideBar' ;
 import Backdrop from '../../Components/MobileSideBar/Backdrop';
 import MenuIcon from '@material-ui/icons/Menu';
+import { connect } from "react-redux";
 
 function Main(props) {
   
@@ -20,6 +21,7 @@ function Main(props) {
     // const drawerTogglerClickHandler = () =>{
     //   setOpenSideBar(!openSideBar);
     // }
+    console.log(props.userId)
 
     // const backdropClickHandler = () => {
     //   setOpenSideBar(false);
@@ -32,7 +34,14 @@ function Main(props) {
     //   // responsiveSideBar = <MobileSideBar show={openSideBar}/>;
     //   backdrop = <Backdrop click={backdropClickHandler}/>
     // }
-
+    console.log(props.userId)
+    if(window.localStorage.getItem('authToken') ===null){
+      return(
+      <Redirect to={{
+        pathname: '/auth/signin',
+        state:{from:props.location}
+      }} /> )
+    }
     return(
       <div style={{height:'100%'}}>
 
@@ -77,4 +86,12 @@ function Main(props) {
   
 }
 
-export default Main;
+const mapStateToProps = state => {
+  return { 
+    userId: state.auth.user_id,
+   }
+  
+};
+
+export default connect(mapStateToProps)(Main);
+

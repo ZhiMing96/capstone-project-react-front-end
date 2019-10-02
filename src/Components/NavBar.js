@@ -23,6 +23,8 @@ import { Hidden } from '@material-ui/core';
 import LoginIcon from '@material-ui/icons/Input';
 import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
 import Backdrop from '../Components/MobileSideBar/Backdrop';
+import api from  '../api';
+import {doLogin} from  '../redux/actions/auth'
 
 
 class NavTabs extends React.Component {
@@ -36,7 +38,17 @@ class NavTabs extends React.Component {
       sideBarOpen: false,
     };
     console.log(this.props)
+    
+  }
 
+  componentDidMount(){
+    if(window.localStorage.getItem('authToken') !==null){
+      api.profile.get() 
+      .then(response => {
+      let userId = response.data.profile.user_id
+      this.props.doLogin(userId) //HYDRATE
+    })
+  }
   }
 
   drawerTogglerClickHandler = () => {
@@ -188,4 +200,4 @@ const mapStateToProps = state => {
 };
 
 //export default (NavTabs);
-export default connect(mapStateToProps)(NavTabs);
+export default connect(mapStateToProps, { doLogin })(NavTabs);

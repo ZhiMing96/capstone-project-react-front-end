@@ -5,6 +5,18 @@ const initialState = {
     work: []
 };
 
+function compare( a, b ) {
+  var aDate = new Date(a.start_date)
+  var bDate = new Date(b.start_date)
+  if ( aDate <= bDate ){
+    return 1;
+  }
+  if ( aDate > bDate ){
+    return -1;
+  }
+  return 0;
+}
+
 export default function (state = initialState, action) {
     const work = action.payload;
     switch (action.type) {
@@ -13,10 +25,12 @@ export default function (state = initialState, action) {
           work: [...state.work, work]
         }
       case REMOVE_WORK:
+          console.log(work)
         return {
-          work: state.work.filter(obj => { return obj.id !== work.record_id })
+          work: state.work.filter(obj => { console.log(obj); return obj.record_id !== work })
         };
       case UPDATE_WORK:
+          work.sort(compare)
           return {work: work};
       case EDIT_WORK:
             const arr = [] //new array
@@ -27,6 +41,7 @@ export default function (state = initialState, action) {
                     arr.push(element)
                 }
             });
+            arr.sort(compare)
             return {
                 work: arr
             };  

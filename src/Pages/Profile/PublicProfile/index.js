@@ -2,7 +2,6 @@ import React from 'react'
 import { Grid, Typography, Box } from '@material-ui/core'
 import UserDetailsView from './UserDetailsView'
 import ReadOnlyView from './ReadOnlyView'
-import Work from './Work'
 import WorkWithDatepicker from './WorkWithDatepicker'
 import SnackBar from '../../../Components/Snackbar'
 
@@ -12,6 +11,7 @@ function Profile() {
   const [snackBarVariant, setSnackBarVariant] = React.useState('')
 
     const changeProfileState = ()=>{
+        console.log("change")
         const currentState = editProfileState
         setEditProfileState(!currentState)
     }

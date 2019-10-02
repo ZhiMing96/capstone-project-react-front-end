@@ -40,6 +40,9 @@ class CurrentSkillsView extends React.Component {
   componentDidMount(){
     api.skills.get().then(res=>{
       if (res.data.response_code===200){
+        res.data.skill_list.forEach(skill=>{
+          skill.id=parseInt(skill.id)
+        })
         this.props.updateSkill(res.data.skill_list) //return array
       }
     }).catch()
@@ -57,6 +60,11 @@ class CurrentSkillsView extends React.Component {
           this.setState({ variant: 'success' })
           this.setState({ message: skillName + ' removed from your skills.' })
           this.props.removeSkill(skill) //redux
+          api.skills.get().then(res=>{
+            if (res.data.response_code===200){
+              this.props.updateSkill(res.data.skill_list) //return array
+            }
+          })
 
         } else if (response.data.response_code === 400) {
           this.setState({ variant: 'error' })

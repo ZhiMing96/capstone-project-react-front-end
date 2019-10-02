@@ -27,6 +27,11 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
     left: 0,
     right: 0,
+    overflowY: 'scroll',
+    maxHeight:'300px',
+    ['@media (min-height:920px)']:{
+      maxHeight: '60%' 
+    }
   },
   suggestion: {
     display: 'block',
@@ -114,6 +119,8 @@ function IntegrationAutosuggest(props) {
 
 
   const handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+    console.log(suggestion)
+    console.log(props.currentSkills)
     if (props.currentSkills.some(skill => skill.id === suggestion.id)) {
       console.log(suggestion.skill + " is already in current skills");
       setVariant('error')
