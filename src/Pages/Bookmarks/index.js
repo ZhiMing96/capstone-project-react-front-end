@@ -362,35 +362,7 @@ function Bookmarks() {
                                                 </Grid>
                                             </Grid>
                                     
-                                            <Snackbar
-                                                key={messageInfo ? messageInfo.key : undefined}
-                                                anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'left',
-                                                }}
-                                                open={open}
-                                                autoHideDuration={5000}
-                                                onClose={handleClose}
-                                                onExited={handleExited}
-                                                ContentProps={{
-                                                'aria-describedby': 'message-id',
-                                                }}
-                                                message={<span id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
-                                                action={[
-                                                    <Button color="secondary" size="small" href="/profile/bookmarks">
-                                                        View
-                                                    </Button>,
-                                                    <IconButton
-                                                        key="close"
-                                                        aria-label="close"
-                                                        color="inherit"
-                                                        className={classes.close}
-                                                        onClick={handleClose}
-                                                    >
-                                                        <CloseIcon />
-                                                    </IconButton>
-                                                ]}
-                                            />
+                                            
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -403,7 +375,35 @@ function Bookmarks() {
                 
             </Grid>
         </Grid>
-            
+        <Snackbar
+            key={messageInfo ? messageInfo.key : undefined}
+            anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+            }}
+            open={open}
+            autoHideDuration={5000}
+            onClose={handleClose}
+            onExited={handleExited}
+            ContentProps={{
+            'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
+            action={[
+                <Button color="secondary" size="small" href="/profile/bookmarks">
+                    View
+                </Button>,
+                <IconButton
+                    key="close"
+                    aria-label="close"
+                    color="inherit"
+                    className={classes.close}
+                    onClick={handleClose}
+                >
+                    <CloseIcon />
+                </IconButton>
+            ]}
+        />
             
         </Fragment>
     )
