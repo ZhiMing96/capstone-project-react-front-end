@@ -15,6 +15,8 @@ import DateFnsUtils from '@date-io/date-fns';
 import { connect } from "react-redux";
 import { editWork, removeWork } from '../redux/actions/work'
 import api from '../api'
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import {
     DatePicker,
@@ -57,12 +59,23 @@ function CustomisedListItem(props) {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const startArr = props.item.start_date.split("-")
     const startDate = months[startArr[1] - 1] + " " + startArr[0]
-    const endArr = props.item.end_date.split("-")
-    const endDate = months[endArr[1] - 1] + " " + endArr[0]
+    var endArr
+    var endDate
+    if(props.item.end_date){ //not null, not current job
+        endArr = props.item.end_date.split("-")
+        endDate = months[endArr[1] - 1] + " " + endArr[0]
+    } else{
+        endDate = 'Present'
+    }
+
     const [selectedStartDate, handleStartDateChange] = React.useState(null);
     const [selectedEndDate, handleEndDateChange] = React.useState(null);
     const [submitState, setSubmit] = React.useState(false);
     const[dateValid, setDateValid] = React.useState(false);
+    
+    const[checkedState, setCheckedState] = React.useState(false);
+
+  
 
 
     const [state, setState] = React.useState({
@@ -79,7 +92,15 @@ function CustomisedListItem(props) {
     const handleChange = name => (event) => {
         console.log(event)
 
-        if (name === 'start_date') {
+        if(name==='checkbox'){
+            setCheckedState(event.target.checked)
+            setDateValid(true)
+            setState({
+                ...state,
+                end_date: null //present job
+            })
+        }else if (name==='start_date'){
+
             var date = new Date(event)
             setState({
                 ...state,
@@ -104,7 +125,10 @@ function CustomisedListItem(props) {
 
     }
     const checkDateValid = (date, string) =>{
-        if(string === 'start'){
+        if(checkedState){
+            setDateValid(true)
+        } else if(string === 'start'){
+
             var startDate = new Date(date)
             var endDate = new Date(state.end_date)
             setDateValid(startDate.getTime() <= endDate.getTime())
@@ -196,6 +220,19 @@ function CustomisedListItem(props) {
             <div>
                 <form className={classes.form} onSubmit={handleSubmit}>
                     <Grid container style={{ width: '100%', textAlign: 'left' }}>
+                    <Grid item xs={12} md={12}>
+                            <FormControlLabel
+                                control={
+                                <Checkbox
+                                    checked={checkedState}
+                                    onChange={handleChange('checkbox')}
+                                    color="primary"
+                                />
+                                }
+                                label="Current Job"
+                            />
+                            </Grid>
+
                         <Grid item xs={12} md={6}>
                             <TextField
                                 variant="outlined"
@@ -238,6 +275,7 @@ function CustomisedListItem(props) {
                                 />
                             </MuiPickersUtilsProvider>
                         </Grid>
+                        {checkedState? null:
 
                         <Grid item xs={12} md={6}>
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -254,6 +292,7 @@ function CustomisedListItem(props) {
                                 />
                             </MuiPickersUtilsProvider>
                         </Grid>
+                                }
 
                         {!dateValid && submitState? 
                                 <Typography variant="caption" style={{color: "red"}} className = {classes.error}>

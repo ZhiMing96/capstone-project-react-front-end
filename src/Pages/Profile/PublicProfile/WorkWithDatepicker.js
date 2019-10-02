@@ -18,7 +18,8 @@ import {
   } from "@material-ui/pickers";
   import { connect } from "react-redux";
   import { updateWork, addWork } from '../../../redux/actions/work'
-
+  import FormControlLabel from '@material-ui/core/FormControlLabel';
+  import Checkbox from '@material-ui/core/Checkbox';
 
 
 const useStyles = makeStyles(theme => ({
@@ -77,6 +78,7 @@ function WorkWithDatepicker(props) {
     })
     const [submitState, setSubmit] = React.useState(false);
     const[dateValid, setDateValid] = React.useState(false);
+    const[checkedState, setCheckedState] = React.useState(false);
 
     //initialise
     useEffect(() => {
@@ -121,8 +123,14 @@ function WorkWithDatepicker(props) {
 
     const handleChange = name => (event) => {
         console.log(event)
-        
-        if (name==='start_date'){
+        if(name==='checkbox'){
+            setCheckedState(event.target.checked)
+            setDateValid(true)
+            setNewWork({
+                ...newWork,
+                end_date: null //present job
+            })
+        }else if (name==='start_date'){
             console.log(selectedStartDate)
             var date = new Date(event)
             setNewWork({
@@ -146,7 +154,9 @@ function WorkWithDatepicker(props) {
         
     }
     const checkDateValid = (date, string) =>{
-        if(string === 'start'){
+        if(checkedState){
+            setDateValid(true)
+        } else if(string === 'start'){
             var startDate = new Date(date)
             var endDate = new Date(newWork.end_date)
             setDateValid(startDate.getTime() <= endDate.getTime())
@@ -232,6 +242,18 @@ function WorkWithDatepicker(props) {
                     {addState?
                         <form className={classes.form} onSubmit={handleSubmit}>
                             <Grid container style={{ width:'100%', textAlign:'left'}}>
+                            <Grid item xs={12} md={12}>
+                            <FormControlLabel
+                                control={
+                                <Checkbox
+                                    checked={checkedState}
+                                    onChange={handleChange('checkbox')}
+                                    color="primary"
+                                />
+                                }
+                                label="Current Job"
+                            />
+                            </Grid>
                                 <Grid item xs={12} md={6}>
                                     <TextField
                                         variant="outlined"
@@ -274,6 +296,7 @@ function WorkWithDatepicker(props) {
                                     </MuiPickersUtilsProvider>
                                 </Grid>
 
+                                {checkedState? null:
                                 <Grid item xs={12} md={6}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <DatePicker 
@@ -289,6 +312,7 @@ function WorkWithDatepicker(props) {
                                 />
                                 </MuiPickersUtilsProvider>
                                 </Grid>
+                                }
                                 {!dateValid && submitState? 
                                 <Typography variant="caption" style={{color: "red"}} className = {classes.error}>
                                     Start Date cannot be after End Date!
