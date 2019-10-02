@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import DateFnsUtils from '@date-io/date-fns';
 import { connect } from "react-redux";
 import { editWork, removeWork } from '../redux/actions/work'
+import { storeUndo } from '../redux/actions/undo'
 import api from '../api'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -149,8 +150,7 @@ function CustomisedListItem(props) {
                 .then(res => {
                     if (res.data.response_code === 200) {
                         console.log('success')
-                        props.handleSnackBarVariant('success')
-                        props.handleSnackBarMessage('Work experience updated successfully.')
+                        props.setSnackbar('Work experience updated successfully.')
                         props.editWork(state) //update store
                         setEditState(false)
                         setState({
@@ -161,10 +161,11 @@ function CustomisedListItem(props) {
                             end_date: '',
                             description: ''
                         })
+                        setDateValid(false)
+                        setCheckedState(false)
                     } else {
                         console.log('error')
-                        props.handleSnackBarVariant('error')
-                        props.handleSnackBarMessage('Error updating work experience.')
+                        props.setSnackbar('Error updating work experience.')
                     }
                 }).catch(console.log('error'))
         }
@@ -183,6 +184,9 @@ function CustomisedListItem(props) {
                 description: props.item.description
             })
             setDateValid(true)
+            if(props.item.end_date === null){
+                setCheckedState(true)
+            }
         } else {
             setEditState(false)
             setState({
@@ -194,6 +198,7 @@ function CustomisedListItem(props) {
                 description: ''
             })
             setDateValid(false)
+            setCheckedState(false)
         }
 
 
@@ -204,14 +209,23 @@ function CustomisedListItem(props) {
             .then(res => {
                 if (res.data.response_code === 200) {
                     console.log('success')
-                    props.handleSnackBarVariant('success')
-                    props.handleSnackBarMessage('Work experience deleted successfully.')
+                    props.setSnackbar('Work experience deleted successfully.', true)
+                    props.storeUndo({
+                        name: 'work',
+                        obj: {
+                            job_title: props.item.job_title,
+                            company_name: props.item.company_name,
+                            start_date: props.item.start_date,
+                            end_date: props.item.end_date,
+                            description: props.item.description
+                        }
+                    })
                     props.removeWork(props.item.record_id) //update store
+                    
                     return
                 } else {
                     console.log('error')
-                    props.handleSnackBarVariant('error')
-                    props.handleSnackBarMessage('Error deleting work experience.')
+                    props.setSnackbar('Error deleting work experience.')
                 }
             }).catch(console.log('error'))
     }
@@ -410,5 +424,5 @@ function CustomisedListItem(props) {
 }
 
 export default connect(null,
-    { editWork, removeWork }
+    { editWork, removeWork,storeUndo }
 )(CustomisedListItem);

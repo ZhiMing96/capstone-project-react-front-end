@@ -3,8 +3,9 @@ import auth from "./auth";
 import skill from "./skill";
 import profile from "./profile";
 import work from "./work";
+import undo from "./undo";
 
 
 //const mainReducer = (state = {}, action) => action.type === 'hydrate' ? action.payload : reducers(state, action);
 
-export default combineReducers({auth,skill,profile,work});
+export default combineReducers({auth,skill,profile,work,undo});

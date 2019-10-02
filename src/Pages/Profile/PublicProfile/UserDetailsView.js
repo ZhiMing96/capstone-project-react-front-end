@@ -90,14 +90,12 @@ function UserDetailsView(props) {
         .then(res => {
           if (res.data.response_code === 200) {
             console.log('success')
-            props.handleSnackBarVariant('success')
-            props.handleSnackBarMessage('Details saved successfully.')
+            props.setSnackbar('Details saved successfully.')
             props.updateProfile(profileState) //update store
             props.changeState()
           } else {
             console.log('error')
-            props.handleSnackBarVariant('error')
-            props.handleSnackBarMessage('Error saving details.')
+            props.setSnackbar('Error saving details.')
           }
         }).catch(console.log('error'))
     }

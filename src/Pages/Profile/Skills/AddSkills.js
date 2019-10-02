@@ -44,6 +44,7 @@ const useStyles = makeStyles(theme => ({
   divider: {
     height: theme.spacing(1),
   },
+  
 }));
 
 const suggestions = [];

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Grid, Typography, Box } from '@material-ui/core'
 import api from '../../../api.js'
-import SnackBar from '../../../Components/Snackbar'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import AddSkills from './AddSkills'
 import CustomisedChip from '../../../Components/CustomisedChip'
@@ -30,11 +29,6 @@ class CurrentSkillsView extends React.Component {
   constructor(props) {
     super(props);
     this.handleRemove = this.handleRemove.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.state = {
-      message: '',
-      variant: '',
-    }
   }
   
   componentDidMount(){
@@ -57,8 +51,7 @@ class CurrentSkillsView extends React.Component {
         console.log(response.data.response_code)
 
         if (response.data.response_code === 200) {
-          this.setState({ variant: 'success' })
-          this.setState({ message: skillName + ' removed from your skills.' })
+          this.props.setSnackbar(skillName + ' removed from your skills.')
           this.props.removeSkill(skill) //redux
           api.skills.get().then(res=>{
             if (res.data.response_code===200){
@@ -67,12 +60,10 @@ class CurrentSkillsView extends React.Component {
           })
 
         } else if (response.data.response_code === 400) {
-          this.setState({ variant: 'error' })
-          this.setState({ message: response.data.response_message })
+          this.props.setSnackbar(response.data.response_message )
 
         } else {
-          this.setState({ variant: 'error' })
-          this.setState({ message: 'Error in removing skill.' })
+          this.props.setSnackbar('Error in removing skill.')
 
         }
 
@@ -82,14 +73,6 @@ class CurrentSkillsView extends React.Component {
         this.setState({ message: 'Error in removing skill.' })
 
       })
-
-  };
-
-  handleClose(reason) {
-    if (reason === 'clickaway') {
-      return;
-    }
-    this.setState({ message: '' })
 
   };
 
@@ -127,13 +110,6 @@ class CurrentSkillsView extends React.Component {
               this.props.currentSkills.map(skill => (<CustomisedChip skill={skill} handleRemove={this.handleRemove} />))
             }
           </Grid>
-
-          <SnackBar
-            open={this.state.message !== ''}
-            handleClose={this.handleClose}
-            variant={this.state.variant}
-            message={this.state.message}
-          />
 
         </div>
       </div>
