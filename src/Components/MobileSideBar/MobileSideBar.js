@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import './MobileSideBar.css'
 import { Grid, makeStyles, Typography, Avatar, Box, Button } from '@material-ui/core'
-import { AccountBox, BookmarksIcon, ListAlt, Group }from '@material-ui/icons'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 
-//INCOMPLETE
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin: 30,
@@ -36,13 +35,17 @@ const profileArray = [
   },
 ]
 
-
-function Sidebar(props) {
+function MobileSideBar(props){
   const classes = useStyles();
+  console.log("Props for Mobile Side Bar = " + props.show);
+  let sideBarClasses='mobileSideBar';
 
-   return(
-    
-     <Grid container alignItems="center" justify="center">
+  if(props.show){
+    sideBarClasses = 'mobileSideBar open' ;
+  }
+  return(
+    <nav className={sideBarClasses}> 
+      <Grid container alignItems="center" justify="center">
         <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" className={classes.bigAvatar} />
         <Grid container justify="center">
           <Typography>
@@ -60,6 +63,7 @@ function Sidebar(props) {
               <Button
                 variant="outlined" 
                 className={classes.button}
+                onClick={props.backdropClickHandler}
                 component={Link}  
                 to={item.url}
               >
@@ -67,10 +71,9 @@ function Sidebar(props) {
               </Button>
             </div>
           ))}
-          
         </Grid>
-        
       </Grid>
-   )  
+    </nav>
+  )
 }
-export default Sidebar;
+export default MobileSideBar;
