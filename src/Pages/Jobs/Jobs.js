@@ -238,30 +238,33 @@ function Jobs () {
         <Grid container xs={12} alignContent="flex-start">
             <Grid item xs={12} >
             <form onSubmit={handleSubmit}>
-                <Paper className={classes.root} elevation={1}>
-                    <InputBase
-                        className={classes.input}
-                        placeholder="Search For a Job"
-                        required
-                        value={state.keyword}
-                        onChange={handleChange('keyword')}
-                    />
-                    <Box display={{ xs: 'block', sm: 'none' }}>
-                        <IconButton color="primary" className={classes.iconButton} onClick={handleClickOpen}>
-                            <FilterListIcon />
+                <Paper className={classes.root} elevation={0} style={{marginTop:20}}>
+                    <Box border={2} borderColor="#9F0D6E" className={classes.root} style={{margin:0, padding:0, paddingInlineStart:5}}>
+                        <InputBase
+                            className={classes.input}
+                            placeholder="Search For a Job"
+                            required
+                            value={state.keyword}
+                            onChange={handleChange('keyword')}
+                        />
+                        <Box display={{ xs: 'block', sm: 'none' }}>
+                            <IconButton color="primary" className={classes.iconButton} onClick={handleClickOpen}>
+                                <FilterListIcon />
+                            </IconButton>
+                        </Box>
+                        <Box display={{ xs: 'none', sm: 'block' }}>
+                            <Button color="primary" onClick={handleClickOpen} style={{marginRight:10}} size="medium">
+                                    Filters
+                            </Button>
+                        </Box>
+                        
+                        <Divider className={classes.divider} orientation="vertical" />
+                        <IconButton className={classes.iconButton} type="submit">
+                            <SearchIcon />
                         </IconButton>
                     </Box>
-                    <Box display={{ xs: 'none', sm: 'block' }}>
-                        <Button color="primary" onClick={handleClickOpen} style={{marginRight:10}} size="medium">
-                                Filters
-                        </Button>
-                    </Box>
+                 </Paper>
                     
-                    <Divider className={classes.divider} orientation="vertical" />
-                    <IconButton className={classes.iconButton} type="submit">
-                        <SearchIcon />
-                    </IconButton>
-                </Paper>
                 
                 <Dialog
                     // disableBackdropClick 
