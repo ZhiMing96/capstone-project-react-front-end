@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import EventsIcon from '@material-ui/icons/InsertInvitation';
 import ArticlesIcon from '@material-ui/icons/MenuBook';
 import JobsIcon from '@material-ui/icons/BusinessCenter';
+import api from '../../api'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,12 +50,18 @@ function MobileSideBar(props){
   const classes = useStyles();
   console.log("Props for Mobile Side Bar = " + props.show);
   let sideBarClasses='mobileSideBar';
-
+  
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  var name
+  api.profile.get().then(
+    res=>{
+      name = res.data.profile.first_name
+    }
+  ).catch({})
 
   if(props.show){
     sideBarClasses = 'mobileSideBar open' ;
@@ -83,7 +90,7 @@ function MobileSideBar(props){
               fontWeight="fontWeightBold"
               fontSize={20}s
             >
-              JOHN DOE
+              {name}
             </Box>
           </Typography>
         </Grid>

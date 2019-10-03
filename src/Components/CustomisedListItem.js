@@ -17,6 +17,10 @@ import { editWork, removeWork } from '../redux/actions/work'
 import api from '../api'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 import {
     DatePicker,
@@ -74,8 +78,9 @@ function CustomisedListItem(props) {
     const[dateValid, setDateValid] = React.useState(false);
     
     const[checkedState, setCheckedState] = React.useState(false);
+    const[openDialog, setOpenDialog] = React.useState(false);
+    const[message, setMessage] = React.useState('');
 
-  
 
 
     const [state, setState] = React.useState({
@@ -202,8 +207,18 @@ function CustomisedListItem(props) {
 
 
     }
+    const handleClose= () =>{
+        setOpenDialog(false)
+      };
+    
 
     const handleDelete = () => {
+        setOpenDialog(true)
+        const message = 'Confirm removing '+ props.item.job_title + ' from work experience?'
+        setMessage(message)
+      }
+    
+    const remove = async()=>{
         api.work.remove({record_id: props.item.record_id.toString()})
             .then(res => {
                 if (res.data.response_code === 200) {
@@ -406,8 +421,31 @@ function CustomisedListItem(props) {
                 </ListItem>
                 {props.isLastItem ? null :
                     < Divider component="li" />}
+                <Dialog
+                    open={openDialog}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    BackdropProps={{ invisible: true }}
+                //PaperProps ={{className :classes.paperbd}}
 
-        </div>
+                >
+
+                    <DialogContent >
+                        <DialogContentText id="alert-dialog-description">
+                            {message}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={remove} color="primary" autoFocus>
+                            Confirm
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
         )
     }
 }

@@ -6,7 +6,6 @@ import AddSkills from './AddSkills'
 import CustomisedChip from '../../../Components/CustomisedChip'
 import { connect } from "react-redux";
 import {addSkill, removeSkill,updateSkill} from '../../../redux/actions/skill'
-import DeletedDialog from '../../../Components/DeletedDialog'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -25,9 +24,6 @@ const styles = theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  paperbd:{
-    boxShadow: 'none'
-  }
 })
 
 
