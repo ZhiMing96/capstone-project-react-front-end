@@ -1,4 +1,4 @@
-import { UPDATE_WORK, REMOVE_WORK, EDIT_WORK, ADD_WORK} from "./types";
+import { UPDATE_WORK, REMOVE_WORK, EDIT_WORK, ADD_WORK, UNDO_DELETED_WORK} from "./types";
 //import history from "../history";
 
 export const updateWork = (works)=> ({
@@ -16,4 +16,7 @@ export const addWork = (work)=> ({
 export const editWork = (work)=> ({
   type: EDIT_WORK, 
   payload: work
+});
+export const undoDeletedWork = ()=> ({
+  type: UNDO_DELETED_WORK, 
 });

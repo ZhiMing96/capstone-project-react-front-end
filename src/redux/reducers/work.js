@@ -1,8 +1,10 @@
-import { UPDATE_WORK, REMOVE_WORK, EDIT_WORK, ADD_WORK} from "../actions/types";
+import { UPDATE_WORK, REMOVE_WORK, EDIT_WORK, ADD_WORK, UNDO_DELETED_WORK} from "../actions/types";
 import api from '../../api'
 
 const initialState = {
-    work: []
+  //past:[],
+  //present: []
+  work:[]
 };
 
 function compare( a, b ) {
@@ -22,16 +24,24 @@ export default function (state = initialState, action) {
     switch (action.type) {
       case ADD_WORK:
         return {
-          work: [...state.work, work]
+          //past: [],
+          //present: [...state.past, work]
+          work:[...state.work, work]
         }
       case REMOVE_WORK:
           console.log(work)
         return {
-          work: state.work.filter(obj => { console.log(obj); return obj.record_id !== work })
+          //past:[],
+          //present: state.past.filter(obj => { console.log(obj); return obj.record_id !== work })
+          work:  state.work.filter(obj => { console.log(obj); return obj.record_id !== work })
         };
       case UPDATE_WORK:
           work.sort(compare)
-          return {work: work};
+          return {
+            //past:[],
+            //present: work
+            work:work
+          };
       case EDIT_WORK:
             const arr = [] //new array
             state.work.forEach((element,index) => {
@@ -43,9 +53,16 @@ export default function (state = initialState, action) {
             });
             arr.sort(compare)
             return {
-                work: arr
+              //past:[],
+              //present: arr
+              work:arr
             };  
-        
+       
+      case UNDO_DELETED_WORK:
+          return {
+            past:[],
+            present: state.past
+          }; 
       default:
         return state;
     }

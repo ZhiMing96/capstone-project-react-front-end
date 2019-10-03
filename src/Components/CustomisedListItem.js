@@ -14,7 +14,6 @@ import Button from '@material-ui/core/Button';
 import DateFnsUtils from '@date-io/date-fns';
 import { connect } from "react-redux";
 import { editWork, removeWork } from '../redux/actions/work'
-import { storeUndo } from '../redux/actions/undo'
 import api from '../api'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -210,16 +209,6 @@ function CustomisedListItem(props) {
                 if (res.data.response_code === 200) {
                     console.log('success')
                     props.setSnackbar('Work experience deleted successfully.', true)
-                    props.storeUndo({
-                        name: 'work',
-                        obj: {
-                            job_title: props.item.job_title,
-                            company_name: props.item.company_name,
-                            start_date: props.item.start_date,
-                            end_date: props.item.end_date,
-                            description: props.item.description
-                        }
-                    })
                     props.removeWork(props.item.record_id) //update store
                     
                     return
@@ -424,5 +413,5 @@ function CustomisedListItem(props) {
 }
 
 export default connect(null,
-    { editWork, removeWork,storeUndo }
+    { editWork, removeWork }
 )(CustomisedListItem);

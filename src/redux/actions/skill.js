@@ -1,4 +1,4 @@
-import { ADD_SKILL, REMOVE_SKILL,UPDATE_SKILL } from "./types";
+import { ADD_SKILL, REMOVE_SKILL,UPDATE_SKILL, UNDO_DELETED_SKILL } from "./types";
 
 export const addSkill = (skill) =>({
     type: ADD_SKILL,
@@ -13,4 +13,8 @@ export const addSkill = (skill) =>({
   export const updateSkill = (skills) =>({
     type: UPDATE_SKILL,
     payload: skills,
+  })
+
+  export const undoDeletedSkill = () =>({
+    type: UNDO_DELETED_SKILL,
   })

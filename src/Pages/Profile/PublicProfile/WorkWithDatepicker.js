@@ -15,7 +15,6 @@ import { updateWork, addWork } from '../../../redux/actions/work'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import CloseIcon from '@material-ui/icons/Close';
-import { storeUndo, executeUndo } from '../../../redux/actions/undo'
 
 
 const useStyles = makeStyles(theme => ({
@@ -76,24 +75,7 @@ function WorkWithDatepicker(props) {
 
     //initialise
     useEffect(() => {
-        if (props.undoName === 'work' && props.undoExecute === true) {
-            api.work.add(props.undoObj)
-                .then(res => {
-                    if (res.data.response_code === 200) {
-                        console.log('success')
-                        api.work.get().then(res => {
-                            props.updateWork(res.data.work_experience) //array of obj
-                        })
-                    }
-                })
-            props.storeUndo({
-                name: '',
-                obj: {},
-            })
-            props.executeUndo(false)
-        } else {
-
-
+        
             console.log('useEffect')
             console.log(newWork)
             api.work.get().then(res => {
@@ -101,8 +83,8 @@ function WorkWithDatepicker(props) {
             }).catch(err => {
                 console.log('error initialising w user work experience')
             })
-        }
-    }, [props.undoExecute]);
+        
+    },[]);
 
 
     const setSnackbar = (message, undoButton=false) => {
@@ -380,15 +362,13 @@ function WorkWithDatepicker(props) {
 
 const mapStateToProps = state => {
     return {
-        works: state.work.work,
-        undoExecute: state.undo.execute,
-        undoName: state.undo.name,
-        undoObj: state.undo.obj
+        //works: state.work.present,
+        works:state.work.work
     }
 
 };
 
 export default connect(mapStateToProps,
-    { updateWork, addWork,storeUndo,executeUndo }
+    { updateWork, addWork,}
 )(WorkWithDatepicker);
 
