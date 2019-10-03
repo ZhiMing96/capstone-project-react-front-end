@@ -191,7 +191,7 @@ function removeBookmark(listing){
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={2}>
                             <Box display={{ xs: 'none', sm: 'block' }}>
-                                <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank">
+                                <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank" style={{padding:15}}>
                                         {list.postedCompany && list.postedCompany.logoUploadPath
                                         ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
                                         : <img className={classes.img} src={defaultIcon} />

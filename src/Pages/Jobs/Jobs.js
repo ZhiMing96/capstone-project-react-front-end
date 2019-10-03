@@ -164,7 +164,7 @@ function Jobs () {
         // && state.keyword != undefined
         tempString += state.keyword != "" ? ('keyword=' + state.keyword) :'';
         tempString += state.employmentType != ""  ? ('&employment_type=' + state.employmentType ) :'';
-        tempString += state.minSalary  ? ('&salary=' + state.salary) :'';
+        tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
         tempString += state.categories != "" ? ('&categories=' + state.categories) :'';
 
         console.log("Query String = " + tempString);

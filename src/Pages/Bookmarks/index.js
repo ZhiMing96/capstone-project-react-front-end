@@ -1,26 +1,47 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react'
-import { Grid, Typography, Box, Button, CssBaseline, Paper,Snackbar, ButtonBase, IconButton, Dialog, DialogContent, DialogContentText, DialogActions, createMuiTheme, Hidden} from '@material-ui/core'
+import { Grid, Typography, Box, Button, CssBaseline, Paper,Snackbar, ButtonBase, IconButton, createMuiTheme, Hidden} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon, Room as LocationIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { typography } from '@material-ui/system';
-import './index.css';  
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import { ThemeProvider } from '@material-ui/styles';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
 const theme = createMuiTheme({
     overrides: {
-      MuiDialog: {
-        root: {
-          backgroundColor: 'rgba(0,0,0,0.2)'
-        }
+      MuiPaper: {
+          elevation24:{
+            // backgroundColor: 'rgba(0,0,0,0.2)',
+            boxShadow: 'none'
+          }
+      },
+      MuiBackdrop: {
+          root:{
+              backgroundColor: 'rgba(0, 0, 0, 0.05)'
+          }
       }
     }
   });
 
+//   const theme = createMuiTheme({
+//     shadows: ["none"],
+//     boxShadow: ["none"],
+//     elevation: 0
+//   });
+
 const useStyles = makeStyles(theme => ({
+    '@global': {
+        body: {
+          backgroundColor: theme.palette.common.white,
+        },
+      },
     root: {
       flexGrow: 1,
       width: '100%',
@@ -32,13 +53,14 @@ const useStyles = makeStyles(theme => ({
       textAlign: 'center',
       color: theme.palette.text.secondary,
       margin: 20,
-      borderColor: "purple",
-      backgroundColor:"none",
-      background:"none"
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
     },
     image: {
         width: 'auto',
         height: 'auto',
+        
       },
     img: {
         margin: 'auto',
@@ -54,9 +76,9 @@ const useStyles = makeStyles(theme => ({
         height: 12,
         margin: 2,
     },
-    dialog: {
-        
-    }
+    paperbd:{
+        boxShadow: 'none'
+      }
   }));
 
 
@@ -226,6 +248,7 @@ function Bookmarks() {
     }
 
     return (
+        <ThemeProvider theme={theme}> 
         <span>
             <CssBaseline />
             <Typography>
@@ -243,8 +266,8 @@ function Bookmarks() {
                                 <Box display="flex" flexWrap="wrap">
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} sm={2}>
-                                            <Box display={{ xs: 'none', sm: 'block' }}>
-                                                <ButtonBase className={classes.image} href={list.job_data.metadata.jobDetailsUrl} target="_blank">
+                                            <Box display={{ xs: 'none', sm: 'block' }} >
+                                                <ButtonBase className={classes.image} href={list.job_data.metadata.jobDetailsUrl} target="_blank" style={{padding:15}}>
                                                     {list.job_data.postedCompany && list.job_data.postedCompany.logoUploadPath
                                                     ? <img className={classes.img} src={list.job_data.postedCompany.logoUploadPath} />
                                                     : <img className={classes.img} src={defaultIcon} />
@@ -428,6 +451,10 @@ function Bookmarks() {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                         className={classes.dialog}
+                        // BackdropProps={{ invisible:true }}
+                    //     components={{
+                    //         Container: props => <Paper {...props} elevation={0}/>
+                    //    }}
                         >
                         
                         <DialogContent>
@@ -483,6 +510,7 @@ function Bookmarks() {
         />
             
         </span>
+        </ThemeProvider>
     )
 }
 export default Bookmarks;
