@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Grid, makeStyles, Typography, Avatar, Box, Button } from '@material-ui/core'
 import { AccountBox, BookmarksIcon, ListAlt, Group }from '@material-ui/icons'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
+import api from '../api'
 
 //INCOMPLETE
 const useStyles = makeStyles(theme => ({
@@ -39,7 +40,17 @@ const profileArray = [
 
 function Sidebar(props) {
   const classes = useStyles();
+  const [name,setName] = React.useState('')
 
+  useEffect(()=>{
+    api.profile.get().then(
+      res=>{
+        setName(res.data.profile.first_name)
+      }
+    ).catch({})
+  
+  })
+  
    return(
     
      <Grid container alignItems="center" justify="center">
@@ -50,7 +61,7 @@ function Sidebar(props) {
               fontWeight="fontWeightBold"
               fontSize={20}s
             >
-              JOHN DOE
+              {name}
             </Box>
           </Typography>
         </Grid>

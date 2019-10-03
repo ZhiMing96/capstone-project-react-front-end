@@ -24,9 +24,6 @@ const styles = theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  paperbd:{
-    boxShadow: 'none'
-  }
 })
 
 
