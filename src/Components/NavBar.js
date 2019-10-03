@@ -112,7 +112,7 @@ class NavTabs extends React.Component {
               LOGO
           </Grid>
           <Hidden xsDown>
-          <Grid item xs={5} md={7} container justify="flex-end">
+          <Grid item xs={5} sm={6} md={7} container justify="flex-end">
             <Tabs
               value={this.state.value}
               onChange={this.handleChange}
@@ -142,7 +142,7 @@ class NavTabs extends React.Component {
           </Grid>
           </Hidden>
 
-          <Grid item onClick = {()=> this.setState({value: false})} container xs={8} sm={4} md={2} justify="flex-end" >
+          <Grid item onClick = {()=> this.setState({value: false})} container xs={8} sm={3} md={2} justify="flex-end" >
             <Grid item>
               {this.props.userId ==='' 
               ? 

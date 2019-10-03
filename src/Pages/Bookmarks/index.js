@@ -1,25 +1,40 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react'
-import { Grid, Typography, Box, Button, CssBaseline, Paper,Snackbar, ButtonBase, IconButton} from '@material-ui/core'
+import { Grid, Typography, Box, Button, CssBaseline, Paper,Snackbar, ButtonBase, IconButton, Dialog, DialogContent, DialogContentText, DialogActions, createMuiTheme, Hidden} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon, Room as LocationIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { typography } from '@material-ui/system';
+import './index.css';  
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
+
+const theme = createMuiTheme({
+    overrides: {
+      MuiDialog: {
+        root: {
+          backgroundColor: 'rgba(0,0,0,0.2)'
+        }
+      }
+    }
+  });
 
 const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,
       width: '100%',
       maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: 'rgba(0,0,0,0.2)'
     },
     paper: {
       padding: theme.spacing(1),
       textAlign: 'center',
       color: theme.palette.text.secondary,
-      margin: 20
+      margin: 20,
+      borderColor: "purple",
+      backgroundColor:"none",
+      background:"none"
     },
     image: {
         width: 'auto',
@@ -38,6 +53,9 @@ const useStyles = makeStyles(theme => ({
         width: 15,
         height: 12,
         margin: 2,
+    },
+    dialog: {
+        
     }
   }));
 
@@ -46,9 +64,15 @@ const useStyles = makeStyles(theme => ({
 function Bookmarks() {
     const classes = useStyles();
     const [bookmarks, setBookmarks] = useState([]);
-    const [open, setOpen] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
     const queueRef = useRef([]);
     const [messageInfo, setMessageInfo] = useState(undefined);
+    const [state, setState] = useState({
+        id:"",
+        index:null,
+        job_data:{},
+    })
 
     function getBookmarks() {
         const token = window.localStorage.getItem('authToken');
@@ -116,38 +140,40 @@ function Bookmarks() {
     const processQueue = () => {
         if (queueRef.current.length > 0) {
             setMessageInfo(queueRef.current.shift());
-            setOpen(true);
+            setOpenSnackbar(true);
         }
     };
 
-    const handleClick = (listing, id, index) => {
-        console.log("Entered Handle Click open")
-        console.log(listing);
-        deleteBookmark(listing,id,index);
+    const handleClick = () => {
+        console.log("Entered SnackBar open")
+        setOpenDialog(false);
+        console.log("id= "+state.id +" and index= "+ state.index);
+        deleteBookmark();
 
-        const message = `${listing.title} Deleted from bookmarks!`
+        const message = `${state.job_data.title} Deleted from bookmarks!`
         queueRef.current.push({
             message,
             key: new Date().getTime(),  
         });
-        if (open) {
+        if (openSnackbar) {
             // immediately begin dismissing current message
             // to start showing new one
-            setOpen(false);
+            setOpenSnackbar(false);
         } else {
             processQueue();
         }
     };
 
-    function deleteBookmark(bookmark,id, index){
-        console.log("index = "+ index) ;
+    function deleteBookmark(){
+        console.log("ENTERED DELETE BOOKMARKS METHOD");
+        console.log("index = "+ state.index) ;
         var updatedList = [];
 
-        if(index===(bookmarks.length-1)){
-             updatedList = [...bookmarks.slice(0,index)]
+        if(state.index===(bookmarks.length-1)){
+             updatedList = [...bookmarks.slice(0,state.index)]
 
         } else {
-             updatedList = [...bookmarks.slice(0,index),...bookmarks.slice(index+1,bookmarks.length)]
+             updatedList = [...bookmarks.slice(0,state.index),...bookmarks.slice(state.index+1,bookmarks.length)]
         }
        
 
@@ -160,7 +186,7 @@ function Bookmarks() {
             headers: {"Authorization" : "Token " + token}
         }
         axios.post('http://localhost:3000/jobs/bookmarks/remove',{
-                "bookmark_id": id //to be implemented
+                "bookmark_id": state.id //to be implemented
         }, options)
         .then(response => {
             console.log(response)
@@ -178,19 +204,33 @@ function Bookmarks() {
         if (reason === 'clickaway') {
             return;
         }
-        setOpen(false);
+        setOpenSnackbar(false);
     };
 
     const handleExited = () => {
         processQueue();
     };
+    
+    const handleClickOpen = (bookmark,bookmark_id, position) =>{
+        setState({...state,
+            id: bookmark_id,
+            index: position,
+            job_data: bookmark,
+        })
+        setOpenDialog(true);
+        console.log(state);
+
+    }
+    const handleClickClose = () =>{
+        setOpenDialog(false);
+    }
 
     return (
-        <Fragment>
+        <span>
             <CssBaseline />
             <Typography>
                 <Box letterSpacing={3} fontWeight="fontWeightBold" style={{marginTop:30, fontSize:24}}>
-                    YOUR BOOKMARKS
+                    BOOKMARKS
                 </Box>
             </Typography>
             
@@ -213,10 +253,10 @@ function Bookmarks() {
                                             </Box>
                                         </Grid>
                                         <Grid item container xs={12} sm={9} md={10}>
-                                            <Grid item xs={12} md={9}>
+                                            <Grid item xs={10} md={9}>
                                                 <Grid item xs>
-                                                    <Typography variant="body1"> 
-                                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10}} >
+                                                    <Typography> 
+                                                        <Box fontSize={12}  fontWeight="fontWeightBold" align="left"  style={{marginLeft:10}} >
                                                             { list.job_data.postedCompany 
                                                                 ? 
                                                                 <a href={list.job_data.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
@@ -227,12 +267,12 @@ function Bookmarks() {
                                                         </Box>
                                                     </Typography>
                                                     <Typography>
-                                                        <Box letterSpacing={2} align="left" style={{marginLeft:10}} >
+                                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10, color:'#5E2CA5'}}>
                                                             {list.job_data.title}
                                                         </Box>
                                                     </Typography>
                                                     <Typography style={{fontSize:12}}>
-                                                        <Box align="left" style={{marginLeft:10}} display={{ 'xs':'none', 'sm':'block'}} >
+                                                        <Box align="left" style={{marginLeft:10, color:'#9F0D6E'}} display={{ 'xs':'none', 'sm':'block'}} >
                                                             {
                                                             list.job_data.address.postalCode != ""
                                                             ? 
@@ -251,9 +291,9 @@ function Bookmarks() {
                                                     <Typography variant="caption" display="inline" >
                                                         <Box align="left" style={{marginLeft:10}}>
                                                             <Grid container md={6} sm={7} xs={12} alignItem="flex-start" justify="flex-start" > 
-                                                                <Grid item sm={4} xs={4} container> <NearMeIcon className={classes.smallIcons} /> {list.job_data.address.districts[0].region} 
+                                                                <Grid item sm={4} xs={5} container> <NearMeIcon className={classes.smallIcons} /> {list.job_data.address.districts[0].region} 
                                                                 </Grid>
-                                                                <Grid item sm={4} xs={4} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.job_data.employmentTypes[0].employmentType}
+                                                                <Grid item sm={4} xs={6} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.job_data.employmentTypes[0].employmentType}
                                                                 </Grid>
                                                                 <Grid item sm={4} xs={6} container justify="flex-start"> 
                                                                 <EventIcon className={classes.smallIcons} /> {list.job_data.minimumYearsExperience} years exp
@@ -294,6 +334,20 @@ function Bookmarks() {
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
+                                            <Hidden smUp>
+                                                <Grid item xs={2}>
+                                                    <Box display="flex" justifyContent="flex-end" display={{ xs: 'block', md: 'none' }}>
+                                                            <Button
+                                                                className={classes.button} 
+                                                                size="small"
+                                                                onClick={() => handleClickOpen(list.job_data,list.bookmark_id, index)}
+                                                                style={{color:'#6738AA'}}
+                                                                >
+                                                                <DeleteIcon className={classes.rightIcon} />
+                                                            </Button>
+                                                        </Box>
+                                                </Grid>
+                                            </Hidden>
                                             <Grid item xs={12} md={3} container>
                                                 <Grid item md={12} sm={6} xs>
                                                     <Box display={{ xs: 'none', md: 'block' }}>
@@ -312,7 +366,7 @@ function Bookmarks() {
                                                             {list.job_data.schemes.length!=0
                                                             ? //{list.schemes[0].scheme.scheme} 
                                                                 <div  tyle={{}}>
-                                                                    <a href="https://www.wsg.gov.sg/programmes-and-initiatives/wsg-career-support-programme-individuals.html" style={{textDecoration:"none", color:"green"}} target="_blank">
+                                                                    <a href="https://www.wsg.gov.sg/programmes-and-initiatives/wsg-career-support-programme-individuals.html" style={{textDecoration:"none", color:"green", fontWeight:"bold"}} target="_blank">
                                                                         <Grid container xs={12}>
                                                                             <Box display="inline" alignContent="flex-start">
                                                                                 <DoneIcon className={classes.smallIcons} style={{height:18, margin:0}}/> Government Scheme Support
@@ -325,7 +379,7 @@ function Bookmarks() {
                                                         </Box>
                                                     </Typography>
                                                     <Typography variant="body2">
-                                                        <Box align="left" style={{marginLeft:10}}>
+                                                        <Box align="left" style={{marginLeft:10, fontSize:12, color:'#A71616', fontWeight:'bold'}}>
                                                             Recommended
                                                         </Box>
                                                     </Typography>
@@ -348,12 +402,13 @@ function Bookmarks() {
                                                     </Box>
                                                 </Grid>
                                                 <Grid item>
-                                                    <Box display="flex" justifyContent="flex-end">
+                                                    <Box display="flex" justifyContent="flex-end" display={{ xs: 'none', sm: 'block' }}>
                                                         <Button
                                                             className={classes.button} 
                                                             size="small"
-                                                            onClick={ () => handleClick(list.job_data,list.bookmark_id, index)}
-
+                                                            onClick={() => handleClickOpen(list.job_data,list.bookmark_id, index)}
+                                                            style={{color:'#6738AA'}}
+                                                            variant="outlined"
                                                             >
                                                             Remove
                                                             <CloseIcon className={classes.rightIcon} />
@@ -361,13 +416,34 @@ function Bookmarks() {
                                                     </Box>
                                                 </Grid>
                                             </Grid>
-                                    
-                                            
                                         </Grid>
                                     </Grid>
                                 </Grid>
                             </Box>
+                            
                     </Paper>
+                    <Dialog
+                        open={openDialog}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                        className={classes.dialog}
+                        >
+                        
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete Bookmark?
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClickClose} color="primary">
+                            Cancel
+                            </Button>
+                            <Button onClick={() => handleClick()} color="primary" autoFocus>
+                            Confirm
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             ))
             : <div></div>
@@ -375,13 +451,14 @@ function Bookmarks() {
                 
             </Grid>
         </Grid>
+        
         <Snackbar
             key={messageInfo ? messageInfo.key : undefined}
             anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
             }}
-            open={open}
+            open={openSnackbar}
             autoHideDuration={5000}
             onClose={handleClose}
             onExited={handleExited}
@@ -405,7 +482,7 @@ function Bookmarks() {
             ]}
         />
             
-        </Fragment>
+        </span>
     )
 }
 export default Bookmarks;

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment, useRef } from 'react'
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -12,6 +12,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from 'axios'
 import JobListings from './JobListings';
+import CloseIcon from '@material-ui/icons/Close';
 
 const employmentTypes = [
     {
@@ -106,11 +107,17 @@ const employmentTypes = [
         width:'100%' ,
         height:'100%',
     },
+    close: {
+        padding: theme.spacing(0.5),
+    },
   }));
 
 function Jobs () {
     console.log("ENTERED JOB SEARCH COMPONENT");
-    const [searchResults,setSearchResults] = useState([]);
+    const queueRef = useRef([]);
+    const [open, setOpen] = useState(false);   // for snackbar
+    const [searchResults,setSearchResults] = useState(undefined);
+    const [messageInfo, setMessageInfo] = useState(undefined);
     const [state, setState] = useState({
         open: false,
         minSalary: null,
@@ -121,6 +128,8 @@ function Jobs () {
         proceed: false,
         queryString:"",
     });
+
+    console.log(state)
 
     const url = "http://localhost:3000/jobs/search?" 
 
@@ -133,8 +142,8 @@ function Jobs () {
         console.log('state = ')
         console.log(state)
 
-        console.log('searchResults =')
-        console.log(searchResults)
+        // console.log('searchResults =')
+        // console.log(searchResults)
     };
     
     const handleClickOpen = () => {
@@ -145,15 +154,17 @@ function Jobs () {
         setState({ ...state, open: false });
     };
 
+
     const handleSubmit = event => {
         console.log("Entered Handle Submit")
+        console.log(event.target)
         
         event.preventDefault();
         var tempString = ""
-        
+        // && state.keyword != undefined
         tempString += state.keyword != "" ? ('keyword=' + state.keyword) :'';
-        tempString += state.employmentType != "" ? ('&employment_type=' + state.employmentType ) :'';
-        tempString += state.minSalary ? ('&salary=' + state.salary) :'';
+        tempString += state.employmentType != ""  ? ('&employment_type=' + state.employmentType ) :'';
+        tempString += state.minSalary  ? ('&salary=' + state.salary) :'';
         tempString += state.categories != "" ? ('&categories=' + state.categories) :'';
 
         console.log("Query String = " + tempString);
@@ -163,11 +174,17 @@ function Jobs () {
         console.log(query);
         
         axios.get(query, {headers: {"Authorization" : "Token"+token}})
-        .then(res=>{   
+        .then(res=>{  
             const result = res.data.results;
-            setSearchResults(result);
-            console.log("RESULTS FROM API CALL IN JOBS.JS: ")
-            console.log(result);
+            if(result!= undefined && result.length==0){
+                console.log('Entered Zero Length Method');
+                setSearchResults(result);
+                openSnackbar();
+            } 
+                setSearchResults(result);
+                console.log("RESULTS FROM API CALL IN JOBS.JS: ")
+                console.log(result);
+            
         })
         .catch(err=>{
             console.error(err);  
@@ -175,6 +192,41 @@ function Jobs () {
     }
 
     searchResults ? console.log('searchResults.length = ' + searchResults.length) : console.log("No Results")
+
+    const processQueue = () => {
+        if (queueRef.current.length > 0) {
+            setMessageInfo(queueRef.current.shift());
+           setOpen(true);
+        }
+    };
+
+    const openSnackbar = () => {
+        console.log("Entered Open SnackBar")
+
+        const message = "No Listings Available!"
+        queueRef.current.push({
+            message,
+            key: new Date().getTime(),  
+        }); 
+        if (open) {
+            // immediately begin dismissing current message
+            // to start showing new one
+            setOpen(false);
+        } else {
+            processQueue();
+        }
+    };
+
+    const closeSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const handleExited = () => {
+        processQueue();
+    };
 
     
 
@@ -186,30 +238,33 @@ function Jobs () {
         <Grid container xs={12} alignContent="flex-start">
             <Grid item xs={12} >
             <form onSubmit={handleSubmit}>
-                <Paper className={classes.root} elevation={1}>
-                    <InputBase
-                        className={classes.input}
-                        placeholder="Search For a Job"
-                        required
-                        value={state.keyword}
-                        onChange={handleChange('keyword')}
-                    />
-                    <Box display={{ xs: 'block', sm: 'none' }}>
-                        <IconButton color="primary" className={classes.iconButton} onClick={handleClickOpen}>
-                            <FilterListIcon />
+                <Paper className={classes.root} elevation={0} style={{marginTop:20}}>
+                    <Box border={2} borderColor="#9F0D6E" className={classes.root} style={{margin:0, padding:0, paddingInlineStart:5}}>
+                        <InputBase
+                            className={classes.input}
+                            placeholder="Search For a Job"
+                            required
+                            value={state.keyword}
+                            onChange={handleChange('keyword')}
+                        />
+                        <Box display={{ xs: 'block', sm: 'none' }}>
+                            <IconButton color="primary" className={classes.iconButton} onClick={handleClickOpen}>
+                                <FilterListIcon />
+                            </IconButton>
+                        </Box>
+                        <Box display={{ xs: 'none', sm: 'block' }}>
+                            <Button color="primary" onClick={handleClickOpen} style={{marginRight:10}} size="medium">
+                                    Filters
+                            </Button>
+                        </Box>
+                        
+                        <Divider className={classes.divider} orientation="vertical" />
+                        <IconButton className={classes.iconButton} type="submit">
+                            <SearchIcon />
                         </IconButton>
                     </Box>
-                    <Box display={{ xs: 'none', sm: 'block' }}>
-                        <Button color="primary" onClick={handleClickOpen} style={{marginRight:10}} size="medium">
-                                Filters
-                        </Button>
-                    </Box>
+                 </Paper>
                     
-                    <Divider className={classes.divider} orientation="vertical" />
-                    <IconButton className={classes.iconButton} type="submit">
-                        <SearchIcon />
-                    </IconButton>
-                </Paper>
                 
                 <Dialog
                     // disableBackdropClick 
@@ -265,7 +320,7 @@ function Jobs () {
             </Grid>
         </Grid>
 
-        { searchResults && searchResults.length != 0 
+        { searchResults  && searchResults.length != 0 
         ? 
         <div>
             <Router>
@@ -275,8 +330,8 @@ function Jobs () {
                 
             </Router>
         </div>
-        :
-        token 
+        : 
+        token
         ? //USER WITH ACCOUNT           
         <div>
             <div className={classes.root}>
@@ -285,6 +340,9 @@ function Jobs () {
             <Grid container spacing={3} style={{marginTop:20}}>
                 <Grid item xs={12} sm={6}>
                     <Paper className={classes.root}>
+                        <Typography variant="h4">
+                            Based on your Seach History
+                        </Typography>
                     </Paper>   
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -329,7 +387,37 @@ function Jobs () {
                 </Grid>
             </Grid>
         </div>
-        } 
+        }
+        <Snackbar
+            key={messageInfo ? messageInfo.key : undefined}
+            anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+            }}
+            style={{boxShadow: "none"}}
+            open={open}
+            autoHideDuration={5000}
+            onClose={closeSnackbar}
+            onExited={handleExited}
+            ContentProps={{
+            'aria-describedby': 'message-id',
+            }}
+            message={<span style={{boxShadow:"none"}} id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
+            action={[
+            <Button color="secondary" size="small" href="/profile/bookmarks">
+                View
+            </Button>,
+            <IconButton
+                key="close"
+                aria-label="close"
+                color="inherit"
+                className={classes.close}
+                onClick={closeSnackbar}
+            >
+                <CloseIcon />
+            </IconButton>
+            ]}
+        /> 
     </Container> 
     </div>
     

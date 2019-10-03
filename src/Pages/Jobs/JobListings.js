@@ -1,6 +1,6 @@
 
 import React, { Fragment, useState, useEffect, useRef } from 'react'
-import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, IconButton, Snackbar} from '@material-ui/core'
+import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, IconButton, Snackbar, Hidden} from '@material-ui/core'
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -87,7 +87,7 @@ function removeBookmark(listing){
     console.log("ENTERED JOBLISTING COMPONENT")
     // console.log(props)
     const queueRef = useRef([]);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false); // for snackbar
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [listings, setListings] = useState("");
 
@@ -200,10 +200,10 @@ function removeBookmark(listing){
                             </Box>
                         </Grid>
                         <Grid item container xs={12} sm={9} md={10} >
-                            <Grid item xs={12} md={9}>
+                            <Grid item xs={10} md={9}>
                                 <Grid item xs>
-                                    <Typography variant="body1"> 
-                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10}} >
+                                    <Typography > 
+                                        <Box align="left" style={{marginLeft:10}} fontSize={12} fontWeight="fontWeightBold">
                                             { list.postedCompany 
                                                 ? 
                                                 <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
@@ -213,13 +213,13 @@ function removeBookmark(listing){
                                             }
                                         </Box>
                                     </Typography>
-                                    <Typography>
-                                        <Box letterSpacing={2} align="left" style={{marginLeft:10}} >
+                                    <Typography >
+                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10, color:'#5E2CA5'}}>
                                             {list.title}
                                         </Box>
                                     </Typography>
                                     <Typography style={{fontSize:12}}>
-                                        <Box align="left" style={{marginLeft:10}} display={{ 'xs':'none', 'sm':'block'}} >
+                                        <Box align="left" style={{marginLeft:10, color:'#9F0D6E'}} display={{ 'xs':'none', 'sm':'block'}} >
                                             {
                                                 list.address && list.address.postalCode != ""
                                                 ? 
@@ -238,9 +238,9 @@ function removeBookmark(listing){
                                     <Typography variant="caption" display="inline" >
                                         <Box align="left" style={{marginLeft:10}}>
                                             <Grid item container md={6} sm={7} xs={12} alignItem="flex-start" justify="flex-start" > 
-                                                <Grid item sm={4} xs={4} container> <NearMeIcon className={classes.smallIcons} /> {list.address && list.address.districts[0] &&list.address.districts[0].region} 
+                                                <Grid item sm={4} xs={5} container> <NearMeIcon className={classes.smallIcons} /> {list.address && list.address.districts[0] &&list.address.districts[0].region} 
                                                 </Grid>
-                                                <Grid item sm={4} xs={4} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType}
+                                                <Grid item sm={4} xs={6} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType}
                                                 </Grid>
                                                 <Grid item sm={4} xs={6} container justify="flex-start"> 
                                                 <EventIcon className={classes.smallIcons} /> {list.minimumYearsExperience} years exp
@@ -261,7 +261,7 @@ function removeBookmark(listing){
                                         </Box>
                                     </Typography>
                                     <Typography variant="body2" >
-                                        <Box align="left" style={{fontSize:12, marginTop:5}} alignItems="flex-start" display={{'xs':'none', 'sm':'block'}}>
+                                        <Box align="left" style={{fontSize:12, marginTop:5}} alignItems="flex-start" display={{xs:'none', sm:'block'}}>
                                             <Grid container alignItems="flex-start" style={{marginLeft:9}}>
                                                 <Grid item >
                                                 <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
@@ -284,6 +284,21 @@ function removeBookmark(listing){
                                     </Typography>
                                 </Grid>
                             </Grid>
+                            <Hidden smUp>
+                                <Grid item xs={2}>
+                                    <Box display="flex" justifyContent="flex-end" display={{ xs: 'block', md: 'none' }}>
+                                            <Button
+                                                className={classes.button} 
+                                                size="small"
+                                                onClick={ () => handleClick(list)}
+                                                style={{color:'#6738AA'}}
+                                                >
+                                                <BookmarkIcon className={classes.rightIcon} />
+                                            </Button>
+                                        </Box>
+                                </Grid>
+                            </Hidden>
+                            
                             <Grid item xs={12} md={3} container>
                                     
                                 <Grid item md={12} sm={6} xs>
@@ -303,7 +318,7 @@ function removeBookmark(listing){
                                             {list.schemes.length!=0
                                             ? //{list.schemes[0].scheme.scheme} 
                                                 <div  tyle={{}}>
-                                                    <a href="https://www.wsg.gov.sg/programmes-and-initiatives/wsg-career-support-programme-individuals.html" style={{textDecoration:"none", color:"green"}} target="_blank">
+                                                    <a href="https://www.wsg.gov.sg/programmes-and-initiatives/wsg-career-support-programme-individuals.html" style={{textDecoration:"none", color:"green", fontWeight:"bold"}} target="_blank">
                                                         <Grid container xs={12}>
                                                             <Box display="inline" alignContent="flex-start">
                                                                 <DoneIcon className={classes.smallIcons} style={{height:18, margin:0}}/> Government Scheme Support
@@ -316,7 +331,7 @@ function removeBookmark(listing){
                                         </Box>
                                     </Typography>
                                     <Typography variant="body2">
-                                        <Box align="left" style={{marginLeft:10}}>
+                                        <Box align="left" style={{marginLeft:10, fontSize:12, color:'#A71616', fontWeight:'bold'}}>
                                             Recommended
                                         </Box>
                                     </Typography>
@@ -339,17 +354,19 @@ function removeBookmark(listing){
                                         </Box>
                                     </Grid>
                                     <Grid item>
-                                        <Box display="flex" justifyContent="flex-end">
+                                        <Box display="flex" justifyContent="flex-end" display={{ xs: 'none', sm: 'block' }}>
                                             <Button
                                                 className={classes.button} 
                                                 size="small"
                                                 onClick={ () => handleClick(list)}
-
+                                                style={{color:'#6738AA'}}
+                                                variant="outlined"
                                                 >
                                                 Bookmark
                                                 <BookmarkIcon className={classes.rightIcon} />
                                             </Button>
                                         </Box>
+                                        
                                     </Grid>
                                 </Grid>
                                 <Box boxShadow={0}>
