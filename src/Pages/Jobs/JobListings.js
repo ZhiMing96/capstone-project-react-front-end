@@ -87,7 +87,7 @@ function removeBookmark(listing){
     console.log("ENTERED JOBLISTING COMPONENT")
     // console.log(props)
     const queueRef = useRef([]);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false); // for snackbar
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [listings, setListings] = useState("");
 
@@ -203,7 +203,7 @@ function removeBookmark(listing){
                             <Grid item xs={12} md={9}>
                                 <Grid item xs>
                                     <Typography variant="body1"> 
-                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10}} >
+                                        <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10, color:'#5E2CA5'}} >
                                             { list.postedCompany 
                                                 ? 
                                                 <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
@@ -214,7 +214,7 @@ function removeBookmark(listing){
                                         </Box>
                                     </Typography>
                                     <Typography>
-                                        <Box letterSpacing={2} align="left" style={{marginLeft:10}} >
+                                        <Box letterSpacing={2} align="left" style={{marginLeft:10, color:'#9F0D6E'}} >
                                             {list.title}
                                         </Box>
                                     </Typography>
