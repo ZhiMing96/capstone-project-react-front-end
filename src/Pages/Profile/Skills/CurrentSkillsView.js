@@ -1,11 +1,16 @@
 import React from 'react';
-import { Grid, Typography, Box } from '@material-ui/core'
+import { Grid, Typography, Box, Button } from '@material-ui/core'
 import api from '../../../api.js'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import AddSkills from './AddSkills'
 import CustomisedChip from '../../../Components/CustomisedChip'
 import { connect } from "react-redux";
 import {addSkill, removeSkill,updateSkill} from '../../../redux/actions/skill'
+import DeletedDialog from '../../../Components/DeletedDialog'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 const styles = theme => ({
   '@global': {
@@ -20,6 +25,9 @@ const styles = theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  paperbd:{
+    boxShadow: 'none'
+  }
 })
 
 
@@ -29,6 +37,14 @@ class CurrentSkillsView extends React.Component {
   constructor(props) {
     super(props);
     this.handleRemove = this.handleRemove.bind(this);
+    this.remove = this.remove.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.state = { 
+      openDialog: false,
+      message: '',
+      skill:{}
+
+    };
   }
   
   componentDidMount(){
@@ -42,10 +58,28 @@ class CurrentSkillsView extends React.Component {
     }).catch()
   }
 
-  async handleRemove(skill, event) {
+  handleClose () {
+    this.setState({openDialog:false})
+  };
+  setOpen(skillName){
+    const message = 'Confirm removing '+ skillName + ' from skills?'
+    this.setState({openDialog:true, message: message})
+  }
+
+  handleRemove(skill, event) {
     const skillName = skill.skill
     event.preventDefault()
     console.log("Skill to remove: " + skillName)
+    this.setOpen(skillName)
+    this.setState({
+      skill: skill
+    })
+  }
+
+  async remove(){ 
+    this.handleClose()
+    const skill = this.state.skill
+    const skillName = skill.skill
     await api.skills.remove({ "skill_remove": skillName })
       .then((response) => {
         console.log(response.data.response_code)
@@ -112,6 +146,30 @@ class CurrentSkillsView extends React.Component {
           </Grid>
 
         </div>
+        <Dialog
+          open={this.state.openDialog}
+          onClose={this.handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          BackdropProps={{ invisible:true }}
+          //PaperProps ={{className :classes.paperbd}}
+          
+        >
+          
+          <DialogContent >
+            <DialogContentText id="alert-dialog-description">
+              {this.state.message}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.remove} color="primary" autoFocus>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
 
     );
