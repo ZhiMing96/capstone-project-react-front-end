@@ -98,6 +98,8 @@ function removeBookmark(listing){
     ]
 
     const classes = useStyles();
+
+    
     
     useEffect(()=>{
         console.log("ENTERED USE EFFECT IN JOBLISTING");
@@ -191,7 +193,7 @@ function removeBookmark(listing){
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={2}>
                             <Box display={{ xs: 'none', sm: 'block' }}>
-                                <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank" style={{padding:15}}>
+                                <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank" style={{padding:15, paddingTop:25}}>
                                         {list.postedCompany && list.postedCompany.logoUploadPath
                                         ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
                                         : <img className={classes.img} src={defaultIcon} />
@@ -202,8 +204,8 @@ function removeBookmark(listing){
                         <Grid item container xs={12} sm={9} md={10} >
                             <Grid item xs={10} md={9}>
                                 <Grid item xs>
-                                    <Typography > 
-                                        <Box align="left" style={{marginLeft:10}} fontSize={12} fontWeight="fontWeightBold">
+                                    <Typography >
+                                        <Box align="left" style={{marginLeft:10}} fontSize={12} fontWeight="fontWeightBold">  
                                             { list.postedCompany 
                                                 ? 
                                                 <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
@@ -218,35 +220,64 @@ function removeBookmark(listing){
                                             {list.title}
                                         </Box>
                                     </Typography>
+                                    
                                     <Typography style={{fontSize:12}}>
                                         <Box align="left" style={{marginLeft:10, color:'#9F0D6E'}} display={{ 'xs':'none', 'sm':'block'}} >
-                                            {
-                                                list.address && list.address.postalCode != ""
-                                                ? 
-                                                <Grid container alignItems="flex-start">
-                                                    <Grid item>
-                                                        <LocationIcon style={{width:15, height:15}} /> 
-                                                    </Grid>
-                                                    <Grid item>
-                                                        {list.address.block} {list.address.street} S{list.address.postalCode}
-                                                    </Grid>
+                                        
+                                        {
+                                            list.address && list.address.postalCode != ""
+                                            ? 
+                                            
+                                            <Grid container alignItems="flex-start">
+                                                <Grid item>
+                                                    <LocationIcon style={{width:15, height:15}} /> 
                                                 </Grid>
-                                                : ""
+                                                <Grid item>
+                                                    {list.address.block} {list.address.street} S{list.address.postalCode}
+                                                </Grid>
+                                            </Grid>
+                                           
+                                            
+                                            : ""
                                             }
                                         </Box>
                                     </Typography>
                                     <Typography variant="caption" display="inline" >
                                         <Box align="left" style={{marginLeft:10}}>
-                                            <Grid item container md={6} sm={7} xs={12} alignItem="flex-start" justify="flex-start" > 
-                                                <Grid item sm={4} xs={5} container> <NearMeIcon className={classes.smallIcons} /> {list.address && list.address.districts[0] &&list.address.districts[0].region} 
+                                                <Grid item container lg={6} md={7} sm={10} xs={12} alignItems="flex-start" justify="flex-start" > 
+
+                                                {list.address && list.address.districts.length !==0
+                                                ?
+                                                <Grid item sm={4} xs={5} container> <NearMeIcon className={classes.smallIcons} /> 
+                                                    {list.address.districts[0].region}
                                                 </Grid>
-                                                <Grid item sm={4} xs={6} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType}
+                                                : <span></span>
+                                                }
+                                                {list.employmentTypes.length !==0
+                                                ?
+                                                <Grid item sm={4} xs={6} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/>
+                                                    {list.employmentTypes[0].employmentType}
                                                 </Grid>
+                                                :
+                                                <span></span>
+                                                }
+                                                {list.minimumYearsExperience
+                                                ?
                                                 <Grid item sm={4} xs={6} container justify="flex-start"> 
-                                                <EventIcon className={classes.smallIcons} /> {list.minimumYearsExperience} years exp
+                                                <EventIcon className={classes.smallIcons} />
+                                                    {list.minimumYearsExperience} years exp
                                                 </Grid>
-                                            </Grid>
-                                            
+                                                :
+                                                <span></span>
+                                                }  
+                                                    {/* <Grid item sm={4} xs={5} container> <NearMeIcon className={classes.smallIcons} /> {list.address && list.address.districts[0] &&list.address.districts[0].region} 
+                                                    </Grid>
+                                                    <Grid item sm={4} xs={6} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType}
+                                                    </Grid>
+                                                    <Grid item sm={4} xs={6} container justify="flex-start"> 
+                                                    <EventIcon className={classes.smallIcons} /> {list.minimumYearsExperience} years exp
+                                                    </Grid> */}
+                                                </Grid>
                                         </Box>
                                     </Typography>
                                     <Typography variant="caption" >
@@ -254,17 +285,19 @@ function removeBookmark(listing){
                                             Competition Level: 
                                         </Box>
                                     </Typography>
-
                                     <Typography variant="body2">
                                         <Box align="left" style={{marginLeft:10, fontSize:12}}>
                                             Expiry Date: {getDate(list.metadata.expiryDate)}
                                         </Box>
                                     </Typography>
+                                   
+                                    
                                     <Typography variant="body2" >
                                         <Box align="left" style={{fontSize:12, marginTop:5}} alignItems="flex-start" display={{xs:'none', sm:'block'}}>
+                                        
                                             <Grid container alignItems="flex-start" style={{marginLeft:9}}>
                                                 <Grid item >
-                                                <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
+                                                    <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
                                                 </Grid>
                                                 <Grid item>
                                                     Lacking Skills:&nbsp;
@@ -278,8 +311,6 @@ function removeBookmark(listing){
                                                 ))}
                                                 
                                             </Grid>
-                                            
-                                           
                                         </Box>
                                     </Typography>
                                 </Grid>
@@ -302,24 +333,28 @@ function removeBookmark(listing){
                             <Grid item xs={12} md={3} container>
                                     
                                 <Grid item md={12} sm={6} xs>
-                                    <Box display={{ xs: 'none', md: 'block' }}>
-                                        <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
-                                            {list.salary 
-                                                ? 
+                                    <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
+                                        <Box display={{ xs: 'none', md: 'block' }}>
+                                        
+                                            {!list.salary || list.salary.minimum === '0' || list.salary.maximum === '0' 
+                                            ? "Salary Undisclosed" 
+                                            :
                                                 <div>
                                                     <strong>${list.salary.minimum}</strong> to <strong> ${list.salary.maximum}
                                                     </strong> <span style={{fontSize:10}}>{list.salary.type.salaryType}</span>  
                                                 </div>
-                                                : "Salary Undisclosed"}
-                                        </Typography>
-                                    </Box>
+                                            }
+                                        </Box>
+                                    </Typography>
+                                    
                                     <Typography variant="caption">
                                         <Box align="left" style={{marginLeft:10}}>
+                                        
                                             {list.schemes.length!=0
                                             ? //{list.schemes[0].scheme.scheme} 
                                                 <div  tyle={{}}>
                                                     <a href="https://www.wsg.gov.sg/programmes-and-initiatives/wsg-career-support-programme-individuals.html" style={{textDecoration:"none", color:"green", fontWeight:"bold"}} target="_blank">
-                                                        <Grid container xs={12}>
+                                                        <Grid container item xs={12}>
                                                             <Box display="inline" alignContent="flex-start">
                                                                 <DoneIcon className={classes.smallIcons} style={{height:18, margin:0}}/> Government Scheme Support
                                                             </Box>
@@ -330,16 +365,19 @@ function removeBookmark(listing){
                                             }
                                         </Box>
                                     </Typography>
+                                    
                                     <Typography variant="body2">
                                         <Box align="left" style={{marginLeft:10, fontSize:12, color:'#A71616', fontWeight:'bold'}}>
                                             Recommended
                                         </Box>
                                     </Typography>
                                 </Grid>
+
                                 <Grid item md={12} sm={6} xs container alignItems="flex-end" justify="flex-end" direction="column">
                                     <Grid item>
-                                        <Box display={{ xs: 'block', md: 'none' }} justifyContent="flex-end">
-                                            <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
+                                        <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
+                                            <Box display={{ xs: 'block', md: 'none' }} justifyContent="flex-end">
+                                            
                                             {list.salary 
                                                 ? 
                                                 <div>
@@ -350,8 +388,9 @@ function removeBookmark(listing){
                                                       
                                                 </div>
                                                 : "Salary Undisclosed"}
-                                            </Typography>
-                                        </Box>
+                                            </Box>
+                                        </Typography>
+                                        
                                     </Grid>
                                     <Grid item>
                                         <Box display="flex" justifyContent="flex-end" display={{ xs: 'none', sm: 'block' }}>

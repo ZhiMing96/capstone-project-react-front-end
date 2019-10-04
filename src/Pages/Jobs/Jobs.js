@@ -6,6 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
 import Pagination from './Pagination';
+import LinearLoading from  '../../Components/LoadingBars/LinearLoading';
+import CircularLoading from '../../Components/LoadingBars/CircularLoading';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -21,11 +23,11 @@ const employmentTypes = [
       label: 'Permanent'
     },
     {
-      value: 'Full%20Time',
+      value: 'Full Time',
       label: 'Full-Time'
     },  
     {
-      value: 'Part%20Time',
+      value: 'Part Time',
       label: 'Part-Time'
     },
     {
@@ -33,7 +35,7 @@ const employmentTypes = [
       label: 'Contract'
     },
     {
-      value: 'Flexi%20Work',
+      value: 'Flexi-work',
       label: 'Flexi-Work'
     },
     {
@@ -132,7 +134,7 @@ function compareValues(key, order='asc') {
         comparison = -1;
         }
         return (
-        (order == 'desc') ? 
+        (order === 'desc') ? 
         (comparison * -1) : comparison
         );
     };
@@ -169,10 +171,10 @@ function Jobs (props) {
     //     console.log(currentPage)
     // },[currentPage])
 
-    // useEffect(()=>{
-    //     console.log('Entered Use Effect for Search Results')
-    //     setSearchResults(props.searchResults)
-    // },[props])
+    useEffect(()=>{
+        console.log('Entered Use Effect for Search Results')
+        setSearchResults(props.searchResults)
+    },[props])
 
     
 
@@ -195,16 +197,19 @@ function Jobs (props) {
 
 
     const handleSubmit = event => {
+        setLoading(true);
         console.log("Entered Handle Submit")
+        setCurrentPage(1);
+
         console.log(token)
         
         event.preventDefault();
         var tempString = ""
         // && state.keyword != undefined
-        tempString += state.keyword != "" ? ('keyword=' + state.keyword) :'';
-        tempString += state.employmentType != ""  ? ('&employment_type=' + state.employmentType ) :'';
+        tempString += state.keyword !== "" ? ('keyword=' + state.keyword) :'';
+        tempString += state.employmentType !== ""  ? ('&employment_type=' + state.employmentType ) :'';
         tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
-        tempString += state.categories != "" ? ('&categories=' + state.categories) :'';
+        tempString += state.categories !== "" ? ('&categories=' + state.categories) :'';
         tempString += (`&limit=${searchLimit}`)
 
         console.log("Query String = " + tempString);
@@ -215,19 +220,20 @@ function Jobs (props) {
         setLoading(true);
         axios.get(query, {headers: {"Authorization" : "Token "+token}})
         .then(res=>{  
+            
             const result = res.data.results;
             console.log("RESULTS FROM GET  REQUEST  = ")
             console.log(result)
-            if(result!= undefined && result.length==0){
+            if(result!== undefined && result.length===0){
                 console.log('Entered Zero Length Method');
                 setSearchResults(result);
                 openSnackbar();
-            } else if (result !=undefined && result.length!=0){
+            } else if (result !==undefined && result.length!==0){
                 setSearchResults(result);
             }
 
            
-            //setSearchResults(sortedResults);
+            // setSearchResults(sortedResults);
             // console.log("RESULTS FROM API CALL IN JOBS.JS: ")
             // console.log(result)
             // console.log("SORTTED ARRAY: ")
@@ -285,14 +291,14 @@ function Jobs (props) {
 
     //Change Page 
     const paginate = pageNumber => setCurrentPage(pageNumber);
-    console.log("page number = " + currentPage)
+    console.log("CURRENT PAGE NUMBER = " + currentPage)
 
   return (
     
     <div>
         <Container>
         <CssBaseline/>
-        <Grid container xs={12} alignContent="flex-start">
+        <Grid container alignContent="flex-start">
             <Grid item xs={12} >
             <form onSubmit={handleSubmit}>
                 <Paper className={classes.root} elevation={0} style={{marginTop:20}}>
@@ -376,8 +382,14 @@ function Jobs (props) {
                 </form>   
             </Grid>
         </Grid>
-
-        { searchResults  && searchResults.length != 0 
+        <Grid style={{margin:10}}>
+            { loading 
+            ? <LinearLoading/>
+            : <span></span>
+            }
+        </Grid>
+        
+        { searchResults  && searchResults.length !== 0 
         ? 
         <div>
             <Router>
@@ -388,7 +400,7 @@ function Jobs (props) {
                 render={()=>
                     <div>
                         <JobListings searchResults={currentPosts} loading={loading}/>
-                        <Pagination postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
+                        <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                     </div> 
                 }
                 /> 
@@ -400,21 +412,25 @@ function Jobs (props) {
         ? //USER WITH ACCOUNT           
         <div>
             <div className={classes.root}>
-                <img src={carouselImgs[0].imgUrl} className={classes.img} />
+                <img src={carouselImgs[0].imgUrl} className={classes.img} alt=""/>
             </div>
-            <Grid container spacing={3} style={{marginTop:20}}>
-                <Grid item xs={12} sm={6}>
-                    <Paper className={classes.root}>
-                        <Typography variant="h4">
-                            Based on your Seach History
+            <Container>
+            
+            <Grid container style={{}}>
+                <Box border={1}>
+                <Paper className={classes.root} elevation={0}>
+                    
+                        <Typography>
+                            <Box fontWeight="fontWeightBold" m={1}>
+                                Based on your Seach History
+                            </Box>
                         </Typography>
-                    </Paper>   
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <Paper className={classes.root}>
-                    </Paper>
-                </Grid>
+                    
+                </Paper> 
+                </Box>
             </Grid>
+            </Container>
+            
         </div>
         : //USER WITHOUT ACCOUNT 
         <div> 

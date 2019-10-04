@@ -1,4 +1,4 @@
-import React, { Fragment,useState, useEffect, Component } from 'react';
+import React, {useState, useEffect, Component } from 'react';
 import Sidebar from '../../Components/Sidebar';
 import Grid from '@material-ui/core/Grid';
 import { Paper, Typography, Box, Hidden, IconButton } from '@material-ui/core';
@@ -49,7 +49,7 @@ function Main(props) {
         {/* {backdrop} */}
         <Grid container style={{width: '100%'}} >
               <Hidden xsDown>
-                <Grid item className="sidebar" sm={3} wrap="wrap">
+                <Grid item className="sidebar" sm={3} >
                     <Sidebar/> 
                 </Grid>
               </Hidden>

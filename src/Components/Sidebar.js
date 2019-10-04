@@ -56,14 +56,14 @@ function Sidebar(props) {
      <Grid container alignItems="center" justify="center">
         <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" className={classes.bigAvatar} />
         <Grid container justify="center">
-          <Typography>
-            <Box 
+          <Box 
               fontWeight="fontWeightBold"
-              fontSize={20}s
-            >
-              {name}
-            </Box>
-          </Typography>
+              fontSize={20}
+          >
+            <Typography>
+              {name.toUpperCase()}
+            </Typography>
+          </Box>
         </Grid>
         <Grid container justify="center">
           {profileArray.map((item,index)=>(

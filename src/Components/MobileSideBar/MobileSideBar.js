@@ -52,18 +52,24 @@ function MobileSideBar(props){
   let sideBarClasses='mobileSideBar';
   
   const [value, setValue] = React.useState(0);
+  const [name, setName] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  var name
+
   api.profile.get().then(
     res=>{
+      
       if(res.data.profile){
-      name = res.data.profile.first_name
+        console.log(res.data.profile.first_name)
+        const firstName = res.data.profile.first_name
+        setName(firstName);
       }
     } 
   ).catch({})
+
+  console.log('name = '+ name)
 
   if(props.show){
     sideBarClasses = 'mobileSideBar open' ;
@@ -87,14 +93,16 @@ function MobileSideBar(props){
       <Grid container alignItems="center" justify="center">
         <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" className={classes.bigAvatar} />
         <Grid container justify="center">
-          <Typography>
-            <Box 
-              fontWeight="fontWeightBold"
-              fontSize={20}s
-            >
-              {name}
-            </Box>
-          </Typography>
+          
+          <Box 
+            fontWeight="fontWeightBold"
+            fontSize={20}
+          >
+            <Typography>
+            {name.toUpperCase()}
+            </Typography>
+          </Box>
+          
         </Grid>
         <Grid container justify="center">
           {profileArray.map((item,index)=>(
