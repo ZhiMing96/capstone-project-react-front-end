@@ -59,8 +59,10 @@ function MobileSideBar(props){
   var name
   api.profile.get().then(
     res=>{
+      if(res.data.profile){
       name = res.data.profile.first_name
-    }
+      }
+    } 
   ).catch({})
 
   if(props.show){

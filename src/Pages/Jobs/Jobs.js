@@ -5,6 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
+import Pagination from './Pagination';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -112,11 +113,40 @@ const employmentTypes = [
     },
   }));
 
-function Jobs () {
+function compareValues(key, order='asc') {
+    return function(a, b) {
+        if(!a.hasOwnProperty(key) || 
+            !b.hasOwnProperty(key)) {
+            return 0; 
+        }
+        
+        const varA = (typeof a[key] === 'string') ? 
+        a[key].toUpperCase() : a[key];
+        const varB = (typeof b[key] === 'string') ? 
+        b[key].toUpperCase() : b[key];
+        
+        let comparison = 0;
+        if (varA > varB) {
+        comparison = 1;
+        } else if (varA < varB) {
+        comparison = -1;
+        }
+        return (
+        (order == 'desc') ? 
+        (comparison * -1) : comparison
+        );
+    };
+}
+
+function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT");
+    const url = "http://localhost:3000/jobs/search?" 
+    const searchLimit = 100;
+    const token= window.localStorage.getItem('authToken');
+    const classes=useStyles();
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);   // for snackbar
-    const [searchResults,setSearchResults] = useState(undefined);
+    const [searchResults,setSearchResults] = useState([]);
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [state, setState] = useState({
         open: false,
@@ -128,14 +158,23 @@ function Jobs () {
         proceed: false,
         queryString:"",
     });
+    // const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(10);
 
-    console.log(state)
+       
+    useEffect(()=>{
+        console.log('Entered Use Effect for Current Page')
+        console.log(currentPage)
+    },[currentPage])
 
-    const url = "http://localhost:3000/jobs/search?" 
+    // useEffect(()=>{
+    //     console.log('Entered Use Effect for Search Results')
+    //     setSearchResults(props.searchResults)
+    // },[props])
 
-    const token= window.localStorage.getItem('authToken');
-
-    const classes=useStyles();
+    
 
     const handleChange = name => event => {
         setState({ ...state, [name]: (event.target.value) });
@@ -157,37 +196,48 @@ function Jobs () {
 
     const handleSubmit = event => {
         console.log("Entered Handle Submit")
-        console.log(event.target)
+        console.log(token)
         
         event.preventDefault();
         var tempString = ""
         // && state.keyword != undefined
         tempString += state.keyword != "" ? ('keyword=' + state.keyword) :'';
         tempString += state.employmentType != ""  ? ('&employment_type=' + state.employmentType ) :'';
-        tempString += state.minSalary  ? ('&salary=' + state.salary) :'';
+        tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
         tempString += state.categories != "" ? ('&categories=' + state.categories) :'';
+        tempString += (`&limit=${searchLimit}`)
 
         console.log("Query String = " + tempString);
         setState({ ...state, queryString: tempString });
         
         const query=url+tempString
         console.log(query);
-        
-        axios.get(query, {headers: {"Authorization" : "Token"+token}})
+        setLoading(true);
+        axios.get(query, {headers: {"Authorization" : "Token "+token}})
         .then(res=>{  
             const result = res.data.results;
+            console.log("RESULTS FROM GET  REQUEST  = ")
+            console.log(result)
             if(result!= undefined && result.length==0){
                 console.log('Entered Zero Length Method');
                 setSearchResults(result);
                 openSnackbar();
-            } 
+            } else if (result !=undefined && result.length!=0){
                 setSearchResults(result);
-                console.log("RESULTS FROM API CALL IN JOBS.JS: ")
-                console.log(result);
+            }
+
+           
+            //setSearchResults(sortedResults);
+            // console.log("RESULTS FROM API CALL IN JOBS.JS: ")
+            // console.log(result)
+            // console.log("SORTTED ARRAY: ")
+            // console.log(sortedResults);
+            setLoading(false);
             
         })
         .catch(err=>{
             console.error(err);  
+            setLoading(false);
         })
     }
 
@@ -228,7 +278,14 @@ function Jobs () {
         processQueue();
     };
 
-    
+    //get current page lisitngs
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
+
+    //Change Page 
+    const paginate = pageNumber => setCurrentPage(pageNumber);
+    console.log("page number = " + currentPage)
 
   return (
     
@@ -326,7 +383,15 @@ function Jobs () {
             <Router>
                 <Redirect to={`/jobs/listings/${state.queryString}`}/>
                 
-                <Route path="/jobs/listings" render={()=> <JobListings searchResults={searchResults}/>}/> 
+                <Route 
+                path="/jobs/listings" 
+                render={()=>
+                    <div>
+                        <JobListings searchResults={currentPosts} loading={loading}/>
+                        <Pagination postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
+                    </div> 
+                }
+                /> 
                 
             </Router>
         </div>
