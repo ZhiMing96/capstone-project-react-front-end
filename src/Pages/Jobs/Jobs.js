@@ -113,6 +113,31 @@ const employmentTypes = [
     },
   }));
 
+function compareValues(key, order='asc') {
+    return function(a, b) {
+        if(!a.hasOwnProperty(key) || 
+            !b.hasOwnProperty(key)) {
+            return 0; 
+        }
+        
+        const varA = (typeof a[key] === 'string') ? 
+        a[key].toUpperCase() : a[key];
+        const varB = (typeof b[key] === 'string') ? 
+        b[key].toUpperCase() : b[key];
+        
+        let comparison = 0;
+        if (varA > varB) {
+        comparison = 1;
+        } else if (varA < varB) {
+        comparison = -1;
+        }
+        return (
+        (order == 'desc') ? 
+        (comparison * -1) : comparison
+        );
+    };
+}
+
 function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT");
     const url = "http://localhost:3000/jobs/search?" 
@@ -144,10 +169,10 @@ function Jobs (props) {
         console.log(currentPage)
     },[currentPage])
 
-    useEffect(()=>{
-        console.log('Entered Use Effect for Search Results')
-        setSearchResults(props.searchResults)
-    },[props])
+    // useEffect(()=>{
+    //     console.log('Entered Use Effect for Search Results')
+    //     setSearchResults(props.searchResults)
+    // },[props])
 
     
 
@@ -171,7 +196,7 @@ function Jobs (props) {
 
     const handleSubmit = event => {
         console.log("Entered Handle Submit")
-        console.log(event.target)
+        console.log(token)
         
         event.preventDefault();
         var tempString = ""
@@ -188,18 +213,26 @@ function Jobs (props) {
         const query=url+tempString
         console.log(query);
         setLoading(true);
-        axios.get(query, {headers: {"Authorization" : "Token"+token}})
+        axios.get(query, {headers: {"Authorization" : "Token "+token}})
         .then(res=>{  
             const result = res.data.results;
+            console.log("RESULTS FROM GET  REQUEST  = ")
+            console.log(result)
             if(result!= undefined && result.length==0){
                 console.log('Entered Zero Length Method');
                 setSearchResults(result);
                 openSnackbar();
-            } 
+            } else if (result !=undefined && result.length!=0){
                 setSearchResults(result);
-                console.log("RESULTS FROM API CALL IN JOBS.JS: ")
-                console.log(result);
-                setLoading(false);
+            }
+
+           
+            //setSearchResults(sortedResults);
+            // console.log("RESULTS FROM API CALL IN JOBS.JS: ")
+            // console.log(result)
+            // console.log("SORTTED ARRAY: ")
+            // console.log(sortedResults);
+            setLoading(false);
             
         })
         .catch(err=>{
