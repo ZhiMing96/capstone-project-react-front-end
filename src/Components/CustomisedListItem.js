@@ -219,6 +219,7 @@ function CustomisedListItem(props) {
       }
     
     const remove = async()=>{
+        handleClose()
         api.work.remove({record_id: props.item.record_id.toString()})
             .then(res => {
                 if (res.data.response_code === 200) {

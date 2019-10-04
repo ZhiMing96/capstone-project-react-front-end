@@ -93,9 +93,9 @@ function UserDetailsView(props) {
             props.setSnackbar('Details saved successfully.')
             props.updateProfile(profileState) //update store
             props.changeState()
-          } else {
+          } else { 
             console.log('error')
-            props.setSnackbar('Error saving details.')
+            props.setSnackbar(res.data.response_message)
           }
         }).catch(console.log('error'))
     }
