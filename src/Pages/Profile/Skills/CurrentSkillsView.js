@@ -85,6 +85,9 @@ class CurrentSkillsView extends React.Component {
           this.props.removeSkill(skill) //redux
           api.skills.get().then(res=>{
             if (res.data.response_code===200){
+              res.data.skill_list.forEach(skill=>{
+                skill.id=parseInt(skill.id)
+              })
               this.props.updateSkill(res.data.skill_list) //return array
             }
           })
