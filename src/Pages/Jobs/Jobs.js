@@ -5,6 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
+import Pagination from './Pagination';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -112,11 +113,15 @@ const employmentTypes = [
     },
   }));
 
-function Jobs () {
+function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT");
+    const url = "http://localhost:3000/jobs/search?" 
+    const searchLimit = 100;
+    const token= window.localStorage.getItem('authToken');
+    const classes=useStyles();
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);   // for snackbar
-    const [searchResults,setSearchResults] = useState(undefined);
+    const [searchResults,setSearchResults] = useState([]);
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [state, setState] = useState({
         open: false,
@@ -128,14 +133,23 @@ function Jobs () {
         proceed: false,
         queryString:"",
     });
+    // const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(10);
 
-    console.log(state)
+       
+    useEffect(()=>{
+        console.log('Entered Use Effect for Current Page')
+        console.log(currentPage)
+    },[currentPage])
 
-    const url = "http://localhost:3000/jobs/search?" 
+    useEffect(()=>{
+        console.log('Entered Use Effect for Search Results')
+        setSearchResults(props.searchResults)
+    },[props])
 
-    const token= window.localStorage.getItem('authToken');
-
-    const classes=useStyles();
+    
 
     const handleChange = name => event => {
         setState({ ...state, [name]: (event.target.value) });
@@ -166,13 +180,14 @@ function Jobs () {
         tempString += state.employmentType != ""  ? ('&employment_type=' + state.employmentType ) :'';
         tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
         tempString += state.categories != "" ? ('&categories=' + state.categories) :'';
+        tempString += (`&limit=${searchLimit}`)
 
         console.log("Query String = " + tempString);
         setState({ ...state, queryString: tempString });
         
         const query=url+tempString
         console.log(query);
-        
+        setLoading(true);
         axios.get(query, {headers: {"Authorization" : "Token"+token}})
         .then(res=>{  
             const result = res.data.results;
@@ -184,10 +199,12 @@ function Jobs () {
                 setSearchResults(result);
                 console.log("RESULTS FROM API CALL IN JOBS.JS: ")
                 console.log(result);
+                setLoading(false);
             
         })
         .catch(err=>{
             console.error(err);  
+            setLoading(false);
         })
     }
 
@@ -228,7 +245,14 @@ function Jobs () {
         processQueue();
     };
 
-    
+    //get current page lisitngs
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
+
+    //Change Page 
+    const paginate = pageNumber => setCurrentPage(pageNumber);
+    console.log("page number = " + currentPage)
 
   return (
     
@@ -326,7 +350,15 @@ function Jobs () {
             <Router>
                 <Redirect to={`/jobs/listings/${state.queryString}`}/>
                 
-                <Route path="/jobs/listings" render={()=> <JobListings searchResults={searchResults}/>}/> 
+                <Route 
+                path="/jobs/listings" 
+                render={()=>
+                    <div>
+                        <JobListings searchResults={currentPosts} loading={loading}/>
+                        <Pagination postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
+                    </div> 
+                }
+                /> 
                 
             </Router>
         </div>

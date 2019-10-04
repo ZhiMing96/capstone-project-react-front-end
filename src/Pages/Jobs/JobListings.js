@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon, Room as LocationIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
-import ListingView from './ListingView';
 import { green } from '@material-ui/core/colors';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
@@ -84,8 +83,9 @@ function removeBookmark(listing){
 
 
  function JobListings(props) {
-    console.log("ENTERED JOBLISTING COMPONENT")
-    // console.log(props)
+
+    console.log("ENTERED JOBLISTING COMPONENT Props = ")
+    console.log(props)
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false); // for snackbar
     const [messageInfo, setMessageInfo] = useState(undefined);

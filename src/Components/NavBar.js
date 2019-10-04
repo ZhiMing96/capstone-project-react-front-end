@@ -177,7 +177,7 @@ class NavTabs extends React.Component {
 
         <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/jobs" component={Jobs}/>
+            <Route exact path="/jobs" render={()=> (<Jobs searchResults={[]}/> )}/>
             <Route path="/events" component={Events} />
             <Route path="/articles" component={Articles} />
             <Route path="/auth/signin" component={Login} />
