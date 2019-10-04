@@ -224,20 +224,19 @@ function Jobs (props) {
             const result = res.data.results;
             console.log("RESULTS FROM GET  REQUEST  = ")
             console.log(result)
-            if(result!== undefined && result.length===0){
+            if(result!== undefined && result.length===0){ //empty  results 
                 console.log('Entered Zero Length Method');
                 setSearchResults(result);
                 openSnackbar();
-            } else if (result !==undefined && result.length!==0){
-                setSearchResults(result);
+            } else if (result !==undefined && result.length!==0){ //Good to go 
+                const sortedResults = result.sort(compareValues('title', 'asc')) //asc or desc
+                
+                setSearchResults(sortedResults);
+                console.log("RESULTS FROM API CALL IN JOBS.JS: ")
+                console.log(result)
+                console.log("SORTTED ARRAY: ")
+                console.log(sortedResults);
             }
-
-           
-            // setSearchResults(sortedResults);
-            // console.log("RESULTS FROM API CALL IN JOBS.JS: ")
-            // console.log(result)
-            // console.log("SORTTED ARRAY: ")
-            // console.log(sortedResults);
             setLoading(false);
             
         })
@@ -485,9 +484,6 @@ function Jobs (props) {
             }}
             message={<span style={{boxShadow:"none"}} id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
             action={[
-            <Button color="secondary" size="small" href="/profile/bookmarks">
-                View
-            </Button>,
             <IconButton
                 key="close"
                 aria-label="close"
