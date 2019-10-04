@@ -141,35 +141,53 @@ class NavTabs extends React.Component {
             </Grid>
           </Grid>
           </Hidden>
-
-          <Grid item onClick = {()=> this.setState({value: false})} container xs={8} sm={3} md={2} justify="flex-end" >
-            <Grid item>
-              {this.props.userId ==='' 
+          <Hidden smUp> 
+            {/* <Grid item onClick = {()=> this.setState({value: false})} container xs={8} justify="flex-end" >  */}
+            {this.props.userId ==='' 
               ? 
-              <div>
-                <Hidden xsDown>
-                  <Button variant="contained" color="primary" component={Link} to="/auth/signin" > Login 
-                  </Button>
-                </Hidden>
-                <Hidden smUp>
-                  <IconButton variant="contained" color="primary" component={Link} to="/auth/signin">
+              <Grid item onClick = {()=> this.setState({value: false})} container xs={10} justify="flex-end" > 
+                <IconButton variant="contained" color="primary" component={Link} to="/auth/signin">
                     <LoginIcon/>
-                  </IconButton>
-                </Hidden>
-              </div>
-              :
-              <div>
-              <IconButton style={{marginRight:10}} color={this.state.onProfilePage? "primary":"inherit"} aria-label="menu" component={Link} to="/profile"  onClick = {()=> 
-              {this.setState({value: false});
-              this.setState({onProfilePage: true})
-              }}>
-                <PersonIcon />
-              </IconButton>
-              <Logout handleLogout={this.handleLogout}/>
-              </div>
-              }
+                </IconButton>
+              </Grid>
+              : 
+              <Grid item onClick = {()=> this.setState({value: false})} container xs={8} justify="flex-end" > 
+                <Logout handleLogout={this.handleLogout}/>
+              </Grid>
+            }
+            
+          </Hidden>
+          <Hidden xsDown>
+            <Grid item onClick = {()=> this.setState({value: false})} container xs={8} sm={3} md={2} justify="flex-end" >
+              <Grid item>
+                {this.props.userId ==='' 
+                ? 
+                <div>
+                  <Hidden xsDown>
+                    <Button variant="contained" color="primary" component={Link} to="/auth/signin" > Login 
+                    </Button>
+                  </Hidden>
+                  {/* <Hidden smUp>
+                    <IconButton variant="contained" color="primary" component={Link} to="/auth/signin">
+                      <LoginIcon/>
+                    </IconButton>
+                  </Hidden> */}
+                </div>
+                :
+                <div>
+                <IconButton style={{marginRight:10}} color={this.state.onProfilePage? "primary":"inherit"} aria-label="menu" component={Link} to="/profile"  onClick = {()=> 
+                {this.setState({value: false});
+                this.setState({onProfilePage: true})
+                }}>
+                  <PersonIcon />
+                </IconButton>
+                <Logout handleLogout={this.handleLogout}/>
+                </div>
+                }
+              </Grid>
             </Grid>
-          </Grid>
+          </Hidden>
+          
         </Grid>
       </Toolbar>
       </AppBar>

@@ -164,10 +164,10 @@ function Jobs (props) {
     const [postsPerPage] = useState(10);
 
        
-    useEffect(()=>{
-        console.log('Entered Use Effect for Current Page')
-        console.log(currentPage)
-    },[currentPage])
+    // useEffect(()=>{
+    //     console.log('Entered Use Effect for Current Page')
+    //     console.log(currentPage)
+    // },[currentPage])
 
     // useEffect(()=>{
     //     console.log('Entered Use Effect for Search Results')

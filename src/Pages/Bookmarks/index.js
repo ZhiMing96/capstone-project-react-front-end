@@ -11,6 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { ThemeProvider } from '@material-ui/styles';
+import Pagination from '../Jobs/Pagination';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
@@ -95,6 +96,9 @@ function Bookmarks() {
         index:null,
         job_data:{},
     })
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(10);
 
     function getBookmarks() {
         const token = window.localStorage.getItem('authToken');
@@ -247,6 +251,15 @@ function Bookmarks() {
         setOpenDialog(false);
     }
 
+    //get current page lisitngs
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = bookmarks.slice(indexOfFirstPost, indexOfLastPost);
+
+    //Change Page 
+    const paginate = pageNumber => setCurrentPage(pageNumber);
+    console.log("page number = " + currentPage)
+
     return (
         <ThemeProvider theme={theme}> 
         <span>
@@ -259,8 +272,8 @@ function Bookmarks() {
             
             <Grid container style={{marginTop:20}}>
                 <Grid item xs={12}> 
-                    {bookmarks
-                    ? bookmarks.map((list,index) => (
+                    {currentPosts
+                    ? currentPosts.map((list,index) => (
                         <div key={index}>
                             <Paper className={classes.paper} elevation={2}>
                                 <Box display="flex" flexWrap="wrap">
@@ -477,7 +490,9 @@ function Bookmarks() {
             }
                 
             </Grid>
-        </Grid>
+            </Grid>
+
+            <Pagination postsPerPage={postsPerPage} totalPosts={bookmarks.length} paginate={paginate} />
         
         <Snackbar
             key={messageInfo ? messageInfo.key : undefined}
