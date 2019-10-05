@@ -44,7 +44,7 @@ class Login extends React.Component {
     .then(response => {
       let userId = response.data.profile.user_id
       this.props.doLogin(userId) //link to store action to hydrate store, connect     
-      this.props.history.push("/");        
+      this.props.history.push("/profile");        
     }).catch(error => {
        console.log(error);
     })

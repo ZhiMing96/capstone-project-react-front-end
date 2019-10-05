@@ -46,8 +46,10 @@ class NavTabs extends React.Component {
     if(window.localStorage.getItem('authToken') !==null){
       api.profile.get() 
       .then(response => {
-      let userId = response.data.profile.user_id
-      this.props.doLogin(userId) //HYDRATE
+        if(response.data.profile!==undefined){
+          let userId = response.data.profile.user_id
+          this.props.doLogin(userId) //HYDRATE
+        }
     })
   }
   }

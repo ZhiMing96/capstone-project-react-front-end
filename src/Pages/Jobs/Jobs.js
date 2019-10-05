@@ -443,7 +443,7 @@ function Jobs (props) {
             <Grid container style={{}}>
                 <Grid item xs={12}>
                     <Typography>
-                        <Box fontSize={20} m={0}>
+                        <Box fontSize={40} m={0}>
                         Career<strong> Guidance</strong> 
                         </Box>
                     </Typography>
@@ -453,13 +453,18 @@ function Jobs (props) {
                         <img src={carouselImgs[0].imgUrl} className={classes.img} alt=""/>
                     </a>
                 </div>
+                <div className={classes.root}>
+                    <a href={carouselImgs[1].link} target="_blank">
+                        <img src={carouselImgs[1].imgUrl} className={classes.img} alt=""/>
+                    </a>
+                </div>
             </Grid>
             
             <Container>
             <Grid container style={{}}>
             <Grid item xs={12}>
                 <Typography>
-                    <Box fontSize={20} m={1}>
+                    <Box fontSize={40} m={1}>
                     Career<strong> Daily Digest</strong> 
                     </Box>
                 </Typography>
@@ -481,39 +486,38 @@ function Jobs (props) {
         </div>
         : //USER WITHOUT ACCOUNT 
         <div> 
-            <CssBaseline/>
-            <br/>
-            <Divider variant="middle" style={{marginBottom:10}}/>
-            <Paper style={{marginBottom:10}}>
-                <Typography>
-                    Dont have an account yet? Sign Up Now!
-                </Typography>
-            </Paper>
-            <Paper>
-                <Typography>
-                    Quick Search!
-                </Typography>
-                <ButtonBase>
-                    
-                </ButtonBase>
-            </Paper>
-
-            <Grid container spacing={2} justify="flex-start" style={{marginTop:10}}>
-                <Grid item xs={6}>
-                    <Paper>
-                        <Typography>
-                            In Demand Jobs
-                        </Typography>
-                    </Paper>
+            <Grid container style={{}}>
+                <Grid item xs={12}>
+                    <Typography>
+                        <Box fontSize={40} m={0}>
+                        Career<strong> Guidance</strong> 
+                        </Box>
+                    </Typography>
                 </Grid>
-                <Grid item xs={6}>
-                    <Paper>
-                        <Typography>
-                            Popular Jobs
-                        </Typography>
-                    </Paper>
-                </Grid>
+                <div className={classes.root}>
+                    <a href={carouselImgs[0].link} target="_blank">
+                        <img src={carouselImgs[0].imgUrl} className={classes.img} alt=""/>
+                    </a>
+                </div>
+                <div className={classes.root}>
+                    <a href={carouselImgs[1].link} target="_blank">
+                        <img src={carouselImgs[1].imgUrl} className={classes.img} alt=""/>
+                    </a>
+                </div>
             </Grid>
+            
+            <Container>
+            <Grid container style={{}}>
+            <Grid item xs={12}>
+                <Typography>
+                    <Box fontSize={40} m={1}>
+                    Career<strong> Daily Digest</strong> 
+                    </Box>
+                </Typography>
+                </Grid>
+
+                </Grid>
+            </Container>
         </div>
         }
         <Snackbar
