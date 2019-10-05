@@ -218,32 +218,62 @@ function Jobs (props) {
         const query=url+tempString
         console.log(query);
         setLoading(true);
-        //axios.get(query)
-        axios.get(query, {headers: {"Authorization" : "Token "+token}})
-        .then(res=>{  
-            const result = res.data.results;
-            console.log("RESULTS FROM GET  REQUEST  = ")
-            console.log(result)
-            if(result!== undefined && result.length===0){ //empty  results 
-                console.log('Entered Zero Length Method');
-                setSearchResults(result);
-                openSnackbar();
-            } else if (result !==undefined && result.length!==0){ //Good to go 
-                const sortedResults = result.sort(compareValues('skills_match', 'desc')) //asc or desc
-                //const sortedResults = result.sort(compareValues('title', 'desc')) //asc or desc
-                setSearchResults(sortedResults);
-                console.log("RESULTS FROM API CALL IN JOBS.JS: ")
+        if(token !== null) {
+            console.log("GOT TOKEN");
+            axios.get(query, {headers: {"Authorization" : "Token "+token}})
+            .then(res=>{  
+                const result = res.data.results;
+                console.log("RESULTS FROM GET  REQUEST  = ")
                 console.log(result)
-                console.log("SORTTED ARRAY: ")
-                console.log(sortedResults);
-            }
-            setLoading(false);
-            
-        })
-        .catch(err=>{
-            console.error(err);  
-            setLoading(false);
-        })
+                if(result!== undefined && result.length===0){ //empty  results 
+                    console.log('Entered Zero Length Method');
+                    setSearchResults(result);
+                    openSnackbar();
+                } else if (result !==undefined && result.length!==0){ //Good to go 
+                    const sortedResults = result.sort(compareValues('skills_match', 'desc')) //asc or desc
+                    //const sortedResults = result.sort(compareValues('title', 'desc')) //asc or desc
+                    setSearchResults(sortedResults);
+                    console.log("RESULTS FROM API CALL IN JOBS.JS: ")
+                    console.log(result)
+                    console.log("SORTTED ARRAY: ")
+                    console.log(sortedResults);
+                }
+                setLoading(false);
+                
+            })
+            .catch(err=>{
+                console.error(err);  
+                setLoading(false);
+            })
+        } else {
+            console.log("NO TOKEN");
+            axios.get(query)
+            .then(res=>{  
+                const result = res.data.results;
+                console.log("RESULTS FROM GET  REQUEST  = ")
+                console.log(result)
+                if(result!== undefined && result.length===0){ //empty  results 
+                    console.log('Entered Zero Length Method');
+                    setSearchResults(result);
+                    openSnackbar();
+                } else if (result !==undefined && result.length!==0){ //Good to go 
+                    const sortedResults = result.sort(compareValues('skills_match', 'desc')) //asc or desc
+                    //const sortedResults = result.sort(compareValues('title', 'desc')) //asc or desc
+                    setSearchResults(sortedResults);
+                    console.log("RESULTS FROM API CALL IN JOBS.JS: ")
+                    console.log(result)
+                    console.log("SORTTED ARRAY: ")
+                    console.log(sortedResults);
+                }
+                setLoading(false);
+                
+            })
+            .catch(err=>{
+                console.error(err);  
+                setLoading(false);
+            })
+        }
+        
     }
 
     searchResults ? console.log('searchResults.length = ' + searchResults.length) : console.log("No Results")

@@ -188,7 +188,7 @@ function removeBookmark(listing){
                     Showing Results for <span style={{textDecorationLine: 'underline', fontWeight: 'bold'}}>{props.keyword}</span>
                 </Box>
             </Typography>
-            <FilterSelect/>
+            {/* <FilterSelect/> */}
         
         <Grid item xs={12}> 
         {listings
@@ -294,21 +294,39 @@ function removeBookmark(listing){
                                     <Typography variant="body2" >
                                         <Box align="left" style={{fontSize:12, marginTop:5}} alignItems="flex-start" display={{xs:'none', sm:'block'}}>
                                         
-                                            <Grid container alignItems="flex-start" style={{marginLeft:9}}>
-                                                <Grid item >
-                                                    <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
-                                                </Grid>
-                                                <Grid item>
-                                                    Lacking Skills:&nbsp;
-                                                </Grid>
-                                                {lackingSkills.map((skill)=>(
-                                                    <div key={skill}>
-                                                        <Grid item>
-                                                             {skill} &nbsp;
-                                                        </Grid>
-                                                    </div>
-                                                ))}
+                                            <Grid container  style={{marginLeft:9}}>
+                                                {list.skills_lacking
+                                                ?
+                                                // <Grid item sm={6}>
+                                                //     <Grid item >
+                                                <div>
+                                                        <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
+                                                        Lacking Skills: &nbsp;
+                                                        </div>
+                                                    
+                                                : <span></span>
+                                                }
                                                 
+                                                {
+                                                list.skills_lacking && list.skills_lacking.length!==0
+                                                ? 
+                                                <div>
+                                                    {list.skills_lacking.map((skill,index)=>(
+                                                    <div key={skill.id}>
+                                                        {index<3
+                                                        ?
+                                                        <div>
+                                                            {skill.skill} &nbsp;
+                                                        </div>
+                                                        :""
+                                                        }
+                                                    </div>
+                                                    ))}
+                                                </div>
+                                                :
+                                                ""
+                                                }
+                                            
                                             </Grid>
                                         </Box>
                                     </Typography>

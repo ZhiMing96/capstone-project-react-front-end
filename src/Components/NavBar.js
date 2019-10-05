@@ -125,7 +125,7 @@ class NavTabs extends React.Component {
               
                 <Tab label="Jobs" component={Link} to="/jobs" />
                 <Tab label="Events" component={Link} to="/events" />
-                <Tab label="Articles" component={Link} to="/articles" />
+                <Tab label="Articles" component={Link} to="/articles"/>
               
               {/* <Hidden smUp>
                 <Tab icon={<JobsIcon/>} style={{minWidth:0}} component={Link} to="/jobs" />
