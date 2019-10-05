@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import Home from '../Pages/Home'
 import Jobs from '../Pages/Jobs/Jobs'
 import Events from '../Pages/Events'
@@ -25,6 +25,7 @@ import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
 import Backdrop from '../Components/MobileSideBar/Backdrop';
 import api from  '../api';
 import {doLogin} from  '../redux/actions/auth'
+import {withRouter} from 'react-router';
 
 
 class NavTabs extends React.Component {
@@ -199,7 +200,16 @@ class NavTabs extends React.Component {
             <Route path="/events" component={Events} />
             <Route path="/articles" component={Articles} />
             <Route path="/auth/signin" component={Login} />
-            <Route path="/auth/signup" component={SignUp} />
+            {/* <Route exact path="/auth/signup" component={SignUp} /> */}
+            <Route path="/auth/signup/:id" render={({match}) => (
+              <SignUp id={match.params.id} />)} />
+            <Route exact path="/auth/signup">
+              <Redirect to={{
+                pathname: '/auth/signin',
+                state: { canSignUp: 'false'}
+              }}/>
+            </Route>
+            
             <Route path="/profile" component={Profile} />
             {/* <Route path="/profile" render={props => <Profile {...props} openSideBar={this.props.openSideBar} />} /> */}
             

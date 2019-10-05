@@ -22,7 +22,15 @@ class Login extends React.Component {
         registerSnackbar: this.props.location.state && this.props.location.state.registerSnackbar,
         errorSnackbar: false
     }
+    const locationProps = this.props.location.state
     console.log(this.state)
+    console.log(this.props.location.state);
+    if(locationProps !== undefined){
+      console.log('Can Signup status: '+ this.props.location.state.canSignUp) 
+    } else {
+      console.log('SIGN UP FAIL PROPS IS NOT HERE')
+    }
+    
   }
 
   handleChange (e) {

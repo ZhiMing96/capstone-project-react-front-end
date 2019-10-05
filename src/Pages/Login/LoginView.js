@@ -91,9 +91,9 @@ export default function LoginView(props) {
           <Grid container  justify="flex-end">
             <Grid item>
             <Link variant="body2">
-              <RouterLink to="./signup" style={{textDecoration : 'inherit', color: 'inherit'}} >
+              <a href="https://t.me/joinchat/AAAAAEI6mgRpU8Ook_LZiQ" target="_blank" style={{textDecoration : 'inherit', color: 'inherit'}} >
                 {"Don't have an account? Sign Up"}
-              </RouterLink>
+              </a>
               </Link>
             </Grid>
           </Grid>

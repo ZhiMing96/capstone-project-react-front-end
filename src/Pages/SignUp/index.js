@@ -28,7 +28,7 @@ class SignUp extends React.Component {
       redirect:false,
       errorSnackbar: false
     }
-
+    console.log('props ID= ' + this.props.id);
   }
 
   // This method will be sent to the child component
@@ -81,7 +81,8 @@ class SignUp extends React.Component {
         "password":  this.state.password,
         "username": this.state.username,
         "first_name": this.state.firstName,
-        "last_name": this.state.lastName
+        "last_name": this.state.lastName,
+        "telegram_id": this.props.id
         })
       .then((response) => {
         console.log(response)
@@ -116,31 +117,34 @@ class SignUp extends React.Component {
   
 
   render () {
-    return(
-      
-     <div>
-      {this.state.redirect? 
-      
-      
-        <Redirect to={{
-          pathname: '/auth/signin',
-          state: { registerSnackbar: true }
-      }} /> 
-      /*<Route path="/auth/signin" render ={()=> <Login  registerSnackbar={true}/>} />*/
-      
-       : 
-       <div>
-      <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>
-      <SnackBar
-          open={this.state.errorSnackbar}
-          handleClose={this.handleClose}
-          variant="error"
-          message={this.state.errorMessage}
-      />
-      </div>
+    if(this.props.id!==undefined){
+      return(
+        <div>
+        {this.state.redirect? 
+        
+        
+          <Redirect to={{
+            pathname: '/auth/signin',
+            state: { registerSnackbar: true }
+        }} /> 
+        /*<Route path="/auth/signin" render ={()=> <Login  registerSnackbar={true}/>} />*/
+        
+         : 
+         <div>
+        <SignUpView handleChange = {this.handleChange} handleSubmit = {this.handleSubmit} state= {this.state}/>
+        <SnackBar
+            open={this.state.errorSnackbar}
+            handleClose={this.handleClose}
+            variant="error"
+            message={this.state.errorMessage}
+        />
+        </div>
+        }
+        </div>
+       );
     }
-      </div>
-    );
+   
+    
   }
 }
 

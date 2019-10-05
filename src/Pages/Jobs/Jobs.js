@@ -49,12 +49,12 @@ const employmentTypes = [
       {
         name: "Career Guidance",
         imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/Bear_Website.jpg",
-        link: ""
+        link: "https://www.wsg.gov.sg/adapt-and-grow/jobseekers.html?_ga=2.95037916.1789263985.1570243866-1439352794.1565188425"
       },
       {
         name: "Career Matching",
         imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/CareersConnectBannerBLUE2.png",
-        link: ""
+        link: "https://www.wsg.gov.sg/career-services.html?_ga=2.95037916.1789263985.1570243866-1439352794.1565188425"
       }
   ]
 
@@ -218,9 +218,9 @@ function Jobs (props) {
         const query=url+tempString
         console.log(query);
         setLoading(true);
+        //axios.get(query)
         axios.get(query, {headers: {"Authorization" : "Token "+token}})
         .then(res=>{  
-            
             const result = res.data.results;
             console.log("RESULTS FROM GET  REQUEST  = ")
             console.log(result)
@@ -229,8 +229,8 @@ function Jobs (props) {
                 setSearchResults(result);
                 openSnackbar();
             } else if (result !==undefined && result.length!==0){ //Good to go 
-                const sortedResults = result.sort(compareValues('title', 'asc')) //asc or desc
-                
+                const sortedResults = result.sort(compareValues('skills_match', 'desc')) //asc or desc
+                //const sortedResults = result.sort(compareValues('title', 'desc')) //asc or desc
                 setSearchResults(sortedResults);
                 console.log("RESULTS FROM API CALL IN JOBS.JS: ")
                 console.log(result)
@@ -398,7 +398,7 @@ function Jobs (props) {
                 path="/jobs/listings" 
                 render={()=>
                     <div>
-                        <JobListings searchResults={currentPosts} loading={loading}/>
+                        <JobListings searchResults={currentPosts} loading={loading} keyword={state.keyword}/>
                         <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                     </div> 
                 }
@@ -410,24 +410,42 @@ function Jobs (props) {
         token
         ? //USER WITH ACCOUNT           
         <div>
-            <div className={classes.root}>
-                <img src={carouselImgs[0].imgUrl} className={classes.img} alt=""/>
-            </div>
-            <Container>
-            
             <Grid container style={{}}>
-                <Box border={1}>
-                <Paper className={classes.root} elevation={0}>
-                    
-                        <Typography>
-                            <Box fontWeight="fontWeightBold" m={1}>
-                                Based on your Seach History
+                <Grid item xs={12}>
+                    <Typography>
+                        <Box fontSize={20} m={0}>
+                        Career<strong> Guidance</strong> 
+                        </Box>
+                    </Typography>
+                </Grid>
+                <div className={classes.root}>
+                    <a href={carouselImgs[0].link} target="_blank">
+                        <img src={carouselImgs[0].imgUrl} className={classes.img} alt=""/>
+                    </a>
+                </div>
+            </Grid>
+            
+            <Container>
+            <Grid container style={{}}>
+            <Grid item xs={12}>
+                <Typography>
+                    <Box fontSize={20} m={1}>
+                    Career<strong> Daily Digest</strong> 
+                    </Box>
+                </Typography>
+                </Grid>
+                {/* <Grid item xs={12}>
+                    <Box border={1}>
+                    <Paper className={classes.root} elevation={0}>
+                        <Typography component="div">
+                            <Box textAlign="center" m={1}>
+                                
                             </Box>
                         </Typography>
-                    
-                </Paper> 
-                </Box>
-            </Grid>
+                    </Paper> 
+                    </Box>
+                </Grid> */}
+                </Grid>
             </Container>
             
         </div>

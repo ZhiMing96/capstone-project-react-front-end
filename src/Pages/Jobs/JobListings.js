@@ -4,9 +4,9 @@ import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, I
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon, Room as LocationIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons';
+import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon, Room as LocationIcon, PriorityHigh as PriorityHighIcon, Filter} from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
-import { green } from '@material-ui/core/colors';
+import FilterSelect from '../../Components/FilterSelect';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
@@ -106,7 +106,7 @@ function removeBookmark(listing){
         const results = props.searchResults
         console.log(results);
         setListings(results);
-
+        window.scrollTo(0, 0);
     },[props.searchResults])
 
     const getDate =(date) => {
@@ -183,6 +183,12 @@ function removeBookmark(listing){
         <Fragment>
         <CssBaseline />
         <Grid container>
+            <Typography>
+                <Box>
+                    Showing Results for <span style={{textDecorationLine: 'underline', fontWeight: 'bold'}}>{props.keyword}</span>
+                </Box>
+            </Typography>
+            <FilterSelect/>
         
         <Grid item xs={12}> 
         {listings
@@ -209,7 +215,7 @@ function removeBookmark(listing){
                                             { list.postedCompany 
                                                 ? 
                                                 <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
-                                                    {list.postedCompany.name}
+                                                    {list.postedCompany.name} {list.skills_match}
                                                 </a>
                                                 : ""
                                             }
@@ -270,13 +276,6 @@ function removeBookmark(listing){
                                                 :
                                                 <span></span>
                                                 }  
-                                                    {/* <Grid item sm={4} xs={5} container> <NearMeIcon className={classes.smallIcons} /> {list.address && list.address.districts[0] &&list.address.districts[0].region} 
-                                                    </Grid>
-                                                    <Grid item sm={4} xs={6} container justify="flex-start"> <ScheduleIcon className={classes.smallIcons}/> {list.employmentTypes[0].employmentType}
-                                                    </Grid>
-                                                    <Grid item sm={4} xs={6} container justify="flex-start"> 
-                                                    <EventIcon className={classes.smallIcons} /> {list.minimumYearsExperience} years exp
-                                                    </Grid> */}
                                                 </Grid>
                                         </Box>
                                     </Typography>
@@ -368,7 +367,10 @@ function removeBookmark(listing){
                                     
                                     <Typography variant="body2">
                                         <Box align="left" style={{marginLeft:10, fontSize:12, color:'#A71616', fontWeight:'bold'}}>
-                                            Recommended
+                                            { list.skills_match && list.skills_match>=0.4
+                                            ? "Recommended"
+                                            : ""
+                                            }
                                         </Box>
                                     </Typography>
                                 </Grid>
