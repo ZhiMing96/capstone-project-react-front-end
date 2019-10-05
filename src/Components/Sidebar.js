@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import { Grid, makeStyles, Typography, Avatar, Box, Button } from '@material-ui/core'
+import { Grid, makeStyles, Typography, Avatar, Box, Button, IconButton } from '@material-ui/core'
 import { AccountBox, BookmarksIcon, ListAlt, Group }from '@material-ui/icons'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import api from '../api'
+import TelegramIcon from '@material-ui/icons/Telegram';
 
 //INCOMPLETE
 const useStyles = makeStyles(theme => ({
@@ -59,6 +60,10 @@ function Sidebar(props) {
           <Typography>
             <Box fontWeight="fontWeightBold" fontSize={20}>
               {name.toUpperCase()}
+              <br/>
+              <IconButton href={"https://telegram.me/testing20190820_bot"}>
+              <TelegramIcon />
+              </IconButton>
             </Box>
           </Typography>
         </Grid>

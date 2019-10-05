@@ -1,6 +1,6 @@
 import React from 'react'
 import './MobileSideBar.css'
-import { Grid, makeStyles, Typography, Avatar, Box, Button, Paper } from '@material-ui/core'
+import { Grid, makeStyles, Typography, Avatar, Box, Button, Paper, IconButton } from '@material-ui/core'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -8,6 +8,7 @@ import EventsIcon from '@material-ui/icons/InsertInvitation';
 import ArticlesIcon from '@material-ui/icons/MenuBook';
 import JobsIcon from '@material-ui/icons/BusinessCenter';
 import api from '../../api'
+import TelegramIcon from '@material-ui/icons/Telegram';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -99,6 +100,10 @@ function MobileSideBar(props){
               fontSize={20}
             >
               {name.toUpperCase()}
+              <br/>
+              <IconButton href={"https://telegram.me/testing20190820_bot"}>
+              <TelegramIcon />
+              </IconButton>
             </Box>
           </Typography>
         </Grid>
