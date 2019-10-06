@@ -13,6 +13,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { ThemeProvider } from '@material-ui/styles';
 import Pagination from '../Jobs/Pagination';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading'
+import api from '../../api';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
@@ -109,8 +110,8 @@ function Bookmarks() {
         const options ={
             headers: {"Authorization" : "Token " + token}
         }
-        
-        axios.get('http://localhost:3000/jobs/bookmarks/all',{headers: {"Authorization":"Token " + token}})
+
+        api.bookmarks.get()
         .then(response=>{
             setLoading(false);
             console.log(response);
@@ -226,9 +227,9 @@ function Bookmarks() {
         const options ={
             headers: {"Authorization" : "Token " + token}
         }
-        axios.post('http://localhost:3000/jobs/bookmarks/remove',{
-                "bookmark_id": state.id //to be implemented
-        }, options)
+        
+        
+        api.bookmarks.remove({ "bookmark_id": state.id })
         .then(response => {
             console.log(response)
             if(response.data.response_code == '200'){
@@ -389,7 +390,7 @@ function Bookmarks() {
                                                                 }
                                                                 {list.job_data.minimumYearsExperience
                                                                 ?
-                                                                <Grid item sm={4} xs={6} container justify="flex-start"> 
+                                                                <Grid item sm={5} xs={6} container justify="flex-start"> 
                                                                 <EventIcon className={classes.smallIcons} />
                                                                     {list.job_data.minimumYearsExperience} years exp
                                                                 </Grid>
@@ -411,25 +412,28 @@ function Bookmarks() {
                                                                 Expiry Date: {getDate(list.job_data.metadata.expiryDate)}
                                                             </Box>
                                                         </Typography>
-                                                        <Typography variant="body2" >
-                                                            <Box align="left" style={{fontSize:12, marginTop:5}} alignItems="flex-start" display={{'xs':'none', 'sm':'block'}}>
-                                                                <Grid container alignItems="flex-start" style={{marginLeft:9}}>
-                                                                    <Grid item>
-                                                                        <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
-                                                                    </Grid>
-                                                                    <Grid item>
-                                                                        Lacking Skills:&nbsp;
-                                                                    </Grid>
-                                                                    {lackingSkills.map((skill)=>(
-                                                                        <div key={skill}>
-                                                                            <Grid item>
-                                                                                {skill} &nbsp;
-                                                                            </Grid>
-                                                                        </div>
-                                                                    ))}
+                                                        {list.job_data.skills_lacking && list.job_data.skills_lacking.length!==0 //not an empty lacking skills
+                                                        ?
+                                                        <Grid container justify="flex-start" style={{marginLeft:9}}>
+                                                            <Grid item xs={12} sm={4} md={3} container justify="flex-start">
+                                                                <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/> Lacking Skills: &nbsp;
+                                                            </Grid>
+                                                            <Grid item container xs={7}>
+                                                            {list.job_data.skills_lacking.map((skill,index)=>(
+                                                                <Grid item key={skill.id}>
+                                                                    {index<3
+                                                                    ?
+                                                                    <div>
+                                                                        {skill.skill} &nbsp;
+                                                                    </div>
+                                                                    :""
+                                                                    }
                                                                 </Grid>
-                                                            </Box>
-                                                        </Typography>
+                                                            ))}
+                                                            </Grid>
+                                                        </Grid>
+                                                        : ''
+                                                        }
                                                     </Grid>
                                                 </Grid>
                                                 <Hidden smUp>

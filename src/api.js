@@ -33,7 +33,7 @@ const work ={
   get: () => axios.get('http://localhost:3000/work/all', {
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
-  add: params => axios.post('http://localhost:3000/work/add', params,{
+  add: params => axios.post('http://localhost:3000/jobs/bookmarks/add', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
   remove: params => axios.post('http://localhost:3000/work/remove', params,{
@@ -43,6 +43,29 @@ const work ={
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
 }
+
+const bookmarks = { 
+  get: () => axios.get('http://localhost:3000/jobs/bookmarks/all', {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }), 
+  add: params => axios.post('http://localhost:3000/jobs/bookmarks/add', params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  remove: params => axios.post('http://localhost:3000/jobs/bookmarks/remove', params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+}
+
+const searchJobsAcct = {
+  get: (queryString) => axios.get(`http://localhost:3000/jobs/search?${queryString}`, {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  
+}
+const searchJobs = {
+  get: (queryString) => axios.get(`http://localhost:3000/jobs/search?${queryString}`)
+  
+}
   
   
   export default {
@@ -50,4 +73,7 @@ const work ={
     skills,
     profile,
     work,
+    bookmarks,
+    searchJobsAcct,
+    searchJobs
   }

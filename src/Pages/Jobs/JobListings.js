@@ -7,6 +7,7 @@ import axios from 'axios';
 import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, NearMe as NearMeIcon, Event as EventIcon, Room as LocationIcon, PriorityHigh as PriorityHighIcon, Filter} from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import FilterSelect from '../../Components/FilterSelect';
+import api from '../../api';
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
@@ -53,33 +54,20 @@ function addBookmark(job){
     }
     console.log("Entered Add Bookmarks");
     console.log(`adding bookmark for ${job.title}`)
-    axios.post("http://localhost:3000/jobs/bookmarks/add", {
-        job_uuid: job.uuid
-        }, options)
-        .then(response => {
-            console.log(response);
-            if(response.data.response_code==="200"){
-                console.log("BOOKMARK ADDED SUCCESSFULLY ");
-            }
-        })
-        .catch(error =>{
-            console.log(error);
-        })
+
+
+    api.bookmarks.add({ job_uuid: job.uuid })
+    .then(response => {
+        console.log(response);
+        if(response.data.response_code==="200"){
+            console.log("BOOKMARK ADDED SUCCESSFULLY ");
+        }
+    })
+    .catch(error =>{
+        console.log(error);
+    })
 }
 
-function removeBookmark(listing){
-   
-        console.log(`REMOVING BOOKMARK with uuid ${listing.uuid} and title ${listing.title} `);
-        
-        axios.get(`localhost:3000/bookmarks/remove?uuid=${listing.uuid}`)
-        .then(response => {
-            console.log(response)
-        })
-        .catch(err => {
-            console.error(err)
-        })
-
-    }
 
 
  function JobListings(props) {
@@ -178,18 +166,34 @@ function removeBookmark(listing){
     const handleExited = () => {
         processQueue();
     };
+
+    const submitFilter = props.submitFilter
         
     return (
         <Fragment>
         <CssBaseline />
         <Grid container>
-            <Typography>
-                <Box>
-                    Showing Results for <span style={{textDecorationLine: 'underline', fontWeight: 'bold'}}>{props.keyword}</span>
-                </Box>
-            </Typography>
-            {/* <FilterSelect/> */}
-        
+            <Grid item xs={12} sm={6} container justify="flex-start"> 
+                <Typography>
+                    <Box>
+                        Showing Results for <span style={{textDecorationLine: 'underline', fontWeight: 'bold'}}>{props.keyword}</span>
+                    </Box>
+                </Typography>
+            </Grid>
+            <Hidden xsDown>
+                <Grid item xs={6} container justify="flex-end">
+                    <Grid item>
+                        <FilterSelect submitFilter={submitFilter}/>
+                    </Grid>
+                </Grid>
+            </Hidden>
+            <Hidden smUp>
+                <Grid item xs={12} container justify="flex-end">
+                    <Grid item>
+                        <FilterSelect submitFilter={submitFilter}/>
+                    </Grid>
+                </Grid>
+            </Hidden>
         <Grid item xs={12}> 
         {listings
         ? listings.map((list,index) => (
@@ -208,14 +212,14 @@ function removeBookmark(listing){
                             </Box>
                         </Grid>
                         <Grid item container xs={12} sm={9} md={10} >
-                            <Grid item xs={10} md={9}>
+                            <Grid item xs={10} md={8}>
                                 <Grid item xs>
                                     <Typography >
                                         <Box align="left" style={{marginLeft:10}} fontSize={12} fontWeight="fontWeightBold">  
                                             { list.postedCompany 
                                                 ? 
                                                 <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
-                                                    {list.postedCompany.name} {list.skills_match}
+                                                    {list.postedCompany.name}
                                                 </a>
                                                 : ""
                                             }
@@ -289,47 +293,29 @@ function removeBookmark(listing){
                                             Expiry Date: {getDate(list.metadata.expiryDate)}
                                         </Box>
                                     </Typography>
-                                   
                                     
-                                    <Typography variant="body2" >
-                                        <Box align="left" style={{fontSize:12, marginTop:5}} alignItems="flex-start" display={{xs:'none', sm:'block'}}>
-                                        
-                                            <Grid container  style={{marginLeft:9}}>
-                                                {list.skills_lacking
-                                                ?
-                                                // <Grid item sm={6}>
-                                                //     <Grid item >
-                                                <div>
-                                                        <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/>
-                                                        Lacking Skills: &nbsp;
-                                                        </div>
-                                                    
-                                                : <span></span>
-                                                }
-                                                
-                                                {
-                                                list.skills_lacking && list.skills_lacking.length!==0
-                                                ? 
-                                                <div>
-                                                    {list.skills_lacking.map((skill,index)=>(
-                                                    <div key={skill.id}>
-                                                        {index<3
-                                                        ?
-                                                        <div>
-                                                            {skill.skill} &nbsp;
-                                                        </div>
-                                                        :""
-                                                        }
-                                                    </div>
-                                                    ))}
-                                                </div>
-                                                :
-                                                ""
-                                                }
-                                            
+                                        {list.skills_lacking && list.skills_lacking.length!==0 //not an empty lacking skills
+                                        ?
+                                        <Grid container justify="flex-start" style={{marginLeft:9}}>
+                                            <Grid item xs={12} sm={4} md={3} container justify="flex-start">
+                                                <PriorityHighIcon className={classes.smallIcons} style={{margin:0, width:15, height:14}}/> Lacking Skills: &nbsp;
                                             </Grid>
-                                        </Box>
-                                    </Typography>
+                                            <Grid item container xs={7}>
+                                            {list.skills_lacking.map((skill,index)=>(
+                                                <Grid item key={skill.id}>
+                                                    {index<3
+                                                    ?
+                                                    <div>
+                                                        {skill.skill} &nbsp;
+                                                    </div>
+                                                    :""
+                                                    }
+                                                </Grid>
+                                            ))}
+                                            </Grid>
+                                        </Grid>
+                                        : ''
+                                        }
                                 </Grid>
                             </Grid>
                             <Hidden smUp>
@@ -435,7 +421,7 @@ function removeBookmark(listing){
                             </Grid>
                         </Grid>
                     </Grid>
-
+                    
                     </Box>
                     
                 </Paper>

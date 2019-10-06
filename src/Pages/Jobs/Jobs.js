@@ -16,6 +16,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from 'axios'
 import JobListings from './JobListings';
 import CloseIcon from '@material-ui/icons/Close';
+import api from '../../api';
+import FilterSelect from '../../Components/FilterSelect'
 
 const employmentTypes = [
     {
@@ -116,33 +118,64 @@ const employmentTypes = [
   }));
 
 function compareValues(key, order='asc') {
-    return function(a, b) {
-        if(!a.hasOwnProperty(key) || 
+    console.log('ENTERED COMPARE VALUES METHOD with key= '+ key)
+    return function(c, d) {
+        var a = c; 
+        var b = d;
+
+        switch(key){
+            case 'minimum':
+                a = c.salary
+                b = d.salary
+                break;
+            case 'maximum':
+                a = c.salary
+                b = d.salary
+                break;
+            case 'newPostingDate' :
+                a = c.metadata;
+                b = d.metadata;
+                break;
+            case 'expiryDate' :
+                a = c.schemes;
+                b = d.schemes;
+                break;
+            case 'totalNumberOfView' :
+                a = c.metadata;
+                b = d.metadata;
+                break;
+        }
+        
+        
+        if(a !== null && b !== null ){
+            if(!a.hasOwnProperty(key) || 
             !b.hasOwnProperty(key)) {
-            return 0; 
+                return 0; 
+            }
+            // console.log(a[key])
+
+            const varA = (typeof a[key] === 'string') ?
+            a[key].toUpperCase() : a[key];
+            const varB = (typeof b[key] === 'string') ? 
+            b[key].toUpperCase() : b[key];
+
+
+            let comparison = 0;
+            if (varA > varB) {
+            comparison = 1;
+            } else if (varA < varB) {
+            comparison = -1;
+            }
+            return (
+            (order === 'desc') ? 
+            (comparison * -1) : comparison
+            );
         }
-        
-        const varA = (typeof a[key] === 'string') ? 
-        a[key].toUpperCase() : a[key];
-        const varB = (typeof b[key] === 'string') ? 
-        b[key].toUpperCase() : b[key];
-        
-        let comparison = 0;
-        if (varA > varB) {
-        comparison = 1;
-        } else if (varA < varB) {
-        comparison = -1;
-        }
-        return (
-        (order === 'desc') ? 
-        (comparison * -1) : comparison
-        );
     };
 }
 
 function Jobs (props) {
-    console.log("ENTERED JOB SEARCH COMPONENT");
-    const url = "http://localhost:3000/jobs/search?" 
+    console.log("ENTERED JOB SEARCH COMPONENT"); 
     const searchLimit = 100;
     const token= window.localStorage.getItem('authToken');
     const classes=useStyles();
@@ -160,31 +193,30 @@ function Jobs (props) {
         proceed: false,
         queryString:"",
     });
-    // const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(10);
-
-       
-    // useEffect(()=>{
-    //     console.log('Entered Use Effect for Current Page')
-    //     console.log(currentPage)
-    // },[currentPage])
+    const [sorted, setSorted] = useState(false);
+    
 
     useEffect(()=>{
-        console.log('Entered Use Effect for Search Results')
+        // console.log('Entered Use Effect for Search Results')
         setSearchResults(props.searchResults)
     },[props])
+
+    useEffect(()=>{
+        // console.log("ENTERED USE EFFECT FOR SORTING")
+        console.log(searchResults);
+        // //get current page lisitngs
+        const indexOfLastPost = currentPage * postsPerPage;
+        const indexOfFirstPost = indexOfLastPost - postsPerPage;
+        const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
+    })
 
     
 
     const handleChange = name => event => {
         setState({ ...state, [name]: (event.target.value) });
-        console.log('state = ')
-        console.log(state)
-
-        // console.log('searchResults =')
-        // console.log(searchResults)
     };
     
     const handleClickOpen = () => {
@@ -195,7 +227,6 @@ function Jobs (props) {
         setState({ ...state, open: false });
     };
 
-
     const handleSubmit = event => {
         setLoading(true);
         console.log("Entered Handle Submit")
@@ -205,7 +236,7 @@ function Jobs (props) {
         
         event.preventDefault();
         var tempString = ""
-        // && state.keyword != undefined
+        
         tempString += state.keyword !== "" ? ('keyword=' + state.keyword) :'';
         tempString += state.employmentType !== ""  ? ('&employment_type=' + state.employmentType ) :'';
         tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
@@ -215,29 +246,28 @@ function Jobs (props) {
         console.log("Query String = " + tempString);
         setState({ ...state, queryString: tempString });
         
-        const query=url+tempString
-        console.log(query);
+        //const query=url+tempString
+        //console.log(query);
         setLoading(true);
         if(token !== null) {
             console.log("GOT TOKEN");
-            axios.get(query, {headers: {"Authorization" : "Token "+token}})
+            //axios.get(query, {headers: {"Authorization" : "Token "+token}})
+            api.searchJobsAcct.get(tempString)
             .then(res=>{  
                 const result = res.data.results;
                 console.log("RESULTS FROM GET  REQUEST  = ")
-                console.log(result)
+                // console.log(result)
                 if(result!== undefined && result.length===0){ //empty  results 
                     console.log('Entered Zero Length Method');
                     setSearchResults(result);
                     openSnackbar();
                 } else if (result !==undefined && result.length!==0){ //Good to go 
-                    const sortedResults = result.sort(compareValues('skills_match', 'desc')) //asc or desc
-                    //const sortedResults = result.sort(compareValues('title', 'desc')) //asc or desc
+                    // const sortedResults = result.sort(compareValues('skills_match', 'desc')) //DEFAULT SORTING
+                    // setSearchResults(sortedResults);
+                    const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
                     setSearchResults(sortedResults);
-                    console.log("RESULTS FROM API CALL IN JOBS.JS: ")
-                    console.log(result)
-                    console.log("SORTTED ARRAY: ")
-                    console.log(sortedResults);
                 }
+                // submitFilter('skills_match', 'desc');
                 setLoading(false);
                 
             })
@@ -247,26 +277,21 @@ function Jobs (props) {
             })
         } else {
             console.log("NO TOKEN");
-            axios.get(query)
+            // axios.get(query)
+            api.searchJobs.get(tempString)
             .then(res=>{  
                 const result = res.data.results;
                 console.log("RESULTS FROM GET  REQUEST  = ")
-                console.log(result)
+                // console.log(result)
                 if(result!== undefined && result.length===0){ //empty  results 
                     console.log('Entered Zero Length Method');
                     setSearchResults(result);
                     openSnackbar();
                 } else if (result !==undefined && result.length!==0){ //Good to go 
-                    const sortedResults = result.sort(compareValues('skills_match', 'desc')) //asc or desc
-                    //const sortedResults = result.sort(compareValues('title', 'desc')) //asc or desc
+                    const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
                     setSearchResults(sortedResults);
-                    console.log("RESULTS FROM API CALL IN JOBS.JS: ")
-                    console.log(result)
-                    console.log("SORTTED ARRAY: ")
-                    console.log(sortedResults);
                 }
                 setLoading(false);
-                
             })
             .catch(err=>{
                 console.error(err);  
@@ -321,6 +346,21 @@ function Jobs (props) {
     //Change Page 
     const paginate = pageNumber => setCurrentPage(pageNumber);
     console.log("CURRENT PAGE NUMBER = " + currentPage)
+
+    const submitFilter = (filter,order) => {
+        //const sorted = searchResults.sort(compareValues(filter,order));
+        setSearchResults(searchResults.sort(compareValues(filter,order)))
+        console.log('passed setSearchResult method')
+        setSorted(!sorted);
+    }
+        
+
+    console.log("search results = ")
+    console.log(searchResults)
+
+    useEffect(()=>{
+        console.log('SEARCH RESULTS HAS BEEN MODIFIED')
+    },[searchResults])
 
   return (
     
@@ -428,7 +468,8 @@ function Jobs (props) {
                 path="/jobs/listings" 
                 render={()=>
                     <div>
-                        <JobListings searchResults={currentPosts} loading={loading} keyword={state.keyword}/>
+                        {/* <FilterSelect submitFilter={submitFilter}/> */}
+                        <JobListings searchResults={currentPosts} loading={loading} keyword={state.keyword} submitFilter={submitFilter}/>
                         <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                     </div> 
                 }
@@ -462,25 +503,14 @@ function Jobs (props) {
             
             <Container>
             <Grid container style={{}}>
-            <Grid item xs={12}>
-                <Typography>
-                    <Box fontSize={40} m={1}>
-                    Career<strong> Daily Digest</strong> 
-                    </Box>
-                </Typography>
+                <Grid item xs={12}>
+                    <Typography>
+                        <Box fontSize={40} m={1}>
+                        Career<strong> Daily Digest</strong> 
+                        </Box>
+                    </Typography>
                 </Grid>
-                {/* <Grid item xs={12}>
-                    <Box border={1}>
-                    <Paper className={classes.root} elevation={0}>
-                        <Typography component="div">
-                            <Box textAlign="center" m={1}>
-                                
-                            </Box>
-                        </Typography>
-                    </Paper> 
-                    </Box>
-                </Grid> */}
-                </Grid>
+            </Grid>
             </Container>
             
         </div>
