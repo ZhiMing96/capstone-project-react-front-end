@@ -101,7 +101,7 @@ function MobileSideBar(props){
             >
               {name.toUpperCase()}
               <br/>
-              <IconButton href={"https://telegram.me/testing20190820_bot"}>
+              <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
               <TelegramIcon />
               </IconButton>
             </Box>

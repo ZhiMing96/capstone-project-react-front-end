@@ -13,9 +13,9 @@ const useStyles = makeStyles(theme => ({
     height: 90,
   },
   button: {
-    margin: theme.spacing(2),
+    margin: theme.spacing(1.5),
     width: 180 ,
-    height: 50
+    height: 45
   },
 }));
 
@@ -61,7 +61,7 @@ function Sidebar(props) {
             <Box fontWeight="fontWeightBold" fontSize={20}>
               {name.toUpperCase()}
               <br/>
-              <IconButton href={"https://telegram.me/testing20190820_bot"}>
+              <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
               <TelegramIcon />
               </IconButton>
             </Box>
@@ -84,6 +84,7 @@ function Sidebar(props) {
         </Grid>
         
       </Grid>
+     
    )  
 }
 export default Sidebar;

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Component } from 'react';
 import Sidebar from '../../Components/Sidebar';
 import Grid from '@material-ui/core/Grid';
-import { Paper, Typography, Box, Hidden, IconButton } from '@material-ui/core';
+import { Paper, Typography, Box, Hidden, IconButton, makeStyles } from '@material-ui/core';
 import Bookmarks from '../Bookmarks';
 import Skills from './Skills/';
 import Profile from './PublicProfile/'
@@ -11,9 +11,27 @@ import MobileSideBar from '../../Components/MobileSideBar/MobileSideBar' ;
 import Backdrop from '../../Components/MobileSideBar/Backdrop';
 import MenuIcon from '@material-ui/icons/Menu';
 import { connect } from "react-redux";
+import Drawer from '@material-ui/core/Drawer';
+
+
+
+const useStyles = makeStyles(theme => ({
+  drawer: {
+    width: '23%',
+    flexShrink: 0,
+    //position:'relative',
+    //zIndex: 40
+  },
+  drawerPaper: {
+    width: '23%',
+    flexShrink: 0,
+    zIndex: 40,
+    marginTop: 64//appbar height
+  },
+}))
 
 function Main(props) {
-  
+  const classes = useStyles();
     console.log("PRINTING PROPS OF PROFILE PAGE")
     console.log(props);
 
@@ -48,12 +66,22 @@ function Main(props) {
         {/* <MobileSideBar show={openSideBar} backdropClickHandler={backdropClickHandler}/> */}
         {/* {backdrop} */}
         <Grid container style={{width: '100%'}} >
+        <Grid item sm={3} >
               <Hidden xsDown>
-                <Grid item className="sidebar" sm={3} >
-                    <Sidebar/> 
-                </Grid>
-              </Hidden>
-              {/* <Hidden smUp>
+              <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+         <Sidebar/> 
+         </Drawer>
+        </Hidden>
+        </Grid>
+                {/*
+
+               <Hidden smUp>
                 <Grid item sm={1}>
                   <IconButton onClick={drawerTogglerClickHandler}>
                     <MenuIcon/>

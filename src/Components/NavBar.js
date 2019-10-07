@@ -25,8 +25,15 @@ import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
 import Backdrop from '../Components/MobileSideBar/Backdrop';
 import api from  '../api';
 import {doLogin} from  '../redux/actions/auth'
-import {withRouter} from 'react-router';
+import { withStyles,makeStyles } from '@material-ui/core/styles';
+import { ImportantDevices } from '@material-ui/icons';
 
+const styles = theme => ({
+  root: {
+    //position:'relative',
+    //zIndex: 1400
+  },
+})
 
 class NavTabs extends React.Component {
 
@@ -230,4 +237,4 @@ const mapStateToProps = state => {
 };
 
 //export default (NavTabs);
-export default connect(mapStateToProps, { doLogin })(NavTabs);
+export default connect(mapStateToProps, { doLogin })(withStyles(styles, { withTheme: true}) (NavTabs));
