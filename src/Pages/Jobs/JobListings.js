@@ -368,14 +368,22 @@ function addBookmark(job){
                                             }
                                         </Box>
                                     </Typography>
-                                    
                                     <Typography variant="body2">
-                                        <Box align="left" style={{marginLeft:10, fontSize:12, color:'#A71616', fontWeight:'bold'}}>
-                                            { list.skills_match && list.skills_match>=0.4
-                                            ? "Recommended"
+                                        <a href="/profile/skills" style={{textDecoration:'none'}} target="_blank">
+                                        { list.skills_match && list.skills_match<=0.2
+                                            ? <Box align="left" style={{marginLeft:10, fontSize:12, color:'#d32f2f', fontWeight:'bold'}}>Add More Skills!</Box>
+                                            : list.skills_match && list.skills_match<=0.5
+                                            ? <Box align="left" style={{marginLeft:10, fontSize:12, color:'#0097a7', fontWeight:'bold'}}>Suitable</Box>
+                                            : list.skills_match && list.skills_match<=0.8
+                                            ? <Box align="left" style={{marginLeft:10, fontSize:12, color:'#0277bd', fontWeight:'bold'}}>Recommended</Box>
+                                            : list.skills_match && list.skills_match>0.8
+                                            ? 
+                                            <Box align="left" style={{marginLeft:10, fontSize:12, color:'#388e3c', fontWeight:'bold'}}>Highly Recommended</Box>
                                             : ""
                                             }
-                                        </Box>
+                                        </a>
+                                            
+                                        
                                     </Typography>
                                 </Grid>
 
@@ -448,8 +456,10 @@ function addBookmark(job){
             }}
             message={<span style={{boxShadow:"none"}} id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
             action={[
-            <Button color="secondary" size="small" href="/profile/bookmarks">
-                View
+            <Button size="small" href="/profile/bookmarks">
+                <Box style={{color:'#5BC0BE', fontWeight:600}}>
+                    View
+                </Box>
             </Button>,
             <IconButton
                 key="close"

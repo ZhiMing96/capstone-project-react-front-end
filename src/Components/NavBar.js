@@ -19,7 +19,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu'
 import Logout from './Logout';
-import { Hidden } from '@material-ui/core';
+import { Hidden, Box } from '@material-ui/core';
 import LoginIcon from '@material-ui/icons/Input';
 import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
 import Backdrop from '../Components/MobileSideBar/Backdrop';
@@ -27,6 +27,7 @@ import api from  '../api';
 import {doLogin} from  '../redux/actions/auth'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import { ImportantDevices } from '@material-ui/icons';
+import { typography } from '@material-ui/system';
 
 const styles = theme => ({
   root: {
@@ -44,6 +45,11 @@ class NavTabs extends React.Component {
       message: '',
       onProfilePage: false,
       sideBarOpen: false,
+      tabStyle:{
+        jobs: 'light',
+        events: 'light',
+        articles: 'light',
+      }
     };
     console.log(this.props)
     
@@ -73,6 +79,8 @@ class NavTabs extends React.Component {
   }
 
   handleChange = (event, value) => {
+    console.log(value)
+    
     this.setState({ value });
     this.setState({onProfilePage: false})
   };
@@ -87,6 +95,7 @@ class NavTabs extends React.Component {
 
 
   render() {
+    
     const token = window.localStorage.getItem('authToken');
     console.log(token)
 
@@ -98,11 +107,33 @@ class NavTabs extends React.Component {
       backdrop = <Backdrop click={this.backdropClickHandler}/>
     }
 
+    var jobsFont = 400;
+    var eventsFont = 400;
+    var articlesFont = 400;
+    switch(this.state.value) {
+      case 0:
+        jobsFont = 600;
+        eventsFont = 400;
+        articlesFont = 400;
+        break;
+      case 1:
+        jobsFont = 400;
+        eventsFont = 600;
+        articlesFont = 400;
+      break;
+      case 2:
+        jobsFont = 400;
+        eventsFont = 400;
+        articlesFont = 600;
+      break;
+      
+    }
+
     return (
       <div>
         <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler}/>
         {backdrop}
-        <AppBar position="sticky" color="default" style={{zIndex:50}}>
+        <AppBar position="sticky" color="#FFFFFF" style={{zIndex:50}}>
         {/* <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}> */}
         <Toolbar>
         <Grid container direction="row" alignItems="center" justify="flex-start" >
@@ -119,28 +150,29 @@ class NavTabs extends React.Component {
             : <div></div>
           }
           <Grid item xs={2} sm={3}>
-              LOGO
+            <Typography>
+              <Box fontWeight={600} fontSize={20} >
+                <Link to="/" style={{textDecoration:'none', color:'#0091ea'}}>
+                  JOPIFY
+                </Link>
+              </Box>
+            </Typography>
           </Grid>
           <Hidden xsDown>
           <Grid item xs={5} sm={6} md={7} container justify="flex-end">
             <Tabs
               value={this.state.value}
               onChange={this.handleChange}
-              indicatorColor="primary"
               textColor ="primary"
               variant ='fullWidth'
-              
+              indicatorColor=""
             >
               
-                <Tab label="Jobs" component={Link} to="/jobs" />
-                <Tab label="Events" component={Link} to="/events" />
-                <Tab label="Articles" component={Link} to="/articles"/>
-              
-              {/* <Hidden smUp>
-                <Tab icon={<JobsIcon/>} style={{minWidth:0}} component={Link} to="/jobs" />
-                <Tab icon={<EventsIcon/>} style={{minWidth:0}} component={Link} to="/events" />
-                <Tab icon={<ArticlesIcon/>} style={{minWidth:0}} component={Link} to="/articles" />
-              </Hidden> */}
+                <Tab label={<span style={{color:'#0091ea',fontSize:18, fontWeight:jobsFont}}>JOBS</span>} component={Link} to="/jobs" />
+
+                <Tab textColor="red" label={<span style={{color:'#0091ea', fontSize:18, fontWeight:eventsFont}}>EVENTS</span>} component={Link} to="/events" />
+
+                <Tab label={<span style={{color:'#0091ea',fontSize:18, fontWeight:articlesFont}}>ARTICLES</span>} component={Link} to="/articles"/>
             </Tabs>
             <Grid item onClick = {()=> 
             

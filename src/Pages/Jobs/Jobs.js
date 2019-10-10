@@ -174,6 +174,10 @@ function compareValues(key, order='asc') {
     };
 }
 
+function getPopularJobs(){
+    
+}
+
 function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT"); 
     const searchLimit = 100;
@@ -370,8 +374,9 @@ function Jobs (props) {
         <Grid container alignContent="flex-start">
             <Grid item xs={12} >
             <form onSubmit={handleSubmit}>
-                <Paper className={classes.root} elevation={0} style={{marginTop:20}}>
-                    <Box border={2} borderColor="#9F0D6E" className={classes.root} style={{margin:0, padding:0, paddingInlineStart:5}}>
+                <Paper className={classes.root} elevation={1} style={{margin:50, marginTop:40,marginBottom:20,borderRadius: 25}}>
+                    {/* <Box border={2} borderColor="#9F0D6E" className={classes.root} style={{margin:0, padding:0, paddingInlineStart:5}}> */}
+                    <Box className={classes.root} style={{margin:3, padding:0, paddingInlineStart:5}}>
                         <InputBase
                             className={classes.input}
                             placeholder="Search For a Job"
@@ -451,7 +456,7 @@ function Jobs (props) {
                 </form>   
             </Grid>
         </Grid>
-        <Grid style={{margin:10}}>
+        <Grid style={{marginLeft:50, marginRight:55}}>
             { loading 
             ? <LinearLoading/>
             : <span></span>

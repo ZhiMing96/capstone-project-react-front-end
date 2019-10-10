@@ -31,7 +31,7 @@ export default function CircularLoading() {
         className={classes.progress}
         variant="determinate"
         value={progress}
-        color="secondary"
+        color='primary'
       />
     </div>
   );

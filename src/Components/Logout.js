@@ -34,7 +34,7 @@ function Logout(props) {
     return (
       <span>
         <Hidden xsDown>
-          <Button variant="contained" color="primary" style={{marginLeft:10}} onClick={handleClickOpen}> 
+          <Button variant="contained" color="primary" style={{marginLeft:10,borderRadius: 25}} onClick={handleClickOpen}> 
           Logout 
           </Button>
         </Hidden>

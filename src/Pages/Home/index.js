@@ -6,6 +6,8 @@ import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import JobListingsView from './JobListingsView';
 import ArticleView from './ArticleView';
 import EventsView from './EventsView';
+import homepageBG from '../../images/homepageBG.JPG'
+import { Typography, Paper } from '@material-ui/core';
 
 class Home extends Component {
   constructor(props){
@@ -62,8 +64,16 @@ class Home extends Component {
 
     if(this.state.sugguestedJobPosition != null) {
       return(
-        <div className="">
-          <h1> Daily Digest </h1>
+        <div className="" >
+          <div style={{backgroundImage:`url(${homepageBG})`, backgroundPosition: 'center',backgroundSize: 'cover', width:'100%', height:'400px'}} >
+          
+            <Typography style={{color:"white", fontWeight:'bold', fontSize:40}}>
+              DAILY DIGEST
+            </Typography>
+          
+          </div>
+          
+          
           <div className="">
             <ArticleView />
           </div>
