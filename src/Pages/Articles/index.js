@@ -2,13 +2,27 @@ import React, { useState, useEffect, Fragment }from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, StaticRouter, Redirect } from 'react-router-dom';
 import ArticlesBG from '../../images/articlesBG.jpg'
-import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Tabs, Tab, Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, CardActions, Collapse, Divider } from '@material-ui/core';
+import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Tabs, Tab, Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, CardActions, Collapse, Divider, CardActionArea } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import clsx from 'clsx';
 import { red } from '@material-ui/core/colors';
+import styled from 'styled-components';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos'
+
+const Wrapper = styled.div`
+    width:100%
+`;
+
+const Page = styled.div`
+    width:100%
+`;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,29 +52,38 @@ const useStyles = makeStyles(theme => ({
     maxHeight: '100%',
   },
   cardLarge: {
-    maxWidth: '90%',
+    maxWidth: '95%',
     marginBlock:10
   },
   cardSmall:{
-
+    maxWidth: '90%',
+    marginBlock:10
   },
-  media: {
+  mediaLarge: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '40.25%',
   },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
+  mediaSmall: {
+    height: 0,
+    paddingTop: '56.25%',
   },
-  expandOpen: {
-    transform: 'rotate(180deg)',
+  articleHeading: {
+    textAlign:'Left', 
+    fontWeight:'bold', 
+    overflow:'hidden',
+    textOverflow:'ellipsis', 
+    display:'-webkit-box',
+    WebkitLineClamp:2,
+    WebkitBoxOrient:'vertical'
   },
-  avatar: {
-    backgroundColor: red[500],
-  },
+  articleDescription:{
+    textAlign:'Left', 
+    overflow:'hidden',
+    textOverflow:'ellipsis', 
+    display:'-webkit-box',
+    WebkitLineClamp:3,
+    WebkitBoxOrient:'vertical'
+  }
 }));
 
 function Articles() {
@@ -130,6 +153,57 @@ function GetArticles({setArticles, articles, classes})
     })
   }, []);
 
+  var carouselSettings = {
+    accessibiliy: true,
+    speed:1500,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    infinite:true,
+    dots:true,
+    //autoplay: true,
+    arrows:true,
+    autoplaySpeed:8000,
+    draggable:true,
+    lazyLoad: "progressive",
+    pauseOnHover: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }]
+  };
+
+  const formatDate = (dateString) => {
+    var date = new Date(dateString);
+    var month = date.toLocaleString('en-GB', {month: 'short'});
+    console.log(month);
+    var day = date.getMonth();
+    console.log(day);
+    var year = date.getFullYear();
+
+    return(`${day} ${month} ${year}`)
+  }
+
   return(
     <Fragment>
       <CssBaseline/>
@@ -168,85 +242,107 @@ function GetArticles({setArticles, articles, classes})
           {articles.map((article,index) => {
             if(index <= 1){
               return (
-                <Grid item xs={6} style={{marginTop:'15px',}}>
+                <Grid item xs={12} sm={6} style={{marginTop:'15px',}}>
                   <Card className={classes.cardLarge}>
-                    <CardMedia
-                      className={classes.media}
-                      image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
-                      title="Paella dish"
-                    />
+                    <CardActionArea href={article.link} target='._blank'>
+                      <CardMedia
+                        className={classes.mediaLarge}
+                        image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
+                        title={article.title.rendered}
+                      />
+                    </CardActionArea>
+                    <CardContent style={{height:180}}>
+                      <Grid container display='flex'>
+                        <Grid item xs={10} container style={{paddingLeft:10, height:'-webkit-fill-available'}} direction='column' justify="space-between">
+                          <Grid item>
+                            <Typography className={classes.articleHeading} gutterBottom variant="body1">
+                              {article.title.rendered}
+                            </Typography>
+                            <Typography className={classes.articleDescription} variant="body2" color="textSecondary">
+                                {article.acf.seo_meta_description}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Typography style={{textAlign:'left', fontSize:11}}>
+                              Posted on: {formatDate(article.date)}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={2} style={{textAlign:'end'}} container direction='column' justify="space-between">
+                          <Grid item>
+                            <Typography style={{fontSize:11}}>
+                              5 Min Read
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Typography style={{fontSize:11}}>
+                              Article Tag
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
                   </Card>
                 </Grid>
               )
-            } else {
-              return (
-                <Grid item xs={4} style={{marginTop:'15px',}}>
-                  <Card className={classes.cardLarge}>
-                    <CardMedia
-                      className={classes.media}
-                      image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/09/Masthead-1.jpg'
-                      title="Paella dish"
-                    />
-                  </Card>
-                </Grid>
-              )
-            }
-          })}
-           </Grid>
-          
-      
+            } })}
+            </Grid>
+
+          <Wrapper style={{marginInlineStart:15, marginInlineEnd:15}}>
+            <Slider {...carouselSettings}>
+                {articles.map((article,index) => {
+                  if(index > 1){
+                    return (
+                      <Page>
+                        <Card className={classes.cardSmall}>
+                          <CardActionArea href={article.link} target='._blank'>
+                            <CardMedia
+                              className={classes.mediaSmall}
+                              image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/09/Masthead-1.jpg'
+                              title={article.title.rendered}
+                            />
+                          </CardActionArea>
+                          <CardContent style={{height:150}}>
+                            <Grid container direction='column' justify="space-between" style={{height:'-webkit-fill-available'}}>
+                              <Grid item xs={12}>
+                                <Typography className={classes.articleHeading} gutterBottom variant="body1" >
+                                  {article.title.rendered}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} style={{textAlign:'right'}}>
+                                <Typography style={{fontSize:11}}>
+                                    Article Tag(s)
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} container direction='row' justify="space-between">
+                                <Grid item>
+                                  <Typography style={{textAlign:'left', fontSize:11}}>
+                                    Posted on: {formatDate(article.date)}
+                                  </Typography>
+                                </Grid>
+                                <Grid item>
+                                  <Typography style={{fontSize:11}}>
+                                    5 Min Read
+                                  </Typography>
+                                
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      </Page>
+                    )
+                  }
+                })}
+              </Slider>
+            </Wrapper>
     </Fragment>
     
   )
   
 } 
 
-// OpenLink = (link) => {
-//   const url = link; 
-//   return(
-//     <Redirect to={url}/>  
-//   )
-// }
 
-function GetImage({url, classes}){
-  console.log("ENTERED GET IMAGE");
-  console.log(url)
-  const [imgUrl, setImgUrl] = useState("");
-
-  // useEffect(() => {
-    axios.get(url)
-      .then(res => {
-        // console.log("IMG LINK = ")
-        // console.log(res.data.guid.rendered);
-        const img = res.data.guid.rendered;
-        // console.log(imgUrl)
-        setImgUrl(img)
-      })
-
-    return (
-      <div >
-        <img className={classes.img} src={imgUrl} />
-      </div>
-      
-    )
-      
-    // });
-
-    return(
-      <div>
-        <h1>Image Not Loaded</h1>
-      </div>
-    )
-    
-}
-
-function getPersonalisationInformation() {
-  axios.get('localhost:3000/..') //Insert backend API 
-    .then(res => {
-      console.log(res.data);
-
-    })
-}
 export default Articles
 
 
