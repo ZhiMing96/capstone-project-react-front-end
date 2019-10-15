@@ -5,6 +5,7 @@ import { wrap } from 'module';
 import { light } from '@material-ui/core/styles/createPalette';
 import { maxHeight } from '@material-ui/system';
 import {Info as InfoIcon}  from '@material-ui/icons';
+import EventsBG from '../../images/eventsBG.jpg'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -224,25 +225,22 @@ function Events() {
     <div>
       <Fragment>
         <CssBaseline/>
-        
-          <Box display="flex" flexDirection="row">
-          <div style={{ width: '100%' }}>
+          <div style={{backgroundImage:`url(${EventsBG})`,backgroundPosition: 'center',backgroundSize: 'cover', width:'100%', height:'350px'}}>
             <Typography>
-              <Box component="span" display="block" textAlign="left" fontWeight={600} fontSize={40} letterSpacing={2} style={{marginLeft:'10%', marginTop:30}} width="100%">
+              <Box textAlign="left" fontWeight="fontWeightBold" fontSize={40} letterSpacing={2} style={{marginInlineStart:'11%', paddingTop:'150px',color:'#024966'}}>
                 EVENTS
               </Box>
+              <Box textAlign="left" fontWeight="fontWeightBold" fontSize={15} letterSpacing={1} style={{marginInlineStart:'11%', paddingTop:'1px',color:'#024966'}}>
+                <Grid container style={{}}>
+                  <Divider orientation="vertical" style={{width:7, height:30, backgroundColor :'#1382B9', marginRight:10}} />
+                  <Typography style={{marginTop:5, fontWeight:600}}>
+                    One Stop Career Guidance Portal
+                  </Typography>
+                </Grid>
+              </Box>
             </Typography>
-            <Grid container style={{marginLeft:'10%'}}>
-              <Divider orientation="vertical" style={{width:7, height:30, backgroundColor :'#1382B9', marginRight:10}} />
-              <Typography style={{marginTop:5, fontWeight:600}}>
-                One Stop Career Guidance Portal
-              </Typography>
-            </Grid>
-            </div>
-          </Box>
-
-          
-          <div style={{maxWidth: '100%', marginTop:10, flex:'wrap',  overflow:"auto"}}>
+          </div>
+          <div style={{maxWidth: '100%', flex:'wrap',  overflow:"auto",position:'sticky', top:'64px', zIndex:100}}>
          
             <Tabs
               value={value}
@@ -250,15 +248,15 @@ function Events() {
               indicatorColor=""
               textColor=""
               centered
-              style={{maxWidth:'100%', margin:30}}
+              style={{maxWidth:'100%', marginInline:30, paddingBlock:5, backgroundColor:'#e3f2fd',alignItems:'center'}}
             >
-                <Tab disableRipple style={{minHeight:0, padding:'3px 12px',}}  label={<span style={{fontWeight:fontWeight.recommended}}>Recommended</span>} />
-                <Tab disableRipple style={{minHeight:0, padding:'3px 12px'}} label={<span style={{fontWeight:fontWeight.topPicks}}>Top Picks</span>} />
-                <Tab disableRipple style={{minHeight:0, padding:'3px 12px'}} label={<span style={{fontWeight:fontWeight.latest}}>Latest</span>} />
+                <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}}  label={<span style={{fontWeight:fontWeight.recommended}}>Recommended</span>} />
+                <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}} label={<span style={{fontWeight:fontWeight.topPicks}}>Top Picks</span>} />
+                <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}} label={<span style={{fontWeight:fontWeight.latest}}>Latest</span>} />
             </Tabs>
           </div>
           
-        <Grid container>
+        <Grid container style={{zIndex:0}}>
           <Grid item lg={8} sm={7} style={{maxHeight: 700,overflowY:'auto'}}>
           {events.map((event, index) => (
               <div key={index}>
