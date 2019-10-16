@@ -19,6 +19,8 @@ const skills ={
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
   suggested: () => axios.post('http://localhost:3000/skills/suggested', {
+    "limit": 5
+    },{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
 }

@@ -31,8 +31,7 @@ class SuggestedSkillsView extends React.Component {
     super(props);
     this.state = {
       skill: {},
-      description: []
-
+      description: [],
     };
     console.log("constructor" + this.props.suggestedSkills)
     this.handleAdd = this.handleAdd.bind(this)
@@ -41,7 +40,7 @@ class SuggestedSkillsView extends React.Component {
 
   componentDidMount() {
     console.log("mount")
-    /*api.skills.suggested().then(res=>{
+    api.skills.suggested().then(res=>{
       if (res.data.response_code===200){
         console.log('200')
         res.data.suggested_skills.forEach(skill=>{
@@ -52,154 +51,6 @@ class SuggestedSkillsView extends React.Component {
         
       }
     }).catch()
-    */
-
-    //hard code return from batch
-    const suggested_skills = [
-      {
-        "data_date": "2019-10-15",
-        "confidence": 1.765565,
-        "count": 4,
-        "is_added": 0,
-        "skill": [
-          {
-            "id": 215,
-            "skill": "Agile Methodologies",
-            "source": "JOBKRED"
-          }
-        ],
-        "search_list": [
-          {
-            "search_datetime": "15-10-2019 00:10:22",
-            "keyword": "java developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          },
-          {
-            "search_datetime": "15-10-2019 00:10:12",
-            "keyword": "full stack developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          }
-        ]
-      },
-      {
-        "data_date": "2019-10-15",
-        "confidence": 1.42857,
-        "count": 2,
-        "is_added": 0,
-        "skill": [
-          {
-            "id": 351,
-            "skill": "Ant",
-            "source": "JOBKRED"
-          }
-        ],
-        "search_list": [
-          {
-            "search_datetime": "15-10-2019 00:10:22",
-            "keyword": "java developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          },
-          {
-            "search_datetime": "15-10-2019 00:10:12",
-            "keyword": "full stack developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          }
-        ]
-      },
-      {
-        "data_date": "2019-10-15",
-        "confidence": 1.50327,
-        "count": 3,
-        "is_added": 0,
-        "skill": [
-          {
-            "id": 2733,
-            "skill": "Eclipse",
-            "source": "JOBKRED"
-          }
-        ],
-        "search_list": [
-          {
-            "search_datetime": "15-10-2019 00:10:22",
-            "keyword": "java developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          },
-          {
-            "search_datetime": "15-10-2019 00:10:12",
-            "keyword": "full stack developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          }
-        ]
-      },
-      {
-        "data_date": "2019-10-15",
-        "confidence": 1.05263,
-        "count": 2,
-        "is_added": 0,
-        "skill": [
-          {
-            "id": 2797,
-            "skill": "EJB",
-            "source": "JOBKRED"
-          }
-        ],
-        "search_list": [
-          {
-            "search_datetime": "15-10-2019 00:10:22",
-            "keyword": "java developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          },
-          {
-            "search_datetime": "15-10-2019 00:10:12",
-            "keyword": "full stack developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          }
-        ]
-      },
-      {
-        "data_date": "2019-10-15",
-        "confidence": 10,
-        "count": 6,
-        "is_added": 0,
-        "skill": [
-          {
-            "id": 4072,
-            "skill": "Hibernate",
-            "source": "JOBKRED"
-          }
-        ],
-        "search_list": [
-          {
-            "search_datetime": "15-10-2019 00:10:22",
-            "keyword": "java developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          },
-          {
-            "search_datetime": "15-10-2019 00:10:12",
-            "keyword": "full stack developer",
-            "minimum_salary": 3000,
-            "employment_type": "Full Time"
-          }
-        ]
-      }
-    ]
-    suggested_skills.forEach(skill => {
-      skill.skill.id = parseInt(skill.skill.id)
-
-    })
-    this.props.updateSuggestedSkills(suggested_skills) //return array
-
-
-
   }
 
   handleAdd(suggested, event) {
@@ -262,11 +113,11 @@ class SuggestedSkillsView extends React.Component {
           </Grid>
 
         </Grid>
-
+      {this.props.suggestedSkills !== null && 
         <Grid container style={{ padding: '1.5%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', }}>
           {
             this.props.suggestedSkills.length === 0 ?
-              <Typography>
+              <Typography >
                 <Box>
                   Oops! You have not searched for jobs in the past one month...
               </Box>
@@ -274,38 +125,48 @@ class SuggestedSkillsView extends React.Component {
               :
               <div>
                 {this.props.suggestedSkills.map((skill, index) => { return <CustomisedSuggestedSkillsChip suggested={skill} handleAdd={this.handleAdd} showDescription={this.showDescription} /> })}
-                <Box m={2}>
-                  <Typography variant='body2' color='textSecondary'>
-                    Because you searched for
+                {this.state.description.length !==0 ?
+                <Box m={2} lineHeight='1'>
+                  
+                  <Typography variant='body2' color='textSecondary' display="inline">
+                    
+                    {"Because you searched for "}
                    </Typography>
-
-                  {this.state.description.forEach((desc, index) => {
-                    return index !== this.state.description.length - 1 ?
+                  
+                  {this.state.description.map((desc, index) => {
+                    return index !== this.state.description.length-1 ?  
+                      index === this.state.description.length-2 ?//no comma
                       <span>
-                        <Typography fontStyle="italic" variant='body2' color='textSecondary'>
-                          {desc}
+                        <Typography style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
+                            {desc}
                         </Typography>
-                        <Typography variant='body2' color='textSecondary'>
-                          ,
+                        <Typography variant='body2' color='textSecondary' display="inline">
+                        {" and "}
                         </Typography>
                       </span>
+                        :
+
+                        <span>
+                        <Typography style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
+                            {desc}
+                        </Typography>
+                        <Typography variant='body2' color='textSecondary' display="inline">     
+                            {", "}
+                        </Typography>
+                        </span>
                       :
-                      <span>
-                        <Typography variant='body2' color='textSecondary'>
-                          and
-                        </Typography>
-                        <Typography fontStyle="italic" variant='body2' color='textSecondary'>
+                        <Typography  style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
                           {desc}
                         </Typography>
-                      </span>
-
-                  })
+                  }) 
                   }
 
                 </Box>
+                : <Box m={2} lineHeight='1' > <br/> </Box>}
+                
               </div>
           }
-        </Grid>
+        </Grid>}
 
       </div>
 

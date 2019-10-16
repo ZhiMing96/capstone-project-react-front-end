@@ -4,7 +4,7 @@ const initialState = {
   //past: [],
   //present: [],
   skills:[],
-  suggestedSkills:[]
+  suggestedSkills:null
 };
 
 export default function (state = initialState, action) {
