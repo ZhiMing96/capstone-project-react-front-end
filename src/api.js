@@ -18,6 +18,9 @@ const skills ={
   remove: params => axios.post('http://localhost:3000/skills/remove', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  suggested: () => axios.post('http://localhost:3000/skills/suggested', {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const profile={

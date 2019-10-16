@@ -5,7 +5,6 @@ import ReadOnlyView from './ReadOnlyView'
 import WorkWithDatepicker from './WorkWithDatepicker'
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
-import { undoDeletedWork } from '../../../redux/actions/work'
 import { connect } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
@@ -128,4 +127,4 @@ function Profile(props) {
         </div>
     )
 }
-export default connect(null,{undoDeletedWork})(Profile);
+export default connect(null)(Profile);

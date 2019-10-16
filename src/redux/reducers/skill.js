@@ -1,9 +1,10 @@
-import { ADD_SKILL, REMOVE_SKILL, UPDATE_SKILL, UNDO_DELETED_SKILL } from "../actions/types";
+import { ADD_SKILL, REMOVE_SKILL, UPDATE_SKILL, UPDATE_SUGGESTED_SKILLS } from "../actions/types";
 import api from '../../api'
 const initialState = { 
   //past: [],
   //present: [],
-  skills:[]
+  skills:[],
+  suggestedSkills:[]
 };
 
 export default function (state = initialState, action) {
@@ -12,6 +13,7 @@ export default function (state = initialState, action) {
     case ADD_SKILL:
       console.log(skill)
       return {
+        ...state,
         //past: state.present,
         //present: [...state.present, skill]
         skills: [...state.skills,skill]
@@ -19,21 +21,24 @@ export default function (state = initialState, action) {
     case REMOVE_SKILL:
       console.log(skill)
       return {
+        ...state,
         //past: state.present,
         //present: state.present.filter(obj => { return obj.id !== skill.id })
         skills: state.skills.filter(obj => { return obj.id !== skill.id })
       };
     case UPDATE_SKILL:
         return {
+          ...state,
           //past: state.present,
           //present: skill
           skills:skill
 
         } 
-    case UNDO_DELETED_SKILL:
+    case UPDATE_SUGGESTED_SKILLS:
+      console.log('update suggested')
         return {
-          past: [],
-          present: state.past
+          ...state,
+          suggestedSkills:skill
         }
     default:
       return state;

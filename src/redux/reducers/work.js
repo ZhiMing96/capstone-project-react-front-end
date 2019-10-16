@@ -58,11 +58,6 @@ export default function (state = initialState, action) {
               work:arr
             };  
        
-      case UNDO_DELETED_WORK:
-          return {
-            past:[],
-            present: state.past
-          }; 
       default:
         return state;
     }
