@@ -70,6 +70,18 @@ class SuggestedSkillsView extends React.Component {
       }).then(response => {
         if (response.data.response_code ===200){
           this.props.addSkill({id: skillId, skill: skillName}); //store
+          this.props.setSnackbar(skillName + ' added to your skills.')
+          api.skills.suggested().then(res=>{
+            if (res.data.response_code===200){
+              console.log('200')
+              res.data.suggested_skills.forEach(skill=>{
+                skill.skill.id=parseInt(skill.id)
+                
+              })
+              this.props.updateSuggestedSkills(res.data.suggested_skills) //return array
+              
+            }
+          }).catch()
         }else {
           this.props.setSnackbar('Error adding skills.')
         }
@@ -89,7 +101,7 @@ class SuggestedSkillsView extends React.Component {
 
     return (
       <div className={classes.paper}>
-        <Grid container direction="row" style={{ width: '100%' }}> {/*for your skills and search box and delete icon*/}
+        <Grid container direction="row" style={{ width: '100%' }}> 
           <Grid item xs={12} md={12}>
             <Typography component="div">
               <Box
@@ -162,7 +174,7 @@ class SuggestedSkillsView extends React.Component {
                   }
 
                 </Box>
-                : <Box m={2} lineHeight='1' > <br/> </Box>}
+                : <Box > <br/> </Box>}
                 
               </div>
           }

@@ -5,7 +5,7 @@ import { withStyles,makeStyles } from '@material-ui/core/styles';
 import AddSkills from './AddSkills'
 import CustomisedCurrentSkillsChip from '../../../Components/CustomisedCurrentSkillsChip'
 import { connect } from "react-redux";
-import {addSkill, removeSkill,updateSkill} from '../../../redux/actions/skill'
+import {addSkill, removeSkill,updateSkill , updateSuggestedSkills} from '../../../redux/actions/skill'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -94,8 +94,20 @@ class CurrentSkillsView extends React.Component {
                 skill.id=parseInt(skill.id)
               })
               this.props.updateSkill(res.data.skill_list) //return array
+              api.skills.suggested().then(res=>{
+                if (res.data.response_code===200){
+                  console.log('200')
+                  res.data.suggested_skills.forEach(skill=>{
+                    skill.skill.id=parseInt(skill.id)
+                    
+                  })
+                  this.props.updateSuggestedSkills(res.data.suggested_skills) //return array
+                  
+                }
+              }).catch()
             }
           })
+          
 
         } else if (response.data.response_code === 400) {
           this.props.setSnackbar(response.data.response_message )
@@ -190,5 +202,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { addSkill, removeSkill, updateSkill }
+  { addSkill, removeSkill, updateSkill, updateSuggestedSkills }
 ) (withStyles(styles, { withTheme: true}) (CurrentSkillsView));

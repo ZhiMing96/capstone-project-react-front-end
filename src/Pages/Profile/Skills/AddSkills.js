@@ -11,7 +11,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import { connect } from "react-redux";
-import {addSkill, removeSkill} from '../../../redux/actions/skill'
+import {addSkill, removeSkill, updateSuggestedSkills} from '../../../redux/actions/skill'
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -122,12 +122,24 @@ function IntegrationAutosuggest(props) {
       }).then(response => {
         if (response.data.response_code ===200){
           props.addSkill(suggestion); //store
+          api.skills.suggested().then(res=>{
+            if (res.data.response_code===200){
+              console.log('200')
+              res.data.suggested_skills.forEach(skill=>{
+                skill.skill.id=parseInt(skill.id)
+                
+              })
+              props.updateSuggestedSkills(res.data.suggested_skills) //return array
+              
+            }
+          }).catch()
         }else {
           props.setSnackbar('Error adding skills.')
         }
       }).catch(error => {
         props.setSnackbar('Error adding skills.')
       })
+      
     }
   };
 
@@ -202,5 +214,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { addSkill, removeSkill }
+  { addSkill, removeSkill, updateSuggestedSkills }
 ) (IntegrationAutosuggest); 

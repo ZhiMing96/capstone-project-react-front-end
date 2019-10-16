@@ -21,20 +21,24 @@ export default function CustomisedSuggestedSkillsChip(props) {
 
 
 
-var jobSearchHistory = []
-var skillName = props.suggested.skill[0].skill
-var skillId = props.suggested.skill[0].id
-console.log(skillName)
-props.suggested.search_list.forEach(search => {
-    if (!jobSearchHistory.includes(search.keyword.toLowerCase())) {
-        jobSearchHistory.push(search.keyword)
+    var jobSearchHistory = []
+    var skillName
+    var skillId
+    if(props.suggested.skill[0] !== undefined){
+        skillName = props.suggested.skill[0].skill
+        skillId = props.suggested.skill[0].id
     }
-})
+    console.log(skillName)
+    props.suggested.search_list.forEach(search => {
+        if (!jobSearchHistory.includes(search.keyword.toLowerCase())) {
+            jobSearchHistory.push(search.keyword)
+        }
+    })
 
 
-useEffect(() => {
-    setAdd(false)
-}, [skillId])
+    useEffect(() => {
+        setAdd(false)
+    }, [skillId])
 
 
     if (addState) {
@@ -47,5 +51,5 @@ useEffect(() => {
             onClick={handleClick} />)
     }
 
-    
+
 }
