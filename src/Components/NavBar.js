@@ -170,7 +170,7 @@ class NavTabs extends React.Component {
               
                 <Tab label={<span style={{color:'#0091ea',fontSize:18, fontWeight:jobsFont}}>JOBS</span>} component={Link} to="/jobs" />
 
-                <Tab textColor="red" label={<span style={{color:'#0091ea', fontSize:18, fontWeight:eventsFont}}>EVENTS</span>} component={Link} to="/events" />
+                <Tab label={<span style={{color:'#0091ea', fontSize:18, fontWeight:eventsFont}}>EVENTS</span>} component={Link} to="/events" />
 
                 <Tab label={<span style={{color:'#0091ea',fontSize:18, fontWeight:articlesFont}}>ARTICLES</span>} component={Link} to="/articles"/>
             </Tabs>

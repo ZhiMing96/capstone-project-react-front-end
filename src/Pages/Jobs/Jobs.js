@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
 import Pagination from './Pagination';
 import LinearLoading from  '../../Components/LoadingBars/LinearLoading';
@@ -18,6 +18,10 @@ import JobListings from './JobListings';
 import CloseIcon from '@material-ui/icons/Close';
 import api from '../../api';
 import FilterSelect from '../../Components/FilterSelect'
+import styled from 'styled-components';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const employmentTypes = [
     {
@@ -117,6 +121,54 @@ const employmentTypes = [
     },
   }));
 
+    const Wrapper = styled.div`
+        width:100%
+    `;
+
+    const Page = styled.div`
+        width:90%
+    `;
+
+  const carouselSettings = {
+    accessibiliy: true,
+    speed:1500,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    infinite:true,
+    dots:true,
+    //autoplay: true,
+    //arrows:true,
+    autoplaySpeed:8000,
+    draggable:true,
+    // lazyLoad: "progressive",
+    pauseOnHover: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }]
+  };
+
 function compareValues(key, order='asc') {
     console.log('ENTERED COMPARE VALUES METHOD with key= '+ key)
     return function(c, d) {
@@ -201,6 +253,7 @@ function Jobs (props) {
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(10);
     const [sorted, setSorted] = useState(false);
+    const [popularJobs, setPopularJobs] = useState('');
     
 
     useEffect(()=>{
@@ -209,13 +262,31 @@ function Jobs (props) {
     },[props])
 
     useEffect(()=>{
-        // console.log("ENTERED USE EFFECT FOR SORTING")
+        console.log("ENTERED USE EFFECT FOR SORTING")
         console.log(searchResults);
         // //get current page lisitngs
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
         const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
     })
+
+    //For LOading Popular jOBS
+    useEffect(() => {
+        console.log('Entered New Use Effect Method')
+        axios.get('https://api.mycareersfuture.sg/popular-job-titles')
+        .then((res)=>{
+            console.log(res.data)
+            const popularTitles = res.data
+            
+            const title = popularTitles[0].icmsJobTitle
+            axios.get(`https://api.mycareersfuture.sg/v2/jobs?search=${title}&limit=10`)
+                .then((res) => {
+                    console.log(res.data)
+                    const listings= res.data.results;
+                    setPopularJobs({listings})
+                })
+        });
+    },[])
 
     
 
@@ -366,6 +437,10 @@ function Jobs (props) {
         console.log('SEARCH RESULTS HAS BEEN MODIFIED')
     },[searchResults])
 
+
+    console.log('PopularJobs = ');
+    console.log(popularJobs);
+
   return (
     
     <div>
@@ -486,6 +561,32 @@ function Jobs (props) {
         token
         ? //USER WITH ACCOUNT           
         <div>
+            <Grid container style={{height:'50vh', margin:30}} spacing={1} justify="space-between" >
+                <Grid item xs={12} sm={4} style={{}}>
+                    <Paper style={{width:'80%', height:'100%', textAlign: '-webkit-center', padding:15, borderRadius:15}}>
+                    <Avatar alt="Remy Sharp" src="" style={{width:110, height:110}}/>
+                    <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
+                        Optimised Search
+                    </Typography>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={4} style={{}}>
+                    <Paper style={{width:'80%', height:'100%', textAlign: '-webkit-center', padding:15, borderRadius:15}}>
+                    <Avatar alt="Remy Sharp" src="" style={{width:110, height:110}}/>
+                    <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
+                        Career Guidance
+                    </Typography>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={4} style={{}}>
+                    <Paper style={{width:'80%', height:'100%', textAlign: '-webkit-center', padding:15, borderRadius:15}}>
+                    <Avatar alt="Remy Sharp" src="" style={{width:110, height:110}}/>
+                    <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
+                        Expand Network
+                    </Typography>
+                    </Paper>
+                </Grid>
+            </Grid>
             <Grid container style={{}}>
                 <Grid item xs={12}>
                     <Typography>
@@ -520,7 +621,40 @@ function Jobs (props) {
             
         </div>
         : //USER WITHOUT ACCOUNT 
-        <div> 
+        <div>
+            {popularJobs.length !== 0
+            ? 
+            <div>
+                <Typography variant='h6' style={{textAlign:"justify", marginLeft:30}}>
+                Popular Jobs
+                </Typography>
+                <Grid container style={{height:'50vh', margin:30, marginTop:10}} spacing={1} justify="space-between" >
+                <Wrapper style={{textAlign:'-webkit-center'}}>
+                    <Slider {...carouselSettings}>
+                        { popularJobs.listings.map((listing) => (
+                            listing.postedCompany.logoUploadPath!==null
+                                ?
+                                <Page>
+                                    <Paper style={{width:'80%', height:'30vh', textAlign: '-webkit-center', padding:15, borderRadius:10}}>
+                                    <Avatar alt="Remy Sharp" src={listing.postedCompany.logoUploadPath} style={{width:110, height:110,}} imgProps={{style:{objectFit:'contain'}}}/>
+                                    <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
+                                        {listing.title}
+                                    </Typography>
+                                    </Paper>
+                                </Page>
+                                : ''
+                                
+                        ))
+
+                        }
+                    
+                    </Slider>
+                </Wrapper>
+                </Grid>
+            </div>
+            : ""
+            }
+
             <Grid container style={{}}>
                 <Grid item xs={12}>
                     <Typography>
