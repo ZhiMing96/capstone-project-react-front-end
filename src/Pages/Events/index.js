@@ -1,11 +1,17 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
-import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Divider, Tabs, Tab, Hidden, Button } from '@material-ui/core';
+import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Divider, Tabs, Tab, Hidden, Button, Card } from '@material-ui/core';
 import { wrap } from 'module';
 import { light } from '@material-ui/core/styles/createPalette';
 import { maxHeight } from '@material-ui/system';
 import {Info as InfoIcon}  from '@material-ui/icons';
 import EventsBG from '../../images/eventsBG.jpg'
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import IconButton from '@material-ui/core/IconButton';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,28 +27,53 @@ const useStyles = makeStyles(theme => ({
   image: {
     maxWidth: '90%',
     maxHeight: '90%',
-    // paddingTop: 15
-    // padding: '15px 10px '
   },
   img: {
-    // [theme.breakpoints.up('md')]:{
-    //   padding: '10px 10px',
-    //   width:'fit',
-    //   height:'fit',
-    //   maxWidth: 140 ,
-    //   maxHeight: 170 ,
-    // },
-    // [theme.breakpoints.down('sm')]:{
-    //   padding: '10px 10px',
-    //   width:'fit',
-    //   height:'fit',
-    //   maxWidth: 100 ,
-    //   maxHeight: 130 ,
-    // }
     width: '70%',
     height: '80%',
     maxWidth:'90%',
     maxHeight:'115px'
+  },
+  eventTitle: {
+    textAlign:'Left', 
+    fontWeight:'bold', 
+    overflow:'hidden',
+    textOverflow:'ellipsis', 
+    display:'-webkit-box',
+    WebkitLineClamp:1,
+    WebkitBoxOrient:'vertical',
+    [theme.breakpoints.down('sm')]: {
+      fontSize:15,
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize:20,
+    },
+  },
+  card: {
+    display: 'flex',
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  content: {
+    flex: '1 0 auto',
+  },
+  cover: {
+    width: 151,
+  },
+  firstTab: {
+    maxWidth: '100%', 
+    flex:'wrap',  
+    overflow:"auto",
+    position:'sticky', 
+    zIndex:10,
+    [theme.breakpoints.down('sm')]: {
+      top:'57px',
+    },
+    [theme.breakpoints.up('md')]: {
+      top:'64px',
+    },
   },
 }));
 
@@ -223,7 +254,7 @@ function Events() {
 
   return(
     <div>
-      <Fragment>
+      
         <CssBaseline/>
           <div style={{backgroundImage:`url(${EventsBG})`,backgroundPosition: 'center',backgroundSize: 'cover', width:'100%', height:'350px'}}>
             <Typography>
@@ -240,15 +271,15 @@ function Events() {
               </Box>
             </Typography>
           </div>
-          <div style={{maxWidth: '100%', flex:'wrap',  overflow:"auto",position:'sticky', top:'64px', zIndex:100}}>
-         
+          {/* <div style={{maxWidth: '100%', flex:'wrap',  overflow:"auto",position:'sticky', top:'64px', zIndex:100}}> */}
+         <div className={classes.firstTab}>
             <Tabs
               value={value}
               onChange={handleChange}
               indicatorColor=""
               textColor=""
               centered
-              style={{maxWidth:'100%', marginInline:30, paddingBlock:5, backgroundColor:'#e3f2fd',alignItems:'center'}}
+              style={{maxWidth:'100%', marginInline:30, paddingBlock:5, backgroundColor:'#e3f2fd',alignItems:'center', marginBottom:15}}
             >
                 <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}}  label={<span style={{fontWeight:fontWeight.recommended}}>Recommended</span>} />
                 <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}} label={<span style={{fontWeight:fontWeight.topPicks}}>Top Picks</span>} />
@@ -257,22 +288,22 @@ function Events() {
           </div>
           
         <Grid container style={{zIndex:0}}>
-          <Grid item lg={8} sm={7} style={{maxHeight: 700,overflowY:'auto'}}>
+          <Grid item sm={7} style={{maxHeight: 700,overflowY:'auto'}}>
           {events.map((event, index) => (
               <div key={index}>
-                <Paper style={{marginInlineStart:20, height:130, marginInlineEnd:20, marginBottom:10, padding:10}}>
-                  <Grid container style={{height:'100%'}}>
-                    <Hidden xsDown>
-                      <Grid item lg={3} sm={4}>
-                            <ButtonBase className={classes.image} style={{flexFlow: 'wrap-reverse'}}>
-                                <img className={classes.img} alt="complex" src={event.eventImgUrl} />
+                <Paper elevation={0} style={{marginInlineStart:20, height:130, marginInlineEnd:20, marginBottom:10, padding:10}}>
+                  <Grid container style={{height:'100%', alignContent:'center', }}>
+                    <Hidden smDown>
+                      <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
+                            <ButtonBase className={classes.image} style={{flexFlow: 'wrap-reverse', }}>
+                                {/* <img className={classes.img} alt="complex" src={event.eventImgUrl} style={{minInlineSize:'-webkit-fill-available'}}/> */}
                             </ButtonBase>
                       </Grid>
                     </Hidden>
-                    <Grid item lg={9} sm={8} xs={12} container style={{}}>
-                      <Grid item md={7} xs={12}>
-                        <Typography style={{paddingTop:10}}>
-                          <Box textAlign="left" fontWeight="fontWeightBold" fontSize={15}>
+                    <Grid item md={10} xs={12} container  style={{paddingInlineStart:15, paddingInlineEnd:15}} justify="space-between">
+                      <Grid item sm={8} xs={12}>
+                        <Typography style={{paddingTop:1}}>
+                          <Box className={classes.eventTitle}>
                             {event.eventName}
                           </Box>
                           <Box textAlign="left" fontWeight={550} fontSize={13} style={{color:'#607d8b'}}>
@@ -291,23 +322,25 @@ function Events() {
                             alignItems="flex-start"
                           >
                             <Grid item>
-                              <Box textAlign="left" fontWeight={510} fontSize={10}>
+                              <Box textAlign="left" fontWeight={530} fontSize={10} color='textSecondary'>
                                 {event.eventPrice !== '$0.00'
                                 ? event.eventPrice
-                                : 'FREE'
+                                : 'Free'
                                 }
                               </Box>
                             </Grid>
                           </Grid>
                         </Typography>
                       </Grid>
-                      <Hidden smDown>
-                        <Grid item xs={5} style={{marginTop:10}}>
+                      <Hidden xsDown>
+                        <Grid item sm={4} style={{marginTop:1,textAlign:'end'}}>
                           <Button
                           disableRipple={true}
                           size='small'
                           onClick={() => viewDetails(event)}
-                          color='primary'>
+                          color='primary'
+                          disableTouchRipple={true}
+                          disableFocusRipple={true}>
                             View Details
                           </Button>
                           <Typography style={{fontSize:11, fontWeight:500}}>
@@ -324,42 +357,42 @@ function Events() {
               </div>
           ))}
           </Grid>
-          <Grid item lg={4} sm={5}  style={{position:'sticky', paddingRight:20,maxHeight: 700}}>
+          <Grid item sm={5}  style={{position:'sticky', paddingRight:20,maxHeight: 700}}>
           <img src='https://i.stack.imgur.com/B6fEt.png' alt='img'style={{maxHeight:'100%', maxWidth:'100%'}}/>
-            <Paper style={{width:'100%', height:'50%'}}>
-              <Typography style={{fontWeight:'bold'}}>
+            <Paper style={{width:'100%', height:'50%', padding:20}}>
+              <Typography variant="h5" gutterBottom style={{fontWeight:'bold'}}>
                 DETAILS OF LOCATION 
               </Typography>
-              <Typography style={{}}>
+              <Typography style={{padding:15, fontWeight:"bold"}} color='textSecondary'>
                 {selectedEventLocation}
               </Typography>
-              <Typography style={{fontWeight:'bold'}}>
+              <Typography variant="h5" gutterBottom style={{fontWeight:'bold', marginTop:30}}>
                 DESCRIPTION 
               </Typography>
               {/* <Typography style={{}}> */}
-              <div style={{width:'80%', margin:30, backgroundColor:'#EDF7FA', height:'fit-content', padding:5, maxHeight:'100%'}}>
-                          <Grid container style={{maxHeight:'100%'}}>
-                            <Grid item xs={1}>
-                              <Divider display='inline' orientation='vertical' style={{width:5, height:'100%', backgroundColor :'#1382B9'}} />
-                            </Grid>
-                            <Grid item xs={11}>
-                            <div style={{overflow: "hidden", textOverflow: "ellipsis"}}>
-                              <Typography style={{fontSize:10}} noWrap={true}>
-                                  <Box whiteSpace="normal" maxHeight='100px' textAlign="left">
-                                  {selectedEventDescription} 
-                                  </Box>
-                              </Typography>
-                            </div>
-                            </Grid>
-                          </Grid>
-                        </div>
+              <div style={{width:'95%', margin:15, backgroundColor:'#EDF7FA', height:'fit-content', padding:10, maxHeight:'100%'}}>
+                <Grid container style={{maxHeight:'100%'}}>
+                  <Grid item xs={1}>
+                    <Divider display='inline' orientation='vertical' style={{width:5, height:'100%', backgroundColor :'#1382B9'}} />
+                  </Grid>
+                  <Grid item xs={11}>
+                  <div style={{overflow: "hidden", textOverflow: "ellipsis"}}>
+                    <Typography variant="subtitle2" gutterBottom noWrap={true}>
+                        <Box whiteSpace="normal" maxHeight='100px' textAlign="left">
+                        {selectedEventDescription} 
+                        </Box>
+                    </Typography>
+                  </div>
+                  </Grid>
+                </Grid>
+              </div>
                 
               {/* </Typography> */}
             </Paper>
           </Grid>
 
-        </Grid>
-      </Fragment>
+        </Grid>      
+      
     </div>
   
   );

@@ -83,7 +83,20 @@ const useStyles = makeStyles(theme => ({
     display:'-webkit-box',
     WebkitLineClamp:3,
     WebkitBoxOrient:'vertical'
-  }
+  },
+  firstTab: {
+    maxWidth: '100%', 
+    flex:'wrap',  
+    overflow:"auto",
+    position:'sticky', 
+    zIndex:10,
+    [theme.breakpoints.down('sm')]: {
+      top:'57px',
+    },
+    [theme.breakpoints.up('md')]: {
+      top:'64px',
+    },
+  },
 }));
 
 function Articles() {
@@ -223,7 +236,7 @@ function GetArticles({setArticles, articles, classes})
           </Typography>
         </div>
 
-        <div style={{maxWidth: '100%', marginTop:1, flex:'wrap',  overflow:"auto", position:'sticky', top:'64px', zIndex:100}}>
+        <div className={classes.firstTab}>
          
             <Tabs
               value={value}

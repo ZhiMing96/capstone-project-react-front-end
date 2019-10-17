@@ -261,23 +261,24 @@ function Jobs (props) {
     const [sorted, setSorted] = useState(false);
     const [popularJobs, setPopularJobs] = useState('');
     const [byPass, setBypass] = useState(false);
+    const [keyword, setKeyword] = useState('');
+    
 
     useEffect(()=>{
         if(urlParams === ''){
             setBypass(false)
             setSearchResults(props.searchResults)
         } else {
-            setBypass(true)
             const params = urlParams.split('&')
             const keywordString = params[0].split('=')
-            const keyword = keywordString[1];
-            console.log(params)
-            console.log(keywordString)
-            console.log('keyword = ' + keyword)
-            setState({ ...state, keyword: keyword });
+            const keywordUrl = keywordString[1];
+            console.log('keyword = ' + keywordUrl)
+            setKeyword(keywordUrl);
+            // setState({ ...state, keyword: 'Facebook'});
+            setBypass(true)
             setState({ ...state, queryString: urlParams});
-
             getSearchResults(urlParams);
+            
         }
     },[props])
 
@@ -392,6 +393,7 @@ function Jobs (props) {
         tempString += (`&limit=${searchLimit}`)
 
         console.log("Query String = " + tempString);
+        setKeyword(state.keyword);
         setState({ ...state, queryString: tempString });
 
         getSearchResults(tempString)
@@ -464,8 +466,9 @@ function Jobs (props) {
     },[searchResults])
 
 
-    console.log('PopularJobs = ');
-    console.log(popularJobs);
+    //console.log('Keyword Before Render = ');
+    console.log('State Before Render =')
+    console.log(state)
 
   return (
     
@@ -575,7 +578,7 @@ function Jobs (props) {
                 render={()=>
                     <div>
                         {/* <FilterSelect submitFilter={submitFilter}/> */}
-                        <JobListings searchResults={currentPosts} loading={loading} keyword={state.keyword} submitFilter={submitFilter}/>
+                        <JobListings searchResults={currentPosts} loading={loading} keyword={keyword} submitFilter={submitFilter}/>
                         <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                     </div> 
                 }
