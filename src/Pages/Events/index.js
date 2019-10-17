@@ -8,6 +8,9 @@ import {Info as InfoIcon}  from '@material-ui/icons';
 import EventsBG from '../../images/eventsBG.jpg'
 import IconButton from '@material-ui/core/IconButton';
 import Map from './Mapbox'
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import LaunchIcon from '@material-ui/icons/Launch';
+import SendIcon from '@material-ui/icons/Send';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +33,27 @@ const useStyles = makeStyles(theme => ({
     maxWidth:'90%',
     maxHeight:'115px'
   },
+  tabStyle: {
+    minHeight:0, 
+    padding:'3px 12px',
+    fontSize:18,
+    [theme.breakpoints.up('xs')]: {
+      fontSize:18,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize:13,
+    },
+  },
+  descriptionTitles: {
+    textAlign:'left',
+    [theme.breakpoints.down('sm')]: {
+      fontSize:17,
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize:23,
+    },
+    fontWeight:'bold',
+  },
   eventTitle: {
     textAlign:'Left', 
     fontWeight:'bold', 
@@ -44,6 +68,16 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('md')]: {
       fontSize:20,
     },
+  },
+  eventDescription:{
+    whiteSpace:'normal', 
+    maxHeight:100, 
+    textAlign:'left',
+    verflow:'hidden',
+    textOverflow:'ellipsis',
+    display:'-webkit-box',
+    WebkitLineClamp:3,
+    WebkitBoxOrient:'vertical',
   },
   card: {
     display: 'flex',
@@ -71,6 +105,21 @@ const useStyles = makeStyles(theme => ({
       top:'64px',
     },
   },
+  descriptionArea: {
+    position:'sticky', 
+    paddingRight:20,
+    maxHeight: 700,
+    [theme.breakpoints.down('sm')]: {
+      paddingLeft:20,
+      marginBottom:20
+    }, 
+    eventListArea: {
+      [theme.breakpoints.down('xs')]: {
+        marginRight:20,
+      }, 
+    }
+  }
+  
 }));
 
 function Events() {
@@ -85,7 +134,10 @@ function Events() {
     latest:'300'
   })
   const [selectedEventLocation, setSelectedEventLocation] = useState("Please Select An Event");
-  const [selectedEventDescription, setSelectedEventDescription] = useState("Please Select An Event");
+  const [selectedEventDescription, setSelectedEventDescription] = useState("");
+  const [markerAddress, setMarkerAddress] = useState('Singapore')
+  const [selectedUrl, setSelectedUrl] = useState('');
+
   
   useEffect(() => {
     var filter= '';
@@ -100,14 +152,38 @@ function Events() {
 
     axios.get('https://portal.ssg-wsg.gov.sg/content/web/eventsfeed/eventlisting.xml')
     .then(res => {
-      console.log(res.data)
+      //console.log(res.data)
       const data = res.data
       const parser = new DOMParser()
       const xmlDoc = parser.parseFromString(data, 'text/xml')
-      const length = xmlDoc.getElementsByTagName("event").length;
+      const docLength = xmlDoc.getElementsByTagName("event").length;
       // console.log(length);
 
-      for (let i=0; i<length;i++){
+      for (let i=0; i<docLength;i++){
+        const sessionsXML = xmlDoc.getElementsByTagName("sessions")[i];
+        console.log(sessionsXML)
+        const sessionsLength = sessionsXML.getElementsByTagName("session").length;
+        console.log(sessionsLength);
+        var sessions=[];
+
+        for(let a=0;a<sessionsLength;a++){
+          console.log('Loop Count: ' + a)
+          const eventVenue = sessionsXML.getElementsByTagName("venueName")[a].innerHTML
+          console.log(eventVenue);
+          const buildingName = sessionsXML.getElementsByTagName("buildingName")[a].innerHTML
+          console.log(buildingName);
+          const postalCode = sessionsXML.getElementsByTagName("postalcode")[a].innerHTML
+          console.log(postalCode);
+          const streetName = sessionsXML.getElementsByTagName("streetName")[a].innerHTML
+          console.log(streetName);
+          const session={
+            eventVenue: eventVenue,
+            buildingName: buildingName,
+            postalCode: postalCode,
+            streetName: streetName,
+          }
+          sessions.push(session)
+        }
         const eventName = xmlDoc.getElementsByTagName("eventName")[i].innerHTML
         const eventUrl = xmlDoc.getElementsByTagName("eventURL")[i].innerHTML
         const eventDescription = xmlDoc.getElementsByTagName("summary")[i].innerHTML
@@ -116,11 +192,8 @@ function Events() {
         const eventEndDate = xmlDoc.getElementsByTagName("eventEndDate")[i].innerHTML
         const eventSegment = xmlDoc.getElementsByTagName("eventSegment")[i].innerHTML
         const eventPrice = xmlDoc.getElementsByTagName("price")[i].innerHTML
-        const eventVenue = xmlDoc.getElementsByTagName("venueName")[i].innerHTML
-        const buildingName = xmlDoc.getElementsByTagName("buildingName")[i].innerHTML
-        const postalCode = xmlDoc.getElementsByTagName("postalcode")[i].innerHTML
-        const streetName = xmlDoc.getElementsByTagName("streetName")[i].innerHTML
         const targetAudience = xmlDoc.getElementsByTagName("targetAudience")[i].innerHTML
+        
         const targetNationality = xmlDoc.getElementsByTagName("targetNationality")[i].innerHTML
 
         const eventGathered = {
@@ -132,20 +205,16 @@ function Events() {
           eventEndDate: eventEndDate,
           eventSegment: eventSegment,
           eventPrice: eventPrice,
-          eventVenue: eventVenue,
-          buildingName: buildingName,
-          postalCode: postalCode,
-          streetName: streetName,
           targetAudience: targetAudience,
           targetNationality: targetNationality,
-          
+          sessions: sessions,
         }
 
         setEvents(events => [...events, eventGathered]);
         
-        console.log(eventName + "\n" + eventUrl + "\n" + eventImgUrl + "\n" + eventStartDate + "\n" + eventEndDate + "/\n" + eventSegment + "\n" + eventPrice + "\n" + eventVenue + "\n" + buildingName + "\n" + postalCode + "\n" + streetName);
+        // console.log(eventName + "\n" + eventUrl + "\n" + eventImgUrl + "\n" + eventStartDate + "\n" + eventEndDate + "/\n" + eventSegment + "\n" + eventPrice + "\n" + eventVenue + "\n" + buildingName + "\n" + postalCode + "\n" + streetName);
       }
-      console.log(xmlDoc);
+      // console.log(xmlDoc);
     })
   },[value]);
 
@@ -232,25 +301,55 @@ function Events() {
 
   const formatVenue = (building, venue, streetName, postalCode) =>{
     //Lifelong Learning Center: Training Room 2-1, Eunos Road 9 S123456
+    console.log('ENTERED FORMAT VENUE')
+    var venueString ='';
+    if(building!=='0' && building!=='-' ){
+      venueString += building +': ';
+    }
+    if(venue !== 'NIL')
+      venueString += venue + ', ' ;
+    if(streetName!=='-' && streetName!=='0' ){
+      venueString += streetName + ', ' ;
+    }
+    if (postalCode!=='000000'){
+      venueString += 'S'+ postalCode ;
+    }
 
-    if(postalCode!== '000000' && streetName!=='-'){
-      return (`${building}: ${venue}, ${streetName} S${postalCode}`);
-    } else {
+    console.log(venueString)
+    if(venueString ==='') {
       return ('Location Unavailable')
+    } else {
+      return venueString
     }
   }
 
+
   const viewDetails = (event) =>{
-    console.log(event)
-    setSelectedEventDescription(event.eventDescription);
-    const location = formatVenue(event.buildingName,event.eventVenue,event.streetName,event.postalCode)
+    console.log('ENTERED VIEW DETAILS METHOD')
+    console.log(event.sessions)
+    if(event.sessions[0].buildingName!=='-' && event.sessions[0].buildingName!=='0'){
+      setMarkerAddress(event.sessions[0].buildingName);
+    } else if (event.sessions[0].eventVenue!=='NIL'){
+      setMarkerAddress(event.sessions[0].eventVenue);
+    } else  {
+      setMarkerAddress('Singapore');
+    } 
+
+    setSelectedUrl(event.eventUrl);
+
+    if(event.eventDescription !== ''){
+      setSelectedEventDescription(event.eventDescription);
+    } else {
+      setSelectedEventDescription('No Description Available')
+    }
+    const location = formatVenue(event.sessions[0].buildingName,event.sessions[0].eventVenue,event.sessions[0].streetName,event.sessions[0].postalCode)
     setSelectedEventLocation(location);
     console.log('Exiting view Event Details')
+    window.scrollTo(0,document.body.scrollHeight);
   }
 
   return(
     <div>
-      
         <CssBaseline/>
           <div style={{backgroundImage:`url(${EventsBG})`,backgroundPosition: 'center',backgroundSize: 'cover', width:'100%', height:'350px'}}>
             <Typography>
@@ -277,27 +376,24 @@ function Events() {
               centered
               style={{maxWidth:'100%', marginInline:30, paddingBlock:5, backgroundColor:'#e3f2fd',alignItems:'center', marginBottom:15}}
             >
-                <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}}  label={<span style={{fontWeight:fontWeight.recommended}}>Recommended</span>} />
-                <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}} label={<span style={{fontWeight:fontWeight.topPicks}}>Top Picks</span>} />
-                <Tab disableRipple style={{minHeight:0, padding:'3px 12px',fontSize:18}} label={<span style={{fontWeight:fontWeight.latest}}>Latest</span>} />
+                <Tab disableRipple className={classes.tabStyle} label={<span style={{fontWeight:fontWeight.recommended}}>Recommended</span>} />
+                <Tab disableRipple className={classes.tabStyle} label={<span style={{fontWeight:fontWeight.topPicks}}>Top Picks</span>} />
+                <Tab disableRipple className={classes.tabStyle} label={<span style={{fontWeight:fontWeight.latest}}>Latest</span>} />
             </Tabs>
           </div>
           
         <Grid container style={{zIndex:0}}>
-          <Grid item sm={7} style={{maxHeight: 700,overflowY:'auto'}}>
+          <Grid item lg={7} sm={6} xs={12} className={classes.eventListArea} style={{maxHeight: 700,overflowY:'auto',}}>
           {events.map((event, index) => (
               <div key={index}>
-                <Paper elevation={0} style={{marginInlineStart:20, height:130, marginInlineEnd:20, marginBottom:10, padding:10}}>
+                <Paper elevation={2} style={{marginInlineStart:20, height:130, marginInlineEnd:20, marginBottom:10, padding:10}}>
                   <Grid container style={{height:'100%', alignContent:'center', }}>
-                    <Hidden smDown>
+                    <Hidden mdDown>
                       <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
-                            <ButtonBase className={classes.image} style={{flexFlow: 'wrap-reverse', }}>
-                                {/* <img className={classes.img} alt="complex" src={event.eventImgUrl} style={{minInlineSize:'-webkit-fill-available'}}/> */}
-                            </ButtonBase>
                       </Grid>
                     </Hidden>
-                    <Grid item md={10} xs={12} container  style={{paddingInlineStart:15, paddingInlineEnd:15}} justify="space-between">
-                      <Grid item sm={8} xs={12}>
+                    <Grid item lg={10} xs={12} container  style={{paddingInlineStart:15, paddingInlineEnd:15}} justify="space-between">
+                      <Grid item lg={8} sm={11} xs={11}>
                         <Typography style={{paddingTop:1}}>
                           <Box className={classes.eventTitle}>
                             {event.eventName}
@@ -306,8 +402,8 @@ function Events() {
                             {getDate(event.eventStartDate,event.eventEndDate )}
                           </Box>
                           <Box textAlign="left" fontWeight={510} fontSize={12}>
-                            {event.buildingName !=='0' && event.buildingName !=='-'
-                            ? `${event.buildingName}, Singapore`
+                            {event.sessions[0].buildingName !=='0' && event.sessions[0].buildingName !=='-'
+                            ? `${event.sessions[0].buildingName}, Singapore`
                             : 'Singapore'
                             }
                           </Box>
@@ -328,7 +424,18 @@ function Events() {
                           </Grid>
                         </Typography>
                       </Grid>
-                      <Hidden xsDown>
+                      <Hidden lgUp>
+                        <Grid item xs={1}>
+                          <IconButton
+                          onClick={() => viewDetails(event)}
+                          disableRipple={true}
+                          color='Secondary'
+                          >
+                            <MoreVertIcon/>
+                          </IconButton>
+                        </Grid>
+                      </Hidden>
+                      <Hidden mdDown>
                         <Grid item sm={4} style={{marginTop:1,textAlign:'end'}}>
                           <Button
                           disableRipple={true}
@@ -353,40 +460,73 @@ function Events() {
               </div>
           ))}
           </Grid>
-          <Grid item sm={5}  style={{position:'sticky', paddingRight:20,maxHeight: 700}}>
-            <Map markerAddress='Hougang Central Hub, Singapore'/>
+          <Grid item lg={5} sm={6} xs={12} className={classes.descriptionArea} style={{}}>
+            <Map markerAddress={markerAddress}/>
               <Paper style={{width:'100%', height:'50%', padding:20}}>
-                <Typography variant="h5" gutterBottom style={{fontWeight:'bold'}}>
-                  DETAILS OF LOCATION 
-                </Typography>
-                <Typography style={{padding:15, fontWeight:"bold"}} color='textSecondary'>
-                  {selectedEventLocation}
-                </Typography>
-                <Typography variant="h5" gutterBottom style={{fontWeight:'bold', marginTop:30}}>
-                  DESCRIPTION 
-                </Typography>
-              {/* <Typography style={{}}> */}
-              <div style={{width:'95%', margin:15, backgroundColor:'#EDF7FA', height:'fit-content', padding:10, maxHeight:'100%'}}>
-                <Grid container style={{maxHeight:'100%'}}>
-                  <Grid item xs={1}>
-                    <Divider display='inline' orientation='vertical' style={{width:5, height:'100%', backgroundColor :'#1382B9'}} />
-                  </Grid>
-                  <Grid item xs={11}>
-                  <div style={{overflow: "hidden", textOverflow: "ellipsis"}}>
-                    <Typography variant="subtitle2" gutterBottom noWrap={true}>
-                        <Box whiteSpace="normal" maxHeight='100px' textAlign="left">
-                        {selectedEventDescription} 
-                        </Box>
+                <Grid container justify="space-between">
+                  <Grid item xs={9}>
+                    <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
+                      DETAILS OF LOCATION 
                     </Typography>
-                  </div>
+                    <Typography style={{fontWeight:"bold",textAlign:'left',}} color='textSecondary'>
+                      {selectedEventLocation}
+                    </Typography>
                   </Grid>
+                  {selectedEventLocation !== 'Please Select An Event'
+                  ?
+                  <Grid item xs={3} style={{textAlign:'end'}}> 
+                    <Hidden xsDown>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color='secondary'
+                        style={{borderRadius:10}}
+                        href={selectedUrl}
+                        target="_blank"
+                        >
+                          Sign Up
+                        </Button>
+                    </Hidden>
+                    <Hidden smUp>
+                      <IconButton
+                        color='secondary'
+                        href={selectedUrl}
+                        target="_blank"
+                        >
+                          <LaunchIcon />
+                        </IconButton>
+                    </Hidden>
+                  </Grid>
+                  :
+                  ''
+                  }
                 </Grid>
-              </div>
-                
-              {/* </Typography> */}
+                { selectedEventDescription !==''
+                ?
+                <div>
+                  <Typography className={classes.descriptionTitles} variant="h5"  style={{marginTop:20}}>
+                    DESCRIPTION 
+                  </Typography>
+              
+                  <div style={{width:'95%', margin:9, backgroundColor:'#EDF7FA', height:'fit-content', padding:10, maxHeight:'100%'}}>
+                    <Grid container style={{maxHeight:'100%'}}>
+                      <Grid item xs={1}>
+                        <Divider display='inline' orientation='vertical' style={{width:5, height:'100%', backgroundColor :'#1382B9'}} />
+                      </Grid>
+                      <Grid item xs={11}>
+                      <div style={{overflow: "hidden", textOverflow: "ellipsis"}}>
+                        <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
+                            {selectedEventDescription} 
+                        </Typography>
+                      </div>
+                      </Grid>
+                    </Grid>
+                  </div>
+                </div>
+                :''
+                }
             </Paper>
           </Grid>
-
         </Grid>      
       
     </div>
