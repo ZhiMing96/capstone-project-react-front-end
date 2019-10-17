@@ -6,12 +6,8 @@ import { light } from '@material-ui/core/styles/createPalette';
 import { maxHeight } from '@material-ui/system';
 import {Info as InfoIcon}  from '@material-ui/icons';
 import EventsBG from '../../images/eventsBG.jpg'
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import SkipNextIcon from '@material-ui/icons/SkipNext';
+import Map from './Mapbox'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -358,17 +354,17 @@ function Events() {
           ))}
           </Grid>
           <Grid item sm={5}  style={{position:'sticky', paddingRight:20,maxHeight: 700}}>
-          <img src='https://i.stack.imgur.com/B6fEt.png' alt='img'style={{maxHeight:'100%', maxWidth:'100%'}}/>
-            <Paper style={{width:'100%', height:'50%', padding:20}}>
-              <Typography variant="h5" gutterBottom style={{fontWeight:'bold'}}>
-                DETAILS OF LOCATION 
-              </Typography>
-              <Typography style={{padding:15, fontWeight:"bold"}} color='textSecondary'>
-                {selectedEventLocation}
-              </Typography>
-              <Typography variant="h5" gutterBottom style={{fontWeight:'bold', marginTop:30}}>
-                DESCRIPTION 
-              </Typography>
+            <Map markerAddress='Hougang Central Hub, Singapore'/>
+              <Paper style={{width:'100%', height:'50%', padding:20}}>
+                <Typography variant="h5" gutterBottom style={{fontWeight:'bold'}}>
+                  DETAILS OF LOCATION 
+                </Typography>
+                <Typography style={{padding:15, fontWeight:"bold"}} color='textSecondary'>
+                  {selectedEventLocation}
+                </Typography>
+                <Typography variant="h5" gutterBottom style={{fontWeight:'bold', marginTop:30}}>
+                  DESCRIPTION 
+                </Typography>
               {/* <Typography style={{}}> */}
               <div style={{width:'95%', margin:15, backgroundColor:'#EDF7FA', height:'fit-content', padding:10, maxHeight:'100%'}}>
                 <Grid container style={{maxHeight:'100%'}}>
