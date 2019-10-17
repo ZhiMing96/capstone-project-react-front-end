@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import Home from '../Pages/Home'
 import Jobs from '../Pages/Jobs/Jobs'
+import JobListings from '../Pages/Jobs/JobListings'
 import Events from '../Pages/Events'
 import Articles from '../Pages/Articles'
 import Login from '../Pages/Login'
@@ -28,6 +29,7 @@ import {doLogin} from  '../redux/actions/auth'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import { ImportantDevices } from '@material-ui/icons';
 import { typography } from '@material-ui/system';
+
 
 const styles = theme => ({
   root: {
@@ -250,8 +252,9 @@ class NavTabs extends React.Component {
                 state: { canSignUp: 'false'}
               }}/>
             </Route>
-            
             <Route path="/profile" component={Profile} />
+            <Route  path="/jobs/listings/:queryString" component={Jobs} 
+            />
             {/* <Route path="/profile" render={props => <Profile {...props} openSideBar={this.props.openSideBar} />} /> */}
             
         </Switch>

@@ -23,6 +23,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+
 const employmentTypes = [
     {
       value: 'Permanent',
@@ -226,12 +227,17 @@ function compareValues(key, order='asc') {
     };
 }
 
-function getPopularJobs(){
-    
-}
+
 
 function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT"); 
+    var urlParams=''
+    if(props.match !== undefined){
+        console.log(props.match.params.queryString);
+        urlParams = props.match.params.queryString;
+    } 
+   
+
     const searchLimit = 100;
     const token= window.localStorage.getItem('authToken');
     const classes=useStyles();
@@ -254,11 +260,25 @@ function Jobs (props) {
     const [postsPerPage] = useState(10);
     const [sorted, setSorted] = useState(false);
     const [popularJobs, setPopularJobs] = useState('');
-    
+    const [byPass, setBypass] = useState(false);
 
     useEffect(()=>{
-        // console.log('Entered Use Effect for Search Results')
-        setSearchResults(props.searchResults)
+        if(urlParams === ''){
+            setBypass(false)
+            setSearchResults(props.searchResults)
+        } else {
+            setBypass(true)
+            const params = urlParams.split('&')
+            const keywordString = params[0].split('=')
+            const keyword = keywordString[1];
+            console.log(params)
+            console.log(keywordString)
+            console.log('keyword = ' + keyword)
+            setState({ ...state, keyword: keyword });
+            setState({ ...state, queryString: urlParams});
+
+            getSearchResults(urlParams);
+        }
     },[props])
 
     useEffect(()=>{
@@ -287,6 +307,59 @@ function Jobs (props) {
                 })
         });
     },[])
+
+    function getSearchResults(queryString){
+        setLoading(true);
+        if(token !== null) {
+            console.log("GOT TOKEN");
+            //axios.get(query, {headers: {"Authorization" : "Token "+token}})
+            api.searchJobsAcct.get(queryString)
+            .then(res=>{  
+                const result = res.data.results;
+                console.log("RESULTS FROM GET  REQUEST  = ")
+                // console.log(result)
+                if(result!== undefined && result.length===0){ //empty  results 
+                    console.log('Entered Zero Length Method');
+                    setSearchResults(result);
+                    openSnackbar();
+                } else if (result !==undefined && result.length!==0){ //Good to go 
+                    // const sortedResults = result.sort(compareValues('skills_match', 'desc')) //DEFAULT SORTING
+                    // setSearchResults(sortedResults);
+                    const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
+                    setSearchResults(sortedResults);
+                }
+                // submitFilter('skills_match', 'desc');
+                setLoading(false);
+                
+            })
+            .catch(err=>{
+                console.error(err);  
+                setLoading(false);
+            })
+        } else {
+            console.log("NO TOKEN");
+            // axios.get(query)
+            api.searchJobs.get(queryString)
+            .then(res=>{  
+                const result = res.data.results;
+                console.log("RESULTS FROM GET  REQUEST  = ")
+                // console.log(result)
+                if(result!== undefined && result.length===0){ //empty  results 
+                    console.log('Entered Zero Length Method');
+                    setSearchResults(result);
+                    openSnackbar();
+                } else if (result !==undefined && result.length!==0){ //Good to go 
+                    const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
+                    setSearchResults(sortedResults);
+                }
+                setLoading(false);
+            })
+            .catch(err=>{
+                console.error(err);  
+                setLoading(false);
+            })
+        }
+    }
 
     
 
@@ -320,59 +393,12 @@ function Jobs (props) {
 
         console.log("Query String = " + tempString);
         setState({ ...state, queryString: tempString });
+
+        getSearchResults(tempString)
         
         //const query=url+tempString
         //console.log(query);
-        setLoading(true);
-        if(token !== null) {
-            console.log("GOT TOKEN");
-            //axios.get(query, {headers: {"Authorization" : "Token "+token}})
-            api.searchJobsAcct.get(tempString)
-            .then(res=>{  
-                const result = res.data.results;
-                console.log("RESULTS FROM GET  REQUEST  = ")
-                // console.log(result)
-                if(result!== undefined && result.length===0){ //empty  results 
-                    console.log('Entered Zero Length Method');
-                    setSearchResults(result);
-                    openSnackbar();
-                } else if (result !==undefined && result.length!==0){ //Good to go 
-                    // const sortedResults = result.sort(compareValues('skills_match', 'desc')) //DEFAULT SORTING
-                    // setSearchResults(sortedResults);
-                    const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
-                    setSearchResults(sortedResults);
-                }
-                // submitFilter('skills_match', 'desc');
-                setLoading(false);
-                
-            })
-            .catch(err=>{
-                console.error(err);  
-                setLoading(false);
-            })
-        } else {
-            console.log("NO TOKEN");
-            // axios.get(query)
-            api.searchJobs.get(tempString)
-            .then(res=>{  
-                const result = res.data.results;
-                console.log("RESULTS FROM GET  REQUEST  = ")
-                // console.log(result)
-                if(result!== undefined && result.length===0){ //empty  results 
-                    console.log('Entered Zero Length Method');
-                    setSearchResults(result);
-                    openSnackbar();
-                } else if (result !==undefined && result.length!==0){ //Good to go 
-                    const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
-                    setSearchResults(sortedResults);
-                }
-                setLoading(false);
-            })
-            .catch(err=>{
-                console.error(err);  
-                setLoading(false);
-            })
-        }
+        
         
     }
 
@@ -533,7 +559,7 @@ function Jobs (props) {
         </Grid>
         <Grid style={{marginLeft:50, marginRight:55}}>
             { loading 
-            ? <LinearLoading/>
+            ? <CircularLoading/>
             : <span></span>
             }
         </Grid>
@@ -558,7 +584,7 @@ function Jobs (props) {
             </Router>
         </div>
         : 
-        token
+        token  && byPass==false
         ? //USER WITH ACCOUNT           
         <div>
             <Grid container style={{height:'50vh', margin:30}} spacing={1} justify="space-between" >
@@ -606,7 +632,6 @@ function Jobs (props) {
                     </a>
                 </div>
             </Grid>
-            
             <Container>
             <Grid container style={{}}>
                 <Grid item xs={12}>
@@ -620,7 +645,8 @@ function Jobs (props) {
             </Container>
             
         </div>
-        : //USER WITHOUT ACCOUNT 
+        : token==null  && byPass==false 
+        ?//USER WITHOUT ACCOUNT 
         <div>
             {popularJobs.length !== 0
             ? 
@@ -688,6 +714,7 @@ function Jobs (props) {
                 </Grid>
             </Container>
         </div>
+        :''
         }
         <Snackbar
             key={messageInfo ? messageInfo.key : undefined}
