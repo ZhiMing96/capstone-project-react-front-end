@@ -3,9 +3,9 @@ import { Grid, Typography, Box, Button } from '@material-ui/core'
 import api from '../../../api.js'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import AddSkills from './AddSkills'
-import CustomisedChip from '../../../Components/CustomisedChip'
+import CustomisedCurrentSkillsChip from '../../../Components/CustomisedCurrentSkillsChip'
 import { connect } from "react-redux";
-import {addSkill, removeSkill,updateSkill} from '../../../redux/actions/skill'
+import {addSkill, removeSkill,updateSkill , updateSuggestedSkills} from '../../../redux/actions/skill'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -28,13 +28,13 @@ const styles = theme => ({
 
 
 
-
 class CurrentSkillsView extends React.Component {
   constructor(props) {
     super(props);
     this.handleRemove = this.handleRemove.bind(this);
     this.remove = this.remove.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.setSnackbar = this.setSnackbar.bind(this);
     this.state = { 
       openDialog: false,
       message: '',
@@ -57,6 +57,11 @@ class CurrentSkillsView extends React.Component {
   handleClose () {
     this.setState({openDialog:false})
   };
+
+  setSnackbar (message) {
+    this.props.setSnackbar(message)
+  };
+
   setOpen(skillName){
     const message = 'Confirm removing '+ skillName + ' from skills?'
     this.setState({openDialog:true, message: message})
@@ -89,8 +94,20 @@ class CurrentSkillsView extends React.Component {
                 skill.id=parseInt(skill.id)
               })
               this.props.updateSkill(res.data.skill_list) //return array
+              api.skills.suggested().then(res=>{
+                if (res.data.response_code===200){
+                  console.log('200')
+                  res.data.suggested_skills.forEach(skill=>{
+                    skill.skill.id=parseInt(skill.id)
+                    
+                  })
+                  this.props.updateSuggestedSkills(res.data.suggested_skills) //return array
+                  
+                }
+              }).catch()
             }
           })
+          
 
         } else if (response.data.response_code === 400) {
           this.props.setSnackbar(response.data.response_message )
@@ -108,6 +125,7 @@ class CurrentSkillsView extends React.Component {
       })
 
   };
+  
 
   render() {
     const { classes } = this.props;
@@ -133,14 +151,14 @@ class CurrentSkillsView extends React.Component {
             </Grid>
 
             <Grid item style={{ width: '100%', paddingLeft: '2.5%', paddingRight: '2.5%', marginTop: '24px' }}>
-              <AddSkills />
+              <AddSkills setSnackbar ={this.setSnackbar}/>
             </Grid>
 
           </Grid>
 
           <Grid container style={{ padding: '2.5%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', }}>
             {
-              this.props.currentSkills.map(skill => (<CustomisedChip skill={skill} handleRemove={this.handleRemove} />))
+              this.props.currentSkills.map(skill => (<CustomisedCurrentSkillsChip skill={skill} handleRemove={this.handleRemove} />))
             }
           </Grid>
 
@@ -184,5 +202,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { addSkill, removeSkill, updateSkill }
+  { addSkill, removeSkill, updateSkill, updateSuggestedSkills }
 ) (withStyles(styles, { withTheme: true}) (CurrentSkillsView));

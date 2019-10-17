@@ -306,8 +306,8 @@ function Bookmarks() {
                 ? 
                 <div>
                     <Typography>
-                        <Box>
-                            Your Bookmark List is Empty.. 
+                        <Box m={1}>
+                            Your bookmark list is empty... 
                         </Box>
                     </Typography>
                     

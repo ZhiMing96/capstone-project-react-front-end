@@ -3,6 +3,7 @@ import { Grid, Typography, Box, Snackbar, IconButton, } from '@material-ui/core'
 import CurrentSkillsView from './CurrentSkillsView'
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
+import SuggestedSkillsView from './SuggestedSkillsView'
 
 const useStyles = makeStyles(theme => ({
   close: {
@@ -89,6 +90,7 @@ function Skills() {
           </IconButton>
         }
       />
+      <SuggestedSkillsView setSnackbar={setSnackbar}/>
     </div>
 
   );

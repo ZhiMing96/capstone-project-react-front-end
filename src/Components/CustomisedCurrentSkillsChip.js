@@ -10,6 +10,7 @@ export default function CustomisedChip (props){
     const handleClick= () => {
         if(deleteState){
             setDelete(false)
+            ref.current.blur()
         }else{
             setDelete(true)
         }       

@@ -29,10 +29,18 @@ const useStyles = makeStyles(theme => ({
     button: {
         marginRight: theme.spacing(1),
         marginTop: theme.spacing(-0.5),
-},
+    },
     leftIcon: {
-    marginRight: theme.spacing(1),
-},
+        marginRight: theme.spacing(1),
+    },
+    description: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 280,
+        ['@media (min-width:920px)']: {
+            width: 730,
+        },
+    },
 }));
 
 
@@ -71,7 +79,7 @@ export default function ReadOnlyView(props) {
                 <Grid container direction="row" style={{ width: '100%' }}>
                     <Grid item xs={12} md={12}>
                         <Typography component="div">
-                            <Box display="flex"  alignItems="flex-start">
+                            <Box display="flex" alignItems="flex-start">
                                 <Box
                                     fontSize="h6.fontSize"
                                     m={2}
@@ -96,7 +104,7 @@ export default function ReadOnlyView(props) {
                     <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
 
                         <form className={classes.form} >
-                            <Grid container style={{ width:'100%', textAlign:'left'}}>
+                            <Grid container style={{ width: '100%', textAlign: 'left' }}>
                                 <Grid item xs={12} md={6}>
                                     <TextField
                                         label="First Name"
@@ -144,12 +152,24 @@ export default function ReadOnlyView(props) {
                                         }}
                                     />
                                 </Grid>
+                                <Grid item xs={12} md={12}>
+                                <TextField
+                                        label="Bio Description"
+                                        value={profileState.username}
+                                        className={classes.description}
+                                        multiline
+                                        margin="normal"
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                    />
+                                </Grid>
 
                             </Grid>
                         </form>
                     </Grid>
                 </Grid>
-                
+
             </div>
         </div>
 

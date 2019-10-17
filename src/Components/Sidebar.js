@@ -9,6 +9,7 @@ import TelegramIcon from '@material-ui/icons/Telegram';
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin: 30,
+    marginBottom:20,
     width: 90,
     height: 90,
   },
