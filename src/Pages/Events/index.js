@@ -6,6 +6,7 @@ import { light } from '@material-ui/core/styles/createPalette';
 import { maxHeight } from '@material-ui/system';
 import {Info as InfoIcon}  from '@material-ui/icons';
 import EventsBG from '../../images/eventsBG.jpg'
+import Map from './Mapbox'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -325,7 +326,9 @@ function Events() {
           ))}
           </Grid>
           <Grid item lg={4} sm={5}  style={{position:'sticky', paddingRight:20,maxHeight: 700}}>
-          <img src='https://i.stack.imgur.com/B6fEt.png' alt='img'style={{maxHeight:'100%', maxWidth:'100%'}}/>
+          {/*<img src='https://i.stack.imgur.com/B6fEt.png' alt='img'style={{maxHeight:'100%', maxWidth:'100%'}}/>*/}
+          <Map markerAddress='Hougang Central Hub, Singapore'/>
+          
             <Paper style={{width:'100%', height:'50%'}}>
               <Typography style={{fontWeight:'bold'}}>
                 DETAILS OF LOCATION 
