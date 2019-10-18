@@ -9,7 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import FilterSelect from '../../Components/FilterSelect';
 import api from '../../api';
 
-const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
+const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";  
 
 
 const useStyles = makeStyles(theme => ({
@@ -32,6 +32,8 @@ const useStyles = makeStyles(theme => ({
     img: {
         margin: 'auto',
         display: 'block',
+        width: 100,
+        height:100,
         maxWidth: '100%',
         maxHeight: '100%',
     },
@@ -168,6 +170,13 @@ function addBookmark(job){
     };
 
     const submitFilter = props.submitFilter
+
+    const handleMouseEnter = () => {
+        console.log('MOUSE HOVERING')
+    }
+    const handleMouseLeave = () => {
+        console.log('MOUSE LEFT')
+    }
         
     return (
         <Fragment>
@@ -197,8 +206,8 @@ function addBookmark(job){
         <Grid item xs={12}> 
         {listings
         ? listings.map((list,index) => (
-            <div key={index}>
-                <Paper className={classes.paper} elevation={2}>
+            <div key={index} onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                <Paper className={classes.paper} elevation={2} >
                     <Box display="flex" flexWrap="wrap">
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={2}>
@@ -211,16 +220,14 @@ function addBookmark(job){
                                 </ButtonBase>
                             </Box>
                         </Grid>
-                        <Grid item container xs={12} sm={9} md={10} >
-                            <Grid item xs={10} md={8}>
+                        <Grid item container xs={12} sm={10} md={10}>
+                            <Grid item xs={10} md={8} >
                                 <Grid item xs>
+                                <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
                                     <Typography >
                                         <Box align="left" style={{marginLeft:10}} fontSize={12} fontWeight="fontWeightBold">  
                                             { list.postedCompany 
-                                                ? 
-                                                <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
-                                                    {list.postedCompany.name}
-                                                </a>
+                                                ? list.postedCompany.name
                                                 : ""
                                             }
                                         </Box>
@@ -230,7 +237,7 @@ function addBookmark(job){
                                             {list.title}
                                         </Box>
                                     </Typography>
-                                    
+                                </a>
                                     <Typography style={{fontSize:12}}>
                                         <Box align="left" style={{marginLeft:10, color:'#9F0D6E'}} display={{ 'xs':'none', 'sm':'block'}} >
                                         
@@ -318,14 +325,14 @@ function addBookmark(job){
                                         }
                                 </Grid>
                             </Grid>
-                            <Hidden smUp>
+                            <Hidden mdUp>
                                 <Grid item xs={2}>
                                     <Box display="flex" justifyContent="flex-end" display={{ xs: 'block', md: 'none' }}>
                                             <Button
                                                 className={classes.button} 
                                                 size="small"
                                                 onClick={ () => handleClick(list)}
-                                                style={{color:'#6738AA'}}
+                                                color='secondary'
                                                 >
                                                 <BookmarkIcon className={classes.rightIcon} />
                                             </Button>
@@ -333,9 +340,9 @@ function addBookmark(job){
                                 </Grid>
                             </Hidden>
                             
-                            <Grid item xs={12} md={3} container>
+                            <Grid item xs={12} md={4} container style={{paddingRight:15, paddingBottom:15,}}>
                                     
-                                <Grid item md={12} sm={6} xs>
+                                <Grid item md={12} sm={6} xs style={{textAlignLast:'end'}}>
                                     <Typography variant="subtitle1" align="left" style={{marginLeft:10}}>
                                         <Box display={{ xs: 'none', md: 'block' }}>
                                         
@@ -349,16 +356,15 @@ function addBookmark(job){
                                             }
                                         </Box>
                                     </Typography>
-                                    
                                     <Typography variant="caption">
-                                        <Box align="left" style={{marginLeft:10}}>
+                                        <Box style={{marginLeft:10}}>
                                         
                                             {list.schemes.length!=0
                                             ? //{list.schemes[0].scheme.scheme} 
                                                 <div  tyle={{}}>
                                                     <a href="https://www.wsg.gov.sg/programmes-and-initiatives/wsg-career-support-programme-individuals.html" style={{textDecoration:"none", color:"green", fontWeight:"bold"}} target="_blank">
-                                                        <Grid container item xs={12}>
-                                                            <Box display="inline" alignContent="flex-start">
+                                                        <Grid container item xs={12} style={{justifyContent:'flex-end'}}>
+                                                            <Box display="inline" alignContent="flex-end">
                                                                 <DoneIcon className={classes.smallIcons} style={{height:18, margin:0}}/> Government Scheme Support
                                                             </Box>
                                                         </Grid>
@@ -406,21 +412,23 @@ function addBookmark(job){
                                         </Typography>
                                         
                                     </Grid>
-                                    <Grid item>
-                                        <Box display="flex" justifyContent="flex-end" display={{ xs: 'none', sm: 'block' }}>
-                                            <Button
-                                                className={classes.button} 
-                                                size="small"
-                                                onClick={ () => handleClick(list)}
-                                                style={{color:'#6738AA'}}
-                                                variant="outlined"
-                                                >
-                                                Bookmark
-                                                <BookmarkIcon className={classes.rightIcon} />
-                                            </Button>
-                                        </Box>
-                                        
-                                    </Grid>
+                                    <Hidden smDown>
+                                        <Grid item>
+                                            <Box display="flex" justifyContent="flex-end" display={{ xs: 'none', sm: 'block' }}>
+                                                <Button
+                                                    className={classes.button} 
+                                                    size="small"
+                                                    onClick={ () => handleClick(list)}
+                                                    color='secondary'
+                                                    variant="outlined"
+                                                    >
+                                                    Bookmark
+                                                    <BookmarkIcon className={classes.rightIcon} />
+                                                </Button>
+                                            </Box>
+                                            
+                                        </Grid>
+                                    </Hidden>
                                 </Grid>
                                 <Box boxShadow={0}>
                                 
