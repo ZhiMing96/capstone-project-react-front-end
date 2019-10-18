@@ -1,91 +1,101 @@
 import React, { useEffect } from 'react'
 import { Grid, makeStyles, Typography, Avatar, Box, Button, IconButton } from '@material-ui/core'
-import { AccountBox, BookmarksIcon, ListAlt, Group }from '@material-ui/icons'
+import { AccountBox, BookmarksIcon, ListAlt, Group } from '@material-ui/icons'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import api from '../api'
 import TelegramIcon from '@material-ui/icons/Telegram';
+import ImageUploader from 'react-images-upload';
+import { connect } from "react-redux";
+import { updateProfile } from '../redux/actions/profile'
 
 //INCOMPLETE
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin: 30,
-    marginBottom:20,
+    marginBottom: 20,
     width: 90,
     height: 90,
   },
   button: {
     margin: theme.spacing(1.5),
-    width: 180 ,
+    width: 180,
     height: 45
   },
 }));
 
 const profileArray = [
   {
-  name: "PROFILE",
-  url: "/profile"
+    name: "PROFILE",
+    url: "/profile"
   },
   {
-  name: "BOOKMARKS",
-  url: "/profile/bookmarks"
+    name: "BOOKMARKS",
+    url: "/profile/bookmarks"
   },
   {
-  name: "SKILLS",
-  url: "/profile/skills"
+    name: "SKILLS",
+    url: "/profile/skills"
   },
   {
-  name: "SOCIAL ACTIVITY",
-  url: "/profile/social"
+    name: "SOCIAL ACTIVITY",
+    url: "/profile/social"
   },
 ]
 
 
 function Sidebar(props) {
   const classes = useStyles();
-  const [name,setName] = React.useState('')
+  const [name, setName] = React.useState('')
 
-  useEffect(()=>{
+  useEffect(() => {
     api.profile.get().then(
-      res=>{
+      res => {
         setName(res.data.profile.first_name)
       }
     ).catch({})
-  
+
   })
-  
-   return(
-    
-     <Grid container alignItems="center" justify="center">
+
+    return (
+
+      <Grid container alignItems="center" justify="center">
         <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" className={classes.bigAvatar} />
         <Grid container justify="center">
           <Typography>
             <Box fontWeight="fontWeightBold" fontSize={20}>
               {name.toUpperCase()}
-              <br/>
+              <br />
               <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
-              <TelegramIcon />
+                <TelegramIcon />
               </IconButton>
             </Box>
           </Typography>
         </Grid>
         <Grid container justify="center">
-          {profileArray.map((item,index)=>(
+          {profileArray.map((item, index) => (
             <div key={index}>
               <Button
-                variant="outlined" 
+                variant="outlined"
                 className={classes.button}
-                component={Link}  
+                component={Link}
                 to={item.url}
               >
                 {item.name}
               </Button>
             </div>
           ))}
-          
+
         </Grid>
-        
+
       </Grid>
-     
-   )  
-}
-export default Sidebar;
+
+    )
+  }
+  const mapStateToProps = (state)=>{
+    return { 
+      pic: state.socialProfile.profile_image_link
+     }
+  }
+
+  //export default connect(mapStateToProps, { updateProfile })(Sidebar);
+  export default Sidebar;

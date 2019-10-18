@@ -1,4 +1,4 @@
-import React, { useState, useRef}from 'react'
+import React, { useState, useRef, useEffect}from 'react'
 import { Button, Typography, Box, Snackbar, IconButton,  } from '@material-ui/core'
 import UserDetailsView from './UserDetailsView'
 import ReadOnlyView from './ReadOnlyView'
@@ -6,6 +6,8 @@ import WorkWithDatepicker from './WorkWithDatepicker'
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
+import SocialProfileEdit from './SocialProfileEdit'
+import SocialProfileRead from './SocialProfileRead'
 
 const useStyles = makeStyles(theme => ({
     close: {
@@ -16,10 +18,18 @@ const useStyles = makeStyles(theme => ({
 function Profile(props) {
     const classes = useStyles();
     const [editProfileState, setEditProfileState] = React.useState(false)
+    const [editSocialProfileState, setEditSocialProfileState] = React.useState(false)
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState(undefined);
+    const [setupState, setSetupState] = useState(false);
 
+
+    /*useEffect(()=>{
+        if(props.history.location.state!== undefined && props.history.location.state.setup === true) {//first time logging in
+            setSetupState(true)
+        }
+    })*/
     const processQueue = () => {
         if (queueRef.current.length > 0) {
             setMessageInfo(queueRef.current.shift());
@@ -46,6 +56,11 @@ function Profile(props) {
         console.log("change")
         const currentState = editProfileState
         setEditProfileState(!currentState)
+    }
+    const changeSocialProfileState = () => {
+        console.log("change Social")
+        const currentState = editSocialProfileState
+        setEditSocialProfileState(!currentState)
     }
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -75,10 +90,12 @@ function Profile(props) {
                     PROFILE
               </Box>
             </Typography>
-
+            
             {editProfileState ? <UserDetailsView changeState={changeProfileState} setSnackbar={setSnackbar} /> :
                 <ReadOnlyView changeState={changeProfileState} />}
             <br />
+            {setupState || editSocialProfileState? <SocialProfileEdit changeState={changeSocialProfileState} setSnackbar={setSnackbar}/> : <SocialProfileRead changeState={changeSocialProfileState}/>} 
+                <br />
             <WorkWithDatepicker setSnackbar={setSnackbar}/>
 
             <Snackbar

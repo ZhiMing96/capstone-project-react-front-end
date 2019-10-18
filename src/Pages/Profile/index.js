@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { Paper, Typography, Box, Hidden, IconButton, makeStyles } from '@material-ui/core';
 import Bookmarks from '../Bookmarks';
 import Skills from './Skills/';
-import Profile from './PublicProfile/'
+import Profile from './UserProfile'
 import { Link, Route, BrowserRouter, Switch,Redirect } from 'react-router-dom';
 import './index.css';
 import MobileSideBar from '../../Components/MobileSideBar/MobileSideBar' ;
