@@ -80,7 +80,7 @@ function addBookmark(job){
     const [open, setOpen] = useState(false); // for snackbar
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [listings, setListings] = useState("");
-
+    const [elevation, setElevation] = useState(0);
     const lackingSkills = [
         'Account Management', 
         'Business Development', 
@@ -173,9 +173,11 @@ function addBookmark(job){
 
     const handleMouseEnter = () => {
         console.log('MOUSE HOVERING')
+        setElevation(2)
     }
     const handleMouseLeave = () => {
         console.log('MOUSE LEFT')
+        setElevation(0)
     }
         
     return (
@@ -206,8 +208,8 @@ function addBookmark(job){
         <Grid item xs={12}> 
         {listings
         ? listings.map((list,index) => (
-            <div key={index} onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                <Paper className={classes.paper} elevation={2} >
+            <div key={index} >
+                <Paper className={classes.paper} elevation={2} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}  >
                     <Box display="flex" flexWrap="wrap">
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={2}>
@@ -224,7 +226,7 @@ function addBookmark(job){
                             <Grid item xs={10} md={8} >
                                 <Grid item xs>
                                 <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>
-                                    <Typography >
+                                    <Typography>
                                         <Box align="left" style={{marginLeft:10}} fontSize={12} fontWeight="fontWeightBold">  
                                             { list.postedCompany 
                                                 ? list.postedCompany.name
@@ -238,7 +240,7 @@ function addBookmark(job){
                                         </Box>
                                     </Typography>
                                 </a>
-                                    <Typography style={{fontSize:12}}>
+                                    <Typography style={{fontSize:12}}  >
                                         <Box align="left" style={{marginLeft:10, color:'#9F0D6E'}} display={{ 'xs':'none', 'sm':'block'}} >
                                         
                                         {

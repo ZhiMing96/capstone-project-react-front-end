@@ -12,6 +12,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import LaunchIcon from '@material-ui/icons/Launch';
 import SendIcon from '@material-ui/icons/Send';
 
+
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -56,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
   eventTitle: {
     textAlign:'Left', 
-    fontWeight:'bold', 
+    fontWeight:'lighter', 
     overflow:'hidden',
     textOverflow:'ellipsis', 
     display:'-webkit-box',
@@ -137,6 +139,7 @@ function Events() {
   const [selectedEventDescription, setSelectedEventDescription] = useState("");
   const [markerAddress, setMarkerAddress] = useState('Singapore')
   const [selectedUrl, setSelectedUrl] = useState('');
+  const [selectedIndex, setselectedIndex] = useState(null);
 
   
   useEffect(() => {
@@ -324,8 +327,10 @@ function Events() {
   }
 
 
-  const viewDetails = (event) =>{
+  const viewDetails = (event,index) =>{
     console.log('ENTERED VIEW DETAILS METHOD')
+    setselectedIndex(index);
+    console.log(index);
     console.log(event.sessions)
     if(event.sessions[0].buildingName!=='-' && event.sessions[0].buildingName!=='0'){
       setMarkerAddress(event.sessions[0].buildingName);
@@ -347,6 +352,9 @@ function Events() {
     console.log('Exiting view Event Details')
     window.scrollTo(0,document.body.scrollHeight);
   }
+
+
+  console.log('selectedIndex = '+selectedIndex);
 
   return(
     <div>
@@ -386,7 +394,7 @@ function Events() {
           <Grid item lg={7} sm={6} xs={12} className={classes.eventListArea} style={{maxHeight: 700,overflowY:'auto',}}>
           {events.map((event, index) => (
               <div key={index}>
-                <Paper elevation={2} style={{marginInlineStart:20, height:130, marginInlineEnd:20, marginBottom:10, padding:10}}>
+                <Paper elevation={selectedIndex===index? 3 : 0 } style={{marginInlineStart:20, height:130, marginInlineEnd:20, marginBottom:10, padding:10}}>
                   <Grid container style={{height:'100%', alignContent:'center', }}>
                     <Hidden mdDown>
                       <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
@@ -394,6 +402,9 @@ function Events() {
                     </Hidden>
                     <Grid item lg={10} xs={12} container  style={{paddingInlineStart:15, paddingInlineEnd:15}} justify="space-between">
                       <Grid item lg={8} sm={11} xs={11}>
+                        <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
+                          {event.eventSegment}
+                        </Typography>
                         <Typography style={{paddingTop:1}}>
                           <Box className={classes.eventTitle}>
                             {event.eventName}
@@ -414,7 +425,7 @@ function Events() {
                             alignItems="flex-start"
                           >
                             <Grid item>
-                              <Box textAlign="left" fontWeight={530} fontSize={10} color='textSecondary'>
+                              <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
                                 {event.eventPrice !== '$0.00'
                                 ? event.eventPrice
                                 : 'Free'
@@ -427,7 +438,7 @@ function Events() {
                       <Hidden lgUp>
                         <Grid item xs={1}>
                           <IconButton
-                          onClick={() => viewDetails(event)}
+                          onClick={() => viewDetails(event,index)}
                           disableRipple={true}
                           color='Secondary'
                           >
@@ -440,7 +451,7 @@ function Events() {
                           <Button
                           disableRipple={true}
                           size='small'
-                          onClick={() => viewDetails(event)}
+                          onClick={() => viewDetails(event,index)}
                           color='primary'
                           disableTouchRipple={true}
                           disableFocusRipple={true}>
@@ -448,9 +459,6 @@ function Events() {
                           </Button>
                           <Typography style={{fontSize:11, fontWeight:500}}>
                             {event.targetNationality}
-                          </Typography>
-                          <Typography style={{fontSize:11, fontWeight:500}}>
-                            {event.eventSegment}
                           </Typography>
                         </Grid>
                       </Hidden>
