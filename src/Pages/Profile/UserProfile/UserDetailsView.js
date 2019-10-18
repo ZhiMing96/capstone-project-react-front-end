@@ -127,7 +127,7 @@ function UserDetailsView(props) {
                   fontWeight="fontWeightBold"
                 >
 
-                  EDIT PROFILE
+                  BASIC PROFILE
                 </Box>
               </Box>
             </Typography>

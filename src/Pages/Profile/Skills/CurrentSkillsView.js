@@ -46,6 +46,7 @@ class CurrentSkillsView extends React.Component {
   componentDidMount(){
     api.skills.get().then(res=>{
       if (res.data.response_code===200){
+        console.log(res.data.skill_list)
         res.data.skill_list.forEach(skill=>{
           skill.id=parseInt(skill.id)
         })

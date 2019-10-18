@@ -7,6 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import SnackBar from '../../../Components/Snackbar'
 import api from '../../../api'
 import EditIcon from '@material-ui/icons/Edit';
+import { connect } from "react-redux";
+import { updateSocialProfile } from '../../../redux/actions/socialProfile'
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -33,36 +35,50 @@ const useStyles = makeStyles(theme => ({
     leftIcon: {
         marginRight: theme.spacing(1),
     },
-
+    description: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 280,
+        ['@media (min-width:920px)']: {
+            width: 710,
+        },
+    },
 }));
 
 
-export default function ReadOnlyView(props) {
+function SocialProfileRead(props) {
     const classes = useStyles();
     const [profileState, setProfileState] = React.useState({
-        first_name: '',
-        last_name: '',
-        username: '',
-        email: ''
+        profile_image_link: '',
+        description: '',
+        meetup_ind:'',
+        job_search_stage:''
     })
 
     //initialise
     useEffect(() => {
-        console.log('useEffect')
+        console.log(profileState)
         api.profile.get().then(res => {
-            const { first_name, last_name, username, email } = res.data.profile
+            console.log(res.data.social)
+            const { profile_image_link, description,  meetup_ind, job_search_stage} = res.data.social
+            console.log(res.data.social)
             setProfileState({
-                first_name: first_name,
-                last_name: last_name,
-                username: username,
-                email: email
+                profile_image_link: profile_image_link,
+                description: description,
+                meetup_ind:meetup_ind,
+                job_search_stage:job_search_stage
+            })
+            props.updateSocialProfile({
+                profile_image_link: profile_image_link,
+                description: description,
+                meetup_ind: meetup_ind,
+                job_search_stage: job_search_stage
             })
         }).catch(err => {
-            console.log('error initialising w user details')
+            console.log(err)
         })
     }, [])
 
-    console.log(profileState)
 
     return (
         <div>
@@ -82,7 +98,7 @@ export default function ReadOnlyView(props) {
                                     color="primary.main"
                                     fontWeight="fontWeightBold"
                                 >
-                                    BASIC PROFILE
+                                    SOCIAL PROFILE
                                 </Box>
                                 <Box m={2}>
                                     <Button variant="outlined" color="primary" className={classes.button} onClick={props.changeState}>
@@ -100,20 +116,8 @@ export default function ReadOnlyView(props) {
                             <Grid container style={{ width: '100%', textAlign: 'left' }}>
                                 <Grid item xs={12} md={6}>
                                     <TextField
-                                        label="First Name"
-                                        value={profileState.first_name}
-                                        className={classes.textField}
-                                        margin="normal"
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
-                                    />
-
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField
-                                        label="Last Name"
-                                        value={profileState.last_name}
+                                        label="Interested in networking?"
+                                        value={profileState.meetup_ind ===1? 'Yes': 'No'}
                                         className={classes.textField}
                                         margin="normal"
                                         InputProps={{
@@ -121,11 +125,20 @@ export default function ReadOnlyView(props) {
                                         }}
                                     />
                                 </Grid>
-
                                 <Grid item xs={12} md={6}>
                                     <TextField
-                                        label="Email Address"
-                                        value={profileState.email}
+                                        label="Current Career Focus"
+                                        value={
+                                            profileState.job_search_stage ===0? 
+                                                '-'
+                                            :
+                                                profileState.job_search_stage ===1?
+                                                    'Search for a Job'
+                                                : profileState.job_search_stage ===2?
+                                                    'Land a Job'
+                                                    : profileState.job_search_stage ===3?
+                                                        'Grow Your Career':''
+                                        }
                                         className={classes.textField}
                                         margin="normal"
                                         InputProps={{
@@ -133,12 +146,12 @@ export default function ReadOnlyView(props) {
                                         }}
                                     />
                                 </Grid>
-
-                                <Grid item xs={12} md={6}>
-                                    <TextField
-                                        label="Username"
-                                        value={profileState.username}
-                                        className={classes.textField}
+                                <Grid item xs={12} md={12}>
+                                <TextField
+                                        label="Bio Description"
+                                        value={profileState.description ==='' || profileState.description === null ? '-' : profileState.description}
+                                        className={classes.description}
+                                        multiline
                                         margin="normal"
                                         InputProps={{
                                             readOnly: true,
@@ -157,4 +170,6 @@ export default function ReadOnlyView(props) {
     )
 }
 
-
+export default connect(null,
+    { updateSocialProfile }
+)(SocialProfileRead);

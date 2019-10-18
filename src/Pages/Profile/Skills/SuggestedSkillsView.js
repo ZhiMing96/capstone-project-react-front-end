@@ -43,6 +43,7 @@ class SuggestedSkillsView extends React.Component {
     api.skills.suggested().then(res=>{
       if (res.data.response_code===200){
         console.log('200')
+        console.log(res.data.suggested_skills)
         res.data.suggested_skills.forEach(skill=>{
           skill.skill.id=parseInt(skill.id)
           
