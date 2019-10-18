@@ -65,6 +65,8 @@ const employmentTypes = [
       }
   ]
 
+  const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";
+
   const useStyles = makeStyles(theme => ({
     root: {
         padding: '2px 4px',
@@ -120,6 +122,23 @@ const employmentTypes = [
     close: {
         padding: theme.spacing(0.5),
     },
+    carouselJobTitile: {
+        marginTop:10, 
+        fontWeight:'bold', 
+        fontSize:16,
+        whiteSpace:'normal', 
+        textAlign:'left',
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+        display:'-webkit-box',
+        WebkitLineClamp:2,
+        WebkitBoxOrient:'vertical',
+        lineHeight:'18px',
+        [theme.breakpoints.down('xs')]: {
+            marginBottom: '20px',
+            marginTop:'20px',
+        },
+    },
   }));
 
     const Wrapper = styled.div`
@@ -132,12 +151,12 @@ const employmentTypes = [
 
   const carouselSettings = {
     accessibiliy: true,
-    speed:1500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
+    speed:1700,
+    slidesToShow: 4,
+    slidesToScroll: 4,
     infinite:true,
     dots:true,
-    //autoplay: true,
+    autoplay: true,
     //arrows:true,
     autoplaySpeed:8000,
     draggable:true,
@@ -300,7 +319,8 @@ function Jobs (props) {
             const popularTitles = res.data
             
             const title = popularTitles[0].icmsJobTitle
-            axios.get(`https://api.mycareersfuture.sg/v2/jobs?search=${title}&limit=10`)
+            // axios.get(`https://api.mycareersfuture.sg/v2/jobs?search=${title}&limit=10`)
+            axios.get(`https://api.mycareersfuture.sg/v2/jobs?search=Banking&limit=10`)
                 .then((res) => {
                     console.log(res.data)
                     const listings= res.data.results;
@@ -466,20 +486,30 @@ function Jobs (props) {
     },[searchResults])
 
 
+    const handleHrefClick = listing => {
+        window.open(listing.metadata.jobDetailsUrl,'_blank');
+    }
+
     //console.log('Keyword Before Render = ');
     console.log('State Before Render =')
     console.log(state)
 
+
+
   return (
     
     <div>
-        <Container>
+        {/* <Container> */}
         <CssBaseline/>
-        <Grid container alignContent="flex-start">
+        <Grid container alignContent="flex-start" style={{backgroundColor:'#039be5', height:'25vh', padding:20}}>
+            <Grid item xs={12} >
+                <Typography variant='h4' style={{color:'#FFFFFF', fontWeight:'lighter', paddingTop:10}}>
+                    Never Miss Another Opportunity
+                </Typography>
+            </Grid>
             <Grid item xs={12} >
             <form onSubmit={handleSubmit}>
-                <Paper className={classes.root} elevation={1} style={{margin:50, marginTop:40,marginBottom:20,borderRadius: 25}}>
-                    {/* <Box border={2} borderColor="#9F0D6E" className={classes.root} style={{margin:0, padding:0, paddingInlineStart:5}}> */}
+                <Paper elevation={1} style={{margin:50, marginTop:40,marginBottom:20,borderRadius: 25, zIndex:20,}}>
                     <Box className={classes.root} style={{margin:3, padding:0, paddingInlineStart:5}}>
                         <InputBase
                             className={classes.input}
@@ -587,7 +617,7 @@ function Jobs (props) {
             </Router>
         </div>
         : 
-        token  && byPass==false
+        token && byPass==false
         ? //USER WITH ACCOUNT           
         <div>
             <Grid container style={{height:'50vh', margin:30}} spacing={1} justify="space-between" >
@@ -654,24 +684,51 @@ function Jobs (props) {
             {popularJobs.length !== 0
             ? 
             <div>
-                <Typography variant='h6' style={{textAlign:"justify", marginLeft:30}}>
+                <Typography variant='h5' style={{textAlign:"justify", marginLeft:30, color:'#024966e', fontWeight:'bold', marginTop:20}}>
                 Popular Jobs
                 </Typography>
-                <Grid container style={{height:'50vh', margin:30, marginTop:10}} spacing={1} justify="space-between" >
+                <Grid container style={{height:'35vh', margin:10, marginTop:10}} spacing={1} justify="space-between" >
                 <Wrapper style={{textAlign:'-webkit-center'}}>
                     <Slider {...carouselSettings}>
                         { popularJobs.listings.map((listing) => (
-                            listing.postedCompany.logoUploadPath!==null
-                                ?
+                            // listing.postedCompany.logoUploadPath!==null
+                            //     ?
                                 <Page>
-                                    <Paper style={{width:'80%', height:'30vh', textAlign: '-webkit-center', padding:15, borderRadius:10}}>
-                                    <Avatar alt="Remy Sharp" src={listing.postedCompany.logoUploadPath} style={{width:110, height:110,}} imgProps={{style:{objectFit:'contain'}}}/>
-                                    <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
-                                        {listing.title}
-                                    </Typography>
+                                    <Paper style={{width:'90%', height:'30vh', textAlign: 'start', padding:15, marginBottom:5}} elevation={0}>
+                                    <Avatar alt="List"
+                                    src={ 
+                                        listing.postedCompany && listing.postedCompany.logoUploadPath 
+                                        ? listing.postedCompany.logoUploadPath  
+                                        : defaultIcon
+                                    } 
+                                    style={{width:90, height:90, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)'}} 
+                                    imgProps={{style:{objectFit:'contain',border:0}}}
+                                    onClick={()=> handleHrefClick(listing)}
+                                    />
+                                    <Grid container  justify='space-between' style={{height:'15vh'}}>
+                                        <Grid item xs={12}>
+                                        <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
+                                            {listing.title}
+                                        </Typography>
+                                        <Typography style={{fontWeight:'light', fontSize:10}}>
+                                            { listing.postedCompany 
+                                                ? listing.postedCompany.name
+                                                : ""
+                                            }}
+                                        </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                            <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                            onClick={()=>handleHrefClick(listing)}
+                                            >
+                                                Details
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                    
                                     </Paper>
                                 </Page>
-                                : ''
+                                // : ''
                                 
                         ))
 
@@ -746,7 +803,7 @@ function Jobs (props) {
             </IconButton>
             ]}
         /> 
-    </Container> 
+    {/* </Container>  */}
     </div>
     
   )

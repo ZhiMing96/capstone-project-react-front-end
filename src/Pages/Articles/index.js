@@ -318,7 +318,7 @@ function Articles()
             {articles.slice(0,1).map((article,index) => (
                 <Grid item xs={12} sm={6} style={{marginTop:'15px',}}>
                   <Typography className={classes.sectionHeading}>
-                    Top Pick
+                    Recommended For You 
                   </Typography>
                   <Card className={classes.cardLarge} style={{boxShadow:'none'}}>
                     <CardActionArea href={article.link} target='._blank'>
@@ -445,7 +445,7 @@ function Articles()
           </Grid>
           <div style={{padding:18}}>
             <Typography className={classes.sectionHeading}>
-                Recommended For You
+                Top Picks
             </Typography>                 
             <Wrapper style={{marginInlineStart:15, marginInlineEnd:15, zIndex:0}}>
               <Slider {...carouselSettings}>
