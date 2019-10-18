@@ -32,6 +32,9 @@ const profile={
   update: params => axios.post('http://localhost:3000/user/profile', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  updateSocial: params => axios.post('http://localhost:3000/social/profile', params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const work ={
