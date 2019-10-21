@@ -501,15 +501,16 @@ function Jobs (props) {
     <div>
         {/* <Container> */}
         <CssBaseline/>
-        <Grid container alignContent="flex-start" style={{backgroundColor:'#039be5', height:'25vh', padding:20}}>
+        <Grid container alignContent="flex-start" style={{backgroundColor:'#039be5', height:'30vh', padding:20}}>
             <Grid item xs={12} >
-                <Typography variant='h4' style={{color:'#FFFFFF', fontWeight:'lighter', paddingTop:10}}>
-                    Never Miss Another Opportunity
+                <Typography variant='h4' style={{color:'#FFFFFF', fontWeight:'lighter', paddingTop:15}}>
+                    PLACE HOLDER TEXT
                 </Typography>
             </Grid>
-            <Grid item xs={12} >
-            <form onSubmit={handleSubmit}>
-                <Paper elevation={1} style={{margin:50, marginTop:40,marginBottom:20,borderRadius: 25, zIndex:20,}}>
+            <Grid item xs={12} container justify="center">
+                <Grid item xs={12} sm={10} md={8} style={{textAlign:'-webkit-center'}}>
+                    <form onSubmit={handleSubmit}>
+                <Paper elevation={1} style={{margin:50, marginTop:40,marginBottom:20,borderRadius: 25, zIndex:20,maxWidth:'70vh'}}>
                     <Box className={classes.root} style={{margin:3, padding:0, paddingInlineStart:5}}>
                         <InputBase
                             className={classes.input}
@@ -588,7 +589,9 @@ function Jobs (props) {
                     </DialogActions>
                 </Dialog>    
                 </form>   
+                </Grid>
             </Grid>
+           
         </Grid>
         <Grid style={{marginLeft:50, marginRight:55}}>
             { loading 

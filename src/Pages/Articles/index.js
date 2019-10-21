@@ -82,7 +82,10 @@ const useStyles = makeStyles(theme => ({
     textOverflow:'ellipsis', 
     display:'-webkit-box',
     WebkitLineClamp:2,
-    WebkitBoxOrient:'vertical'
+    WebkitBoxOrient:'vertical',
+    '&:hover': {
+  
+    }
   },
   articleDescription:{
     textAlign:'Left', 

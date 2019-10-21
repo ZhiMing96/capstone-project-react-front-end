@@ -44,7 +44,18 @@ const useStyles = makeStyles(theme => ({
         width: 15,
         height: 12,
         margin: 2,
-    }
+    },
+    filterArea: {
+        [theme.breakpoints.up('sm')]: {
+            paddingRight:20,
+        },
+        [theme.breakpoints.down('xs')]: {
+            justifyContent:'flex-start',
+            marginLeft:20
+        },
+    },
+    
+    
   }));
 
 function addBookmark(job){
@@ -73,7 +84,7 @@ function addBookmark(job){
 
 
  function JobListings(props) {
-
+    const token = window.localStorage.getItem('authToken');
     console.log("ENTERED JOBLISTING COMPONENT Props = ")
     console.log(props)
     const queueRef = useRef([]);
@@ -141,14 +152,20 @@ function addBookmark(job){
     const handleClick = (listing) => {
         console.log("Entered Handle Click open")
         console.log(listing);
-        addBookmark(listing);
-
-        const message = `${listing.title} added to bookmarks!`
-        queueRef.current.push({
-            message,
-            key: new Date().getTime(),  
-        }); 
-
+        if(token){
+            addBookmark(listing);
+            const message = `${listing.title} added to bookmarks!`
+            queueRef.current.push({
+                message,
+                key: new Date().getTime(),  
+            }); 
+        } else {
+            const message = 'ERROR: Please SignUp/Login to Save Bookmarks!'
+            queueRef.current.push({
+                message,
+                key: new Date().getTime(),  
+            }); 
+        }
         if (open) {
             // immediately begin dismissing current message
             // to start showing new one
@@ -156,6 +173,8 @@ function addBookmark(job){
         } else {
             processQueue();
         }
+
+        
     };
 
     const handleClose = (event, reason) => {
@@ -185,26 +204,17 @@ function addBookmark(job){
         <CssBaseline />
         <Grid container>
             <Grid item xs={12} sm={6} container justify="flex-start"> 
-                <Typography>
+                <Typography style={{marginLeft:20, marginTop:20}}>
                     <Box>
                         Showing Results for <span style={{textDecorationLine: 'underline', fontWeight: 'bold'}}>{props.keyword}</span>
                     </Box>
                 </Typography>
             </Grid>
-            <Hidden xsDown>
-                <Grid item xs={6} container justify="flex-end">
-                    <Grid item>
-                        <FilterSelect submitFilter={submitFilter}/>
-                    </Grid>
+            <Grid item xs={12} sm={6} container justify="flex-end" className={classes.filterArea} >
+                <Grid item>
+                    <FilterSelect submitFilter={submitFilter} />
                 </Grid>
-            </Hidden>
-            <Hidden smUp>
-                <Grid item xs={12} container justify="flex-end">
-                    <Grid item>
-                        <FilterSelect submitFilter={submitFilter}/>
-                    </Grid>
-                </Grid>
-            </Hidden>
+            </Grid>
         <Grid item xs={12}> 
         {listings
         ? listings.map((list,index) => (
@@ -451,6 +461,7 @@ function addBookmark(job){
             </Grid>
         </Grid>
         <Snackbar
+            className={token?'': classes.error }
             key={messageInfo ? messageInfo.key : undefined}
             anchorOrigin={{
             vertical: 'bottom',
@@ -465,7 +476,7 @@ function addBookmark(job){
             'aria-describedby': 'message-id',
             }}
             message={<span style={{boxShadow:"none"}} id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
-            action={[
+            action={token ? [
             <Button size="small" href="/profile/bookmarks">
                 <Box style={{color:'#5BC0BE', fontWeight:600}}>
                     View
@@ -480,7 +491,25 @@ function addBookmark(job){
             >
                 <CloseIcon />
             </IconButton>
-            ]}
+            ]
+            :
+            [
+            <Button size="small" href="/profile/bookmarks">
+                <Box style={{color:'#e57373', fontWeight:600}}>
+                    SignUp
+                </Box>
+            </Button>,
+            <IconButton
+                key="close"
+                aria-label="close"
+                color="inherit"
+                className={classes.close}
+                onClick={handleClose}
+            >
+                <CloseIcon />
+            </IconButton>
+            ]
+            }
         />
         
     </Fragment>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+  import React, {useState, useEffect} from 'react';
 import { Grid, Box, Paper } from '@material-ui/core';
 
 const Pagination = ({ currentPage, postsPerPage, totalPosts, paginate }) => {
