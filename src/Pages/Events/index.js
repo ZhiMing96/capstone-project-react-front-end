@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
-import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Divider, Tabs, Tab, Hidden, Button } from '@material-ui/core';
+import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Divider, Tabs, Tab, Hidden, Button, DialogContent, DialogContentText,createMuiTheme } from '@material-ui/core';
 import EventsBG from '../../images/eventsBG.jpg'
 import IconButton from '@material-ui/core/IconButton';
 import Map from './Mapbox'
@@ -16,9 +16,30 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
+import { ThemeProvider } from '@material-ui/styles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiDialog: {
+        paper:{
+          margin:'0px',
+          marginRight:'12px'
+        }
+    },
+    palette: {
+      primary: {
+          main: '#0091ea'
+
+      },
+      secondary: {
+          main: '#024966'
+      }
+  }
+  }
 });
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +75,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   descriptionTitles: {
+    marginTop:15,
     textAlign:'left',
     [theme.breakpoints.down('sm')]: {
       fontSize:17,
@@ -203,8 +225,18 @@ function Events() {
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (event,index) => {
+    setselectedIndex(index);
+    if(event.sessions[0].buildingName!=='-' && event.sessions[0].buildingName!=='0'){
+      setMarkerAddress(event.sessions[0].buildingName);
+    } else if (event.sessions[0].eventVenue!=='NIL'){
+      setMarkerAddress(event.sessions[0].eventVenue);
+    } else  {
+      setMarkerAddress('Singapore');
+    } 
     setOpen(true);
+    const location = formatVenue(event.sessions[0].buildingName,event.sessions[0].eventVenue,event.sessions[0].streetName,event.sessions[0].postalCode)
+    setSelectedEventLocation(location);
   };
 
   const handleClose = () => {
@@ -437,9 +469,14 @@ function Events() {
   //Change Page 
   const paginate = pageNumber => setCurrentPage(pageNumber);
   console.log("CURRENT PAGE NUMBER = " + currentPage)
+  
+  const handleHrefClick = url => {
+    window.open(url,'_blank');
+}
 
   return(
     <div style={{backgroundColor:'#FFFFFF'}}>
+      
         <CssBaseline/>
           <div style={{backgroundImage:`url(${EventsBG})`,backgroundPosition: 'center',backgroundSize: 'cover', width:'100%', height:'350px'}}>
             <Typography>
@@ -532,7 +569,7 @@ function Events() {
                         <Grid item xs={1} container justify='center' style={{alignContent:'space-between'}}>
                           <Hidden smUp>
                             <IconButton
-                            onClick={handleClickOpen}
+                            onClick={()=> handleClickOpen(event,index)} 
                             disableRipple={true}
                             color='Secondary'
                             style={{}}
@@ -610,23 +647,35 @@ function Events() {
                     </CardContent>
                   </Collapse>
                 </Card>
-                <Dialog
-                  open={open}
-                  TransitionComponent={Transition}
-                  keepMounted
-                  onClose={handleClose}
-                  aria-labelledby="alert-dialog-slide-title"
-                  aria-describedby="alert-dialog-slide-description"
-                >
-                  <Map markerAddress={markerAddress} style={{width:'98%',}}/>
+                <ThemeProvider theme={theme}>
+                <Dialog open={selectedIndex===index? open:false} onClose={handleClose} style={{boxShadow:0, opacity:1,margin:'7px', width:'100vw'}}>
+                  <DialogContent style={{textAlign:'center'}}>
+                    <Map markerAddress={markerAddress} style={{width:'98%',}}/>
+                    <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
+                        LOCATION 
+                      </Typography>
+                      <Typography style={{fontWeight:"bold",textAlign:'left',}} color='textSecondary'>
+                        {selectedEventLocation}
+                      </Typography>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      href={selectedUrl}
+                      target="_blank"
+                      style={{fontWeight:'bold', fontSize:17, marginTop:10, marginBottom:10, backgroundColor:'#0091ea', color:'#FFFFFF'}}
+                      >
+                        Sign Up
+                    </Button>
+                  </DialogContent>
                 </Dialog>
+                </ThemeProvider>
               </div>
           ))}
           </Grid>
-          <Hidden smUp>
+          <Hidden xsDown>
             <Grid item lg={5} md={5} sm={6} xs={12} className={classes.descriptionArea} style={{}}>
-              <Map markerAddress={markerAddress} style={{width:'98%',}}/>
-                <Paper style={{width:'100%', height:'50%', padding:20}}>
+              <Map markerAddress={markerAddress} style={{width:'100%',}}/>
+                <Paper style={{width:'100%', padding:20}}>
                   <Grid container justify="space-between">
                     <Grid item xs={12}>
                       <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
@@ -636,20 +685,21 @@ function Events() {
                         {selectedEventLocation}
                       </Typography>
                     </Grid>
-                    {/* {selectedEventLocation !== 'Please Select An Event'
-                    ? */}
-                    <Grid item xs={12} style={{textAlign:'end'}}> 
-                      <Hidden xsDown>
+                    {selectedEventLocation !== 'Please Select An Event'
+                    ?
+                    <Grid item xs={12} style={{textAlign:'end', marginTop:15}}> 
                         <Button
+                          variant='contained'
                           size="small"
+                          fullWidth
                           color='primary'
-                          href={selectedUrl}
                           target="_blank"
                           style={{fontWeight:'bold', fontSize:17}}
+                          onClick={()=> handleHrefClick(selectedUrl)}
                           >
                             Sign Up
                           </Button>
-                      </Hidden>
+                      
                       <Hidden smUp>
                         <IconButton
                           color='secondary'
@@ -660,18 +710,14 @@ function Events() {
                           </IconButton>
                       </Hidden>
                     </Grid>
+                    :''
+                    }
                   </Grid>
-                  { selectedEventDescription !==''
-                  ?
-                  ''
-                  :''
-                  }
               </Paper>
             </Grid>
           </Hidden>
           
         </Grid>      
-      
     </div>
   
   );
