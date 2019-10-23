@@ -8,7 +8,6 @@ import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import clsx from 'clsx';
-import { red } from '@material-ui/core/colors';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
@@ -17,6 +16,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos'
 import { typography } from '@material-ui/system';
 import { setSeconds } from 'date-fns/esm';
+import api from '../../api';
 
 const Wrapper = styled.div`
     width:100%
@@ -25,12 +25,59 @@ const Wrapper = styled.div`
 const Page = styled.div`
     width:100%
 `;
+const miniCarouselSettings = {
+  accessibiliy: true,
+  speed:1800,
+  slidesToShow: 4,
+  slidesToScroll: 4,
+  infinite:true,
+  dots:false,
+  autoplay: true,
+  arrows:true,
+  autoplaySpeed:7500,
+  draggable:true,
+  lazyLoad: "progressive",
+  pauseOnHover: true,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        infinite: true,
+        dots: true
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+        initialSlide: 2
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1
+      }
+    }]
+};
 
-const articleHeadings = [
-  '#CareerGrowth',
-  '#JobSearching',
-  '#LandJobs'
-]
+const largeCarouselSettings = {
+  accessibiliy: true,
+  speed:1800,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  infinite:true,
+  autoplay: true,
+  arrows:true,
+  autoplaySpeed:7500,
+  draggable:true,
+  lazyLoad: "progressive",
+  pauseOnHover: true,
+};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -173,6 +220,7 @@ function Articles()
 {
   console.log("Entered GetArticles Function");
   const [articles, setArticles] = useState([]);
+  const [recommendedArticles, setRecommendedArticles] = useState([]);
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [fontWeight, setFontWeight] = useState({
@@ -217,56 +265,35 @@ function Articles()
     }setValue(newValue);
   };
   
-  console.log(articles);
   useEffect(() => {
-    axios.get('https://content.mycareersfuture.sg/wp-json/wp/v2/posts?per_page=10')
+    api.articles.get()
     .then(res => {
       const results = res.data;
       console.log(results);
       //console.log(results[0]._links['wp:attachment'][0].href);
-      setArticles(results);
+      if(results.response_code === 200){
+        setArticles(results.articles);
+      } else {
+        console.log('RESPONSE CODE' + results.response_code);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }, []);
+  useEffect(() => {
+    api.dailyDigest.get()
+    .then(res => {
+      const results = res.data;
+      console.log(results);
+      if(results.response_code===200){
+        console.log('RECOMMENDED ARTICLES ARE')
+        console.log(results.articles)
+        setRecommendedArticles(results.articles);
+      }
     })
   }, []);
 
-  var carouselSettings = {
-    accessibiliy: true,
-    speed:1800,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    infinite:true,
-    dots:true,
-    autoplay: true,
-    arrows:true,
-    autoplaySpeed:7500,
-    draggable:true,
-    lazyLoad: "progressive",
-    pauseOnHover: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }]
-  };
 
   const formatDate = (dateString) => {
     var date = new Date(dateString);
@@ -279,7 +306,7 @@ function Articles()
     return(`${day} ${month} ${year}`)
   }
   console.log('Selected Index = ' + selectedIndex)
-
+  console.log(recommendedArticles);
   return(
     <Fragment>
       <CssBaseline/>
@@ -299,7 +326,7 @@ function Articles()
           </Typography>
         </div>
 
-        <div className={classes.tabArea}>
+        {/* <div className={classes.tabArea}>
          
             <Tabs
               value={value}
@@ -309,86 +336,91 @@ function Articles()
               centered
               style={{maxWidth:'100%', marginInline:30, paddingBlock:5, backgroundColor:'#e3f2fd',alignItems:'center'}}
             >
-              {/* {articleHeadings.map((heading)=> (
-                <Tab disableRipple style={{minHeight:0, padding:'3px 12px', fontSize:15}}  label={<span style={{fontWeight:fontWeight.featured}}>{heading}</span>} />
-              ))} */}
+              
                 <Tab disableRipple className={classes.individualTab} label={<span style={{fontWeight:fontWeight.featured}}>Career Growth</span>} />
                 <Tab disableRipple className={classes.individualTab} label={<span style={{fontWeight:fontWeight.recommended}}>Job Searching</span>} />
                 <Tab disableRipple className={classes.individualTab} label={<span style={{fontWeight:fontWeight.latest}}>Land a Job</span>} />
             </Tabs>
-          </div>
+          </div> */}
           <Grid container style={{padding:18}}>
-            {articles.slice(0,1).map((article,index) => (
-                <Grid item xs={12} sm={6} style={{marginTop:'15px',}}>
-                  <Typography className={classes.sectionHeading}>
-                    Recommended For You 
-                  </Typography>
-                  <Card className={classes.cardLarge} style={{boxShadow:'none'}}>
-                    <CardActionArea href={article.link} target='._blank'>
-                      <CardMedia
-                        className={classes.mediaLarge}
-                        image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
-                        title={article.title.rendered}
-                      />
-                    </CardActionArea>
-                    <CardContent style={{height:'fit-content', paddingBottom:10}}>
-                      <Grid container display='flex'>
-                        <Grid item xs={12} container style={{}} direction='column' justify="space-between">
-                          <Grid item>
-                            <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
-                                Grow Your Career
-                            </Typography>
-                            <Typography className={classes.articleHeading} gutterBottom variant="body1">
-                              {article.title.rendered}
-                            </Typography>
+              <Grid item xs={12} sm={6} style={{marginTop:'15px',}}>
+                <Typography className={classes.sectionHeading}>
+                  Recommended For You 
+                </Typography>
+                <Wrapper style={{}}>
+                  <Slider {...largeCarouselSettings}>
+                  {recommendedArticles.map((list,index) => (
+                    <Page>
+                    <Card className={classes.cardLarge} style={{boxShadow:'none'}}>
+                      <CardActionArea href={list[0].link} target='._blank'>
+                        <CardMedia
+                          className={classes.mediaLarge}
+                          image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
+                          title={list[0].title}
+                        />
+                      </CardActionArea>
+                      <CardContent style={{height:'fit-content', paddingBottom:10}}>
+                        <Grid container display='flex'>
+                          <Grid item xs={12} container style={{}} direction='column' justify="space-between">
+                            <Grid item>
+                              <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
+                                  {list[0].jobtag}
+                              </Typography>
+                              <Typography className={classes.articleHeading} gutterBottom variant="body1">
+                                {list[0].title}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                          <Grid item xs={12} container style={{}} justify='space-between'>
+                            <Grid item xs={7} style={{alignSelf:'center'}}>
+                              <Typography style={{textAlign:'left', fontSize:11,}}>
+                                Posted on: {formatDate(list[0].article_date)}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={4} style={{alignSelf:'center'}}>
+                              <Typography style={{fontSize:11,textAlign:'right'}}>
+                                 {list[0].readtime} min read 
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={1}>
+                              <IconButton
+                                className={clsx(classes.expand, {
+                                  [classes.expandOpen]: expanded,
+                                })}
+                                onClick={() => handleExpandClick(index)}
+                                aria-expanded={expanded}
+                                aria-label="show more"
+                                size='small'
+                              >
+                                <ExpandMoreIcon />
+                              </IconButton>
+                            </Grid>
                           </Grid>
                         </Grid>
-                        <Grid item xs={12} container style={{paddingLeft:10}} justify='space-between'>
-                          <Grid item xs={7} style={{alignSelf:'center'}}>
-                            <Typography style={{textAlign:'left', fontSize:11,}}>
-                              Posted on: {formatDate(articles[0].date)}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={4} style={{alignSelf:'center'}}>
-                            <Typography style={{fontSize:11,textAlign:'right'}}>
-                              5 Min Read
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={1}>
-                            <IconButton
-                              className={clsx(classes.expand, {
-                                [classes.expandOpen]: expanded,
-                              })}
-                              onClick={() => handleExpandClick(index)}
-                              aria-expanded={expanded}
-                              aria-label="show more"
-                              size='small'
-                            >
-                              <ExpandMoreIcon />
-                            </IconButton>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                      
-                    <Collapse in={index===selectedIndex?expanded:false} timeout="auto" unmountOnExit>
-                      <CardContent style={{paddingTop:5, paddingBottom:5}}>
-                        <Typography className={classes.articleDescription} variant="body2" color="textSecondary" gutterBottom>
-                          Want to increase your company’s productivity without breaking the bank? Read on to find out which five free digital tools SMEs shouldn’t do without. 
-                              {article.acf.seo_meta_description}
-                        </Typography>
                       </CardContent>
-                    </Collapse>
-                  </Card>
+                      <Collapse in={index===selectedIndex?expanded:false} timeout="auto" unmountOnExit>
+                        <CardContent style={{paddingTop:5, paddingBottom:5}}>
+                          <Typography className={classes.articleDescription} variant="body2" color="textSecondary" gutterBottom>
+                            {list[0].sentence1}
+                            {list[0].sentence2}
+                            {list[0].sentence3}
+                          </Typography>
+                        </CardContent>
+                      </Collapse>
+                    </Card>
+                    </Page>
+                  ))}
+                  </Slider>
+                </Wrapper>
                 </Grid>
-            ))}
+            
             <Grid item xs={12} sm={6} className={classes.articleList}>
             <Typography className={classes.sectionHeading}>
               Latest
             </Typography>
               <List style={{paddingTop:0, width:'95%'}}>
                 {articles.map((article,index) => {
-                  if(index!==0){
+                  if(index<=6){
                     return (
                       <Fragment>
                             <ListItem alignItems="flex-start">
@@ -396,24 +428,24 @@ function Articles()
                               <a href={article.link} target='._blank' style={{textDecoration:'none', color:'inherit'}}>
                                 <Typography>
                                   <Box fontWeight='fontWeightBold' fontSize={12}>
-                                    Grow Your Career
+                                    {article.jobtag}
                                   </Box>
                                 </Typography>
                                 <Typography className={classes.ListTitle} variant='h6' style={{}} gutterBottom>
                                   <Box>
-                                    {article.title.rendered}
+                                    {article.title}
                                   </Box>
                                 </Typography>
                                 </a>
                                 <Grid container justify='space-between'>
                                   <Grid item xs={7} style={{alignSelf:'center'}}>
                                     <Typography style={{textAlign:'left', fontSize:11}}>
-                                      Posted on: {formatDate(article.date)}
+                                      Posted on: {formatDate(article.article_date)}
                                     </Typography>
                                   </Grid>
                                   <Grid item xs={4} style={{textAlign:'right', alignSelf:'center'}}>
                                     <Typography style={{fontSize:11,}}>
-                                        5 Min Read
+                                        {article.readtime} min read
                                     </Typography>
                                   </Grid>
                                 
@@ -433,7 +465,9 @@ function Articles()
                                 </Grid>
                                 <Collapse in={index===selectedIndex?expanded:false} timeout="auto" unmountOnExit>
                                     <Typography className={classes.articleDescription} variant="body2" color="textSecondary" gutterBottom>
-                                          {article.acf.seo_meta_description}
+                                      {article.sentence1}
+                                      {article.sentence2}
+                                      {article.sentence3}
                                     </Typography>
                                 </Collapse>
                               </ListItemText>
@@ -444,16 +478,16 @@ function Articles()
                         }
                       })}
                   </List> 
-              </Grid>
+            </Grid>
           </Grid>
           <div style={{padding:18}}>
             <Typography className={classes.sectionHeading}>
                 Top Picks
             </Typography>                 
             <Wrapper style={{marginInlineStart:15, marginInlineEnd:15, zIndex:0}}>
-              <Slider {...carouselSettings}>
+              <Slider {...miniCarouselSettings}>
                   {articles.map((article,index) => {
-                    if(index > 1){
+                    if(index > 6){
                       return (
                         <Page>
                           <Card className={classes.cardSmall}>
@@ -461,30 +495,29 @@ function Articles()
                               <CardMedia
                                 className={classes.mediaSmall}
                                 image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/09/Masthead-1.jpg'
-                                title={article.title.rendered}
+                                title={article.title}
                               />
                             </CardActionArea>
                             <CardContent style={{height:150}}>
                               <Grid container direction='column' justify="space-between" style={{height:'-webkit-fill-available'}}>
                                 <Grid item xs={12}>
                                   <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
-                                    Grow Your Career
+                                    {article.jobtag}
                                   </Typography>
                                   <Typography className={classes.articleHeading} gutterBottom variant="body1" >
-                                    {article.title.rendered}
+                                    {article.title}
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={12} container direction='row' justify="space-between">
                                   <Grid item>
                                     <Typography style={{textAlign:'left', fontSize:11}}>
-                                      Posted on: {formatDate(article.date)}
+                                      Posted on: {formatDate(article.article_date)}
                                     </Typography>
                                   </Grid>
                                   <Grid item>
                                     <Typography style={{fontSize:11}}>
-                                      5 Min Read
+                                      {article.readtime} Min Read
                                     </Typography>
-                                  
                                   </Grid>
                                 </Grid>
                               </Grid>

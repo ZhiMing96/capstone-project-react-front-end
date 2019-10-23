@@ -68,11 +68,24 @@ const searchJobsAcct = {
   get: (queryString) => axios.get(`http://localhost:3000/jobs/search?${queryString}`, {
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  click: params => axios.post('http://localhost:3000/jobs/click',params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
   
 }
 const searchJobs = {
   get: (queryString) => axios.get(`http://localhost:3000/jobs/search?${queryString}`)
   
+}
+
+const articles = {
+  get: () => axios.get('http://localhost:3000/article')
+}
+
+const dailyDigest = {
+  get: () => axios.get('http://localhost:3000/daily', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
   
   
@@ -83,5 +96,7 @@ const searchJobs = {
     work,
     bookmarks,
     searchJobsAcct,
-    searchJobs
+    searchJobs,
+    articles,
+    dailyDigest,
   }

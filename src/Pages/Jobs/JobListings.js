@@ -20,10 +20,14 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.background.paper,
     },
     paper: {
-      padding: theme.spacing(1),
+      padding: '1%',
       textAlign: 'center',
-      color: theme.palette.text.secondary,
       margin: 20,
+      boxShadow:'none',
+      '&:hover':{
+        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)'
+      }
+      
     },
     image: {
         width: 'auto',
@@ -36,6 +40,7 @@ const useStyles = makeStyles(theme => ({
         height:100,
         maxWidth: '100%',
         maxHeight: '100%',
+        blockSize:'auto'
     },
     close: {
         padding: theme.spacing(0.5),
@@ -72,7 +77,7 @@ function addBookmark(job){
     api.bookmarks.add({ job_uuid: job.uuid })
     .then(response => {
         console.log(response);
-        if(response.data.response_code==="200"){
+        if(response.data.response_code===200){
             console.log("BOOKMARK ADDED SUCCESSFULLY ");
         }
     })
@@ -100,8 +105,23 @@ function addBookmark(job){
 
     const classes = useStyles();
 
+    const handleHrefClick = list => {
+        console.log(list.uuid)
+        api.searchJobsAcct.click({ uuid: list.uuid })
+        .then(response => {
+            console.log(response);
+            if(response.data.response_code===200){
+                console.log("Click Stored SUCCESSFULLY ");
+                const url = list.metadata.jobDetailsUrl
+                window.open(url,'_blank');
+            }
+        })
+        .catch(error =>{
+            console.log(error);
+        })
+    }
     
-    
+
     useEffect(()=>{
         console.log("ENTERED USE EFFECT IN JOBLISTING");
         const results = props.searchResults
@@ -189,20 +209,11 @@ function addBookmark(job){
     };
 
     const submitFilter = props.submitFilter
-
-    const handleMouseEnter = () => {
-        console.log('MOUSE HOVERING')
-        setElevation(2)
-    }
-    const handleMouseLeave = () => {
-        console.log('MOUSE LEFT')
-        setElevation(0)
-    }
         
     return (
         <Fragment>
         <CssBaseline />
-        <Grid container>
+        <Grid container style={{padding:'3%'}}>
             <Grid item xs={12} sm={6} container justify="flex-start"> 
                 <Typography style={{marginLeft:20, marginTop:20}}>
                     <Box>
@@ -219,12 +230,15 @@ function addBookmark(job){
         {listings
         ? listings.map((list,index) => (
             <div key={index} >
-                <Paper className={classes.paper} elevation={2} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}  >
+                <Paper className={classes.paper} >
                     <Box display="flex" flexWrap="wrap">
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={2} xl={1} style={{alignSelf:'center'}}>
                             <Box display={{ xs: 'none', sm: 'block' }}>
-                                <ButtonBase className={classes.image} href={list.metadata.jobDetailsUrl} target="_blank" style={{padding:15, paddingTop:25}}>
+                                <ButtonBase className={classes.image}  
+                                    onClick={()=>handleHrefClick(list)}
+                                    style={{padding:5}}
+                                >
                                         {list.postedCompany && list.postedCompany.logoUploadPath
                                         ? <img className={classes.img} src={list.postedCompany.logoUploadPath} />
                                         : <img className={classes.img} src={defaultIcon} />
@@ -232,7 +246,7 @@ function addBookmark(job){
                                 </ButtonBase>
                             </Box>
                         </Grid>
-                        <Grid item container xs={12} sm={10} md={10}>
+                        <Grid item container xs={12} sm={10} xl={11}>
                             <Grid item xs={10} md={8} >
                                 <Grid item xs>
                                 <a href={list.metadata.jobDetailsUrl} target="_blank" style={{textDecoration:"none", color:"inherit"}}>

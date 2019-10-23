@@ -29,6 +29,7 @@ import {doLogin} from  '../redux/actions/auth'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import { ImportantDevices } from '@material-ui/icons';
 import { typography } from '@material-ui/system';
+import DailyDigest from '../Pages/DailyDigest';
 
 
 const styles = theme => ({
@@ -51,10 +52,10 @@ class NavTabs extends React.Component {
         jobs: 'light',
         events: 'light',
         articles: 'light',
-      }
+      },
     };
     console.log(this.props)
-    
+    console.log(this.props.location.pathname)
   }
 
   componentDidMount(){
@@ -65,8 +66,9 @@ class NavTabs extends React.Component {
           let userId = response.data.profile.user_id
           this.props.doLogin(userId) //HYDRATE
         }
-    })
-  }
+      })
+    }
+    
   }
 
   drawerTogglerClickHandler = () => {
@@ -97,9 +99,14 @@ class NavTabs extends React.Component {
 
 
   render() {
-    
     const token = window.localStorage.getItem('authToken');
     console.log(token)
+    var isHomePage=false
+
+    if(this.props.location.pathname === '/'){
+      isHomePage=true
+    } 
+    console.log(isHomePage)
 
     let responsiveSideBar;
     let backdrop;
@@ -242,6 +249,7 @@ class NavTabs extends React.Component {
             <Route exact path="/jobs" render={()=> (<Jobs searchResults={[]}/> )}/>
             <Route path="/events" component={Events} />
             <Route path="/articles" component={Articles} />
+            <Route path="/dailydigest" component={DailyDigest} />
             <Route path="/auth/signin" component={Login} />
             {/* <Route exact path="/auth/signup" component={SignUp} /> */}
             <Route path="/auth/signup/:id" render={({match}) => (
