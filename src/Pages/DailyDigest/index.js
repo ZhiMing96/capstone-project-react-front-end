@@ -1,11 +1,15 @@
 import React, { useState, useEffect} from 'react'
-import { CssBaseline, Box, Grid, Card, CardMedia, CardContent, Button, Paper, Avatar, Typography, createMuiTheme, Slide} from '@material-ui/core'
+import { CssBaseline, Box, Grid, Card, CardMedia, CardContent, Button, Paper, Avatar, Typography, createMuiTheme, Slide, Divider} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import api from '../../api';
+import axios from 'axios';
+
+const defaultJobIcon ='https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png'
 
 const Wrapper = styled.div`
     width:100%
@@ -18,10 +22,10 @@ const Page = styled.div`
 const carouselSettings = {
     accessibiliy: true,
     speed:1700,
-    slidesToShow: 1,
-    slidesToScroll: 1,
+    slidesToShow: 4,
+    slidesToScroll: 4,
     infinite:true,
-    dots:true,
+    dots:false,
     autoplay: true,
     arrows:true,
     autoplaySpeed:8000,
@@ -30,27 +34,29 @@ const carouselSettings = {
     pauseOnHover: true,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1920, //lg 
         settings: {
           slidesToShow: 3,
           slidesToScroll: 3,
           infinite: true,
-          dots: true
+          dots: false
         }
       },
       {
-        breakpoint: 600,
+        breakpoint: 960, //md
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
-          initialSlide: 2
+          initialSlide: 2,
+          dots: false
         }
       },
       {
-        breakpoint: 480,
+        breakpoint: 480, //sm
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
+          slidesToScroll: 1,
+          dots: false
         }
       }]
   };
@@ -71,8 +77,8 @@ const useStyles = makeStyles(theme => ({
         //     paddingRight:'5px',
         // },
         [theme.breakpoints.down('md')]: {
-            marginLeft:'6%',
-            marginRight:'6%',
+            marginLeft:'10%',
+            marginRight:'10%',
             paddingLeft:'5%',
             paddingRight:'5%',
         },
@@ -95,6 +101,7 @@ const useStyles = makeStyles(theme => ({
     sectionHeading:{
         fontWeight:'bold',
         fontSize:'35px',
+        marginBottom:'2%'
     },
     eventsImg:{
         width:'20%', 
@@ -144,13 +151,32 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         boxShadow:'none', backgroundColor:'inherit',
         border:0, 
-        marginTop:'5%',
+        marginTop:'1%',
         height:'25%', 
-        marginBottom:'3%',
+        marginBottom:'1%',
         padding:'2%',
         '&:hover': {
             boxShadow:'0px 1px 8px 0px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 3px 3px -2px rgba(0,0,0,0.12)'
          }
+    },
+    jobTitle : {
+        marginTop:12,
+        fontWeight:'bold', 
+        fontSize:16, 
+        whiteSpace:'normal',
+        textAlign:'left',
+        lineHeight:'18px',
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+        display:'-webkit-box',
+        WebkitLineClamp:2,
+        WebkitBoxOrient:'vertical',
+    },
+    jobText : {
+        fontWeight:'bold', 
+        fontSize:11, 
+        whiteSpace:'normal',
+        textAlign:'left'
     }
   }));
 
@@ -162,8 +188,106 @@ function DailyDigest() {
     const [searchHistoryJobs, setsearchHistoryJobs] = useState();
     const [skillsJobs, setskillsJobs] = useState();
     const [jobTag,setJobTag] = useState();
+    const [date, setDate] = useState();
+    const [openModal, setOpenModal] = useState(false);
+
+    useEffect(()=>{
+        setTimeout( handleOpen, 1000)
+    },[])
+
+    const handleOpen = () =>{
+        console.log('HANDLE OPEN')
+    }
+
+    useEffect(()=>{
+        const currentDate = new Date();
+        const currentDay = currentDate.getDate()
+        const currentMonth = currentDate.toLocaleString('en-GB',{month: 'long'});
+        const currentYear = currentDate.getFullYear();
+        const currentWeekday = currentDate.toLocaleString('en-GB',{weekday: 'long'});
+        console.log(currentMonth)
+        setDate(`${currentDay} ${currentMonth} ${currentYear}, ${currentWeekday}`)
+    },[token])
+
+    useEffect(()=>{
+        api.dailyDigest.get()
+        .then(res => {
+            console.log(res.data)
+            const results = res.data
+            if(results.response_code === 200){
+                console.log('Daily Digest Retrieved Successfully!')
+                setRecommendedArticles(results.articles)
+
+            }
+        })
+        .catch(err=> {
+            console.error(err);
+        })
+    }, [] )
+
+    useEffect(()=>{
+        axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Google&limit=10&sortBy=new_posting_date')
+        .then(res=>{
+            const results = res.data
+            console.log(results)
+            setsearchHistoryJobs(results.results);
+        })
+    },[])
+
+    useEffect(()=>{
+        axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Facebook&limit=10&sortBy=new_posting_date')
+        .then(res=>{
+            const results = res.data
+            console.log(results)
+            setskillsJobs(results.results);
+        })
+    },[])
+
+    const getDate =(startDate, endDate) => {
+        var newStartDate = new Date(startDate);
+        var newEndDate = new Date(endDate);
+        //console.log(newStartDate.getHours());
+        var startTime = newStartDate.getHours()
+        var endTime = newEndDate.getHours()
+    
+        if(startTime <= 12){
+          startTime = `${startTime}am`
+          //console.log(startTime);
+        } else {
+          startTime = `${startTime-12}pm`
+          //console.log(startTime);
+        }
+        if(endTime <= 12){
+          endTime = `${endTime}am`
+          //console.log(endTime);
+        } else {
+          endTime = `${endTime-12}pm`
+          //console.log(endTime);
+        }
+    
+        var month = newStartDate.toLocaleString('en-GB', {month: 'short'});
+        console.log(month);
+        var startDay = newStartDate.getMonth();
+        var endDay = newEndDate.getMonth();
+        var startYear = newStartDate.getFullYear();
+    
+        var day = startDay
+        if(startDay != endDay){
+          day = `${startDay}-${endDay}`
+        }
+        
+        return (`${day} ${month} ${startYear}: ${startTime}-${endTime}`)
+    }
 
     
+    console.log('Recommended Articles:')
+    console.log(recommendedArticles);
+    console.log('Recommended Jobs:')
+    console.log(searchHistoryJobs)
+    console.log(skillsJobs)
+    console.log('Recommended Events:')
+    console.log(recommendedEvents)
+
 
     return (
         <div style={{ backgroundColor:'whitesmoke', width:'100%', height:'100%'}}>
@@ -171,16 +295,21 @@ function DailyDigest() {
             <CssBaseline/>
             <div className={classes.digestHeading}>
                 <Typography variant='subtitle1' gutterBottom>
-                    25th October 2019
+                    {date}
                 </Typography>
                 <Typography variant='h3'>
                     <span style={{fontWeight:550}}>JOPIFY DAILY</span> <span style={{fontWeight:'lighter'}}>DIGEST</span>
                 </Typography>
             </div>
             <div className={classes.sectionArea}>
+            {recommendedArticles
+            ?
+            <div>
                 <Typography className={classes.sectionHeading}>
                     From The Blog
                 </Typography>
+                {token
+                ?
                 <div style={{textAlign:'right'}}>
                     <Typography variant='caption' gutterBottom>
                     Recommended Topic
@@ -189,54 +318,47 @@ function DailyDigest() {
                     Grow Your Career
                     </Typography>
                 </div>
-                
+                :''
+                }
                 <Grid container spacing={4} style={{marginTop:8}}>
-                    <Grid item xs={12} sm={6}>
-                        <Card style={{boxShadow:'none'}}>
-                            <CardMedia
-                            component="img"
-                            alt="Contemplative Reptile"
-                            height="250"
-                            image="https://content.mycareersfuture.sg/wp-content/uploads/2018/05/When-to-make-the-leap-and-change-the-direction-of-your-career-1-795x373.png"
-                            title=""/>
-                            <CardContent style={{paddingBottom:5}}>
-                                <Typography className={classes.articleHeading} gutterBottom variant='h6'>
-                                4 Strategic Ways to Organise Your Job Application Process
-                                </Typography>
-                                <Typography className={classes.articleDescription}
-                                gutterBottom variant='subtitle2'>
-                                    Before you start applying for a job, it is imperative to have a killer resume. After all, your resume could make or break a first impression.
-                                </Typography>
-                                <Typography variant='caption'>
-                                    5 min read
-                                </Typography >
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
+                    {recommendedArticles.slice(0,2).map((article,index)=>(
+                    <Grid item xs={12} sm={6} key={index}>
                         <Card style={{boxShadow:'none'}}>
                             <CardMedia
                             component="img"
                             alt="Contemplative Reptile"
                             height="250"
                             image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
-                            title="Contemplative Reptile"/>
-                        
+                            title={article[0].title}/>
                             <CardContent style={{paddingBottom:5}}>
-                            <Typography className={classes.articleHeading} gutterBottom variant='h6'>
-                                Career and Children: 3 Singaporean Mum Share How it’s Like Re-entering.
-                            </Typography>
-                            <Typography className={classes.articleDescription}
+                                <Typography className={classes.articleHeading} gutterBottom variant='h6'>
+                                {article[0].title}
+                                </Typography>
+                                <Typography className={classes.articleDescription}
                                 gutterBottom variant='subtitle2'>
-                                Before you start applying for a job, it is imperative to have a killer resume. After all, your resume could make or break a first impression.
-                            </Typography>
-                            <Typography variant='caption'>
-                                5 min read
-                            </Typography >
+                                    {article[0].sentence1}
+                                    {article[0].sentence2}
+                                    {article[0].sentence3}
+                                </Typography>
+                                <Typography variant='caption'>
+                                    {article[0].readtime} min read
+                                </Typography >
                             </CardContent>
                         </Card>
                     </Grid>
+                    ))}
                 </Grid>
+                </div>
+                :
+                    <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%'}}>
+                        <Typography className={classes.sectionHeading}>
+                            Opps..
+                        </Typography>
+                        <Typography style={{fontWeight:'bold'}}>
+                            No Articles Available.
+                        </Typography>
+                    </div>
+                }
                 <div style={{textAlign:'right', marginTop:10}}>
                     <Button
                     size="small"
@@ -247,38 +369,49 @@ function DailyDigest() {
                     </Button>
                 </div>
             </div>
+            
+            
+            
             <div className={classes.sectionArea}>
-                <Typography className={classes.sectionHeading}>
-                    From The Jobs Bank
-                </Typography>
-                <div style={{textAlign:'right'}}>
-                    <Typography variant='caption' gutterBottom>
-                    Recommended By
-                    </Typography>
-                    <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    Search History
-                    </Typography>
-                </div>
-
-                {/* <Grid container spacing={2}> */}
-                    {/* { searchHistoryJobs.slice(0,2).map((listing, index)=>( */}
-                        {/* <Grid item xs={12} sm={6} md={4}> */}
+                {searchHistoryJobs || skillsJobs
+                ?
+                <div>
+                <div>
+                {searchHistoryJobs 
+                    ?
+                    <div>
+                        <Typography className={classes.sectionHeading}>
+                            Apply Now
+                        </Typography>
+                        {token
+                        ?
+                        <div style={{textAlign:'right', marginBottom:'2%'}}>
+                            <Typography variant='caption' gutterBottom>
+                            Recommended By
+                            </Typography>
+                            <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
+                            Search History
+                            </Typography>
+                        </div>
+                        : ''
+                        }
                         <Wrapper>
                             <Slider {...carouselSettings}>
+                                {searchHistoryJobs.map((job,index)=> (
                                 <Page>
                                     <Paper className={classes.jobsListingArea}>
                                         <Avatar alt="List"
-                                            src='https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png'
+                                            src={job.postedCompany && job.postedCompany.logoUploadPath? job.postedCompany.logoUploadPath:defaultJobIcon}
                                             className={classes.jobListingPhoto}
                                             imgProps={{style:{objectFit:'contain',border:0}}}
                                         />
                                         <Grid container  justify='space-between' style={{height:'14vh'}}>
                                         <Grid item xs={12}>
-                                            <Typography gutterBottom style={{marginTop:12,fontWeight:'bold', fontSize:18, whiteSpace:'normal',textAlign:'left'}}>
-                                                UI/UX Designer
+                                            <Typography gutterBottom className={classes.jobTitle}>
+                                                {job.title}
                                             </Typography>
-                                            <Typography gutterBottom style={{fontWeight:'bold', fontSize:16, whiteSpace:'normal',textAlign:'left'}}>
-                                                Google Facebook Pte Ltd
+                                            <Typography gutterBottom className={classes.jobText}>
+                                                {job.postedCompany?job.postedCompany.name: job.hiringCompany? job.hiringCompany.name: 'Unknown Company'}
                                             </Typography>
                                             </Grid>
                                             <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
@@ -291,58 +424,76 @@ function DailyDigest() {
                                         </Grid>
                                     </Paper>
                                 </Page>
+                                ))}
                             </Slider>
                         </Wrapper>
-                        {/* </Grid> */}
-                    {/* ))} */}
-                {/* </Grid> */}
-                <div style={{marginTop:20}}>
-                    <div style={{textAlign:'right'}}>
-                        <Typography variant='caption' gutterBottom>
-                        Recommended By
-                        </Typography>
-                        <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                        Your Skills
-                        </Typography>
                     </div>
-                    <Wrapper>
-                        <Slider {...carouselSettings}>
-                            <Page>
-                                <Paper className={classes.jobsListingArea}>
-                                    <Avatar alt="List"
-                                        src='https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png'
-                                        style={{width:90, height:90, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)'}} 
-                                        imgProps={{style:{objectFit:'contain',border:0}}}
-                                    />
-                                    <Grid container  justify='space-between' style={{height:'14vh'}}>
-                                        <Grid item xs={12}>
-                                            <Typography gutterBottom style={{marginTop:12,fontWeight:'bold', fontSize:18, whiteSpace:'normal',textAlign:'left'}}>
-                                                UI/UX Designer
-                                            </Typography>
-                                            <Typography gutterBottom style={{fontWeight:'bold', fontSize:16,            whiteSpace:'normal',textAlign:'left'}}>
-                                                Google Facebook Pte Ltd
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
-                                            <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
-                                            
-                                            >
-                                            Details
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
-                            </Page>
-                        </Slider>
-                    </Wrapper>
-                    <Grid container spacing={4}>
-                        {/* { skillsJobs.slice(0,2).map((listing, index)=>(  */}
-                            <Grid item xs={12} sm={6} md={4}>
-                                
-                            </Grid>
-                        {/* ))} */}
-                    </Grid>
+                    :''
+                }
                 </div>
+                <div>
+                {skillsJobs
+                    ?
+                    <div style={{marginTop:'5%'}}>
+                        {token
+                        ?
+                        <div style={{textAlign:'right', marginBottom:'2%'}}>
+                            <Typography variant='caption' gutterBottom>
+                            Recommended By
+                            </Typography>
+                            <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
+                            Your Skills
+                            </Typography>
+                        </div>
+                        :''
+                        }
+                        <Wrapper>
+                            <Slider {...carouselSettings}>
+                                {skillsJobs.map((job,index)=>(
+                                <Page>
+                                    <Paper className={classes.jobsListingArea}>
+                                        <Avatar alt="List"
+                                            src={job.postedCompany && job.postedCompany.logoUploadPath? job.postedCompany.logoUploadPath:defaultJobIcon}
+                                            className={classes.jobListingPhoto}
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                        />
+                                        <Grid container  justify='space-between' style={{height:'14vh'}}>
+                                        <Grid item xs={12}>
+                                            <Typography gutterBottom className={classes.jobTitle} style={{}}>
+                                                {job.title}
+                                            </Typography>
+                                            <Typography gutterBottom className={classes.jobText}>
+                                                {job.postedCompany?job.postedCompany.name: job.hiringCompany? job.hiringCompany.name: 'Unknown Company'}
+                                            </Typography>
+                                            </Grid>
+                                            <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                                <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                                
+                                                >
+                                                    Details
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Paper>
+                                </Page>
+                                ))}
+                            </Slider>
+                        </Wrapper>
+                    </div>
+                    : ''
+                    }
+                </div>
+                </div>
+                :
+                <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%'}}>
+                    <Typography className={classes.sectionHeading}>
+                        Opps..
+                    </Typography>
+                    <Typography style={{fontWeight:'bold'}}>
+                        No Job Recommendations Available.
+                    </Typography>
+                </div>
+                }
                 <div style={{textAlign:'right', marginTop:10}}>
                     <Button
                     size="small"
@@ -353,11 +504,16 @@ function DailyDigest() {
                     </Button>
                 </div>
             </div>
+            
+            { recommendedEvents
+            ?
             <div className={classes.sectionArea}>
                 <Typography className={classes.sectionHeading}>
                 From Events
                 </Typography>
-                <div style={{textAlign:'right'}}>
+                {token
+                ?
+                <div style={{textAlign:'right', marginBottom:'1%'}}>
                     <Typography variant='caption' gutterBottom>
                     Recommended Topic
                     </Typography>
@@ -365,37 +521,100 @@ function DailyDigest() {
                     Grow Your Career
                     </Typography>
                 </div>
-                <Card className={classes.eventListing}>
-                    <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
-                        <div style={{display: 'flex', flexDirection: 'column'}}>
-                            <Typography variant='h6' style={{fontWeight:'bold'}} >
-                            EVENT TITLE
-                            </Typography>
-                            <Typography variant='subtitle1' color='textSecondary' >
-                            EVENT DESCRIPTION
-                            </Typography>
-                            <Typography>
-                                Date of Event
-                            </Typography>
-                        </div>
-                        </CardContent>
-                    <CardMedia
-                    component="img"
-                    alt="Contemplative Reptile"
-                    className={classes.eventsImg}
-                    image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
-                    />
-                </Card>
-                <div style={{textAlign:'right', marginTop:10, marginbottom:'10%'}}>
-                    <Button
-                    size="small"
-                    style={{color:'#30A0D8', fontWeight:'bold', fontSize:18, marginTop:10}}
-                    href='/events'
-                    >
-                    View All Events
-                    </Button>
-                </div>
+                :''
+                }
+                
+                {/* {recommendedEvents.map((event, index) => ( */}
+                    <Card className={classes.eventListing}>
+                        <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <Typography variant='h6' style={{fontWeight:'bold'}} >
+                                EVENT TITLE
+                                </Typography>
+                                <Typography variant='subtitle1' color='textSecondary' >
+                                EVENT DESCRIPTION
+                                </Typography>
+                                <Typography>
+                                    Date of Event
+                                </Typography>
+                            </div>
+                            </CardContent>
+                        <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        className={classes.eventsImg}
+                        image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
+                        />
+                    </Card>
+                    <Divider/>
+                    <Card className={classes.eventListing}>
+                        <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <Typography variant='h6' style={{fontWeight:'bold'}} >
+                                EVENT TITLE
+                                </Typography>
+                                <Typography variant='subtitle1' color='textSecondary' >
+                                EVENT DESCRIPTION
+                                </Typography>
+                                <Typography>
+                                    Date of Event
+                                </Typography>
+                            </div>
+                            </CardContent>
+                        <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        className={classes.eventsImg}
+                        image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
+                        />
+                    </Card>
+                
+                    <Card className={classes.eventListing}>
+                        <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <Typography variant='h6' style={{fontWeight:'bold'}} >
+                                EVENT TITLE
+                                </Typography>
+                                <Typography variant='subtitle1' color='textSecondary' >
+                                EVENT DESCRIPTION
+                                </Typography>
+                                <Typography>
+                                    Date of Event
+                                </Typography>
+                            </div>
+                            </CardContent>
+                        <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        className={classes.eventsImg}
+                        image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
+                        />
+                    </Card>
+                
+                
+                {/* ))} */}
+                
             </div>
+            : 
+            <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%'}}>
+                <Typography className={classes.sectionHeading}>
+                    Opps..
+                </Typography>
+                <Typography style={{fontWeight:'bold'}}>
+                    No Events Available.
+                </Typography>
+            </div>
+            }
+            <div style={{textAlign:'right', marginTop:15, marginbottom:'10%'}}>
+                <Button
+                size="small"
+                style={{color:'#30A0D8', fontWeight:'bold', fontSize:18, marginTop:10}}
+                href='/events'
+                >
+                View All Events
+                </Button>
+            </div>
+            
         </div>
    
         </div>

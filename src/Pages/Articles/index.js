@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment }from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, StaticRouter, Redirect } from 'react-router-dom';
 import ArticlesBG from '../../images/articlesBG.jpg'
-import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Tabs, Tab, Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, CardActions, Collapse, Divider, CardActionArea, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Tabs, Tab, Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, CardActions, Collapse, Divider, CardActionArea, List, ListItem, ListItemAvatar, ListItemText, Fab, Button } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
@@ -17,6 +17,10 @@ import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos'
 import { typography } from '@material-ui/system';
 import { setSeconds } from 'date-fns/esm';
 import api from '../../api';
+import AddIcon from '@material-ui/icons/Add';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
+import './index.css'
 
 const Wrapper = styled.div`
     width:100%
@@ -25,42 +29,94 @@ const Wrapper = styled.div`
 const Page = styled.div`
     width:100%
 `;
+
+const carouselStyles = makeStyles(theme => ({
+
+}));
+
+const CarouselArrowNext = (props) => {
+
+  const classes = carouselStyles();
+  
+  const { className, style, onClick } = props;
+  console.log(style)
+  return (
+    <div 
+      className={className}
+      style={{ display: "block",zIndex:60, marginRight:'1%',}}
+      onClick={onClick}
+    >
+      <Fab
+        className={className}
+        size='medium'
+        style={{display: "block",zIndex:60, marginRight:'6%',backgroundColor:'black', opacity:'0.6'}}
+        onClick={onClick}
+      > 
+      <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
+    </Fab>
+    </div>
+    
+  );
+}
+const CarouselArrowPrev = (props) => {
+  const classes = useStyles();
+  const { className, onClick, style } = props;
+  return (
+    <div 
+      className={className}
+      style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
+      onClick={onClick}
+    >
+      <Fab
+        size='medium'
+        style={{backgroundColor:'black', opacity:'0.6'}}
+      > 
+      <KeyboardArrowLeftIcon style={{color:'white',}}/>
+    </Fab>
+
+    </div>
+    
+  );
+}
 const miniCarouselSettings = {
   accessibiliy: true,
   speed:1800,
   slidesToShow: 4,
-  slidesToScroll: 4,
+  slidesToScroll: 2,
   infinite:true,
   dots:false,
-  autoplay: true,
   arrows:true,
   autoplaySpeed:7500,
   draggable:true,
   lazyLoad: "progressive",
   pauseOnHover: true,
+  nextArrow: <CarouselArrowNext />,
+  prevArrow: <CarouselArrowPrev />,
   responsive: [
     {
       breakpoint: 1024,
       settings: {
         slidesToShow: 3,
-        slidesToScroll: 3,
+        slidesToScroll: 2,
         infinite: true,
-        dots: true
+        dots: false
       }
     },
     {
       breakpoint: 600,
       settings: {
         slidesToShow: 2,
-        slidesToScroll: 2,
-        initialSlide: 2
+        slidesToScroll: 1,
+        initialSlide: 2,
+        dots: false
       }
     },
     {
       breakpoint: 480,
       settings: {
         slidesToShow: 1,
-        slidesToScroll: 1
+        slidesToScroll: 1,
+        dots: false
       }
     }]
 };
@@ -90,6 +146,9 @@ const useStyles = makeStyles(theme => ({
    
     width:'100%',
     maxWidth:'100%',
+  },
+  fab: {
+    margin: theme.spacing(1),
   },
   paper: {
     padding: theme.spacing(2),
@@ -281,6 +340,7 @@ function Articles()
       console.log(err);
     })
   }, []);
+
   useEffect(() => {
     api.dailyDigest.get()
     .then(res => {
@@ -290,10 +350,12 @@ function Articles()
         console.log('RECOMMENDED ARTICLES ARE')
         console.log(results.articles)
         setRecommendedArticles(results.articles);
-      }
+      } 
+    })
+    .catch(err => {
+      console.error(err)
     })
   }, []);
-
 
   const formatDate = (dateString) => {
     var date = new Date(dateString);
@@ -307,6 +369,14 @@ function Articles()
   }
   console.log('Selected Index = ' + selectedIndex)
   console.log(recommendedArticles);
+
+  // function next() {
+  //   slider.slickNext();
+  // }
+  // function previous() {
+  //   slider.slickPrev();
+  // }
+
   return(
     <Fragment>
       <CssBaseline/>
@@ -482,12 +552,12 @@ function Articles()
           </Grid>
           <div style={{padding:18}}>
             <Typography className={classes.sectionHeading}>
-                Top Picks
+                Job Searching
             </Typography>                 
             <Wrapper style={{marginInlineStart:15, marginInlineEnd:15, zIndex:0}}>
-              <Slider {...miniCarouselSettings}>
+              <Slider {...miniCarouselSettings} >
                   {articles.map((article,index) => {
-                    if(index > 6){
+                    if(index > 6 && article.jobtag ==='Search For A Job'){
                       return (
                         <Page>
                           <Card className={classes.cardSmall}>
@@ -530,6 +600,58 @@ function Articles()
                 </Slider>
               </Wrapper>
             </div>
+    
+          <div style={{padding:18}}>
+            <Typography className={classes.sectionHeading}>
+                Grow Your Career 
+            </Typography>                 
+            <Wrapper style={{marginInlineStart:15, marginInlineEnd:15, zIndex:0}}>
+              <Slider {...miniCarouselSettings}>
+                  {articles.map((article,index) => {
+                    if(index > 6 && article.jobtag==="Grow Your Career"){
+                      return (
+                        <Page>
+                          <Card className={classes.cardSmall}>
+                            <CardActionArea href={article.link} target='._blank'>
+                              <CardMedia
+                                className={classes.mediaSmall}
+                                image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/09/Masthead-1.jpg'
+                                title={article.title}
+                              />
+                            </CardActionArea>
+                            <CardContent style={{height:150}}>
+                              <Grid container direction='column' justify="space-between" style={{height:'-webkit-fill-available'}}>
+                                <Grid item xs={12}>
+                                  <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
+                                    {article.jobtag}
+                                  </Typography>
+                                  <Typography className={classes.articleHeading} gutterBottom variant="body1" >
+                                    {article.title}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12} container direction='row' justify="space-between">
+                                  <Grid item>
+                                    <Typography style={{textAlign:'left', fontSize:11}}>
+                                      Posted on: {formatDate(article.article_date)}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid item>
+                                    <Typography style={{fontSize:11}}>
+                                      {article.readtime} Min Read
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
+                              </Grid>
+                            </CardContent>
+                          </Card>
+                        </Page>
+                      )
+                    }
+                  })}
+                </Slider>
+              </Wrapper>
+            </div>
+    
     </Fragment>
     
   )

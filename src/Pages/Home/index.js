@@ -7,18 +7,35 @@ import JobListingsView from './JobListingsView';
 import ArticleView from './ArticleView';
 import EventsView from './EventsView';
 import homepageBG from '../../images/homepageBG.JPG'
-import { Typography, Paper, Button, CssBaseline, Fab, Grid, Avatar } from '@material-ui/core';
+import { Typography, Paper, Button, CssBaseline, Fab, Grid, Avatar, IconButton } from '@material-ui/core';
 import { fontWeight } from '@material-ui/system';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 class Home extends Component {
   constructor(props){
     super(props);
     this.state = {
       sugguestedJobPosition:"",
-      // suggestedArticleReference:"",
-      jobListing : []
+      jobListing : [],
+      modalOpen : false,
     }
   }
+
+  handleOpen = () => {
+    this.setState({modalOpen : true});
+  }
+
+  handleClose = () => {
+    this.setState({modalOpen : false});
+  };
 
 
   getDate = (data) =>{
@@ -28,8 +45,11 @@ class Home extends Component {
       return (processedDate);
   }
 
+  // handleClickProceed = () => {
+
+  // }
   componentDidMount(){
-    
+    setTimeout( this.handleOpen, 1000)
   }
   
   render() {
@@ -61,10 +81,10 @@ class Home extends Component {
           }
           
         </Paper>
-        <Grid container style={{margin:30 , marginBottom:'8%' }} spacing={1} justify="space-between" >
+        <Grid container style={{margin:30 , marginBottom:'8%',padding:'10%' }} spacing={1} justify="space-between" >
           <Grid item xs={12} sm={4} style={{backgroundColor:'#FFFFFF'}}>
             <Paper style={{width:'80%', height:'80%', textAlign: '-webkit-center', padding:15, borderRadius:15}} elevation={0}>
-              <Avatar alt="Remy Sharp" src="" style={{width:110, height:110}}/>
+              <Avatar alt="Remy Sharp" src="" style={{width:160, height:160}}/>
               <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
                 Optimised Search
               </Typography>
@@ -72,7 +92,7 @@ class Home extends Component {
           </Grid>
           <Grid item xs={12} sm={4} style={{}}>
             <Paper style={{width:'80%', height:'80%', textAlign: '-webkit-center', padding:15, borderRadius:15}} elevation={0}>
-              <Avatar alt="Remy Sharp" src="" style={{width:110, height:110}}/>
+              <Avatar alt="Remy Sharp" src="" style={{width:160, height:160}}/>
               <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
                 Career Guidance
               </Typography>
@@ -80,7 +100,7 @@ class Home extends Component {
           </Grid>
           <Grid item xs={12} sm={4} style={{}}>
             <Paper style={{width:'80%', height:'80%', textAlign: '-webkit-center', padding:15, borderRadius:15}} elevation={0}>
-              <Avatar alt="Remy Sharp" src="" style={{width:110, height:110}}/>
+              <Avatar alt="Remy Sharp" src="" style={{width:160, height:160}}/>
               <Typography style={{marginTop:30, fontWeight:'lighter', fontSize:23}}>
                 Expand Network
               </Typography>
@@ -107,6 +127,46 @@ class Home extends Component {
           
 
         </div>
+        <div>
+          <Dialog
+            open={this.state.modalOpen}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={this.handleClose}
+            aria-labelledby="alert-dialog-slide-title"
+            aria-describedby="alert-dialog-slide-description"
+            fullWidth
+            PaperProps= {{style:{minWidth:'315px',minHeight:390}}}
+            
+          >
+            <DialogContent>
+              <Grid container direction='column' style={{padding:'5%', paddingTop:'8%'}}>
+                <Grid item style={{alignSelf:'center', paddingBottom:'5%'}}>
+                  <Avatar
+                    style={{width:100, height:100,}}
+                  />
+                </Grid>
+                <Grid item style={{alignSelf:'center', textAlign:'center'}}>
+                  <Typography gutterBottom variant='h3' style={{fontWeight:'bold'}}>
+                    Daily Digest. 
+                  </Typography>
+                  <Typography variant='h6' color='textSecondary' style={{}}>
+                    Stay Ahead of your Competition
+                  </Typography>
+                  
+                  <Button
+                    style={{fontSize:20,fontWeight:'bold', textAlign:'center', marginTop:'20%'}}
+                    href='/dailydigest'
+                    color='secondary'
+                  >
+                    Proceed
+                  </Button>
+                </Grid>
+              </Grid>
+            </DialogContent>
+          </Dialog>
+        </div>
+
       </div>
     );
 

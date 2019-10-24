@@ -493,28 +493,15 @@ function Events() {
               </Box>
             </Typography>
           </div>
-          {/* <div style={{maxWidth: '100%', flex:'wrap',  overflow:"auto",position:'sticky', top:'64px', zIndex:100}}> */}
-         {/* <div className={classes.firstTab}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor=""
-              textColor=""
-              centered
-              style={{maxWidth:'100%', marginInline:30, paddingBlock:5, backgroundColor:'#e3f2fd',alignItems:'center', marginBottom:15}}
-            >
-                <Tab disableRipple className={classes.tabStyle} label={<span style={{fontWeight:fontWeight.recommended}}>Recommended</span>} />
-                <Tab disableRipple className={classes.tabStyle} label={<span style={{fontWeight:fontWeight.topPicks}}>Top Picks</span>} />
-                <Tab disableRipple className={classes.tabStyle} label={<span style={{fontWeight:fontWeight.latest}}>Latest</span>} />
-            </Tabs>
-          </div> */}
-          <div style={{height:'20vh'}}> 
-
+          <div>
           </div>
-
-        <Grid container className={classes.eventsArea} style={{}}>
-          <Grid item lg={7} md={7} sm={6} xs={12} className={classes.eventListArea} style={{maxHeight: 700,overflowY:'auto',}}>
-          {events.map((event, index) => (
+        <Grid container className={classes.eventsArea} style={{marginTop:'3%'}}>
+          <Grid item lg={7} md={7} sm={6} xs={12} className={classes.eventListArea} >
+            <Typography variant='h4' gutterBottom color='secondary' style={{textAlign:'left', fontWeight:550, paddingLeft:20,marginBottom:'2%'}}>
+              Recommended
+            </Typography>
+            <div style={{maxHeight: 300,overflowY:'auto',}}>
+            {events.slice(0,3).map((event, index) => (
               <div key={index}>
                 <Card className={classes.eventLisiting} style={selectedIndex===index? {backgroundColor :'whitesmoke'} : {}}
                 onMouseEnter={() => viewDetails(event,index)}>
@@ -670,7 +657,176 @@ function Events() {
                 </Dialog>
                 </ThemeProvider>
               </div>
-          ))}
+            ))}
+            </div>
+
+
+
+
+
+            <Typography variant='h4'gutterBottom color='secondary' style={{textAlign:'left', fontWeight:550, paddingLeft:20, marginTop:'7%',marginBottom:'2%' }}>
+              Latest
+            </Typography>
+            <div style={{maxHeight: 500,overflowY:'auto',}}>
+            {events.map((event, index) => (
+              <div key={index}>
+                <Card className={classes.eventLisiting} style={selectedIndex===index? {backgroundColor :'whitesmoke'} : {}}
+                onMouseEnter={() => viewDetails(event,index)}>
+                  <div style={{display:'inline-flex', width:'100%'}}>
+                  <CardMedia
+                    className={classes.cover}
+                    image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
+                    title={event.eventImgUrl}
+                  />
+                  {/* <div className={classes.details}> */}
+                  <CardContent style={{paddingLeft:20, width:'100%'}}>
+                    <Grid container style={{height:'100%', alignContent:'center', }}>
+                      {/* <Hidden smDown>
+                        <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
+                        </Grid>
+                      </Hidden> */}
+                      <Grid item  xs={12} container  style={{}} justify="space-between">
+                        <Grid item xs={11}>
+                          <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
+                            {event.eventSegment}
+                          </Typography>
+                          <Typography style={{paddingTop:1}}>
+                            <Box className={classes.eventTitle}>
+                              {event.eventName}
+                            </Box>
+                            <Box textAlign="left" fontWeight={550} fontSize={13} style={{color:'#607d8b'}}>
+                              {getDate(event.eventStartDate,event.eventEndDate )}
+                            </Box>
+                            <Box textAlign="left" fontWeight={510} fontSize={12}>
+                              {event.sessions[0].buildingName !=='0' && event.sessions[0].buildingName !=='-'
+                              ? `${event.sessions[0].buildingName}, Singapore`
+                              : 'Singapore'
+                              }
+                            </Box>
+                            <Grid
+                              container
+                              direction="column"
+                              justify="flex-end"
+                              alignItems="flex-start"
+                            >
+                              <Grid item>
+                                <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
+                                  {event.eventPrice !== '$0.00'
+                                  ? event.eventPrice
+                                  : 'Free'
+                                  }
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={1} container justify='center' style={{alignContent:'space-between'}}>
+                          <Hidden smUp>
+                            <IconButton
+                            onClick={()=> handleClickOpen(event,index)} 
+                            disableRipple={true}
+                            color='Secondary'
+                            style={{}}
+                            >
+                              <MoreVertIcon/>
+                            </IconButton>
+                          </Hidden>
+                          <IconButton
+                            className={clsx(classes.expand, {
+                              [classes.expandOpen]: index === selectedIndex? expanded : false,
+                            })}
+                            size='small'
+                            onClick={() => handleExpandClick(index,event)}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                          >
+                            <ExpandMoreIcon />
+                          </IconButton>
+                        </Grid>
+                        {/* <Hidden smDown>
+                          <Grid item md={3} sm={4} style={{marginTop:1,textAlign:'end'}}>
+                            <Button
+                            disableRipple={true}
+                            size='small'
+                            onClick={() => viewDetails(event,index)}
+                            color='primary'
+                            disableTouchRipple={true}
+                            disableFocusRipple={true}
+                            style={{fontWeight:'bold', fontSize:12}}
+                            
+                            >
+                              View Details
+                            </Button>
+                            <Typography style={{fontSize:11, fontWeight:500}}>
+                              {event.targetNationality}
+                            </Typography>
+                          </Grid>
+                        </Hidden> */}
+                        {/* <Grid item sm={1} style={{marginTop:1,textAlign:'end'}}>
+                          <IconButton
+                            className={clsx(classes.expand, {
+                              [classes.expandOpen]: index === selectedIndex? expanded : false,
+                            })}
+                            size='small'
+                            onClick={() => handleExpandClick(index)}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                          >
+                            <ExpandMoreIcon />
+                          </IconButton>
+                        </Grid> */}
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                  
+                  </div>
+                  
+                  {/* </div> */}
+                  <Collapse in={index===selectedIndex?expanded:false} timeout="auto" unmountOnExit>
+                    <CardContent style={{padding:0}}>
+                      <div style={{width:'95%', margin:9, marginTop:15, backgroundColor:'#EDF7FA', height:'fit-content', padding:10, maxHeight:'100%'}}>
+                        <Grid container style={{maxHeight:'100%'}}>
+                          <Grid item xs={1}>
+                            <Divider display='inline' orientation='vertical' style={{width:5, height:'100%', backgroundColor :'#1382B9'}} />
+                          </Grid>
+                          <Grid item xs={11}>
+                          <div style={{overflow: "hidden", textOverflow: "ellipsis"}}>
+                            <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
+                                {event.eventDescription} 
+                            </Typography>
+                          </div>
+                          </Grid>
+                        </Grid>
+                      </div>
+                    </CardContent>
+                  </Collapse>
+                </Card>
+                <ThemeProvider theme={theme}>
+                <Dialog open={selectedIndex===index? open:false} onClose={handleClose} style={{boxShadow:0, opacity:1,margin:'7px', width:'100vw'}}>
+                  <DialogContent style={{textAlign:'center'}}>
+                    <Map markerAddress={markerAddress} style={{width:'98%',}}/>
+                    <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
+                        LOCATION 
+                      </Typography>
+                      <Typography style={{fontWeight:"bold",textAlign:'left',}} color='textSecondary'>
+                        {selectedEventLocation}
+                      </Typography>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      href={selectedUrl}
+                      target="_blank"
+                      style={{fontWeight:'bold', fontSize:17, marginTop:10, marginBottom:10, backgroundColor:'#0091ea', color:'#FFFFFF'}}
+                      >
+                        Sign Up
+                    </Button>
+                  </DialogContent>
+                </Dialog>
+                </ThemeProvider>
+              </div>
+            ))}
+            </div>
+            
           </Grid>
           <Hidden xsDown>
             <Grid item lg={5} md={5} sm={6} xs={12} className={classes.descriptionArea} style={{}}>
