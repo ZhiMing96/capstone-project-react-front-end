@@ -30,13 +30,16 @@ function Map (props) {
     useEffect(() =>{
         console.log(props.markerAddress)
         if(props.markerAddress !== null){
-            var str = encodeURIComponent(props.markerAddress)
-            var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + str + '.json?access_token=' + process.env.REACT_APP_MAPBOX_TOKEN
-            axios.get(url).then(res => {
-                console.log(res)
-                console.log(res.data.features[0].geometry.coordinates)
-                var long  = res.data.features[0].geometry.coordinates[0] 
-                var lat = res.data.features[0].geometry.coordinates[1] 
+            var long = markerAddress[0]
+            var lat = markerAddress[1]
+            //var str = encodeURIComponent(props.markerAddress)
+            //var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + str + '.json?access_token=' + process.env.REACT_APP_MAPBOX_TOKEN
+            
+            //axios.get(url).then(res => {
+                //console.log(res)
+                //console.log(res.data.features[0].geometry.coordinates)
+                //var long  = res.data.features[0].geometry.coordinates[0] 
+                //var lat = res.data.features[0].geometry.coordinates[1] 
                 setMarkerAddress({
                     latitude: lat,
                     longitude:long
@@ -47,8 +50,8 @@ function Map (props) {
                     longitude: long
                 })
 
-            }).catch({
-            })
+            //}).catch({
+            //})
             
         }
         
