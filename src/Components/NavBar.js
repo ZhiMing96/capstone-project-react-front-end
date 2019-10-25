@@ -249,7 +249,7 @@ class NavTabs extends React.Component {
             <Route exact path="/jobs" render={()=> (<Jobs searchResults={[]}/> )}/>
             <Route path="/events" component={Events} />
             <Route path="/articles" component={Articles} />
-            <Route path="/dailydigest" component={DailyDigest} />
+            <Route exact path="/dailydigest" component={DailyDigest} />
             <Route path="/auth/signin" component={Login} />
             {/* <Route exact path="/auth/signup" component={SignUp} /> */}
             <Route path="/auth/signup/:id" render={({match}) => (
@@ -261,8 +261,11 @@ class NavTabs extends React.Component {
               }}/>
             </Route>
             <Route path="/profile" component={Profile} />
-            <Route  path="/jobs/listings/:queryString" component={Jobs} 
+            <Route path="/jobs/listings/:queryString" component={Jobs} 
             />
+            <Route path="/dailydigest/:token" component={DailyDigest} 
+            />
+
             {/* <Route path="/profile" render={props => <Profile {...props} openSideBar={this.props.openSideBar} />} /> */}
             
         </Switch>

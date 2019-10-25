@@ -375,9 +375,10 @@ function Jobs (props) {
         .then(res=>{
             const results = res.data.results
             console.log(res.data)
-            if(results.response_code === 200){
+    
+            console.log('ENTERED SAVING POPULAR JOBS METHOD')
             setPopularJobs(results)
-            }
+            
             setLoading(false);
         }).catch(err=>console.log(err));
 
@@ -831,7 +832,7 @@ function Jobs (props) {
                 <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
-                        { skillsJobs.listings.map((listing) => (
+                        { skillsJobs.map((listing) => (
                             <Page >
                                 <Paper className={classes.jobListingBox}>
                                 <Grid container justify='space-between'>

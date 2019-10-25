@@ -205,8 +205,16 @@ const useStyles = makeStyles(theme => ({
   }));
 
 function DailyDigest(props) {
+    var urlToken=''
+    if(props.match !== undefined){
+        urlToken = props.match.params.token;
+        console.log('urlToken = ' + urlToken);
+    } 
+    console.log('PROPS FOR Daily Digest COMPONENT')
+    console.log(props)
+
     const classes = useStyles();
-    const token = window.localStorage.getItem('authToken');
+    const token = urlToken ? urlToken : window.localStorage.getItem('authToken');
     const [recommendedArticles, setRecommendedArticles] = useState();
     const [recommendedEvents, setRecommendedEvents] = useState();
     const [searchHistoryJobs, setsearchHistoryJobs] = useState();
@@ -229,6 +237,7 @@ function DailyDigest(props) {
         console.log('HANDLE OPEN')
     }
 
+
     useEffect(()=>{
         const currentDate = new Date();
         const currentDay = currentDate.getDate()
@@ -240,40 +249,41 @@ function DailyDigest(props) {
     },[token])
 
     useEffect(()=>{
-        api.dailyDigest.get()
-        .then(res => {
-            console.log(res.data)
-            const results = res.data
-            if(results.response_code === 200){
-                console.log('Daily Digest Retrieved Successfully!')
-                setRecommendedArticles(results.articles)
-
-            }
-        })
-        .catch(err=> {
-            console.error(err);
-        })
-    }, [] )
-
-    useEffect(()=>{
+        console.log(window.localStorage.getItem('authToken'));
+        console.log(urlToken)
         setLoading(true);
-        api.searchJobsAcct.get('keyword=Google')
-        .then(res=>{
-            const results = res.data
-            console.log(results)
-            setsearchHistoryJobs(results.results);
-        })
+        if(urlToken === undefined){
+            api.dailyDigest.get()
+            .then(res => {
+                console.log(res.data)
+                const results = res.data
+                if(results.response_code === 200){
+                    console.log('Daily Digest Retrieved Successfully!')
+                    setRecommendedArticles(results.articles);
+                    setsearchHistoryJobs(results.recommended_jobs_search);
+                    setskillsJobs(results.recommended_jobs_skills);
+                    setLoading(false);
+                }
+            })
+            .catch(err=> {
+                console.error(err);
+            })
+        } else {
+            api.dailyDigest.getFromUrl(urlToken)
+            .then(res=>{
+                console.log(res.data)
+                const results = res.data
+                if(results.response_code === 200){
+                    console.log('Daily Digest Retrieved Successfully!')
+                    setRecommendedArticles(results.articles);
+                    setsearchHistoryJobs(results.recommended_jobs_search);
+                    setskillsJobs(results.recommended_jobs_skills);
+                    setLoading(false);
+                }
+            })
+        }
 
-        api.searchJobsAcct.get('keyword=Facebook')
-        .then(res=>{
-            const results = res.data
-            console.log(results)
-            setskillsJobs(results.results);
-            setLoading(false);
-        })
-
-
-    },[props])
+    }, [] )
 
     const getDate =(startDate, endDate) => {
         var newStartDate = new Date(startDate);
