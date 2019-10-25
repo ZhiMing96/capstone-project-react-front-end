@@ -21,6 +21,7 @@ import AddIcon from '@material-ui/icons/Add';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import './index.css'
+import StarIcon from '@material-ui/icons/Star'
 
 const Wrapper = styled.div`
     width:100%
@@ -449,7 +450,7 @@ function Articles()
                             </Grid>
                             <Grid item xs={4} style={{alignSelf:'center'}}>
                               <Typography style={{fontSize:11,textAlign:'right'}}>
-                                 {list[0].readtime} min read 
+                                 {list[0].readtime} Min Read 
                               </Typography>
                             </Grid>
                             <Grid item xs={1}>
@@ -474,6 +475,9 @@ function Articles()
                             {list[0].sentence1}
                             {list[0].sentence2}
                             {list[0].sentence3}
+                          </Typography>
+                          <Typography variant='overline' style={{textAlign:'right'}}>
+                            <span style={{paddingRight:'1%'}}>#{list[0].tag1}</span><span style={{paddingRight:'1%'}}>#{list[0].tag2}</span><span style={{paddingRight:'1%'}}>#{list[0].tag3}</span><span style={{paddingRight:'1%'}}>#{list[0].tag4}</span><span style={{paddingRight:'1%'}}>#{list[0].tag5}</span> 
                           </Typography>
                         </CardContent>
                       </Collapse>
@@ -515,7 +519,7 @@ function Articles()
                                   </Grid>
                                   <Grid item xs={4} style={{textAlign:'right', alignSelf:'center'}}>
                                     <Typography style={{fontSize:11,}}>
-                                        {article.readtime} min read
+                                        {article.readtime} Min Read
                                     </Typography>
                                   </Grid>
                                 
@@ -538,6 +542,9 @@ function Articles()
                                       {article.sentence1}
                                       {article.sentence2}
                                       {article.sentence3}
+                                    </Typography>
+                                    <Typography variant='overline' style={{textAlign:'center'}}>
+                                      <span style={{paddingRight:'1%'}}>#{article.tag1}</span><span style={{paddingRight:'1%'}}>#{article.tag2}</span><span style={{paddingRight:'1%'}}>#{article.tag3}</span><span style={{paddingRight:'1%'}}>#{article.tag4}</span><span style={{paddingRight:'1%'}}>#{article.tag5}</span> 
                                     </Typography>
                                 </Collapse>
                               </ListItemText>
@@ -586,7 +593,7 @@ function Articles()
                                   </Grid>
                                   <Grid item>
                                     <Typography style={{fontSize:11}}>
-                                      {article.readtime} Min Read
+                                     {article.readtime} min read
                                     </Typography>
                                   </Grid>
                                 </Grid>
