@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import api from '../../api';
 import axios from 'axios';
-
+import CircularLoading from '../../Components/LoadingBars/CircularLoading';
 const defaultJobIcon ='https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png'
 
 const Wrapper = styled.div`
@@ -94,6 +94,7 @@ const useStyles = makeStyles(theme => ({
         textAlign:'left',
         paddingLeft:'5%',
         paddingRight:'5%',
+        marginBottom:'3%'
     },
     sectionArea:{
         width:'100%', 
@@ -128,6 +129,7 @@ const useStyles = makeStyles(theme => ({
         width:'90%',
         textAlign: 'start', 
         padding:15, 
+        paddingRight:0,
         marginBottom:5,
         maxWidth:'330px',
         [theme.breakpoints.down('xs')]: {
@@ -191,10 +193,18 @@ const useStyles = makeStyles(theme => ({
         fontSize:11, 
         whiteSpace:'normal',
         textAlign:'left'
-    }
+    },
+    tagStyle:{
+        padding:5, 
+        paddingLeft:8, 
+        color:'white',
+        fontSize:11, 
+        fontWeight:'bold',
+        zIndex:100,
+    },
   }));
 
-function DailyDigest() {
+function DailyDigest(props) {
     const classes = useStyles();
     const token = window.localStorage.getItem('authToken');
     const [recommendedArticles, setRecommendedArticles] = useState();
@@ -204,6 +214,12 @@ function DailyDigest() {
     const [jobTag,setJobTag] = useState();
     const [date, setDate] = useState();
     const [openModal, setOpenModal] = useState(false);
+    const tagColor = { 
+        green: '#4CB593',
+        blue: '#42A5F5',
+        orange: '#FF7043'
+    }
+    const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
         setTimeout( handleOpen, 1000)
@@ -240,22 +256,24 @@ function DailyDigest() {
     }, [] )
 
     useEffect(()=>{
-        axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Google&limit=10&sortBy=new_posting_date')
+        setLoading(true);
+        api.searchJobsAcct.get('keyword=Google')
         .then(res=>{
             const results = res.data
             console.log(results)
             setsearchHistoryJobs(results.results);
         })
-    },[])
 
-    useEffect(()=>{
-        axios.get('https://api.mycareersfuture.sg/v2/jobs?search=Facebook&limit=10&sortBy=new_posting_date')
+        api.searchJobsAcct.get('keyword=Facebook')
         .then(res=>{
             const results = res.data
             console.log(results)
             setskillsJobs(results.results);
+            setLoading(false);
         })
-    },[])
+
+
+    },[props])
 
     const getDate =(startDate, endDate) => {
         var newStartDate = new Date(startDate);
@@ -315,6 +333,10 @@ function DailyDigest() {
                     <span style={{fontWeight:550}}>JOPIFY DAILY</span> <span style={{fontWeight:'lighter'}}>DIGEST</span>
                 </Typography>
             </div>
+            { loading 
+            ? <CircularLoading/>
+            : 
+            <div>
             <div className={classes.sectionArea}>
             {recommendedArticles
             ?
@@ -364,7 +386,7 @@ function DailyDigest() {
                 </Grid>
                 </div>
                 :
-                    <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',paddingLeft:'5%'}}>
+                    <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',}}>
                         <Typography className={classes.sectionHeading}>
                             Oops..
                         </Typography>
@@ -414,12 +436,35 @@ function DailyDigest() {
                                 {searchHistoryJobs.map((job,index)=> (
                                 <Page>
                                     <Paper className={classes.jobsListingArea}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
                                         <Avatar alt="List"
                                             src={job.postedCompany && job.postedCompany.logoUploadPath? job.postedCompany.logoUploadPath:defaultJobIcon}
                                             className={classes.jobListingPhoto}
                                             imgProps={{style:{objectFit:'contain',border:0}}}
                                         />
-                                        <Grid container  justify='space-between' style={{height:'14vh'}}>
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                        { job.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add Skills
+                                            </Typography>
+                                            : job.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : job.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
+                                        </Grid>
+                                    </Grid>
+                                        <Grid container  justify='space-between' style={{height:'14vh',paddingRight:10}}>
                                         <Grid item xs={12}>
                                             <Typography gutterBottom className={classes.jobTitle}>
                                                 {job.title}
@@ -466,12 +511,35 @@ function DailyDigest() {
                                 {skillsJobs.map((job,index)=>(
                                 <Page>
                                     <Paper className={classes.jobsListingArea}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
                                         <Avatar alt="List"
                                             src={job.postedCompany && job.postedCompany.logoUploadPath? job.postedCompany.logoUploadPath:defaultJobIcon}
                                             className={classes.jobListingPhoto}
                                             imgProps={{style:{objectFit:'contain',border:0}}}
                                         />
-                                        <Grid container  justify='space-between' style={{height:'14vh'}}>
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                        { job.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add Skills
+                                            </Typography>
+                                            : job.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : job.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container  justify='space-between' style={{height:'14vh', paddingRight:10}}>
                                         <Grid item xs={12}>
                                             <Typography gutterBottom className={classes.jobTitle} style={{}}>
                                                 {job.title}
@@ -499,7 +567,7 @@ function DailyDigest() {
                 </div>
                 </div>
                 :
-                <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%', paddingLeft:'5%'}}>
+                <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%', }}>
                     <Typography className={classes.sectionHeading}>
                         Oops...
                     </Typography>
@@ -518,10 +586,10 @@ function DailyDigest() {
                     </Button>
                 </div>
             </div>
-            
+            <div className={classes.sectionArea}>
             { recommendedEvents
             ?
-            <div className={classes.sectionArea}>
+                <div>
                 <Typography className={classes.sectionHeading}>
                 From Events
                 </Typography>
@@ -610,7 +678,7 @@ function DailyDigest() {
                 
             </div>
             : 
-            <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',paddingLeft:'5%'}}>
+            <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',}}>
                 <Typography className={classes.sectionHeading}>
                     Oops...
                 </Typography>
@@ -619,7 +687,7 @@ function DailyDigest() {
                 </Typography>
             </div>
             }
-            <div style={{textAlign:'right', marginTop:15, marginbottom:'10%', paddingRight:'5%'}}>
+            <div style={{textAlign:'right', marginTop:15, marginbottom:'10%',}}>
                 <Button
                 size="small"
                 style={{color:'#30A0D8', fontWeight:'bold', fontSize:18, marginTop:10}}
@@ -630,9 +698,10 @@ function DailyDigest() {
             </div>
             
         </div>
-   
         </div>
-        
+        }
+        </div>
+    </div>
    )
 }
 export default DailyDigest;

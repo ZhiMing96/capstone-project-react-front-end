@@ -356,22 +356,10 @@ function Jobs (props) {
     const [viewAgain, setViewAgain] = useState([]);
     const [jobTitles, setJobTitles] = useState([]);
     
-    useEffect(()=>{
-        if(searchHistoryJobs.length!=0){
-            var titles = []
-            for(let i=0; i<searchHistoryJobs.length ;i++){
-                const title= searchHistoryJobs[i].search.keyword
-                titles.push(title);
-            }
-
-        }
-    },[searchHistoryJobs])
-    
     
 
     useEffect(()=>{
-
-
+        setLoading(true);
         api.dailyDigest.get()
         .then(res=>{
             const results = res.data;
@@ -379,9 +367,20 @@ function Jobs (props) {
                 console.log(results);
                 setSkillsJobs(results.recommended_jobs_skills);
                 setSearchHistoryJobs(results.recommended_jobs_search);
+                
             }
-        })
-        .catch(err=>console.log(err));
+        }).catch(err=>console.log(err));
+        
+        api.searchJobsAcct.get('keyword=Accounting')
+        .then(res=>{
+            const results = res.data.results
+            console.log(res.data)
+            if(results.response_code === 200){
+            setPopularJobs(results)
+            }
+            setLoading(false);
+        }).catch(err=>console.log(err));
+
 
         if(urlParams === ''){
             setBypass(false)
@@ -409,16 +408,6 @@ function Jobs (props) {
         const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
     })
 
-    //For LOading Popular jOBS
-    useEffect(() => {
-        console.log('Entered New Use Effect Method')
-        api.searchJobsAcct.get('keyword=Accounting')
-        .then(res=>{
-            const results = res.data.results
-            console.log(res.data)
-            setPopularJobs(results)
-        })
-    },[props])
 
     function getSearchResults(queryString){
         setLoading(true);
@@ -720,12 +709,11 @@ function Jobs (props) {
             </Grid>
            
         </Grid>
-        <Grid style={{marginLeft:50, marginRight:55}}>
-            { loading 
-            ? <CircularLoading/>
-            : <span></span>
-            }
-        </Grid>
+        
+        { loading 
+        ? <CircularLoading/>
+        : 
+        <div>
         
         { searchResults  && searchResults.length !== 0 
         ? 
@@ -1193,6 +1181,8 @@ function Jobs (props) {
             ]}
         /> 
     {/* </Container>  */}
+            </div>
+        }
     </div>
     
   )
