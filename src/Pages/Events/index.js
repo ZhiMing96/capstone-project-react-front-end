@@ -242,7 +242,7 @@ function Events() {
     } else if (event.sessions[0].eventVenue !== 'NIL') {
       setMarkerAddress(event.sessions[0].eventVenue);
     } else {
-      setMarkerAddress('Singapore');
+      setMarkerAddress(null);
     }
     setOpen(true);
     const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
@@ -258,7 +258,7 @@ function Events() {
     } else if (event.sessions[0].eventVenue !== 'NIL') {
       setMarkerAddress(event.sessions[0].eventVenue);
     } else {
-      setMarkerAddress('Singapore');
+      setMarkerAddress(null);
     }
     setOpen(true);
     const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
@@ -694,7 +694,7 @@ function Events() {
                   </Collapse>
                 </Card>
                 <ThemeProvider theme={theme}>
-                  <Dialog open={selectedIndex === index ? open : false} onClose={handleClose} style={{ boxShadow: 0, opacity: 1, margin: '7px', width: '100vw' }}>
+                  <Dialog open={selectedRecommendedIndex === index ? open : false} onClose={handleClose} style={{ boxShadow: 0, opacity: 1, margin: '7px', width: '100vw' }}>
                     <DialogContent style={{ textAlign: 'center' }}>
                       <Map markerAddress={markerAddress} style={{ width: '98%', }} />
                       <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >

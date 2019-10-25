@@ -104,7 +104,7 @@ const useStyles = makeStyles(theme => ({
         paddingBottom:'3%',
         paddingLeft:'5%',
         paddingRight:'5%',
-        backgroundColor:'aliceblue'
+        backgroundColor:'white'
     },
     sectionAreaAlternate:{
         width:'100%', 
@@ -214,7 +214,7 @@ function DailyDigest(props) {
     console.log(props)
 
     const classes = useStyles();
-    const token = urlToken ? urlToken : window.localStorage.getItem('authToken');
+    const token = window.localStorage.getItem('authToken');
     const [recommendedArticles, setRecommendedArticles] = useState();
     const [recommendedEvents, setRecommendedEvents] = useState();
     const [searchHistoryJobs, setsearchHistoryJobs] = useState();
@@ -228,6 +228,7 @@ function DailyDigest(props) {
         orange: '#FF7043'
     }
     const [loading, setLoading] = useState(false);
+    const [name, setName]  = useState('');
 
     useEffect(()=>{
         setTimeout( handleOpen, 1000)
@@ -249,25 +250,53 @@ function DailyDigest(props) {
     },[token])
 
     useEffect(()=>{
+        console.log('****** Getting Name ********')
+        api.profile.get().then(
+            res=>{
+              if(res.data.profile){
+                console.log(res.data.profile.first_name)
+                const firstName = res.data.profile.first_name
+                setName(firstName);
+              }
+            } 
+          ).catch(err=> console.error(err))
+    },[])
+
+
+    useEffect(()=>{
         console.log(window.localStorage.getItem('authToken'));
         console.log(urlToken)
         setLoading(true);
         if(urlToken === undefined){
-            api.dailyDigest.get()
-            .then(res => {
-                console.log(res.data)
-                const results = res.data
-                if(results.response_code === 200){
-                    console.log('Daily Digest Retrieved Successfully!')
-                    setRecommendedArticles(results.articles);
-                    setsearchHistoryJobs(results.recommended_jobs_search);
-                    setskillsJobs(results.recommended_jobs_skills);
+            if(token){
+                api.dailyDigest.get()
+                .then(res => {
+                    console.log(res.data)
+                    const results = res.data
+                    if(results.response_code === 200){
+                        console.log('Daily Digest Retrieved Successfully!')
+                        setRecommendedArticles(results.articles);
+                        setsearchHistoryJobs(results.recommended_jobs_search);
+                        setskillsJobs(results.recommended_jobs_skills);
+                        setLoading(false);
+                    }
+                }).catch(err=> {console.error(err)});
+
+            } else {
+                api.dailyDigest.getPublic()
+                .then(res => {
+                    console.log(res.data)
+                    const results = res.data
+                    if(results.response_code === 200){
+                        console.log('Daily Digest Retrieved Successfully!')
+                        setRecommendedArticles(results.articles);
+                        setsearchHistoryJobs(results.recommended_jobs_search);
+                        setskillsJobs(results.recommended_jobs_skills);
+                       
+                    }
                     setLoading(false);
-                }
-            })
-            .catch(err=> {
-                console.error(err);
-            })
+                }).catch(err=> {console.error(err)});
+            }
         } else {
             api.dailyDigest.getFromUrl(urlToken)
             .then(res=>{
@@ -282,9 +311,9 @@ function DailyDigest(props) {
                 }
             })
         }
-
     }, [] )
 
+    
     const getDate =(startDate, endDate) => {
         var newStartDate = new Date(startDate);
         var newEndDate = new Date(endDate);
@@ -329,6 +358,7 @@ function DailyDigest(props) {
     console.log(skillsJobs)
     console.log('Recommended Events:')
     console.log(recommendedEvents)
+    console.log('NAME = ' + name)
 
 
     return (
@@ -339,9 +369,17 @@ function DailyDigest(props) {
                 <Typography variant='subtitle1' gutterBottom>
                     {date}
                 </Typography>
-                <Typography variant='h3'>
+                <Typography gutterBottom variant='h3'>
                     <span style={{fontWeight:550}}>JOPIFY DAILY</span> <span style={{fontWeight:'lighter'}}>DIGEST</span>
                 </Typography>
+                { name
+                ?
+                <Typography variant='h6'>
+                    For {name.toUpperCase()}
+                </Typography>
+                : ''
+                }
+                
             </div>
             { loading 
             ? <CircularLoading/>

@@ -22,7 +22,7 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { typography } from '@material-ui/system';
+import Popover from '@material-ui/core/Popover';
 
 
 const employmentTypes = [
@@ -125,7 +125,7 @@ const employmentTypes = [
     },
     carouselJobTitile: {
         color:'#024966',
-        marginTop:10, 
+        marginTop:20, 
         fontWeight:'bold', 
         fontSize:16,
         whiteSpace:'normal', 
@@ -355,33 +355,41 @@ function Jobs (props) {
     const [skillsJobs, setSkillsJobs] = useState([]);
     const [viewAgain, setViewAgain] = useState([]);
     const [jobTitles, setJobTitles] = useState([]);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handlePopoverOpen = event => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
     
-    
+    const openDetails = Boolean(anchorEl);
 
     useEffect(()=>{
         setLoading(true);
-        api.dailyDigest.get()
-        .then(res=>{
-            const results = res.data;
-            if(results.response_code === 200){
-                console.log(results);
-                setSkillsJobs(results.recommended_jobs_skills);
-                setSearchHistoryJobs(results.recommended_jobs_search);
-                
-            }
-        }).catch(err=>console.log(err));
-        
-        api.searchJobsAcct.get('keyword=Accounting')
-        .then(res=>{
-            const results = res.data.results
-            console.log(res.data)
-    
-            console.log('ENTERED SAVING POPULAR JOBS METHOD')
-            setPopularJobs(results)
-            
-            setLoading(false);
-        }).catch(err=>console.log(err));
-
+        if(token !== null ){
+            api.dailyDigest.get()
+            .then(res=>{
+                const results = res.data;
+                if(results.response_code === 200){
+                    console.log(results);
+                    setSkillsJobs(results.recommended_jobs_skills);
+                    setSearchHistoryJobs(results.recommended_jobs_search);
+                    setPopularJobs(results.recommended_jobs_search);
+                    setLoading(false);
+                }
+            }).catch(err=>console.log(err));
+        }
+        // api.dailyDigest.getPublic()
+        // .then(res=>{
+        //     const results = res.data.results
+        //     console.log(res.data)
+        //     console.log('ENTERED SAVING POPULAR JOBS METHOD')
+        //     setPopularJobs(results);
+        //     setLoading(false);
+        // }).catch(err=>console.log(err));
 
         if(urlParams === ''){
             setBypass(false)
@@ -570,16 +578,18 @@ function Jobs (props) {
 
 
     const handleHrefClick = list => {
-        console.log(list.uuid)
+        console.log('***** HREF CLICK *****')
+        console.log(list)
+        console.log(list.job_uuid)
         console.log(token);
         if(token !== null){
             console.log('TRACKING CLICK')
-            api.searchJobsAcct.click({ uuid: list.uuid })
+            api.searchJobsAcct.click({ uuid: list.job_uuid })
             .then(response => {
                 console.log(response);
                 if(response.data.response_code===200){
                     console.log("Click Stored SUCCESSFULLY ");
-                    const url = list.metadata.jobDetailsUrl
+                    const url = list.jobDetailsUrl
                     window.open(url,'_blank');
                 }
             })
@@ -747,10 +757,6 @@ function Jobs (props) {
             <Typography variant='h5' className={classes.sectionHeading}>
                 You Might Be Interested <span className={classes.sectionCaption}> Based on your search hisory</span>
             </Typography>
-            
-            {/* <Typography style={{textAlign:'right'}} onClick={()=> handleViewSearchHistory()}>
-                View All
-            </Typography> */}
         
             <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
             <Wrapper>
@@ -762,7 +768,7 @@ function Jobs (props) {
                                     <Grid item>
                                         <Avatar alt="List"
                                             src={ 
-                                                listing.postedCompany && listing.postedCompany.logoUploadPath 
+                                                listing.posted_company && listing.posted_company.logoUploadPath 
                                                 ? listing.postedCompany.logoUploadPath  
                                                 : defaultIcon
                                             } 
@@ -797,13 +803,13 @@ function Jobs (props) {
                                     {listing.title}
                                 </Typography>
                                 <Typography style={{fontWeight:'light', fontSize:10}}>
-                                    { listing.postedCompany 
-                                        ? listing.postedCompany.name
+                                    { listing.posted_company 
+                                        ? listing.posted_company
                                         : ""
                                     }
                                 </Typography>
                                 </Grid>
-                                <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
                                     <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
                                     onClick={()=>handleHrefClick(listing)}
                                     >
@@ -839,8 +845,8 @@ function Jobs (props) {
                                     <Grid item>
                                         <Avatar alt="List"
                                             src={ 
-                                                listing.postedCompany && listing.postedCompany.logoUploadPath 
-                                                ? listing.postedCompany.logoUploadPath  
+                                                listing.posted_company && listing.posted_company.logoUploadPath 
+                                                ? listing.posted_company.logoUploadPath  
                                                 : defaultIcon
                                             } 
                                             style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
@@ -874,22 +880,42 @@ function Jobs (props) {
                                         {listing.title}
                                     </Typography>
                                     <Typography style={{fontWeight:'light', fontSize:10}}>
-                                        { listing.postedCompany 
-                                            ? listing.postedCompany.name
+                                        { listing.posted_company 
+                                            ? listing.posted_company
                                             : ""
                                         }}
                                     </Typography>
                                     </Grid>
-                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
                                         <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                        onMouseEnter={handlePopoverOpen}
+                                        onMouseLeave={handlePopoverClose}
                                         onClick={()=>handleHrefClick(listing)}
                                         >
                                             Details
                                         </Button>
                                     </Grid>
                                 </Grid>
-                                
                                 </Paper>
+                                <Popover
+                                    classes={{
+                                    paper: classes.paper,
+                                    }}
+                                    open={open}
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                    }}
+                                    transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                    }}
+                                    onClose={handlePopoverClose}
+                                    disableRestoreFocus
+                                >
+                                    <Typography>I use Popover.</Typography>
+                                </Popover>
                             </Page>
                         ))}
                     </Slider>
@@ -905,9 +931,6 @@ function Jobs (props) {
             {popularJobs.length !== 0
             ? 
             <div style={{marginTop:'1%'}}>
-                {/* <Typography style={{textAlign:'right'}} onClick={()=> handleViewPopular()}>
-                    View All
-                </Typography> */}
                 <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
@@ -918,8 +941,8 @@ function Jobs (props) {
                                     <Grid item>
                                         <Avatar alt="List"
                                             src={ 
-                                                listing.postedCompany && listing.postedCompany.logoUploadPath 
-                                                ? listing.postedCompany.logoUploadPath  
+                                                listing.posted_company && listing.posted_company.logoUploadPath 
+                                                ? listing.posted_company.logoUploadPath  
                                                 : defaultIcon
                                             } 
                                             style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
@@ -953,13 +976,13 @@ function Jobs (props) {
                                         {listing.title}
                                     </Typography>
                                     <Typography style={{fontWeight:'light', fontSize:10}}>
-                                        { listing.postedCompany 
-                                            ? listing.postedCompany.name
+                                        { listing.posted_company 
+                                            ? listing.posted_company
                                             : ""
                                         }}
                                     </Typography>
                                     </Grid>
-                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end', paddingRight:'5%'}}>
                                         <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
                                         onClick={()=>handleHrefClick(listing)}
                                         >
@@ -1058,8 +1081,8 @@ function Jobs (props) {
                                 <Paper style={{width:'90%',textAlign: 'start', padding:15, marginBottom:5}} elevation={0}>
                                 <Avatar alt="List"
                                 src={ 
-                                    listing.postedCompany && listing.postedCompany.logoUploadPath 
-                                    ? listing.postedCompany.logoUploadPath  
+                                    listing.posted_company && listing.posted_company.logoUploadPath 
+                                    ? listing.posted_company.logoUploadPath  
                                     : defaultIcon
                                 } 
                                 style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)'}} 
@@ -1072,13 +1095,13 @@ function Jobs (props) {
                                         {listing.title}
                                     </Typography>
                                     <Typography style={{fontWeight:'light', fontSize:10}}>
-                                        { listing.postedCompany 
-                                            ? listing.postedCompany.name
+                                        { listing.posted_company 
+                                            ? listing.posted_company
                                             : ""
                                         }}
                                     </Typography>
                                     </Grid>
-                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
                                         <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
                                         onClick={()=>handleHrefClick(listing)}
                                         >
