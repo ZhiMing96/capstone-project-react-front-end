@@ -83,6 +83,7 @@ const articles = {
 }
 
 const dailyDigest = {
+  
   get: () => axios.get('http://localhost:3000/daily', {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),

@@ -220,12 +220,30 @@ function Events() {
   const [markerAddress, setMarkerAddress] = useState('Singapore')
   const [selectedUrl, setSelectedUrl] = useState('');
   const [selectedIndex, setselectedIndex] = useState(null);
+  const [selectedRecommendedIndex, setSelectedRecommendedIndex] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(7);
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = React.useState(false);
 
+  const handleRecommendedClickOpen = (event,index) => {
+    setselectedIndex(null);
+    setSelectedRecommendedIndex(index);
+    if(event.sessions[0].buildingName!=='-' && event.sessions[0].buildingName!=='0'){
+      setMarkerAddress(event.sessions[0].buildingName);
+    } else if (event.sessions[0].eventVenue!=='NIL'){
+      setMarkerAddress(event.sessions[0].eventVenue);
+    } else  {
+      setMarkerAddress('Singapore');
+    } 
+    setOpen(true);
+    const location = formatVenue(event.sessions[0].buildingName,event.sessions[0].eventVenue,event.sessions[0].streetName,event.sessions[0].postalCode)
+    setSelectedEventLocation(location);
+    
+  }
+
   const handleClickOpen = (event,index) => {
+    setSelectedRecommendedIndex(null);
     setselectedIndex(index);
     if(event.sessions[0].buildingName!=='-' && event.sessions[0].buildingName!=='0'){
       setMarkerAddress(event.sessions[0].buildingName);
@@ -244,8 +262,16 @@ function Events() {
   };
 
 
+
+  const handleExpandRecommendedClick = (index) => {
+    console.log(index);
+    setselectedIndex(null);
+    setSelectedRecommendedIndex(index);
+    setExpanded(!expanded);
+  };
   const handleExpandClick = (index) => {
     console.log(index);
+    setSelectedRecommendedIndex(null);
     setselectedIndex(index);
     setExpanded(!expanded);
   };
@@ -434,9 +460,34 @@ function Events() {
     }
   }
 
+  const viewRecommended = (event,index) => {
+    console.log('Recommended Article Selected')
+    setselectedIndex(null);
+    setSelectedRecommendedIndex(index);
+    console.log(event.sessions)
+    if(event.sessions[0].buildingName!=='-' && event.sessions[0].buildingName!=='0'){
+      setMarkerAddress(event.sessions[0].buildingName);
+    } else if (event.sessions[0].eventVenue!=='NIL'){
+      setMarkerAddress(event.sessions[0].eventVenue);
+    } else  {
+      setMarkerAddress('Singapore');
+    } 
+
+    setSelectedUrl(event.eventUrl);
+
+    if(event.eventDescription !== ''){
+      setSelectedEventDescription(event.eventDescription);
+    } else {
+      setSelectedEventDescription('No Description Available')
+    }
+    const location = formatVenue(event.sessions[0].buildingName,event.sessions[0].eventVenue,event.sessions[0].streetName,event.sessions[0].postalCode)
+    setSelectedEventLocation(location);
+  }
+
 
   const viewDetails = (event,index) =>{
-    console.log('ENTERED VIEW DETAILS METHOD')
+    console.log('ENTERED VIEW DETAILS METHOD for Others Section')
+    setSelectedRecommendedIndex(null);
     setselectedIndex(index);
     console.log(index);
     console.log(event.sessions)
@@ -503,8 +554,8 @@ function Events() {
             <div style={{maxHeight: 300,overflowY:'auto',}}>
             {events.slice(0,3).map((event, index) => (
               <div key={index}>
-                <Card className={classes.eventLisiting} style={selectedIndex===index? {backgroundColor :'whitesmoke'} : {}}
-                onMouseEnter={() => viewDetails(event,index)}>
+                <Card className={classes.eventLisiting} style={selectedRecommendedIndex===index? {backgroundColor :'whitesmoke'} : {}}
+                onMouseEnter={() => viewRecommended(event,index)}>
                   <div style={{display:'inline-flex', width:'100%'}}>
                   <CardMedia
                     className={classes.cover}
@@ -556,7 +607,7 @@ function Events() {
                         <Grid item xs={1} container justify='center' style={{alignContent:'space-between'}}>
                           <Hidden smUp>
                             <IconButton
-                            onClick={()=> handleClickOpen(event,index)} 
+                            onClick={()=> handleRecommendedClickOpen(event,index)} 
                             disableRipple={true}
                             color='Secondary'
                             style={{}}
@@ -566,10 +617,10 @@ function Events() {
                           </Hidden>
                           <IconButton
                             className={clsx(classes.expand, {
-                              [classes.expandOpen]: index === selectedIndex? expanded : false,
+                              [classes.expandOpen]: index === selectedRecommendedIndex? expanded : false,
                             })}
                             size='small'
-                            onClick={() => handleExpandClick(index,event)}
+                            onClick={() => handleExpandRecommendedClick(index,event)}
                             aria-expanded={expanded}
                             aria-label="show more"
                           >
@@ -615,7 +666,7 @@ function Events() {
                   </div>
                   
                   {/* </div> */}
-                  <Collapse in={index===selectedIndex?expanded:false} timeout="auto" unmountOnExit>
+                  <Collapse in={index===selectedRecommendedIndex?expanded:false} timeout="auto" unmountOnExit>
                     <CardContent style={{padding:0}}>
                       <div style={{width:'95%', margin:9, marginTop:15, backgroundColor:'#EDF7FA', height:'fit-content', padding:10, maxHeight:'100%'}}>
                         <Grid container style={{maxHeight:'100%'}}>

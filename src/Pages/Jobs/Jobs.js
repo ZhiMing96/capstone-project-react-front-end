@@ -22,6 +22,7 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { typography } from '@material-ui/system';
 
 
 const employmentTypes = [
@@ -178,7 +179,7 @@ const employmentTypes = [
         },
     },
     tagStyle:{
-        padding:3, 
+        padding:5, 
         paddingLeft:8, 
         color:'white',
         fontSize:11, 
@@ -280,7 +281,7 @@ function compareValues(key, order='asc') {
         }
         
         
-        if(a !== null && b !== null ){
+            if(a !== null && b !== null ){
             if(!a.hasOwnProperty(key) || 
             !b.hasOwnProperty(key)) {
                 return 0; 
@@ -316,10 +317,13 @@ function Jobs (props) {
         console.log(props.match.params.queryString);
         urlParams = props.match.params.queryString;
     } 
+    console.log('PROPS FOR JOBS COMPONENT')
+    console.log(props)
    
 
     const searchLimit = 100;
     const token= window.localStorage.getItem('authToken');
+    console.log(token)
     const classes=useStyles();
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);   // for snackbar
@@ -339,7 +343,7 @@ function Jobs (props) {
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(10);
     const [sorted, setSorted] = useState(false);
-    const [popularJobs, setPopularJobs] = useState('');
+    const [popularJobs, setPopularJobs] = useState([]);
     const [byPass, setBypass] = useState(false);
     const [keyword, setKeyword] = useState('');
     const tagColor = { 
@@ -347,10 +351,38 @@ function Jobs (props) {
         blue: '#42A5F5',
         orange: '#FF7043'
     }
+    const [searchHistoryJobs, setSearchHistoryJobs] = useState([]);
+    const [skillsJobs, setSkillsJobs] = useState([]);
+    const [viewAgain, setViewAgain] = useState([]);
+    const [jobTitles, setJobTitles] = useState([]);
+    
+    useEffect(()=>{
+        if(searchHistoryJobs.length!=0){
+            var titles = []
+            for(let i=0; i<searchHistoryJobs.length ;i++){
+                const title= searchHistoryJobs[i].search.keyword
+                titles.push(title);
+            }
+
+        }
+    },[searchHistoryJobs])
     
     
 
     useEffect(()=>{
+
+
+        api.dailyDigest.get()
+        .then(res=>{
+            const results = res.data;
+            if(results.response_code === 200){
+                console.log(results);
+                setSkillsJobs(results.recommended_jobs_skills);
+                setSearchHistoryJobs(results.recommended_jobs_search);
+            }
+        })
+        .catch(err=>console.log(err));
+
         if(urlParams === ''){
             setBypass(false)
             setSearchResults(props.searchResults)
@@ -364,7 +396,7 @@ function Jobs (props) {
             setBypass(true)
             setState({ ...state, queryString: urlParams});
             getSearchResults(urlParams);
-            
+        
         }
     },[props])
 
@@ -380,21 +412,13 @@ function Jobs (props) {
     //For LOading Popular jOBS
     useEffect(() => {
         console.log('Entered New Use Effect Method')
-        axios.get('https://api.mycareersfuture.sg/popular-job-titles')
-        .then((res)=>{
+        api.searchJobsAcct.get('keyword=Accounting')
+        .then(res=>{
+            const results = res.data.results
             console.log(res.data)
-            const popularTitles = res.data
-            
-            const title = popularTitles[0].icmsJobTitle
-            // axios.get(`https://api.mycareersfuture.sg/v2/jobs?search=${title}&limit=10`)
-            axios.get(`https://api.mycareersfuture.sg/v2/jobs?search=Banking&limit=10`)
-                .then((res) => {
-                    console.log(res.data)
-                    const listings= res.data.results;
-                    setPopularJobs({listings})
-                })
-        });
-    },[])
+            setPopularJobs(results)
+        })
+    },[props])
 
     function getSearchResults(queryString){
         setLoading(true);
@@ -415,6 +439,8 @@ function Jobs (props) {
                     // setSearchResults(sortedResults);
                     const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
                     setSearchResults(sortedResults);
+                    // setSearchHistoryJobs(result);
+                    // setSkillsJobs(result);
                 }
                 // submitFilter('skills_match', 'desc');
                 setLoading(false);
@@ -555,24 +581,46 @@ function Jobs (props) {
 
     const handleHrefClick = list => {
         console.log(list.uuid)
-        api.searchJobsAcct.click({ uuid: list.uuid })
-        .then(response => {
-            console.log(response);
-            if(response.data.response_code===200){
-                console.log("Click Stored SUCCESSFULLY ");
-                const url = list.metadata.jobDetailsUrl
-                window.open(url,'_blank');
-            }
-        })
-        .catch(error =>{
-            console.log(error);
-        })
+        console.log(token);
+        if(token !== null){
+            console.log('TRACKING CLICK')
+            api.searchJobsAcct.click({ uuid: list.uuid })
+            .then(response => {
+                console.log(response);
+                if(response.data.response_code===200){
+                    console.log("Click Stored SUCCESSFULLY ");
+                    const url = list.metadata.jobDetailsUrl
+                    window.open(url,'_blank');
+                }
+            })
+            .catch(error =>{
+                console.log(error);
+            })
+        } else {
+            console.log('NOT TRACKING CLICK')
+            const url = list.metadata.jobDetailsUrl
+            window.open(url,'_blank');
+        }
+        
+    }
+
+    const handleViewSearchHistory = () => {
+        setSearchResults(searchHistoryJobs);
+    }
+    const handleViewSkill = () => {
+        setSearchResults(skillsJobs);
+    }
+    const handleViewViewAgain = () => {
+        setSearchResults();
+    }
+    const handleViewPopular = () => {
+        setSearchResults(popularJobs);
     }
 
     //console.log('Keyword Before Render = ');
     console.log('State Before Render =')
     console.log(state)
-
+    console.log(jobTitles);
 
 
   return (
@@ -580,7 +628,7 @@ function Jobs (props) {
     <div>
         {/* <Container> */}
         <CssBaseline/>
-        <Grid container alignContent="flex-start" style={{background: `linear-gradient(#039be5,#43BDF8 )` , height:'30vh', padding:20}}>
+        <Grid container alignContent="flex-start" style={{background: `linear-gradient(#039be5,#43BDF8 )` , height:'40vh', padding:20, paddingTop:'5%'}}>
             <Grid item xs={12} >
                 <Typography variant='h4' style={{color:'#FFFFFF', fontWeight:'lighter', paddingTop:15}}>
                     PLACE HOLDER TEXT
@@ -703,17 +751,22 @@ function Jobs (props) {
         ? //USER WITH ACCOUNT           
         <div>
             <div style={{}}>
-            {popularJobs.length!=0
+            {searchHistoryJobs.length!=0
             ?
+
             <div style={{}}>
             <Typography variant='h5' className={classes.sectionHeading}>
                 You Might Be Interested <span className={classes.sectionCaption}> Based on your search hisory</span>
             </Typography>
+            
+            {/* <Typography style={{textAlign:'right'}} onClick={()=> handleViewSearchHistory()}>
+                View All
+            </Typography> */}
         
             <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
             <Wrapper>
                 <Slider {...carouselSettings}>
-                    { popularJobs.listings.map((listing) => (
+                    { searchHistoryJobs.map((listing) => (
                         <Page>
                             <Paper className={classes.jobListingBox}>
                                 <Grid container justify='space-between'>
@@ -730,9 +783,23 @@ function Jobs (props) {
                                         />
                                     </Grid>
                                     <Grid item style={{ }}>
-                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
-                                        Recommended
+                                    { listing.skills_match < 0.3
+                                        ?
+                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                            Add Skills
                                         </Typography>
+                                        : listing.skills_match < 0.7
+                                        ?
+                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                            Recommended
+                                        </Typography>
+                                        : listing.skills_match < 1
+                                        ?
+                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                            Apply Now
+                                        </Typography>
+                                        :''
+                                    }
                                     </Grid>
                                 </Grid>
                             <Grid container  justify='space-between' style={{height:'15vh'}}>
@@ -763,18 +830,20 @@ function Jobs (props) {
             </Wrapper>
             </Grid>
             </div>
-            :''
+            : 
+            ''
             }
-            {popularJobs.length !== 0
+            {skillsJobs.length !== 0
             ? 
             <div style={{marginTop:'1%'}}>
-                <Typography variant='h5' className={classes.sectionHeading}>
-                    Suitable For You <span className={classes.sectionCaption}> Based on your skills</span>
-                </Typography>
+            <Typography variant='h5' className={classes.sectionHeading}>
+                Suitable For You <span className={classes.sectionCaption}> Based on your skills</span>
+            </Typography>
+            
                 <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
-                        { popularJobs.listings.map((listing) => (
+                        { skillsJobs.listings.map((listing) => (
                             <Page >
                                 <Paper className={classes.jobListingBox}>
                                 <Grid container justify='space-between'>
@@ -791,9 +860,23 @@ function Jobs (props) {
                                         />
                                     </Grid>
                                     <Grid item style={{ }}>
-                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
-                                        Recommended
-                                        </Typography>
+                                        { listing.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add More Skills
+                                            </Typography>
+                                            : listing.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : listing.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
                                     </Grid>
                                 </Grid>
                                 <Grid container  justify='space-between' style={{height:'15vh'}}>
@@ -824,18 +907,22 @@ function Jobs (props) {
                 </Wrapper>
                 </Grid>
                 </div>
-            :''
+            :
+            ''
             }
+            <Typography variant='h5' className={classes.sectionHeading}>
+                Popular <span className={classes.sectionCaption}> Trending</span>
+            </Typography>
             {popularJobs.length !== 0
             ? 
             <div style={{marginTop:'1%'}}>
-                <Typography variant='h5' className={classes.sectionHeading}>
-                    Popular <span className={classes.sectionCaption}> Trending</span>
-                </Typography>
+                {/* <Typography style={{textAlign:'right'}} onClick={()=> handleViewPopular()}>
+                    View All
+                </Typography> */}
                 <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
-                        { popularJobs.listings.map((listing) => (
+                        { popularJobs.map((listing) => (
                             <Page >
                                 <Paper className={classes.jobListingBox}>
                                 <Grid container justify='space-between'>
@@ -852,9 +939,23 @@ function Jobs (props) {
                                         />
                                     </Grid>
                                     <Grid item style={{ }}>
-                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
-                                        Recommended
-                                        </Typography>
+                                        { listing.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add More Skills
+                                            </Typography>
+                                            : listing.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : listing.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
                                     </Grid>
                                 </Grid>
                                 <Grid container  justify='space-between' style={{height:'15vh'}}>
@@ -885,10 +986,52 @@ function Jobs (props) {
                 </Wrapper>
                 </Grid>
                 </div>
-            :''
+            :
+            <div style={{textAlign:'center', marginLeft:'3%',}}>
+                <Typography style={{fontWeight:'lighter', color:''}}>
+                    <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span> There are no results at the moment 
+                </Typography>
+                <Typography style={{fontWeight:'bold'}}>
+                    
+                </Typography>
+            </div>
             }
             </div>
-            <Grid container style={{}}>
+            <div>
+                {searchHistoryJobs.length===0
+                ?
+                <div>
+                    <Typography variant='h5' className={classes.sectionHeading}>
+                        You Might Be Interested <span className={classes.sectionCaption}> Based on your search hisory</span>
+                    </Typography>
+                    <div style={{textAlign:'center', marginLeft:'3%',}}>
+                    
+                    <Typography style={{fontWeight:'lighter', color:''}}>
+                        <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span>Seems like you're new here, Start Searching To Activate This Section!
+                    </Typography>
+                    </div>
+                </div>
+                : ''
+                }
+                {skillsJobs.length===0
+                ?
+                <div>
+                    <Typography variant='h5' className={classes.sectionHeading}>
+                        Suitable For You <span className={classes.sectionCaption}> Based on your skills</span>
+                    </Typography>
+                    <div style={{textAlign:'center', marginLeft:'3%',}}>
+                    <Typography style={{fontWeight:'lighter', color:''}} href='/profile/skills'>
+                        <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span>Seems like you're new here, Start <span >Adding Skills</span> to Activate This Section! 
+                    </Typography>
+                    <Typography style={{fontWeight:'bold'}}>
+                        
+                    </Typography>
+                    </div>
+                </div>
+                :''
+                }
+            </div>
+            {/* <Grid container style={{}}>
                 <Grid item xs={12}>
                     <Typography>
                         <Box fontSize={40} m={0}>
@@ -906,18 +1049,18 @@ function Jobs (props) {
                         <img src={carouselImgs[1].imgUrl} className={classes.img} alt=""/>
                     </a>
                 </div>
-            </Grid>
+            </Grid> */}
             
         </div>
         : token==null  && byPass==false 
         ?//USER WITHOUT ACCOUNT 
         <div>
+            <Typography variant='h5' style={{textAlign:"justify", marginLeft:30, color:'#024966e', fontWeight:'bold', marginTop:20}}>
+            Popular Jobs
+            </Typography>
             {popularJobs.length !== 0
             ? 
             <div style={{}}>
-                <Typography variant='h5' style={{textAlign:"justify", marginLeft:30, color:'#024966e', fontWeight:'bold', marginTop:20}}>
-                Popular Jobs
-                </Typography>
                 <Grid container style={{height:'35vh', margin:10, marginTop:10}} spacing={1} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
@@ -962,10 +1105,45 @@ function Jobs (props) {
                 </Wrapper>
                 </Grid>
             </div>
-            : ""
+            : 
+            <div style={{textAlign:'center', marginLeft:'3%',}}>
+                <Typography style={{fontWeight:'lighter', color:''}}>
+                    <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span>Seems like you're new here, Start Searching To Activate This Section!
+                </Typography>
+                <Typography style={{fontWeight:'bold'}}>
+                    
+                </Typography>
+            </div>
             }
+            <div style={{ backgroundColor:'white'}}>
+                <Grid Container style={{padding:'10%', paddingLeft:'8%'}}>
+                    <Grid item xs={12} sm style={{marginBottom:'1%'}} >
+                        <Typography variant='subtitle1' color='primary' style={{fontSize:18, fontWeight:'Bold', textAlign:'left', marginBottom:'3%'}}>
+                            Be A Member Today
+                        </Typography>
+                        <Typography gutterBottom style={{fontSize:38, fontWeight:'lighter', textAlign:'left'}}>
+                            Bookmarks <span style={{fontSize:25,textAlign:'left'}}> Save a Job Listing and View Later </span>
+                        </Typography>
+                        <Typography gutterBottom style={{fontSize:38, fontWeight:'lighter', textAlign:'center'}}>
+                            Browse Again <span style={{fontSize:25,}}> Never lose track of your favourite searches </span>
+                        </Typography>
+                        <Typography style={{fontSize:38, fontWeight:'lighter', textAlign:'left'}}>
+                            Smart Search <span style={{fontSize:25,}}> we recommend Jobs that you like </span>
+                        </Typography>
+                        <Typography>
+                        </Typography>
+                       
+                    </Grid>
+                    <Grid item xs={12} sm style={{marginTop:'4%'}}>
+                        <Typography  style={{fontSize:50, fontWeight:'bold',textAlign:'right',}}>
+                            SIGN UP HERE.
+                        </Typography>
+                    </Grid>
+                </Grid>
+                
+            </div>
 
-            <Grid container style={{}}>
+            {/* <Grid container style={{}}>
                 <Grid item xs={12}>
                     <Typography>
                         <Box fontSize={40} m={0}>
@@ -983,7 +1161,7 @@ function Jobs (props) {
                         <img src={carouselImgs[1].imgUrl} className={classes.img} alt=""/>
                     </a>
                 </div>
-            </Grid>
+            </Grid> */}
         </div>
         :''
         }

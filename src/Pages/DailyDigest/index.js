@@ -67,36 +67,50 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles(theme => ({
     root:{
-        paddingLeft:'3%',
-        paddingRight:'3%',
         marginRight:'17%',
         marginLeft:'17%',
         backgroundColor:'white',
-        // [theme.breakpoints.down('xs')]: {
-        //     paddingLeft:'5px',
-        //     paddingRight:'5px',
-        // },
+        [theme.breakpoints.down('xs')]: {
+            // paddingLeft:'5px',
+            // paddingRight:'5px',
+        },
         [theme.breakpoints.down('md')]: {
             marginLeft:'10%',
             marginRight:'10%',
-            paddingLeft:'5%',
-            paddingRight:'5%',
+            // paddingLeft:'5%',
+            // paddingRight:'5%',
         },
         [theme.breakpoints.down('xs')]: {
             marginLeft:'2%',
             marginRight:'2%',
-            paddingLeft:'5%',
-            paddingRight:'5%',
+            // paddingLeft:'5%',
+            // paddingRight:'5%',
         },
     },
     digestHeading:{
         width:'100%', 
         height:'14vh', 
         paddingTop:'5%', 
-        textAlign:'left'
+        textAlign:'left',
+        paddingLeft:'5%',
+        paddingRight:'5%',
     },
     sectionArea:{
-        width:'100%', marginTop:'10%', textAlign:'left'
+        width:'100%', 
+        marginTop:'10%', 
+        textAlign:'left',
+        paddingTop:'3%',
+        paddingBottom:'3%',
+        paddingLeft:'5%',
+        paddingRight:'5%',
+        backgroundColor:'aliceblue'
+    },
+    sectionAreaAlternate:{
+        width:'100%', 
+        marginTop:'10%', 
+        textAlign:'left',
+        paddingLeft:'5%',
+        paddingRight:'5%',
     },
     sectionHeading:{
         fontWeight:'bold',
@@ -350,16 +364,16 @@ function DailyDigest() {
                 </Grid>
                 </div>
                 :
-                    <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%'}}>
+                    <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',paddingLeft:'5%'}}>
                         <Typography className={classes.sectionHeading}>
-                            Opps..
+                            Oops..
                         </Typography>
                         <Typography style={{fontWeight:'bold'}}>
                             No Articles Available.
                         </Typography>
                     </div>
                 }
-                <div style={{textAlign:'right', marginTop:10}}>
+                <div style={{textAlign:'right', marginTop:10,}}>
                     <Button
                     size="small"
                     style={{color:'#30A0D8', fontWeight:'bold', fontSize:18}}
@@ -372,7 +386,7 @@ function DailyDigest() {
             
             
             
-            <div className={classes.sectionArea}>
+            <div className={classes.sectionAreaAlternate}>
                 {searchHistoryJobs || skillsJobs
                 ?
                 <div>
@@ -485,9 +499,9 @@ function DailyDigest() {
                 </div>
                 </div>
                 :
-                <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%'}}>
+                <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%', paddingLeft:'5%'}}>
                     <Typography className={classes.sectionHeading}>
-                        Opps..
+                        Oops...
                     </Typography>
                     <Typography style={{fontWeight:'bold'}}>
                         No Job Recommendations Available.
@@ -596,16 +610,16 @@ function DailyDigest() {
                 
             </div>
             : 
-            <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%'}}>
+            <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',paddingLeft:'5%'}}>
                 <Typography className={classes.sectionHeading}>
-                    Opps..
+                    Oops...
                 </Typography>
                 <Typography style={{fontWeight:'bold'}}>
                     No Events Available.
                 </Typography>
             </div>
             }
-            <div style={{textAlign:'right', marginTop:15, marginbottom:'10%'}}>
+            <div style={{textAlign:'right', marginTop:15, marginbottom:'10%', paddingRight:'5%'}}>
                 <Button
                 size="small"
                 style={{color:'#30A0D8', fontWeight:'bold', fontSize:18, marginTop:10}}
