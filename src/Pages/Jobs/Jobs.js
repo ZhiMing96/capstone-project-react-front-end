@@ -1195,7 +1195,7 @@ function Jobs (props) {
                     </Grid>
                     <Grid item xs={12} sm style={{marginTop:'4%'}}>
                         <Typography  style={{fontSize:50, fontWeight:'bold',textAlign:'right',}}>
-                            SIGN UP HERE.
+                            SIGN UP NOW.
                         </Typography>
                     </Grid>
                 </Grid>
