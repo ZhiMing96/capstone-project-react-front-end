@@ -590,7 +590,7 @@ function Articles()
             <Wrapper style={{marginInlineStart:15, marginInlineEnd:15, zIndex:0}}>
               <Slider {...miniCarouselSettings} >
                   {articles.map((article,index) => {
-                    if(index > 6 && article.jobtag ==='Search For A Job'){
+                    if(index > 6 && article.jobtag ==='SEARCH_JOB'){
                       return (
                         <Page>
                           <Card className={classes.cardSmall}>
@@ -641,7 +641,7 @@ function Articles()
             <Wrapper style={{marginInlineStart:15, marginInlineEnd:15, zIndex:0}}>
               <Slider {...miniCarouselSettings}>
                   {articles.map((article,index) => {
-                    if(index > 6 && article.jobtag==="Grow Your Career"){
+                    if(index > 6 && article.jobtag==="GROW_CAREER"){
                       return (
                         <Page>
                           <Card className={classes.cardSmall}>

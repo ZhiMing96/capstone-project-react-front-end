@@ -299,7 +299,7 @@ function DailyDigest(props) {
 
                         console.log('***** EVENTS RESULTS *******')
                         console.log(results.events)
-                        setRecommendedEvents(results.events);
+                        // setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
                         props.history.push("/",{tokenInvalid:true})
@@ -321,7 +321,7 @@ function DailyDigest(props) {
                         setPopularJobs(results.recommended_jobs);
                         console.log('***** EVENTS RESULTS *******')
                         console.log(results.events)
-                        setRecommendedEvents(results.events);
+                        // setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
                         props.history.push("/",{tokenInvalid:true})
@@ -407,8 +407,8 @@ function DailyDigest(props) {
     console.log(searchHistoryJobs)
     console.log(skillsJobs)
     console.log('Recommended Events:')
-    console.log(recommendedEvents)
-    console.log('NAME = ' + name)
+    // console.log(recommendedEvents)
+    // console.log('NAME = ' + name)
 
 
     return (
@@ -748,7 +748,7 @@ function DailyDigest(props) {
                     </Button>
                 </div>
             </div>
-            <div className={classes.sectionArea}>
+            {/* <div className={classes.sectionArea}>
             { recommendedEvents
             ?
                 <div>
@@ -817,6 +817,7 @@ function DailyDigest(props) {
             </div>
             
         </div>
+         */}
         </div>
         }
         </div>
