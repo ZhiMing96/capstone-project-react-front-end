@@ -189,9 +189,9 @@ function SocialProfileEdit(props) {
                                             labelWidth={labelWidth}
                                         >
 
-                                            <MenuItem value={1}>Search for a Job</MenuItem>
-                                            <MenuItem value={2}>Land a Job</MenuItem>
-                                            <MenuItem value={3}>Grow Your Career</MenuItem>
+                                            <MenuItem value={"SEARCH_JOB"}>Search for a Job</MenuItem>
+                                            <MenuItem value={"GROW_CAREER"}>Grow Your Career</MenuItem>
+                                            
                                         </Select>
                                     </FormControl>
                                 </Grid>
