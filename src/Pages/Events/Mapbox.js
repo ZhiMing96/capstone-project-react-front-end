@@ -32,6 +32,19 @@ function Map (props) {
         if(props.markerAddress !== null){
             var long = markerAddress[0]
             var lat = markerAddress[1]
+            setMarkerAddress({
+                latitude: lat,
+                longitude:long
+            })
+            setViewPort({
+                ...viewport,
+                latitude: lat,
+                longitude: long
+            })
+        }
+        
+    })
+            /*
             var str = encodeURIComponent(props.markerAddress)
             var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + str + '.json?access_token=' + process.env.REACT_APP_MAPBOX_TOKEN
             
@@ -56,6 +69,7 @@ function Map (props) {
         }
         
     },[props.markerAddress])
+    */
 
     const _onViewportChange = viewport => setViewPort({ ...viewport, transitionDuration: 0 })
 
