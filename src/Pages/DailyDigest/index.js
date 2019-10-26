@@ -8,6 +8,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import api from '../../api';
 import axios from 'axios';
+import { connect } from "react-redux";
+import {doLogin} from  '../../redux/actions/auth'
 import CircularLoading from '../../Components/LoadingBars/CircularLoading';
 const defaultJobIcon ='https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png'
 
@@ -814,5 +816,5 @@ function DailyDigest(props) {
     </div>
    )
 }
-export default DailyDigest;
+export default connect(null, { doLogin })(DailyDigest);
 
