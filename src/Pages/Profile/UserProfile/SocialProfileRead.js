@@ -129,14 +129,12 @@ function SocialProfileRead(props) {
                                     <TextField
                                         label="Current Career Focus"
                                         value={
-                                            profileState.job_search_stage ===0? 
+                                            profileState.job_search_stage ===null? 
                                                 '-'
                                             :
-                                                profileState.job_search_stage ===1?
+                                                profileState.job_search_stage ==="SEARCH_JOB"?
                                                     'Search for a Job'
-                                                : profileState.job_search_stage ===2?
-                                                    'Land a Job'
-                                                    : profileState.job_search_stage ===3?
+                                                    : profileState.job_search_stage ==="GROW_CAREER"?
                                                         'Grow Your Career':''
                                         }
                                         className={classes.textField}
