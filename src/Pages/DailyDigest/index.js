@@ -122,6 +122,7 @@ const useStyles = makeStyles(theme => ({
     },
     eventsImg:{
         width:'20%', 
+        padding:'3%',
         boxShadow:'0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12)',
         [theme.breakpoints.down('xs')]: {
             width:'30%', 
@@ -294,9 +295,11 @@ function DailyDigest(props) {
                         setRecommendedArticles(results.articles);
                         setsearchHistoryJobs(results.recommended_jobs_search);
                         setskillsJobs(results.recommended_jobs_skills);
-                        setRecommendedEvents();
+
+                        console.log('***** EVENTS RESULTS *******')
+                        console.log(results.events)
+                        setRecommendedEvents(results.events);
                         setLoading(false);
-                        
                     } else {
                         props.history.push("/",{tokenInvalid:true})
                     }
@@ -315,7 +318,9 @@ function DailyDigest(props) {
                         console.log('Daily Digest Retrieved Successfully!')
                         setRecommendedArticles(results.articles);
                         setPopularJobs(results.recommended_jobs);
-                        setRecommendedEvents();
+                        console.log('***** EVENTS RESULTS *******')
+                        console.log(results.events)
+                        setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
                         props.history.push("/",{tokenInvalid:true})
@@ -333,7 +338,7 @@ function DailyDigest(props) {
                     setRecommendedArticles(results.articles);
                     setsearchHistoryJobs(results.recommended_jobs_search);
                     setskillsJobs(results.recommended_jobs_skills);
-                    setRecommendedEvents();
+                    setRecommendedEvents(results.events);
                     setLoading(false);
                 } else {
                     props.history.push("/",{tokenInvalid:true})
@@ -443,7 +448,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedArticles[0][0].jobtag}
+                    {recommendedArticles[0].jobtag}
                     </Typography>
                 </div>
                 :''
@@ -456,7 +461,7 @@ function DailyDigest(props) {
                             component="img"
                             alt="Contemplative Reptile"
                             height="250"
-                            image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
+                            image={article[0].imagelink}
                             title={article[0].title}/>
                             <CardContent style={{paddingBottom:5}}>
                                 <Typography className={classes.articleHeading} gutterBottom variant='h6'>
@@ -756,7 +761,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedEvents[0][0].jobtag} 
+                    {recommendedEvents[0].jobtag} 
                     </Typography>
                 </div>
                 :''
@@ -765,25 +770,25 @@ function DailyDigest(props) {
                 {recommendedEvents.map((event, index) => (
                     <div>
                     <Card className={classes.eventListing}>
-                        <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
+                            <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left', width:'55%', paddingRight:'10%'}}>
                             <div style={{display: 'flex', flexDirection: 'column'}}>
                                 <Typography variant='h6' style={{fontWeight:'bold'}} >
-                                event.event_title
+                                {event[0].event_title}
                                 </Typography>
-                                <Typography variant='subtitle1' color='textSecondary' >
-                                event.summary
+                                <Typography variant='subtitle1' color='textSecondary' style={{overflow:'hidden',textOverflow:'ellipsis', display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',}}>
+                                {event[0].summary}
                                 </Typography>
                                 <Typography>
-                                    {getDate(event.date_time)}
+                                    {getDate(event[0].date_time)}
                                 </Typography>
                             </div>
                             </CardContent>
-                        <CardMedia
-                        component="img"
-                        alt="Contemplative Reptile"
-                        className={classes.eventsImg}
-                        image={event.logo? event.logo : defaultImg}
-                        />
+                            <CardMedia
+                                component="img"
+                                alt="Contemplative Reptile"
+                                className={classes.eventsImg}
+                                image={event[0].logo ? event[0].logo : defaultImg}
+                                />
                     </Card>
                     <Divider/>
                     </div>

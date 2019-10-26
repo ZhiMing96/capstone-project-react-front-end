@@ -345,6 +345,8 @@ function Articles()
       console.log(results);
       //console.log(results[0]._links['wp:attachment'][0].href);
       if(results.response_code === 200){
+        console.log('*** LATEST ARTICLES ARE')
+        console.log(results.articles)
         setArticles(results.articles);
       } else {
         console.log('RESPONSE CODE' + results.response_code);
