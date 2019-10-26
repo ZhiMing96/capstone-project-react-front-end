@@ -232,6 +232,9 @@ function Events() {
   const token = window.localStorage.getItem('authToken');
 
   const doGeocoding = (long, lat) => {
+    console.log('**** LONG LAT ***')
+    console.log(long)
+    console.log(lat)
     var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + long + ',' + lat + '.json?access_token=' + process.env.REACT_APP_MAPBOX_TOKEN
     axios.get(url).then(res => {
       return res.data.features[0].place_name
@@ -243,9 +246,11 @@ function Events() {
     setSelectedRecommendedIndex(index);
 
     const venue = doGeocoding(event.longitude, event.latitude)
+    console.log('*** LOCATION IS: ***')
+    console.log(venue)
 
-    if(venue != null){
-      setMarkerAddress(venue);
+    if(event.longitude && event.latitude){
+      setMarkerAddress(event.longitude, event.latitude);
     }  else  {
       setMarkerAddress(null);
     }
@@ -271,16 +276,28 @@ function Events() {
   const handleClickOpen = (event, index) => {
     setSelectedRecommendedIndex(null);
     setselectedIndex(index);
-    if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
-      setMarkerAddress(event.sessions[0].buildingName);
-    } else if (event.sessions[0].eventVenue !== 'NIL') {
-      setMarkerAddress(event.sessions[0].eventVenue);
-    } else {
+    // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
+    //   setMarkerAddress(event.sessions[0].buildingName);
+    // } else if (event.sessions[0].eventVenue !== 'NIL') {
+    //   setMarkerAddress(event.sessions[0].eventVenue);
+    // } else {
+    //   setMarkerAddress(null);
+    // }
+
+    if(event.longitude && event.latitude){
+      setMarkerAddress(event.longitude, event.latitude);
+    }  else  {
       setMarkerAddress(null);
     }
+
+    const venue = doGeocoding(event.longitude, event.latitude)
+    console.log('*** LOCATION IS: ***')
+    console.log(venue)
+
+
     setOpen(true);
-    const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-    setSelectedEventLocation(location);
+    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
+    setSelectedEventLocation(venue);
   };
 
   const handleClose = () => {
@@ -303,6 +320,8 @@ function Events() {
   };
 
   useEffect(() => {
+    console.log('*** MARKER ADDRESS ***')
+    console.log(markerAddress);
     api.events.get()
     .then(res=>{
       const results = res.data;
@@ -470,9 +489,11 @@ function Events() {
     console.log(event)
 
     const venue = doGeocoding(event.longitude, event.latitude)
+    console.log('*** LOCATION IS: ***')
+    console.log(venue)
 
-    if(venue != null){
-      setMarkerAddress(venue);
+    if(event.longitude && event.latitude){
+      setMarkerAddress(event.longitude, event.latitude);
     }  else  {
       setMarkerAddress(null);
     }
@@ -507,8 +528,11 @@ function Events() {
 
     const venue = doGeocoding(event.longitude, event.latitude)
 
-    if(venue != null){
-      setMarkerAddress(venue);
+    console.log('*** LOCATION IS: ***')
+    console.log(venue)
+
+    if(event.longitude && event.latitude){
+      setMarkerAddress(event.longitude, event.latitude);
     }  else  {
       setMarkerAddress(null);
     }

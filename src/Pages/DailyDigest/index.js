@@ -127,6 +127,7 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('xs')]: {
             width:'30%', 
         },
+        objectFit:'contain'
     },
     jobsListingArea:{
         width:'90%',

@@ -28,7 +28,7 @@ function Map (props) {
     })
 
     useEffect(() =>{
-        console.log(props.markerAddress)
+        console.log(props)
         if(props.markerAddress !== null){
             var long = markerAddress[0]
             var lat = markerAddress[1]
