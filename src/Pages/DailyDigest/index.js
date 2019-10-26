@@ -239,7 +239,7 @@ function DailyDigest(props) {
     
 
     useEffect(()=>{
-        setTimeout( handleOpen, 1000)
+        setTimeout( handleOpen, 5000)
     },[])
 
     const handleOpen = () =>{
@@ -442,7 +442,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    Grow Your Career
+                    {recommendedArticles[0][0].jobtag}
                     </Typography>
                 </div>
                 :''
@@ -755,7 +755,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    CHANGE THIS  SHIT TO DYNAMIC 
+                    {recommendedEvents[0][0].jobtag} 
                     </Typography>
                 </div>
                 :''
