@@ -449,7 +449,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedArticles[0].jobtag}
+                    {recommendedArticles[0][0].jobtag}
                     </Typography>
                 </div>
                 :''
@@ -762,7 +762,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedEvents[0].jobtag} 
+                    {recommendedEvents[0][0].job_phase==='grow_career' ? 'Grow Your Career' : recommendedEvents[0][0].job_phase==='search_job' ? 'Search For Job':'' } 
                     </Typography>
                 </div>
                 :''

@@ -907,7 +907,7 @@ function Jobs (props) {
                                         { listing.skills_match < 0.3
                                             ?
                                             <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
-                                                Add More Skills
+                                                Add Skills
                                             </Typography>
                                             : listing.skills_match < 0.7
                                             ?
