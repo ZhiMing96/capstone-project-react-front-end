@@ -8,7 +8,7 @@ import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as Filte
 import Pagination from './Pagination';
 import LinearLoading from  '../../Components/LoadingBars/LinearLoading';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading';
-
+import clsx from 'clsx';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -23,6 +23,9 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Popover from '@material-ui/core/Popover';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
+import './index.css'
 
 
 const employmentTypes = [
@@ -189,32 +192,77 @@ const employmentTypes = [
   }));
 
     const Wrapper = styled.div`
-        width:100%
+        width:97%
     `;
 
     const Page = styled.div`
         width:90%
     `;
 
+    const CarouselArrowNext = (props) => {
+
+        const { className, style, onClick } = props;
+        console.log(style)
+        return (
+          <div 
+            className={className}
+            style={{ display: "block",zIndex:60, marginRight:'1%',}}
+            onClick={onClick}
+          >
+            <Fab
+              className={className}
+              size='medium'
+              style={{display: "block",zIndex:60, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
+              onClick={onClick}
+            > 
+            <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
+          </Fab>
+          </div>
+          
+        );
+      }
+      const CarouselArrowPrev = (props) => {
+        const classes = useStyles();
+        const { className, onClick, style } = props;
+        return (
+          <div 
+            className={className}
+            style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
+            onClick={onClick}
+          >
+            <Fab
+              size='medium'
+              style={{backgroundColor:'black', opacity:'0.6'}}
+            > 
+            <KeyboardArrowLeftIcon style={{color:'white',}}/>
+          </Fab>
+      
+          </div>
+          
+        );
+      }
+
   const carouselSettings = {
     accessibiliy: true,
     speed:1700,
     slidesToShow: 6,
-    slidesToScroll: 6,
+    slidesToScroll: 3,
     infinite:true,
     dots:false,
     //autoplay: true,
-    //arrows:true,
-    autoplaySpeed:8000,
+    arrows:true,
+    //autoplaySpeed:8000,
     draggable:true,
-    // lazyLoad: "progressive",
+    //lazyLoad: "progressive",
     pauseOnHover: true,
+    nextArrow: <CarouselArrowNext />,
+    prevArrow: <CarouselArrowPrev />,
     responsive: [
       {
         breakpoint: 1920, //lg
         settings: {
           slidesToShow: 5,
-          slidesToScroll: 5,
+          slidesToScroll: 2,
           infinite: true,
         }
       },
@@ -222,7 +270,7 @@ const employmentTypes = [
         breakpoint: 1280, //md
         settings: {
           slidesToShow: 4,
-          slidesToScroll: 4,
+          slidesToScroll: 2,
           infinite: true,
         }
       },
@@ -230,7 +278,7 @@ const employmentTypes = [
         breakpoint: 1000, //md
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToScroll: 1,
           infinite: true,
         }
       },
@@ -238,7 +286,7 @@ const employmentTypes = [
         breakpoint: 600, //sm
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToScroll: 1,
           initialSlide: 2
         }
       },

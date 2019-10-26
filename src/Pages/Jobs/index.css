@@ -1,0 +1,13 @@
+.slick-next:before {
+    content: '';
+}
+.slick-prev:before {
+    content: '';
+}
+.slick-next {
+    right: 10px;
+    height:48px;
+}
+.slick-prev {
+    height:48px;
+}
