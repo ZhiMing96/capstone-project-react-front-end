@@ -500,9 +500,7 @@ function Articles()
                       <Collapse in={index===selectedRecommendedIndex ?expanded:false} timeout="auto" unmountOnExit>
                         <CardContent style={{paddingTop:5, paddingBottom:5}}>
                           <Typography className={classes.articleDescription} variant="body2" color="textSecondary" gutterBottom>
-                            {list[0].sentence1}
-                            {list[0].sentence2}
-                            {list[0].sentence3}
+                            {list[0].bestparagraph}
                           </Typography>
                           <Typography variant='overline' style={{textAlign:'right'}}>
                             <span style={{paddingRight:'1%'}}>{list[0].tag1 ? `#${list[0].tag1}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag2 ? `#${list[0].tag2}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag3 ? `#${list[0].tag3}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag4 ? `#${list[0].tag4}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag5 ? `#${list[0].tag5}` :''}</span> 
@@ -567,9 +565,7 @@ function Articles()
                                 </Grid>
                                 <Collapse in={index===selectedIndex?expanded:false} timeout="auto" unmountOnExit>
                                     <Typography className={classes.articleDescription} variant="body2" color="textSecondary" gutterBottom>
-                                      {article.sentence1}
-                                      {article.sentence2}
-                                      {article.sentence3}
+                                      {article.bestparagraph}
                                     </Typography>
                                     <Typography variant='overline' style={{textAlign:'center'}}>
                                       <span style={{paddingRight:'1%'}}>#{article.tag1}</span><span style={{paddingRight:'1%'}}>#{article.tag2}</span><span style={{paddingRight:'1%'}}>#{article.tag3}</span><span style={{paddingRight:'1%'}}>#{article.tag4}</span><span style={{paddingRight:'1%'}}>#{article.tag5}</span> 
