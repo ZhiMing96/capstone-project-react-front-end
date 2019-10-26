@@ -321,12 +321,11 @@ function DailyDigest(props) {
                         setPopularJobs(results.recommended_jobs);
                         console.log('***** EVENTS RESULTS *******')
                         console.log(results.events)
-                        // setRecommendedEvents(results.events);
+                        //  setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
                         props.history.push("/",{tokenInvalid:true})
                     }
-                    
                 }).catch(err=> {console.error(err)});
             }
         } else {
@@ -436,7 +435,7 @@ function DailyDigest(props) {
             : 
             <div>
             <div className={classes.sectionArea}>
-            {recommendedArticles
+            {recommendedArticles && recommendedArticles.length !== 0
             ?
             <div>
                 <Typography className={classes.sectionHeading}>
@@ -514,7 +513,7 @@ function DailyDigest(props) {
                         Apply Now <span style={{fontSize:15, fontWeight:'bold', color:'grey'}}>  Jobs that we recommend </span>
                     </Typography>
                 <div>
-                {searchHistoryJobs 
+                {searchHistoryJobs && searchHistoryJobs.length !== 0 
                     ?
                     <div>
                         
@@ -590,7 +589,7 @@ function DailyDigest(props) {
                 }
                 </div>
                 <div>
-                {skillsJobs
+                {skillsJobs && skillsJobs.length
                     ?
                     <div style={{marginTop:'5%'}}>
                         {token
@@ -665,7 +664,7 @@ function DailyDigest(props) {
                     }
                 </div>
                 <div>
-                    {popularJobs 
+                    {popularJobs && popularJobs.length !== 0
                     ?
                     <div style={{marginTop:'5%'}}>
                         <Wrapper>

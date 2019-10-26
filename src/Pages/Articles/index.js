@@ -294,6 +294,7 @@ function Articles()
   const [selectedRecommendedIndex, setSelectedRecommendedIndex] = useState(null);
   const token = window.localStorage.getItem('authToken');
   const [loading, setLoading] = useState(false);
+  const defaultImgUrl = 'https://content.mycareersfuture.sg/wp-content/uploads/2019/10/balls-casual-color-3051598-e1571283186479-390x183.jpg';
 
 
   const handleRecommendedExpandClick = (index) => {
@@ -398,12 +399,6 @@ function Articles()
   console.log('Selected Index = ' + selectedIndex)
   console.log(recommendedArticles);
 
-  // function next() {
-  //   slider.slickNext();
-  // }
-  // function previous() {
-  //   slider.slickPrev();
-  // }
 
   return(
     <Fragment>
@@ -456,7 +451,7 @@ function Articles()
                       <CardActionArea href={list[0].link} target='._blank'>
                         <CardMedia
                           className={classes.mediaLarge}
-                          image={list[0].imagelink}
+                          image={list[0].imagelink !== '' ? list[0].imagelink : defaultImgUrl}
                           title={list[0].title}
                         />
                       </CardActionArea>
@@ -597,7 +592,7 @@ function Articles()
                             <CardActionArea href={article.link} target='._blank'>
                               <CardMedia
                                 className={classes.mediaSmall}
-                                image={article.imagelink}
+                                image={article.imagelink != '' ? article.imagelink : defaultImgUrl}
                                 title={article.title}
                               />
                             </CardActionArea>
@@ -628,7 +623,7 @@ function Articles()
                           </Card>
                         </Page>
                       )
-                    }
+                    } 
                   })}
                 </Slider>
               </Wrapper>
@@ -648,7 +643,7 @@ function Articles()
                             <CardActionArea href={article.link} target='._blank'>
                               <CardMedia
                                 className={classes.mediaSmall}
-                                image={article.imagelink}
+                                image={article.imagelink != '' ? article.imagelink : defaultImgUrl}
                                 title={article.title}
                               />
                             </CardActionArea>
