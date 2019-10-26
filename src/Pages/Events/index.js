@@ -17,7 +17,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
 import { ThemeProvider } from '@material-ui/styles';
-import MapGL, { GeolocateControl, Marker } from 'react-map-gl'
+import MapGL, { GeolocateControl, Marker } from 'react-map-gl';
+import api from '../../api';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -205,6 +206,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const defaultImg = 'https://portal.ssg-wsg.gov.sg/content/dam/eventCatalog/products/import/categories/events/E-0000981/E-0000981.jpg'
+
 function Events() {
   const classes = useStyles();
   const [events, setEvents] = useState([]);
@@ -226,6 +229,7 @@ function Events() {
   const [postsPerPage] = useState(7);
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const token = window.localStorage.getItem('authToken');
 
   const doGeocoding = (long, lat) => {
     var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + long + ',' + lat + '.json?access_token=' + process.env.REACT_APP_MAPBOX_TOKEN
@@ -237,16 +241,30 @@ function Events() {
   const handleRecommendedClickOpen = (event, index) => {
     setselectedIndex(null);
     setSelectedRecommendedIndex(index);
-    if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
-      setMarkerAddress(event.sessions[0].buildingName);
-    } else if (event.sessions[0].eventVenue !== 'NIL') {
-      setMarkerAddress(event.sessions[0].eventVenue);
-    } else {
+
+    const venue = doGeocoding(event.longitude, event.latitude)
+
+    if(venue != null){
+      setMarkerAddress(venue);
+    }  else  {
       setMarkerAddress(null);
     }
+
+    // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
+    //   setMarkerAddress(event.sessions[0].buildingName);
+    // } else if (event.sessions[0].eventVenue !== 'NIL') {
+    //   setMarkerAddress(event.sessions[0].eventVenue);
+    // } else {
+    //   setMarkerAddress(null);
+    // }
+
     setOpen(true);
-    const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-    setSelectedEventLocation(location);
+    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
+
+    // setSelectedEventLocation(location);
+
+
+    setSelectedEventLocation(venue ? venue : 'Singapore');
 
   }
 
@@ -285,83 +303,42 @@ function Events() {
   };
 
   useEffect(() => {
-    var filter = '';
-    if (value === 0) {
-      filter = 'recommended'
-    } else if (value === 1) {
-      filter = 'top-picks'
-    } else {
-      filter = 'latest'
-    }
-    console.log(filter);
+    api.events.get()
+    .then(res=>{
+      const results = res.data;
+      console.log('******* RESULTS FROM EVENTS API CALL ********')
+      console.log(results);
+      if(results.response_code === 200){
+        setEvents(results.events)
+      } else {
 
-    axios.get('https://portal.ssg-wsg.gov.sg/content/web/eventsfeed/eventlisting.xml')
-      .then(res => {
-        //console.log(res.data)
-        const data = res.data
-        const parser = new DOMParser()
-        const xmlDoc = parser.parseFromString(data, 'text/xml')
-        const docLength = xmlDoc.getElementsByTagName("event").length;
-        // console.log(length);
+      }
+    }).catch(err=>{
+      console.error(err);
+    })
 
-        for (let i = 0; i < docLength; i++) {
-          const sessionsXML = xmlDoc.getElementsByTagName("sessions")[i];
-          console.log(sessionsXML)
-          const sessionsLength = sessionsXML.getElementsByTagName("session").length;
-          console.log(sessionsLength);
-          var sessions = [];
-
-          for (let a = 0; a < sessionsLength; a++) {
-            console.log('Loop Count: ' + a)
-            const eventVenue = sessionsXML.getElementsByTagName("venueName")[a].innerHTML
-            console.log(eventVenue);
-            const buildingName = sessionsXML.getElementsByTagName("buildingName")[a].innerHTML
-            console.log(buildingName);
-            const postalCode = sessionsXML.getElementsByTagName("postalcode")[a].innerHTML
-            console.log(postalCode);
-            const streetName = sessionsXML.getElementsByTagName("streetName")[a].innerHTML
-            console.log(streetName);
-            const session = {
-              eventVenue: eventVenue,
-              buildingName: buildingName,
-              postalCode: postalCode,
-              streetName: streetName,
-            }
-            sessions.push(session)
-          }
-          const eventName = xmlDoc.getElementsByTagName("eventName")[i].innerHTML
-          const eventUrl = xmlDoc.getElementsByTagName("eventURL")[i].innerHTML
-          const eventDescription = xmlDoc.getElementsByTagName("summary")[i].innerHTML
-          const eventImgUrl = xmlDoc.getElementsByTagName("eventImageURL")[i].innerHTML
-          const eventStartDate = xmlDoc.getElementsByTagName("eventStartDate")[i].innerHTML
-          const eventEndDate = xmlDoc.getElementsByTagName("eventEndDate")[i].innerHTML
-          const eventSegment = xmlDoc.getElementsByTagName("eventSegment")[i].innerHTML
-          const eventPrice = xmlDoc.getElementsByTagName("price")[i].innerHTML
-          const targetAudience = xmlDoc.getElementsByTagName("targetAudience")[i].innerHTML
-
-          const targetNationality = xmlDoc.getElementsByTagName("targetNationality")[i].innerHTML
-
-          const eventGathered = {
-            eventName: eventName,
-            eventUrl: eventUrl,
-            eventDescription: eventDescription,
-            eventImgUrl: eventImgUrl,
-            eventStartDate: eventStartDate,
-            eventEndDate: eventEndDate,
-            eventSegment: eventSegment,
-            eventPrice: eventPrice,
-            targetAudience: targetAudience,
-            targetNationality: targetNationality,
-            sessions: sessions,
-          }
-
-          setEvents(events => [...events, eventGathered]);
-
-          // console.log(eventName + "\n" + eventUrl + "\n" + eventImgUrl + "\n" + eventStartDate + "\n" + eventEndDate + "/\n" + eventSegment + "\n" + eventPrice + "\n" + eventVenue + "\n" + buildingName + "\n" + postalCode + "\n" + streetName);
-        }
-        // console.log(xmlDoc);
+    if(token){
+      api.dailyDigest.get()
+      .then(res=>{
+        const results = res.data;
+        console.log('**** RESULTS FROM DAILY DIGEST W TOKEN  *****')
+        console.log(results);
+        setRecommendedEvents(results.events);
+      }).catch(err=>{
+        console.error(err);
       })
-  }, [value]);
+    } else {
+      api.dailyDigest.getPublic()
+      .then(res=>{
+        const results = res.data;
+        console.log('**** RESULTS FROM DAILY DIGEST W/O TOKEN  *****')
+        console.log(results);
+        setRecommendedEvents(results.events);
+      }).catch(err=>{
+        console.error(err);
+      })
+    }
+  }, []);
 
   const handleChange = (event, newValue) => {
     console.log(newValue)
@@ -391,58 +368,75 @@ function Events() {
     }setValue(newValue);
   };
 
-  const getDate = (startDate, endDate) => {
-    var newStartDate = new Date(startDate);
-    var newEndDate = new Date(endDate);
-    //console.log(newStartDate.getHours());
-    var startTime = newStartDate.getHours()
-    var endTime = newEndDate.getHours()
-
-    if (startTime <= 12) {
-      startTime = `${startTime}am`
-      //console.log(startTime);
+  const getDate =(dateString) => {
+    var date = new Date(dateString);
+    var time = date.getHours();
+    if (time <= 12) {
+      time = `${time}am`
+      //console.log(time);
     } else {
-      startTime = `${startTime - 12}pm`
-      //console.log(startTime);
-    }
-    if (endTime <= 12) {
-      endTime = `${endTime}am`
-      //console.log(endTime);
-    } else {
-      endTime = `${endTime - 12}pm`
-      //console.log(endTime);
+      time = `${time - 12}pm`
+      //console.log(time);
     }
 
-    var month = newStartDate.toLocaleString('en-GB', { month: 'short' });
-    console.log(month);
-    var startDay = newStartDate.getMonth();
-    var endDay = newEndDate.getMonth();
-    var startYear = newStartDate.getFullYear();
-
-    var day = startDay
-    if (startDay != endDay) {
-      day = `${startDay}-${endDay}`
-    }
-
-    return (`${day} ${month} ${startYear}: ${startTime}-${endTime}`)
-
-
-
-    //  5-6 Oct 2019: 1pm-5pm
-    // var parsedStartDate = newStartDate.toLocaleString('en-GB', {
-    //   day: 'numeric',
-    //   month: 'short',
-    //   year: 'numeric',
-    //   hour: '2-digit',
-    //   minute: '2-digit',
-    // })
-    //var startTime = `${newStartDate.getTime}`
-    //console.log(parsedDate)
-    // console.log(newDate.getMonth());
-    // console.log(newDate.getDate());
-    // console.log(newDate.getFullYear());
-    //
+    var month = date.toLocaleString('en-GB', { month: 'short' });
+    var day = date.getMonth();
+    var year = date.getFullYear();
+    return(`${day} ${month} ${year}: ${time}`);
   }
+
+  // const getDate = (startDate, endDate) => {
+  //   var newStartDate = new Date(startDate);
+  //   var newEndDate = new Date(endDate);
+  //   //console.log(newStartDate.getHours());
+  //   var startTime = newStartDate.getHours()
+  //   var endTime = newEndDate.getHours()
+
+  //   if (startTime <= 12) {
+  //     startTime = `${startTime}am`
+  //     //console.log(startTime);
+  //   } else {
+  //     startTime = `${startTime - 12}pm`
+  //     //console.log(startTime);
+  //   }
+  //   if (endTime <= 12) {
+  //     endTime = `${endTime}am`
+  //     //console.log(endTime);
+  //   } else {
+  //     endTime = `${endTime - 12}pm`
+  //     //console.log(endTime);
+  //   }
+
+  //   var month = newStartDate.toLocaleString('en-GB', { month: 'short' });
+  //   console.log(month);
+  //   var startDay = newStartDate.getMonth();
+  //   var endDay = newEndDate.getMonth();
+  //   var startYear = newStartDate.getFullYear();
+
+  //   var day = startDay
+  //   if (startDay != endDay) {
+  //     day = `${startDay}-${endDay}`
+  //   }
+
+  //   return (`${day} ${month} ${startYear}: ${startTime}-${endTime}`)
+
+
+
+  //   //  5-6 Oct 2019: 1pm-5pm
+  //   // var parsedStartDate = newStartDate.toLocaleString('en-GB', {
+  //   //   day: 'numeric',
+  //   //   month: 'short',
+  //   //   year: 'numeric',
+  //   //   hour: '2-digit',
+  //   //   minute: '2-digit',
+  //   // })
+  //   //var startTime = `${newStartDate.getTime}`
+  //   //console.log(parsedDate)
+  //   // console.log(newDate.getMonth());
+  //   // console.log(newDate.getDate());
+  //   // console.log(newDate.getFullYear());
+  //   //
+  // }
 
   const formatVenue = (building, venue, streetName, postalCode) => {
     //Lifelong Learning Center: Training Room 2-1, Eunos Road 9 S123456
@@ -472,24 +466,35 @@ function Events() {
     console.log('Recommended Article Selected')
     setselectedIndex(null);
     setSelectedRecommendedIndex(index);
-    console.log(event.sessions)
-    if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
-      setMarkerAddress(event.sessions[0].buildingName);
-    } else if (event.sessions[0].eventVenue !== 'NIL') {
-      setMarkerAddress(event.sessions[0].eventVenue);
-    } else {
-      setMarkerAddress('Singapore');
+
+    console.log(event)
+
+    const venue = doGeocoding(event.longitude, event.latitude)
+
+    if(venue != null){
+      setMarkerAddress(venue);
+    }  else  {
+      setMarkerAddress(null);
     }
 
-    setSelectedUrl(event.eventUrl);
+    // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
+    //   setMarkerAddress(event.sessions[0].buildingName);
+    // } else if (event.sessions[0].eventVenue !== 'NIL') {
+    //   setMarkerAddress(event.sessions[0].eventVenue);
+    // } else {
+    //   setMarkerAddress('Singapore');
+    // }
 
-    if (event.eventDescription !== '') {
-      setSelectedEventDescription(event.eventDescription);
+    setSelectedUrl(event.url);
+
+    if (event.summary !== '') {
+      setSelectedEventDescription(event.summary);
     } else {
       setSelectedEventDescription('No Description Available')
     }
-    const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-    setSelectedEventLocation(location);
+    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
+    setSelectedEventLocation(venue ? venue : 'Singapore');
+    
   }
 
 
@@ -498,24 +503,34 @@ function Events() {
     setSelectedRecommendedIndex(null);
     setselectedIndex(index);
     console.log(index);
-    console.log(event.sessions)
-    if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
-      setMarkerAddress(event.sessions[0].buildingName);
-    } else if (event.sessions[0].eventVenue !== 'NIL') {
-      setMarkerAddress(event.sessions[0].eventVenue);
-    } else {
-      setMarkerAddress('Singapore');
+    console.log(event);
+
+    const venue = doGeocoding(event.longitude, event.latitude)
+
+    if(venue != null){
+      setMarkerAddress(venue);
+    }  else  {
+      setMarkerAddress(null);
     }
 
-    setSelectedUrl(event.eventUrl);
+    // if (event.venue !== null) {
+    //   setMarkerAddress(event.sessions[0].buildingName);
+    // } else if (event.sessions[0].eventVenue !== 'NIL') {
+    //   setMarkerAddress(event.sessions[0].eventVenue);
+    // } else {
+    //   setMarkerAddress('Singapore');
+    // }
 
-    if (event.eventDescription !== '') {
-      setSelectedEventDescription(event.eventDescription);
+    setSelectedUrl(event.url);
+
+    if (event.summary !== '') {
+      setSelectedEventDescription(event.summary);
     } else {
       setSelectedEventDescription('No Description Available')
     }
-    const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-    setSelectedEventLocation(location);
+    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
+
+    setSelectedEventLocation(venue ? venue : 'Singapore');
     console.log('Exiting view Event Details')
     // window.scrollTo(0,document.body.scrollHeight);
   }
@@ -559,16 +574,18 @@ function Events() {
           <Typography variant='h4' gutterBottom color='secondary' style={{ textAlign: 'left', fontWeight: 550, paddingLeft: 20, marginBottom: '2%' }}>
             Recommended
             </Typography>
-          <div style={{ maxHeight: 300, overflowY: 'auto', }}>
-            {events.slice(0, 3).map((event, index) => (
+            { recommendedEvents 
+            ?
+            <div style={{ maxHeight: 300, overflowY: 'auto', }}>
+            {recommendedEvents.map((event, index) => (
               <div key={index}>
                 <Card className={classes.eventLisiting} style={selectedRecommendedIndex === index ? { backgroundColor: 'whitesmoke' } : {}}
                   onMouseEnter={() => viewRecommended(event, index)}>
                   <div style={{ display: 'inline-flex', width: '100%' }}>
                     <CardMedia
                       className={classes.cover}
-                      image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
-                      title={event.eventImgUrl}
+                      image={event.logo? event.logo : defaultImg}
+                      title={event.event_title}
                     />
                     {/* <div className={classes.details}> */}
                     <CardContent style={{ paddingLeft: 20, width: '100%' }}>
@@ -580,20 +597,22 @@ function Events() {
                         <Grid item xs={12} container style={{}} justify="space-between">
                           <Grid item xs={11}>
                             <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              {event.eventSegment}
+                              {event.job_phase}
                             </Typography>
                             <Typography style={{ paddingTop: 1 }}>
                               <Box className={classes.eventTitle}>
-                                {event.eventName}
+                                {event.event_title}
                               </Box>
                               <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
-                                {getDate(event.eventStartDate, event.eventEndDate)}
+                                {/* {getDate(event.start_date, event.end_date)} */}
+                                {getDate(event.date_time)}
                               </Box>
                               <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
+                                {/* {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
                                   ? `${event.sessions[0].buildingName}, Singapore`
                                   : 'Singapore'
-                                }
+                                } */}
+                                {doGeocoding(event.longitude,event.latitude)? doGeocoding(event.longitude,event.latitude)  : 'Singapore'}
                               </Box>
                               <Grid
                                 container
@@ -603,10 +622,7 @@ function Events() {
                               >
                                 <Grid item>
                                   <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
-                                    {event.eventPrice !== '$0.00'
-                                      ? event.eventPrice
-                                      : 'Free'
-                                    }
+                                    {event.cost}
                                   </Box>
                                 </Grid>
                               </Grid>
@@ -684,7 +700,7 @@ function Events() {
                           <Grid item xs={11}>
                             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                               <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
-                                {event.eventDescription}
+                                {event.summary}
                               </Typography>
                             </div>
                           </Grid>
@@ -718,10 +734,14 @@ function Events() {
               </div>
             ))}
           </div>
-
-
-
-
+            : 
+            <div>
+              <Typography variant='h6' style={{margin:'5%'}}>
+                  No Recommended Articles 
+              </Typography>
+            </div>
+            }
+        
 
           <Typography variant='h4' gutterBottom color='secondary' style={{ textAlign: 'left', fontWeight: 550, paddingLeft: 20, marginTop: '7%', marginBottom: '2%' }}>
             Latest
@@ -735,7 +755,7 @@ function Events() {
                     <CardMedia
                       className={classes.cover}
                       image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
-                      title={event.eventImgUrl}
+                      title={event.logo}
                     />
                     {/* <div className={classes.details}> */}
                     <CardContent style={{ paddingLeft: 20, width: '100%' }}>
@@ -747,20 +767,22 @@ function Events() {
                         <Grid item xs={12} container style={{}} justify="space-between">
                           <Grid item xs={11}>
                             <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              {event.eventSegment}
+                              {event.job_phase}
                             </Typography>
                             <Typography style={{ paddingTop: 1 }}>
                               <Box className={classes.eventTitle}>
-                                {event.eventName}
+                                {event.event_title}
                               </Box>
                               <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
-                                {getDate(event.eventStartDate, event.eventEndDate)}
+                                {/* {getDate(event.eventStartDate, event.eventEndDate)} */}
+                                {getDate(event.date_time)}
                               </Box>
                               <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
+                                {/* {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
                                   ? `${event.sessions[0].buildingName}, Singapore`
                                   : 'Singapore'
-                                }
+                                } */}
+                                {doGeocoding(event.longitude,event.latitude)? doGeocoding(event.longitude,event.latitude)  : 'Singapore'}
                               </Box>
                               <Grid
                                 container
@@ -770,10 +792,7 @@ function Events() {
                               >
                                 <Grid item>
                                   <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
-                                    {event.eventPrice !== '$0.00'
-                                      ? event.eventPrice
-                                      : 'Free'
-                                    }
+                                      {event.cost} 
                                   </Box>
                                 </Grid>
                               </Grid>
@@ -851,7 +870,7 @@ function Events() {
                           <Grid item xs={11}>
                             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                               <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
-                                {event.eventDescription}
+                                {event.summary}
                               </Typography>
                             </div>
                           </Grid>

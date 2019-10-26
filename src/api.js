@@ -82,6 +82,10 @@ const articles = {
   get: () => axios.get('http://localhost:3000/article')
 }
 
+const events = {
+  get: () => axios.get('http://localhost:3000/event/all')
+}
+
 const dailyDigest = {
   
   get: () => axios.get('http://localhost:3000/daily', {
@@ -103,4 +107,5 @@ const dailyDigest = {
     searchJobs,
     articles,
     dailyDigest,
+    events,
   }

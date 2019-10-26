@@ -22,6 +22,7 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import './index.css'
 import StarIcon from '@material-ui/icons/Star'
+import CircularLoading from  '../../Components/LoadingBars/CircularLoading';
 
 const Wrapper = styled.div`
     width:100%
@@ -130,7 +131,7 @@ const largeCarouselSettings = {
   infinite:true,
   autoplay: true,
   arrows:true,
-  autoplaySpeed:7500,
+  autoplaySpeed:5000,
   draggable:true,
   lazyLoad: "progressive",
   pauseOnHover: true,
@@ -291,6 +292,8 @@ function Articles()
   const [expanded, setExpanded] = useState(false);
   const [selectedIndex, setselectedIndex] = useState(null);
   const [selectedRecommendedIndex, setSelectedRecommendedIndex] = useState(null);
+  const token = window.localStorage.getItem('authToken');
+  const [loading, setLoading] = useState(false);
 
 
   const handleRecommendedExpandClick = (index) => {
@@ -335,6 +338,7 @@ function Articles()
   };
   
   useEffect(() => {
+    // setLoading(true)
     api.articles.get()
     .then(res => {
       const results = res.data;
@@ -345,26 +349,38 @@ function Articles()
       } else {
         console.log('RESPONSE CODE' + results.response_code);
       }
-    })
-    .catch(err => {
+    }).catch(err => {
       console.log(err);
-    })
-  }, []);
+    });
 
-  useEffect(() => {
-    api.dailyDigest.get()
-    .then(res => {
-      const results = res.data;
-      console.log(results);
-      if(results.response_code===200){
-        console.log('RECOMMENDED ARTICLES ARE')
-        console.log(results.articles)
-        setRecommendedArticles(results.articles);
-      } 
-    })
-    .catch(err => {
-      console.error(err)
-    })
+    if(token){
+      api.dailyDigest.get()
+      .then(res => {
+        const results = res.data;
+        console.log(results);
+        if(results.response_code===200){
+          console.log('RECOMMENDED ARTICLES ARE')
+          console.log(results.articles)
+          setRecommendedArticles(results.articles);
+        } 
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+    } else {
+      api.dailyDigest.getPublic()
+      .then(res=>{
+        const results = res.data;
+        console.log(results);
+        if(results.response_code===200){
+          console.log('RECOMMENDED ARTICLES ARE')
+          console.log(results.articles)
+          setRecommendedArticles(results.articles);
+        } 
+        setLoading(false);
+      }).catch(err => console.error(err))
+    }
   }, []);
 
   const formatDate = (dateString) => {
@@ -422,6 +438,9 @@ function Articles()
                 <Tab disableRipple className={classes.individualTab} label={<span style={{fontWeight:fontWeight.latest}}>Land a Job</span>} />
             </Tabs>
           </div> */}
+           { loading 
+            ? <CircularLoading/>
+            : <div>
           <Grid container style={{padding:18}}>
               <Grid item xs={12} sm={6} style={{marginTop:'15px',}}>
                 <Typography className={classes.sectionHeading}>
@@ -435,7 +454,7 @@ function Articles()
                       <CardActionArea href={list[0].link} target='._blank'>
                         <CardMedia
                           className={classes.mediaLarge}
-                          image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
+                          image={list[0].imagelink}
                           title={list[0].title}
                         />
                       </CardActionArea>
@@ -486,7 +505,7 @@ function Articles()
                             {list[0].sentence3}
                           </Typography>
                           <Typography variant='overline' style={{textAlign:'right'}}>
-                            <span style={{paddingRight:'1%'}}>#{list[0].tag1}</span><span style={{paddingRight:'1%'}}>#{list[0].tag2}</span><span style={{paddingRight:'1%'}}>#{list[0].tag3}</span><span style={{paddingRight:'1%'}}>#{list[0].tag4}</span><span style={{paddingRight:'1%'}}>#{list[0].tag5}</span> 
+                            <span style={{paddingRight:'1%'}}>{list[0].tag1 ? `#${list[0].tag1}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag2 ? `#${list[0].tag2}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag3 ? `#${list[0].tag3}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag4 ? `#${list[0].tag4}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag5 ? `#${list[0].tag5}` :''}</span> 
                           </Typography>
                         </CardContent>
                       </Collapse>
@@ -580,7 +599,7 @@ function Articles()
                             <CardActionArea href={article.link} target='._blank'>
                               <CardMedia
                                 className={classes.mediaSmall}
-                                image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/09/Masthead-1.jpg'
+                                image={article.imagelink}
                                 title={article.title}
                               />
                             </CardActionArea>
@@ -631,7 +650,7 @@ function Articles()
                             <CardActionArea href={article.link} target='._blank'>
                               <CardMedia
                                 className={classes.mediaSmall}
-                                image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/09/Masthead-1.jpg'
+                                image={article.imagelink}
                                 title={article.title}
                               />
                             </CardActionArea>
@@ -667,7 +686,8 @@ function Articles()
                 </Slider>
               </Wrapper>
             </div>
-    
+            </div>
+           }
     </Fragment>
     
   )

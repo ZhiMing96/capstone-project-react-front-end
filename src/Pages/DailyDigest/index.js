@@ -204,6 +204,10 @@ const useStyles = makeStyles(theme => ({
     },
   }));
 
+  const jobUrlDefault ='https://www.mycareersfuture.sg/job/'
+  
+  const defaultImg = 'https://portal.ssg-wsg.gov.sg/content/dam/eventCatalog/products/import/categories/events/E-0000981/E-0000981.jpg'
+
 function DailyDigest(props) {
     var urlToken=''
     if(props.match !== undefined){
@@ -229,6 +233,8 @@ function DailyDigest(props) {
     }
     const [loading, setLoading] = useState(false);
     const [name, setName]  = useState('');
+    const [popularJobs, setPopularJobs] = useState();
+    
 
     useEffect(()=>{
         setTimeout( handleOpen, 1000)
@@ -250,27 +256,35 @@ function DailyDigest(props) {
     },[token])
 
     useEffect(()=>{
-        console.log('****** Getting Name ********')
-        api.profile.get().then(
-            res=>{
-              if(res.data.profile){
-                console.log(res.data.profile.first_name)
-                const firstName = res.data.profile.first_name
-                setName(firstName);
-              }
-            } 
-          ).catch(err=> console.error(err))
+        if(token){
+            api.profile.get().then(
+                res=>{
+                  if(res.data.profile){
+                    console.log(res.data.profile.first_name)
+                    const firstName = res.data.profile.first_name
+                    setName(firstName);
+                    
+                  } else {
+                    props.history.push("/",{tokenInvalid:true})
+                  }
+                } 
+              ).catch(err=> console.error(err))
+        }
+        
     },[])
 
 
     useEffect(()=>{
         console.log(window.localStorage.getItem('authToken'));
         console.log(urlToken)
-        setLoading(true);
+        // setLoading(true);
+        console.log('****** ENTERED METHOD ********')
         if(urlToken === undefined){
             if(token){
+                console.log('****** ENTERED IF TOKEN  ********')
                 api.dailyDigest.get()
                 .then(res => {
+                    console.log("GOT RESPONSE");
                     console.log(res.data)
                     const results = res.data
                     if(results.response_code === 200){
@@ -278,11 +292,19 @@ function DailyDigest(props) {
                         setRecommendedArticles(results.articles);
                         setsearchHistoryJobs(results.recommended_jobs_search);
                         setskillsJobs(results.recommended_jobs_skills);
+                        setRecommendedEvents();
                         setLoading(false);
+                        
+                    } else {
+                        props.history.push("/",{tokenInvalid:true})
                     }
-                }).catch(err=> {console.error(err)});
+                }).catch(err=> {
+                    console.error("CAUGHT ERROR");
+                    props.history.push("/",{tokenInvalid:true})
+                });
 
             } else {
+                console.log('****** ENTERED ELSE ********')
                 api.dailyDigest.getPublic()
                 .then(res => {
                     console.log(res.data)
@@ -290,11 +312,13 @@ function DailyDigest(props) {
                     if(results.response_code === 200){
                         console.log('Daily Digest Retrieved Successfully!')
                         setRecommendedArticles(results.articles);
-                        setsearchHistoryJobs(results.recommended_jobs_search);
-                        setskillsJobs(results.recommended_jobs_skills);
-                       
+                        setPopularJobs(results.recommended_jobs);
+                        setRecommendedEvents();
+                        setLoading(false);
+                    } else {
+                        props.history.push("/",{tokenInvalid:true})
                     }
-                    setLoading(false);
+                    
                 }).catch(err=> {console.error(err)});
             }
         } else {
@@ -307,47 +331,58 @@ function DailyDigest(props) {
                     setRecommendedArticles(results.articles);
                     setsearchHistoryJobs(results.recommended_jobs_search);
                     setskillsJobs(results.recommended_jobs_skills);
+                    setRecommendedEvents();
                     setLoading(false);
+                } else {
+                    props.history.push("/",{tokenInvalid:true})
                 }
-            })
+            }).catch(err=> {console.error(err)});
         }
     }, [] )
 
-    
-    const getDate =(startDate, endDate) => {
-        var newStartDate = new Date(startDate);
-        var newEndDate = new Date(endDate);
-        //console.log(newStartDate.getHours());
-        var startTime = newStartDate.getHours()
-        var endTime = newEndDate.getHours()
-    
-        if(startTime <= 12){
-          startTime = `${startTime}am`
-          //console.log(startTime);
+    const getDate =(dateString) => {
+        var date = new Date(dateString);
+        var time = date.getHours();
+        if (time <= 12) {
+          time = `${time}am`
+          //console.log(time);
         } else {
-          startTime = `${startTime-12}pm`
-          //console.log(startTime);
-        }
-        if(endTime <= 12){
-          endTime = `${endTime}am`
-          //console.log(endTime);
-        } else {
-          endTime = `${endTime-12}pm`
-          //console.log(endTime);
+          time = `${time - 12}pm`
+          //console.log(time);
         }
     
-        var month = newStartDate.toLocaleString('en-GB', {month: 'short'});
-        console.log(month);
-        var startDay = newStartDate.getMonth();
-        var endDay = newEndDate.getMonth();
-        var startYear = newStartDate.getFullYear();
+        var month = date.toLocaleString('en-GB', { month: 'short' });
+        var day = date.getMonth();
+        var year = date.getFullYear();
+        return(`${day} ${month} ${year}: ${time}`);
+      }
     
-        var day = startDay
-        if(startDay != endDay){
-          day = `${startDay}-${endDay}`
+
+    const handleHrefClick = list => {
+        console.log('***** HREF CLICK *****')
+        console.log(list)
+        console.log(list.job_uuid)
+        console.log(token);
+        if(token !== null){
+            console.log('TRACKING CLICK')
+            api.searchJobsAcct.click({ uuid: list.job_uuid })
+            .then(response => {
+                console.log(response);
+                if(response.data.response_code===200){
+                    console.log("Click Stored SUCCESSFULLY ");
+                    const url = jobUrlDefault + list.job_uuid
+                    window.open(url,'_blank');
+                }
+            })
+            .catch(error =>{
+                console.log(error);
+            })
+        } else {
+            console.log('NOT TRACKING CLICK')
+            const url = jobUrlDefault + list.job_uuid
+            window.open(url,'_blank');
         }
         
-        return (`${day} ${month} ${startYear}: ${startTime}-${endTime}`)
     }
 
     
@@ -457,16 +492,17 @@ function DailyDigest(props) {
             
             
             <div className={classes.sectionAreaAlternate}>
-                {searchHistoryJobs || skillsJobs
+                {searchHistoryJobs || skillsJobs || popularJobs
                 ?
                 <div>
+                    <Typography className={classes.sectionHeading}>
+                        Apply Now <span style={{fontSize:15, fontWeight:'bold', color:'grey'}}>  Jobs that we recommend </span>
+                    </Typography>
                 <div>
                 {searchHistoryJobs 
                     ?
                     <div>
-                        <Typography className={classes.sectionHeading}>
-                            Apply Now
-                        </Typography>
+                        
                         {token
                         ?
                         <div style={{textAlign:'right', marginBottom:'2%'}}>
@@ -487,7 +523,7 @@ function DailyDigest(props) {
                                     <Grid container justify='space-between'>
                                         <Grid item>
                                         <Avatar alt="List"
-                                            src={job.postedCompany && job.postedCompany.logoUploadPath? job.postedCompany.logoUploadPath:defaultJobIcon}
+                                            src={job.company_logo ? job.company_logo:defaultJobIcon}
                                             className={classes.jobListingPhoto}
                                             imgProps={{style:{objectFit:'contain',border:0}}}
                                         />
@@ -523,7 +559,7 @@ function DailyDigest(props) {
                                             </Grid>
                                             <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
                                                 <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
-                                                
+                                                onClick={()=>handleHrefClick(job)}
                                                 >
                                                     Details
                                                 </Button>
@@ -562,7 +598,7 @@ function DailyDigest(props) {
                                     <Grid container justify='space-between'>
                                         <Grid item>
                                         <Avatar alt="List"
-                                            src={job.postedCompany && job.postedCompany.logoUploadPath? job.postedCompany.logoUploadPath:defaultJobIcon}
+                                            src={job.company_logo ? job.company_logo:defaultJobIcon}
                                             className={classes.jobListingPhoto}
                                             imgProps={{style:{objectFit:'contain',border:0}}}
                                         />
@@ -598,7 +634,7 @@ function DailyDigest(props) {
                                             </Grid>
                                             <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
                                                 <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
-                                                
+                                                onClick={()=>handleHrefClick(job)}
                                                 >
                                                     Details
                                                 </Button>
@@ -611,6 +647,69 @@ function DailyDigest(props) {
                         </Wrapper>
                     </div>
                     : ''
+                    }
+                </div>
+                <div>
+                    {popularJobs 
+                    ?
+                    <div style={{marginTop:'5%'}}>
+                        <Wrapper>
+                            <Slider {...carouselSettings}>
+                                {popularJobs.map((job,index)=>(
+                                <Page>
+                                    <Paper className={classes.jobsListingArea}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
+                                        <Avatar alt="List"
+                                            src={job.company_logo ? job.company_logo:defaultJobIcon}
+                                            className={classes.jobListingPhoto}
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                        />
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                        { job.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add Skills
+                                            </Typography>
+                                            : job.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : job.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container  justify='space-between' style={{height:'14vh', paddingRight:10}}>
+                                        <Grid item xs={12}>
+                                            <Typography gutterBottom className={classes.jobTitle} style={{}}>
+                                                {job.title}
+                                            </Typography>
+                                            <Typography gutterBottom className={classes.jobText}>
+                                                {job.postedCompany?job.postedCompany.name: job.hiringCompany? job.hiringCompany.name: 'Unknown Company'}
+                                            </Typography>
+                                            </Grid>
+                                            <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                                <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                                onClick={()=>handleHrefClick(job)}
+                                                >
+                                                    Details
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Paper>
+                                </Page>
+                                ))}
+                            </Slider>
+                        </Wrapper>
+                    </div>
+                    :''
                     }
                 </div>
                 </div>
@@ -648,24 +747,25 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    Grow Your Career
+                    CHANGE THIS  SHIT TO DYNAMIC 
                     </Typography>
                 </div>
                 :''
                 }
                 
-                {/* {recommendedEvents.map((event, index) => ( */}
+                {recommendedEvents.map((event, index) => (
+                    <div>
                     <Card className={classes.eventListing}>
                         <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
                             <div style={{display: 'flex', flexDirection: 'column'}}>
                                 <Typography variant='h6' style={{fontWeight:'bold'}} >
-                                EVENT TITLE
+                                event.event_title
                                 </Typography>
                                 <Typography variant='subtitle1' color='textSecondary' >
-                                EVENT DESCRIPTION
+                                event.summary
                                 </Typography>
                                 <Typography>
-                                    Date of Event
+                                    {getDate(event.date_time)}
                                 </Typography>
                             </div>
                             </CardContent>
@@ -673,56 +773,12 @@ function DailyDigest(props) {
                         component="img"
                         alt="Contemplative Reptile"
                         className={classes.eventsImg}
-                        image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
+                        image={event.logo? event.logo : defaultImg}
                         />
                     </Card>
                     <Divider/>
-                    <Card className={classes.eventListing}>
-                        <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                                <Typography variant='h6' style={{fontWeight:'bold'}} >
-                                EVENT TITLE
-                                </Typography>
-                                <Typography variant='subtitle1' color='textSecondary' >
-                                EVENT DESCRIPTION
-                                </Typography>
-                                <Typography>
-                                    Date of Event
-                                </Typography>
-                            </div>
-                            </CardContent>
-                        <CardMedia
-                        component="img"
-                        alt="Contemplative Reptile"
-                        className={classes.eventsImg}
-                        image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
-                        />
-                    </Card>
-                
-                    <Card className={classes.eventListing}>
-                        <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left'}}>
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                                <Typography variant='h6' style={{fontWeight:'bold'}} >
-                                EVENT TITLE
-                                </Typography>
-                                <Typography variant='subtitle1' color='textSecondary' >
-                                EVENT DESCRIPTION
-                                </Typography>
-                                <Typography>
-                                    Date of Event
-                                </Typography>
-                            </div>
-                            </CardContent>
-                        <CardMedia
-                        component="img"
-                        alt="Contemplative Reptile"
-                        className={classes.eventsImg}
-                        image="https://content.mycareersfuture.sg/wp-content/uploads/2019/09/resume-template-795x373.png"
-                        />
-                    </Card>
-                
-                
-                {/* ))} */}
+                    </div>
+                 ))} 
                 
             </div>
             : 

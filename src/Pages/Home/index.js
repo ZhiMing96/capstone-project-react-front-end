@@ -51,7 +51,10 @@ class Home extends Component {
       sugguestedJobPosition: "",
       jobListing: [],
       modalOpen: false,
+      tokenInvalid: false,
     }
+    
+
   }
 
   handleOpen = () => {
@@ -77,6 +80,13 @@ class Home extends Component {
     if(localStorage.getItem('dailyDigestDialog') !== 'shown'){
       setTimeout(this.handleOpen, 1000)
       localStorage.setItem('dailyDigestDialog', 'shown')
+    }
+    if(this.props.history.location.state){
+      console.log('******* ENTERED METHODDDDDD *********')
+      console.log(this.props.history.location.state.tokenInvalid);
+      const invalid = this.props.history.location.state.tokenInvalid;
+      console.log('******* INVALID = ' + invalid)
+      this.setState({ tokenInvalid: invalid})
     }
     
   }

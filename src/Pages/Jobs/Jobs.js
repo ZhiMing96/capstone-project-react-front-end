@@ -66,7 +66,7 @@ const employmentTypes = [
       }
   ]
 
-  const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";
+  
 
   const useStyles = makeStyles(theme => ({
     root: {
@@ -308,7 +308,8 @@ function compareValues(key, order='asc') {
     };
 }
 
-
+const jobUrlDefault ='https://www.mycareersfuture.sg/job/'
+const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";
 
 function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT"); 
@@ -377,19 +378,17 @@ function Jobs (props) {
                     console.log(results);
                     setSkillsJobs(results.recommended_jobs_skills);
                     setSearchHistoryJobs(results.recommended_jobs_search);
-                    setPopularJobs(results.recommended_jobs_search);
-                    setLoading(false);
                 }
             }).catch(err=>console.log(err));
         }
-        // api.dailyDigest.getPublic()
-        // .then(res=>{
-        //     const results = res.data.results
-        //     console.log(res.data)
-        //     console.log('ENTERED SAVING POPULAR JOBS METHOD')
-        //     setPopularJobs(results);
-        //     setLoading(false);
-        // }).catch(err=>console.log(err));
+        api.dailyDigest.getPublic()
+        .then(res=>{
+            const results = res.data
+            console.log(res.data)
+            console.log('ENTERED SAVING POPULAR JOBS METHOD')
+            setPopularJobs(results.recommended_jobs);
+            setLoading(false);
+        }).catch(err=>console.log(err));
 
         if(urlParams === ''){
             setBypass(false)
@@ -399,7 +398,7 @@ function Jobs (props) {
             const keywordString = params[0].split('=')
             const keywordUrl = keywordString[1];
             console.log('keyword = ' + keywordUrl)
-            setKeyword(keywordUrl);
+            setKeyword(keywordUrl); 
             // setState({ ...state, keyword: 'Facebook'});
             setBypass(true)
             setState({ ...state, queryString: urlParams});
@@ -589,7 +588,7 @@ function Jobs (props) {
                 console.log(response);
                 if(response.data.response_code===200){
                     console.log("Click Stored SUCCESSFULLY ");
-                    const url = list.jobDetailsUrl
+                    const url = jobUrlDefault + list.job_uuidl
                     window.open(url,'_blank');
                 }
             })
@@ -598,7 +597,7 @@ function Jobs (props) {
             })
         } else {
             console.log('NOT TRACKING CLICK')
-            const url = list.metadata.jobDetailsUrl
+            const url = jobUrlDefault + list.job_uuid
             window.open(url,'_blank');
         }
         
@@ -768,8 +767,8 @@ function Jobs (props) {
                                     <Grid item>
                                         <Avatar alt="List"
                                             src={ 
-                                                listing.posted_company && listing.posted_company.logoUploadPath 
-                                                ? listing.postedCompany.logoUploadPath  
+                                                listing.company_logo 
+                                                ? listing.company_logo   
                                                 : defaultIcon
                                             } 
                                             style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
@@ -845,8 +844,8 @@ function Jobs (props) {
                                     <Grid item>
                                         <Avatar alt="List"
                                             src={ 
-                                                listing.posted_company && listing.posted_company.logoUploadPath 
-                                                ? listing.posted_company.logoUploadPath  
+                                                listing.company_logo  
+                                                ? listing.company_logo   
                                                 : defaultIcon
                                             } 
                                             style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
@@ -941,8 +940,8 @@ function Jobs (props) {
                                     <Grid item>
                                         <Avatar alt="List"
                                             src={ 
-                                                listing.posted_company && listing.posted_company.logoUploadPath 
-                                                ? listing.posted_company.logoUploadPath  
+                                                listing.company_logo  
+                                                ? listing.company_logo  
                                                 : defaultIcon
                                             } 
                                             style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
@@ -1076,13 +1075,13 @@ function Jobs (props) {
                 <Grid container style={{height:'35vh', margin:10, marginTop:10}} spacing={1} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
-                        { popularJobs.listings.map((listing) => (
+                        { popularJobs.map((listing) => (
                             <Page>
                                 <Paper style={{width:'90%',textAlign: 'start', padding:15, marginBottom:5}} elevation={0}>
                                 <Avatar alt="List"
                                 src={ 
-                                    listing.posted_company && listing.posted_company.logoUploadPath 
-                                    ? listing.posted_company.logoUploadPath  
+                                    listing.company_logo  
+                                    ? listing.company_logo   
                                     : defaultIcon
                                 } 
                                 style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)'}} 
