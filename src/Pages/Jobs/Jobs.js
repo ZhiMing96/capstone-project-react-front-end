@@ -8,7 +8,7 @@ import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as Filte
 import Pagination from './Pagination';
 import LinearLoading from  '../../Components/LoadingBars/LinearLoading';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading';
-
+import jobImg from '../../images/job.svg'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -630,17 +630,18 @@ function Jobs (props) {
         <Grid container alignContent="flex-start" style={{background: `linear-gradient(#039be5,#43BDF8 )` , height:'40vh', padding:20, paddingTop:'5%'}}>
             <Grid item xs={12} >
                 <Typography variant='h4' style={{color:'#FFFFFF', fontWeight:'lighter', paddingTop:15}}>
-                    PLACE HOLDER TEXT
+                    Search
                 </Typography>
+                    {/*<img src={jobImg} style={{ width: '10%' }} />*/}
             </Grid>
             <Grid item xs={12} container justify="center">
                 <Grid item xs={12} sm={10} md={8} style={{textAlign:'-webkit-center'}}>
                     <form onSubmit={handleSubmit}>
-                <Paper elevation={1} style={{margin:50, marginTop:40,marginBottom:20,borderRadius: 25, zIndex:20,maxWidth:'70vh'}}>
+                <Paper elevation={1} style={{margin:50, marginTop:40,marginBottom:20,zIndex:20,maxWidth:'90vh'}}>
                     <Box className={classes.root} style={{margin:3, padding:0, paddingInlineStart:5}}>
                         <InputBase
                             className={classes.input}
-                            placeholder="Search For a Job"
+                            placeholder="Type your keyword(s)..."
                             required
                             value={state.keyword}
                             onChange={handleChange('keyword')}
