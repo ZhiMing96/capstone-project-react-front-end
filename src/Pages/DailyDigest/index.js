@@ -323,9 +323,15 @@ function DailyDigest(props) {
             }
         } else {
             api.dailyDigest.getFromUrl(urlToken)
-            .then(res=>{
+            .then(res => {
                 console.log(res.data)
                 const results = res.data
+                window.localStorage.setItem('authToken', urlToken);
+                api.profile.get() 
+                .then(response => {
+                    let userId = response.data.profile.user_id
+                    props.doLogin(userId) //link to store action to hydrate store, connect
+                })
                 if(results.response_code === 200){
                     console.log('Daily Digest Retrieved Successfully!')
                     setRecommendedArticles(results.articles);
