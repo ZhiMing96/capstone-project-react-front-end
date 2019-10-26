@@ -96,15 +96,15 @@ const useStyles = makeStyles(theme => ({
         paddingRight: '5%',
         marginBottom: '3%'
     },
-    sectionArea: {
-        width: '100%',
-        marginTop: '10%',
-        textAlign: 'left',
-        paddingTop: '3%',
-        paddingBottom: '3%',
-        paddingLeft: '5%',
-        paddingRight: '5%',
-        backgroundColor: 'aliceblue'
+    sectionArea:{
+        width:'100%', 
+        marginTop:'10%', 
+        textAlign:'left',
+        paddingTop:'3%',
+        paddingBottom:'3%',
+        paddingLeft:'5%',
+        paddingRight:'5%',
+        backgroundColor:'white'
     },
     sectionAreaAlternate: {
         width: '100%',
@@ -214,7 +214,7 @@ function DailyDigest(props) {
     console.log(props)
 
     const classes = useStyles();
-    const token = urlToken ? urlToken : window.localStorage.getItem('authToken');
+    const token = window.localStorage.getItem('authToken');
     const [recommendedArticles, setRecommendedArticles] = useState();
     const [recommendedEvents, setRecommendedEvents] = useState();
     const [searchHistoryJobs, setsearchHistoryJobs] = useState();
@@ -228,6 +228,7 @@ function DailyDigest(props) {
         orange: '#FF7043'
     }
     const [loading, setLoading] = useState(false);
+    const [name, setName]  = useState('');
 
     useEffect(() => {
         setTimeout(handleOpen, 1000)
@@ -248,26 +249,55 @@ function DailyDigest(props) {
         setDate(`${currentDay} ${currentMonth} ${currentYear}, ${currentWeekday}`)
     }, [token])
 
-    useEffect(() => {
+    
+    useEffect(()=>{
+        console.log('****** Getting Name ********')
+        api.profile.get().then(
+            res=>{
+              if(res.data.profile){
+                console.log(res.data.profile.first_name)
+                const firstName = res.data.profile.first_name
+                setName(firstName);
+              }
+            } 
+          ).catch(err=> console.error(err))
+    },[])
+
+
+    useEffect(()=>{
         console.log(window.localStorage.getItem('authToken'));
         console.log(urlToken)
         setLoading(true);
-        if (urlToken === undefined) {
-            api.dailyDigest.get()
+        if(urlToken === undefined){
+            if(token){
+                api.dailyDigest.get()
                 .then(res => {
                     console.log(res.data)
                     const results = res.data
-                    if (results.response_code === 200) {
+                    if(results.response_code === 200){
                         console.log('Daily Digest Retrieved Successfully!')
                         setRecommendedArticles(results.articles);
                         setsearchHistoryJobs(results.recommended_jobs_search);
                         setskillsJobs(results.recommended_jobs_skills);
                         setLoading(false);
                     }
-                })
-                .catch(err => {
-                    console.error(err);
-                })
+                }).catch(err=> {console.error(err)});
+
+            } else {
+                api.dailyDigest.getPublic()
+                .then(res => {
+                    console.log(res.data)
+                    const results = res.data
+                    if(results.response_code === 200){
+                        console.log('Daily Digest Retrieved Successfully!')
+                        setRecommendedArticles(results.articles);
+                        setsearchHistoryJobs(results.recommended_jobs_search);
+                        setskillsJobs(results.recommended_jobs_skills);
+                       
+                    }
+                    setLoading(false);
+                }).catch(err=> {console.error(err)});
+            }
         } else {
             api.dailyDigest.getFromUrl(urlToken)
                 .then(res => {
@@ -281,61 +311,64 @@ function DailyDigest(props) {
                     })
 
                 if(results.response_code === 200){
-                console.log('Daily Digest Retrieved Successfully!')
-                setRecommendedArticles(results.articles);
-                setsearchHistoryJobs(results.recommended_jobs_search);
-                setskillsJobs(results.recommended_jobs_skills);
-                setLoading(false);
-            }
-        })
-}
-
+                    console.log('Daily Digest Retrieved Successfully!')
+                    setRecommendedArticles(results.articles);
+                    setsearchHistoryJobs(results.recommended_jobs_search);
+                    setskillsJobs(results.recommended_jobs_skills);
+                    setLoading(false);
+                }
+            })
+        }
     }, [] )
 
-const getDate = (startDate, endDate) => {
-    var newStartDate = new Date(startDate);
-    var newEndDate = new Date(endDate);
-    //console.log(newStartDate.getHours());
-    var startTime = newStartDate.getHours()
-    var endTime = newEndDate.getHours()
+    
+    const getDate =(startDate, endDate) => {
+        var newStartDate = new Date(startDate);
+        var newEndDate = new Date(endDate);
+        //console.log(newStartDate.getHours());
+        var startTime = newStartDate.getHours()
+        var endTime = newEndDate.getHours()
+    
+        if(startTime <= 12){
+          startTime = `${startTime}am`
+          //console.log(startTime);
+        } else {
+          startTime = `${startTime-12}pm`
+          //console.log(startTime);
+        }
+        if(endTime <= 12){
+          endTime = `${endTime}am`
+          //console.log(endTime);
+        } else {
+          endTime = `${endTime-12}pm`
+          //console.log(endTime);
+        }
+    
+        var month = newStartDate.toLocaleString('en-GB', {month: 'short'});
+        console.log(month);
+        var startDay = newStartDate.getMonth();
+        var endDay = newEndDate.getMonth();
+        var startYear = newStartDate.getFullYear();
+    
+        var day = startDay
+        if(startDay != endDay){
+          day = `${startDay}-${endDay}`
+        }
+        
+        return (`${day} ${month} ${startYear}: ${startTime}-${endTime}`)
+        
+    
+    
+    console.log('Recommended Articles:')
+    console.log(recommendedArticles);
+    console.log('Recommended Jobs:')
+    console.log(searchHistoryJobs)
+    console.log(skillsJobs)
+    console.log('Recommended Events:')
+    console.log(recommendedEvents)
+    console.log('NAME = ' + name)
 
-    if (startTime <= 12) {
-        startTime = `${startTime}am`
-        //console.log(startTime);
-    } else {
-        startTime = `${startTime - 12}pm`
-        //console.log(startTime);
-    }
-    if (endTime <= 12) {
-        endTime = `${endTime}am`
-        //console.log(endTime);
-    } else {
-        endTime = `${endTime - 12}pm`
-        //console.log(endTime);
-    }
 
-    var month = newStartDate.toLocaleString('en-GB', { month: 'short' });
-    console.log(month);
-    var startDay = newStartDate.getMonth();
-    var endDay = newEndDate.getMonth();
-    var startYear = newStartDate.getFullYear();
-
-    var day = startDay
-    if (startDay != endDay) {
-        day = `${startDay}-${endDay}`
-    }
-
-    return (`${day} ${month} ${startYear}: ${startTime}-${endTime}`)
-}
-
-
-console.log('Recommended Articles:')
-console.log(recommendedArticles);
-console.log('Recommended Jobs:')
-console.log(searchHistoryJobs)
-console.log(skillsJobs)
-console.log('Recommended Events:')
-console.log(recommendedEvents)
 
 
 return (
@@ -346,9 +379,17 @@ return (
                 <Typography variant='subtitle1' gutterBottom>
                     {date}
                 </Typography>
-                <Typography variant='h3'>
-                    <span style={{ fontWeight: 550 }}>JOPIFY DAILY</span> <span style={{ fontWeight: 'lighter' }}>DIGEST</span>
+                <Typography gutterBottom variant='h3'>
+                    <span style={{fontWeight:550}}>JOPIFY DAILY</span> <span style={{fontWeight:'lighter'}}>DIGEST</span>
                 </Typography>
+                { name
+                ?
+                <Typography variant='h6'>
+                    For {name.toUpperCase()}
+                </Typography>
+                : ''
+                }
+                
             </div>
             {loading
                 ? <CircularLoading />

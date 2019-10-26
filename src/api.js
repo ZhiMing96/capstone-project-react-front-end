@@ -90,8 +90,8 @@ const dailyDigest = {
   getFromUrl: params => axios.get('http://localhost:3000/daily', {
     headers:{ 'Authorization': 'Token '+ params}
   }),
+  getPublic: () => axios.get('http://localhost:3000/daily')
 }
-  
   
   export default {
     auth,

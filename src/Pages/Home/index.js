@@ -261,5 +261,4 @@ class Home extends Component {
 }
 
 
-
 export default (withStyles(styles, { withTheme: true}) (Home));

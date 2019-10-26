@@ -290,10 +290,19 @@ function Articles()
   })
   const [expanded, setExpanded] = useState(false);
   const [selectedIndex, setselectedIndex] = useState(null);
+  const [selectedRecommendedIndex, setSelectedRecommendedIndex] = useState(null);
 
+
+  const handleRecommendedExpandClick = (index) => {
+    console.log(index);
+    setSelectedRecommendedIndex(index);
+    setselectedIndex(null);
+    setExpanded(!expanded);
+  };
   const handleExpandClick = (index) => {
     console.log(index);
     setselectedIndex(index);
+    setSelectedRecommendedIndex(null);
     setExpanded(!expanded);
   };
 
@@ -458,7 +467,7 @@ function Articles()
                                 className={clsx(classes.expand, {
                                   [classes.expandOpen]: expanded,
                                 })}
-                                onClick={() => handleExpandClick(index)}
+                                onClick={() => handleRecommendedExpandClick(index)}
                                 aria-expanded={expanded}
                                 aria-label="show more"
                                 size='small'
@@ -469,7 +478,7 @@ function Articles()
                           </Grid>
                         </Grid>
                       </CardContent>
-                      <Collapse in={index===selectedIndex?expanded:false} timeout="auto" unmountOnExit>
+                      <Collapse in={index===selectedRecommendedIndex ?expanded:false} timeout="auto" unmountOnExit>
                         <CardContent style={{paddingTop:5, paddingBottom:5}}>
                           <Typography className={classes.articleDescription} variant="body2" color="textSecondary" gutterBottom>
                             {list[0].sentence1}
