@@ -72,11 +72,6 @@ function Profile(props) {
         processQueue();
     };
 
-    const handleUndo = ()=>{
-        console.log('handleUndo')
-        //props.undoDeletedWork()
-        handleClose()
-    }
 
     return (
         <div>

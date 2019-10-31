@@ -32,6 +32,7 @@ function Map (props) {
         if(props.markerAddress !== null){
             var long = markerAddress[0]
             var lat = markerAddress[1]
+            /*
             setMarkerAddress({
                 latitude: lat,
                 longitude:long
@@ -41,6 +42,7 @@ function Map (props) {
                 latitude: lat,
                 longitude: long
             })
+            */
         }
         
     })

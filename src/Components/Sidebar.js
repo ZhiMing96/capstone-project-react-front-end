@@ -25,17 +25,18 @@ const useStyles = makeStyles(theme => ({
     width: 90,
     height: 90,
     cursor: 'pointer',
+    title: 'Change profile picture'
   },
   button: {
     margin: theme.spacing(1.5),
     width: 180,
     height: 45
   },
-  overlay:{
+  overlay: {
     position: 'absolute',
-    top: 65,
+    top: 60,
     bottom: 0,
-    left: 140,
+    left: 163,
     right: 0,
     height: 30,
     width: 30,
@@ -43,8 +44,7 @@ const useStyles = makeStyles(theme => ({
     transition: '.3s ease',
     '&:hover': {
       cursor: 'pointer',
-      title: 'Change profile picture',
-      opacity:0.5
+      opacity: 0.5
     }
   }
 }));
@@ -75,7 +75,7 @@ function Sidebar(props) {
   const [name, setName] = React.useState('')
   const [dialog, setDialog] = React.useState(false)
   const [profileImageLink, setProfileImageLink] = React.useState('')
-  
+
 
   useEffect(() => {
     api.profile.get().then(
@@ -112,25 +112,22 @@ function Sidebar(props) {
     setProfileImageLink(event.target.value);
   };
 
-  const revealIcon=()=>{
-    revealIcon = true
-  }
+
   return (
     <div>
-      <Grid container alignItems="center" justify="center" style={{position:'relative'}}>
+      <Grid container alignItems="center" justify="center" style={{ position: 'relative' }}>
         {props.profile_image_link !== null && props.profile_image_link !== '' ?
           <Avatar src={props.profile_image_link} className={classes.bigAvatar} onClick={openDialog} /> :
-          //<Avatar className={classes.bigAvatar}>
-          //<Tooltip title="Change profile picture" placement="top">
-          <div>
-          <FaceIcon fontSize="large" className={classes.icon} onClick={openDialog} />
-          <div className={classes.overlay}>
-            <CameraAltIcon />
-          </div>
-          </div>
-          //</Tooltip>
-          //</Avatar>
 
+          <div title={'Change profile picture'}>
+            <FaceIcon fontSize="large" className={classes.icon} onClick={openDialog} />
+            {/*
+          <div title={'Change profile picture'} className={classes.overlay} onClick={openDialog}>
+            <CameraAltIcon  fontSize="large"/>
+          </div>
+         
+          */}
+          </div>
         }
         <Grid container justify="center">
           <Typography>
