@@ -1,21 +1,19 @@
-import React, {useState, useEffect, Component } from 'react';
+import React from 'react';
 import Sidebar from '../../Components/Sidebar';
 import Grid from '@material-ui/core/Grid';
-import { Paper, Typography, Box, Hidden, IconButton, makeStyles } from '@material-ui/core';
+import { Hidden, makeStyles } from '@material-ui/core';
 import Bookmarks from '../Bookmarks';
 import Skills from './Skills/';
 import Profile from './UserProfile'
-import { Link, Route, BrowserRouter, Switch,Redirect } from 'react-router-dom';
+import Social from '../Social'
+import { Route, Switch,Redirect } from 'react-router-dom';
 import './index.css';
-import MobileSideBar from '../../Components/MobileSideBar/MobileSideBar' ;
-import Backdrop from '../../Components/MobileSideBar/Backdrop';
-import MenuIcon from '@material-ui/icons/Menu';
 import { connect } from "react-redux";
 import Drawer from '@material-ui/core/Drawer';
 
 
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   drawer: {
     width: '23%',
     flexShrink: 0,
@@ -104,6 +102,7 @@ function Main(props) {
                   <Route exact path="/profile" component={Profile} />
                   <Route path="/profile/bookmarks" component={Bookmarks} />
                   <Route path="/profile/skills" component={Skills} />
+                  <Route path="/profile/social" component={Social} />
                 </Switch>
               </Grid> 
           

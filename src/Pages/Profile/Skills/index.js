@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Grid, Typography, Box, Snackbar, IconButton, } from '@material-ui/core'
+import { Typography, Box, Snackbar, IconButton, } from '@material-ui/core'
 import CurrentSkillsView from './CurrentSkillsView'
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
