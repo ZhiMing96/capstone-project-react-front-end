@@ -3,9 +3,6 @@ import './Home.css';
 import Container from '@material-ui/core/Container';
 import axios from 'axios';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
-import JobListingsView from './JobListingsView';
-import ArticleView from './ArticleView';
-import EventsView from './EventsView';
 import homepageBG from '../../images/homepageBG.JPG'
 import { Typography, Paper, Button, CssBaseline, Fab, Grid, Avatar, IconButton } from '@material-ui/core';
 import { fontWeight } from '@material-ui/system';
