@@ -10,8 +10,9 @@ function TabPanel(props) {
       <Typography
         component="div"
         hidden={tabState !== index}
+        style={{width:'inherit'}}
       >
-        <Box p={3}>{children}</Box>
+        <Box m={2} >{children}</Box>
       </Typography>
     );
 }
@@ -73,7 +74,7 @@ export default function Social() {
                         <Tab label={<span className={classes.tabLabel}>Recommendations</span>} disableRipple className = {classes.tabs}/>
                     </Tabs>
                 </Grid>
-                <Grid container>
+                <Grid container fullWidth>
                     <TabPanel  tabState={tabState} index={0}>
                         Find a match
                     </TabPanel>

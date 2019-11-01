@@ -86,7 +86,7 @@ function Main(props) {
                   </IconButton>
                 </Grid>
               </Hidden> */}
-              <Grid item sm={9} xs={12} style={{width:'100%', paddingRight:'2%', paddingLeft:'2%'}}>
+              <Grid item sm={9} xs={12} style={{width:'100%', paddingRight:'5%', paddingLeft:'2%'}}>
                 {/*<Typography component="div">
                   <Box 
                     fontSize="h6.fontSize" 
