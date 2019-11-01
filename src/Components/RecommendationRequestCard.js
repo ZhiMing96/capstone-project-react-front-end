@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     card: {
         height: '100%',
         textAlign: 'center',
-        alignItems:'center'
+        alignItems:'center',
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -31,39 +31,30 @@ const useStyles = makeStyles(theme => ({
     },
     close:{
         float:"right",
+        margin:theme.spacing(1),
     },
     button:{
         margin:theme.spacing(2),
+        marginTop:0
     }
 }));
 
-export default function RecoRequestCard() {
+export default function RecoRequestCard(props) {
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
-    const [onHover, setOnHover] = React.useState(false)
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
 
     const handleClose=()=>{
         //remove the request what to do for API here ah
     }
 
-    const handleHover=()=>{
-        setOnHover(!onHover)
+    const handleRecommend=()=>{
+        //
     }
-
     return (
-        <Card className={classes.card} onMouseEnter={handleHover} onMouseLeave={handleHover}>
-            
+        <Card className={classes.card}>
+            <IconButton aria-label="settings" className={classes.close} size='small'>
+                <CloseIcon onClick={handleClose} size='small' className={classes.close} />
+            </IconButton>
             <CardContent>
-                
-                <IconButton aria-label="settings" className={classes.close} >
-                        <CloseIcon onClick={handleClose} size='small' />
-                </IconButton>
-                
-                
                 <Grid container justify="center" alignItems="center">
                     <Avatar className={classes.avatar} src="/static/images/avatar/1.jpg" />
                 </Grid>
@@ -78,7 +69,7 @@ export default function RecoRequestCard() {
                         >
                             Hello world
                             </Typography>
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                        <Typography variant="body2" color="textSecondary" gutterBottom style={{fontSize:'medium'}}>
                             graphic designer
                             </Typography>
                     </Box>
@@ -86,8 +77,8 @@ export default function RecoRequestCard() {
             </CardContent>
             <CardActions disableSpacing >
             <Grid container justify="center" alignItems="center">
-                <Button size="small" color="primary" variant="outlined" className={classes.button} fullWidth>
-                    Accept           
+                <Button color="primary" variant="outlined" className={classes.button} fullWidth onClick={handleRecommend}>
+                    Recommend           
                 </Button>
                 </Grid>
             </CardActions>
