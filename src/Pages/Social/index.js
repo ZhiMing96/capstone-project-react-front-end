@@ -2,14 +2,17 @@ import React from 'react';
 import { Grid, Typography, Box, Snackbar, Tabs, Tab, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Reco from './Recommendations'
+import Invitations from './Invitations';
 
 function TabPanel(props) {
+    console.log(props);
     const { children, tabState, index} = props;
   
     return (
       <Typography
         component="div"
         hidden={tabState !== index}
+        style={{width:'100%'}}
       >
         <Box p={3}>{children}</Box>
       </Typography>
@@ -36,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Social() {
     const classes = useStyles();
-    const [tabState, setTabState] = React.useState(0)
+    const [tabState, setTabState] = React.useState(1)
 
     const handleChangeIndex = (event, index) => {
         setTabState(index)
@@ -73,12 +76,12 @@ export default function Social() {
                         <Tab label={<span className={classes.tabLabel}>Recommendations</span>} disableRipple className = {classes.tabs}/>
                     </Tabs>
                 </Grid>
-                <Grid container>
+                <Grid container style={{width:'100%'}}>
                     <TabPanel  tabState={tabState} index={0}>
                         Find a match
                     </TabPanel>
                     <TabPanel tabState={tabState} index={1}>
-                        Invitations
+                        <Invitations/>
                     </TabPanel>
                     <TabPanel tabState={tabState} index={2}>
                         <Reco/>
