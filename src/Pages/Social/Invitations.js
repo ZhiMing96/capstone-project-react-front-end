@@ -156,10 +156,19 @@ function Invitations() {
         setSelectedDate(date);
     };
 
+    // if(demoArray.length === 0){
+    //     setDemoArray([1,2,3,4,5])
+    // }
+
+
+    useEffect(()=>{
+        console.log("RELOADING")
+    }, [demoArray])
+
     const deleteElement = (index) => {
         console.log('Index = ' + index)
-        var array = demoArray;
-        console.log(array);
+        var array = [...demoArray]
+        // console.log(array);
         // if( array.length === 0){
         //     array = [];
         // } else
@@ -177,12 +186,11 @@ function Invitations() {
         //     console.log(array);
         // }
         array.splice(index,1)
-        
-        console.log(array);
         setDemoArray(array);
+        console.log(demoArray)
     }
 
-
+    
     return (
         <div>
             <Grid container direction="row" style={{ width: '100%', textAlign: 'left' }}>
