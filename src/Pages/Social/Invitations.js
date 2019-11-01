@@ -21,17 +21,17 @@ import RemoveMeetupIcon from '../../images/removeMeetup.svg';
 
 
 const Wrapper = styled.div`
-    width:100%
+    width:97%
 `;
 
 const Page = styled.div`
-    width:100%
+    width:90%
 `;
 
 const carouselSettings = {
     accessibiliy: true,
     speed:1700,
-    slidesToShow: 6,
+    slidesToShow: 5,
     slidesToScroll: 1,
     infinite: false,
     dots:false,
@@ -47,7 +47,7 @@ const carouselSettings = {
       {
         breakpoint: 1920, //lg
         settings: {
-          slidesToShow: 5,
+          slidesToShow: 4,
           slidesToScroll: 1,
           infinite: false,
         }
@@ -55,7 +55,7 @@ const carouselSettings = {
       {
         breakpoint: 1280, //md
         settings: {
-          slidesToShow: 4,
+          slidesToShow: 3,
           slidesToScroll: 1,
           infinite: false,
         }
@@ -63,7 +63,7 @@ const carouselSettings = {
       {
         breakpoint: 1000, //md
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 2,
           slidesToScroll: 1,
           //infinite: true,
         }
@@ -71,7 +71,7 @@ const carouselSettings = {
       {
         breakpoint: 600, //sm
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 1,
           slidesToScroll: 1,
           //initialSlide: 2
           infinite: false,
@@ -100,10 +100,11 @@ const carouselSettings = {
          textAlign:'left',
     },
     carouselPaper: {
-        width:'100%',
+        width:'80%',
         textAlign: '-webkit-center', 
         padding:15, 
         marginBottom:5,
+        marginTop:10
     },
     carouselAvatar: {
         margin:'5%',
@@ -149,13 +150,37 @@ function Invitations() {
 
     const classes=useStyles();
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [demoArray, setDemoArray] = useState([1,2,3,4,5])
 
     const handleDateChange = date => {
         setSelectedDate(date);
     };
 
-
-
+    const deleteElement = (index) => {
+        console.log('Index = ' + index)
+        var array = demoArray;
+        console.log(array);
+        // if( array.length === 0){
+        //     array = [];
+        // } else
+        
+        //  if(index === array.length-1){
+        //     array.splice(index,1)
+        // } else if (index === 0 ){
+        //     array = demoArray.slice(1, demoArray.length)
+        // } else {
+        //     array1 = demoArray.slice(0,index)
+        //     console.log(demoArray);
+        //     array2 = demoArray.slice(index+1, demoArray.length)
+        //     console.log(demoArray);
+        //     array = array.push(array2)
+        //     console.log(array);
+        // }
+        array.splice(index,1)
+        
+        console.log(array);
+        setDemoArray(array);
+    }
 
 
     return (
@@ -169,48 +194,50 @@ function Invitations() {
                 <Grid container style={{ margin:10, marginTop:10, }} spacing={1} justify="space-between" > 
                     <Wrapper>
                         <Slider {...carouselSettings}>
-                            <Page>
-                                <Paper className={classes.carouselPaper} elevation={5}>
-                                    <Avatar alt="List"
-                                    src='' 
-                                    className={classes.carouselAvatar} 
-                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                    // onClick={()=> handleHrefClick(listing)}
-                                    />
-                                    <Grid container  justify='space-between' style={{height:'15vh'}}>
-                                        <Grid item xs={12}>
-                                        <Typography gutterBottom className={classes.carouselUsername} style={{}}>
-                                            Yi Qiong
-                                        </Typography>
-                                        <Typography style={{fontSize:13, color:'grey'}}>
-                                            Fintech Analyst 
-                                        </Typography>
-                                        </Grid>
-                                        <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
-                                        <Grid container item xs={12} direction="row"
-                                        justify="space-between"
-                                        alignItems="flex-end"
-                                        style={{height:'fit-content'}}
-                                        >
-                                            <Grid item xs={6}>
-                                                <Button color='primary' style={{fontSize:15,fontWeight:'bold'}} size='small'
-                                                // onClick={()=>handleHrefClick(listing)}
-                                                >
-                                                    Accept
-                                                </Button>
+                            {demoArray.map((element, index) => (
+                                <Page>
+                                    <Paper className={classes.carouselPaper} elevation={5}>
+                                        <Avatar alt="List"
+                                        src='' 
+                                        className={classes.carouselAvatar} 
+                                        imgProps={{style:{objectFit:'contain',border:0}}}
+                                        // onClick={()=> handleHrefClick(listing)}
+                                        />
+                                        <Grid container  justify='space-between' style={{height:'15vh'}}>
+                                            <Grid item xs={12}>
+                                            <Typography gutterBottom className={classes.carouselUsername} style={{}}>
+                                                Yi Qiong
+                                            </Typography>
+                                            <Typography style={{fontSize:13, color:'grey'}}>
+                                                Fintech Analyst 
+                                            </Typography>
                                             </Grid>
-                                            <Grid item xs={6}>
-                                                <Button color='primary' style={{fontSize:15,fontWeight:'bold'}} size='small'
-                                                // onClick={()=>handleHrefClick(listing)}
-                                                >
-                                                    Decline
-                                                </Button>
+                                            <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
+                                            <Grid container item xs={12} direction="row"
+                                            justify="space-between"
+                                            alignItems="flex-end"
+                                            style={{height:'fit-content'}}
+                                            >
+                                                <Grid item xs={6}>
+                                                    <Button color='primary' style={{fontSize:15,fontWeight:'bold'}} size='small'
+                                                    // onClick={()=>handleHrefClick(listing)}
+                                                    >
+                                                        Accept
+                                                    </Button>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Button color='primary' style={{fontSize:15,fontWeight:'bold', color:'#992E24'}} size='small'
+                                                    onClick={()=>deleteElement(index)}
+                                                    >
+                                                        Decline
+                                                    </Button>
+                                                </Grid>
+                                                
                                             </Grid>
-                                            
                                         </Grid>
-                                    </Grid>
-                                </Paper>
-                            </Page>
+                                    </Paper>
+                                </Page>
+                            ))}
                         </Slider>
                     </Wrapper>
                 </Grid>
