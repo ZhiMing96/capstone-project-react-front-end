@@ -18,6 +18,14 @@ import {
 } from '@material-ui/pickers';
 import CompleteMeetupIcon from  '../../images/completeMeetup.svg';
 import RemoveMeetupIcon from '../../images/removeMeetup.svg';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+import Recommendations from './Recommendations';
+import './Invitations.css';
 
 
 const Wrapper = styled.div`
@@ -28,9 +36,203 @@ const Page = styled.div`
     width:90%
 `;
 
+  const useStyles = makeStyles(theme => ({
+    root:{
+
+    },
+    sectionHeading: {
+        fontSize:18, 
+        fontWeight:'bold', 
+        color:'grey',
+         marginBottom:'2%',
+         marginTop:'2%',
+         textAlign:'left',
+    },
+    carouselPaper: {
+        width:'80%',
+        textAlign: '-webkit-center', 
+        padding:15, 
+        marginBottom:5,
+        marginTop:10,
+        marginLeft:'5%'
+    },
+    carouselAvatar: {
+        margin:'5%',
+        width:85, 
+        height:85, 
+        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
+    },
+    listAvatar: {
+        margin:'5%',
+        width:60, 
+        height:60, 
+        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
+    },
+    carouselUsername: {
+        marginTop:'6%',
+        fontWeight:'bold', 
+        fontSize:18,
+        whiteSpace:'normal', 
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+        display:'-webkit-box',
+        WebkitLineClamp:1,
+        WebkitBoxOrient:'vertical',
+    },
+    card: {
+        display: 'flex',
+    }, 
+    userDetails :{
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    controlButtons :{
+        width: 30,
+        height: 30,
+    },
+
+
+  }))
+
+  const defaultAvatar = '';
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+function Invitations(props) {
+
+    const classes=useStyles();
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [demoArray, setDemoArray] = useState([1,2,3,4,5])
+    const [selectedInvitationIndex, setSelectedInvitationIndex] = useState()
+    const [openInvitation, setOpenInvitation] = useState(false);
+    const [selectedMeetupIndexWithDate, setSelectedMeetupIndexWithDate] = useState()
+    const [selectedMeetupIndexWithoutDate, setSelectedMeetupIndexWithoutDate] = useState()
+    const [openMeetupConfirmation, setOpenMeetupConfirmation] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(123456);
+    const [openMeetupCancellation, setOpenMeetupCancellation] = useState(false);
+
+    const handleSelectUser = userId => {
+        console.log("***** Entered Handled Select User ****");
+        console.log(userId);
+        setSelectedUserId(userId);
+    }
+    
+    const handleDateChange = date => {
+        console.log(date)  
+        //API Call to update of this change in date 
+    }; 
+
+    const handleOpenConfirmationDialog = (index,type) => {
+        if(type === 'invitation'){
+            setSelectedInvitationIndex(index)
+            setOpenInvitation(true);
+        } else if (type === 'meetupWithDate') {
+            setSelectedMeetupIndexWithDate(index)
+            setSelectedMeetupIndexWithoutDate(null)
+            setOpenMeetupConfirmation(true);
+        } else if (type === 'meetupWithoutDate') {
+            setSelectedMeetupIndexWithoutDate(index)
+            setSelectedMeetupIndexWithDate(null)
+            setOpenMeetupConfirmation(true);
+        }
+    };
+    const handleOpenCancellationDialog = (index,type) => {
+        if (type === 'meetupWithDate') {
+            setSelectedMeetupIndexWithDate(index)
+            setSelectedMeetupIndexWithoutDate(null)
+            setOpenMeetupCancellation(true);
+        } else if (type === 'meetupWithoutDate') {
+            setSelectedMeetupIndexWithoutDate(index)
+            setSelectedMeetupIndexWithDate(null)
+            setOpenMeetupCancellation(true);
+        }
+    };
+
+    const handleCloseDialog = () => {
+        // if(type === 'invitation'){
+            setOpenInvitation(false);
+        // } else if (type === 'meetup') {
+            setOpenMeetupConfirmation(false);
+            setOpenMeetupCancellation(false);
+        // }
+    };
+ 
+
+    const deleteElement = (index) => {
+        console.log('Index = ' + index)
+        var array = [...demoArray]
+        array.splice(index,1)
+        setDemoArray(array);
+        console.log(demoArray)
+    }
+    
+    const timeLeft = (date) => {
+        const dateFormat =  new Date(date);
+    }
+
+    const handleMeetupConfirmation = () => {
+        //API call to confirm Meetup 
+        setOpenMeetupConfirmation(false);
+    }
+
+
+const CarouselArrowNext = (props) => {
+
+    const { className, style, onClick} = props;
+    // console.log(props)
+
+    if(onClick !== null){
+    return (
+        <div 
+            className={className}
+            style={{ display: "block",zIndex:60, marginRight:'1%',}}
+            onClick={onClick}
+        >
+            <Fab
+            className={className}
+            size='medium'
+            style={{display: "block",zIndex:60, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
+            onClick={onClick}
+            > 
+                <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
+            </Fab>
+        </div>
+    );
+    } else {
+        return(<div></div>)
+    }
+  }
+  const CarouselArrowPrev = (props) => {
+    const classes = useStyles();
+    const { className, onClick, style, currentSlide } = props;
+
+    if(currentSlide !==0){
+        return (
+            <div 
+              className={className}
+              style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
+              onClick={onClick}
+            >
+              <Fab
+                size='medium'
+                style={{backgroundColor:'black', opacity:'0.6'}}
+              > 
+              <KeyboardArrowLeftIcon style={{color:'white',}}/>
+            </Fab>
+        
+            </div>
+            
+        );
+    } else {
+        return(<div></div>)
+    }
+    
+  }
+
 const carouselSettings = {
     accessibiliy: true,
-    speed:1700,
+    speed:1000,
     slidesToShow: 5,
     slidesToScroll: 1,
     infinite: false,
@@ -41,8 +243,8 @@ const carouselSettings = {
     draggable:true,
     //lazyLoad: "progressive",
     pauseOnHover: true,
-    // nextArrow: <CarouselArrowNext />,
-    // prevArrow: <CarouselArrowPrev />,
+    nextArrow: <CarouselArrowNext />,
+    prevArrow: <CarouselArrowPrev />,
     responsive: [
       {
         breakpoint: 1920, //lg
@@ -87,112 +289,11 @@ const carouselSettings = {
       }]
   };
 
-  const useStyles = makeStyles(theme => ({
-    root:{
-
-    },
-    sectionHeading: {
-        fontSize:18, 
-        fontWeight:'bold', 
-        color:'grey',
-         marginBottom:'2%',
-         marginTop:'2%',
-         textAlign:'left',
-    },
-    carouselPaper: {
-        width:'80%',
-        textAlign: '-webkit-center', 
-        padding:15, 
-        marginBottom:5,
-        marginTop:10
-    },
-    carouselAvatar: {
-        margin:'5%',
-        width:85, 
-        height:85, 
-        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
-    },
-    listAvatar: {
-        margin:'5%',
-        width:60, 
-        height:60, 
-        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
-    },
-    carouselUsername: {
-        marginTop:'6%',
-        fontWeight:'bold', 
-        fontSize:18,
-        whiteSpace:'normal', 
-        overflow:'hidden',
-        textOverflow:'ellipsis',
-        display:'-webkit-box',
-        WebkitLineClamp:1,
-        WebkitBoxOrient:'vertical',
-    },
-    card: {
-        display: 'flex',
-    }, 
-    userDetails :{
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    controlButtons :{
-        width: 30,
-        height: 30,
-    },
-
-
-  }))
-
-  const defaultAvatar = '';
-
-function Invitations() {
-
-    const classes=useStyles();
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [demoArray, setDemoArray] = useState([1,2,3,4,5])
-
-    const handleDateChange = date => {
-        setSelectedDate(date);
-    };
-
-    // if(demoArray.length === 0){
-    //     setDemoArray([1,2,3,4,5])
-    // }
-
-
-    useEffect(()=>{
-        console.log("RELOADING")
-    }, [demoArray])
-
-    const deleteElement = (index) => {
-        console.log('Index = ' + index)
-        var array = [...demoArray]
-        // console.log(array);
-        // if( array.length === 0){
-        //     array = [];
-        // } else
         
-        //  if(index === array.length-1){
-        //     array.splice(index,1)
-        // } else if (index === 0 ){
-        //     array = demoArray.slice(1, demoArray.length)
-        // } else {
-        //     array1 = demoArray.slice(0,index)
-        //     console.log(demoArray);
-        //     array2 = demoArray.slice(index+1, demoArray.length)
-        //     console.log(demoArray);
-        //     array = array.push(array2)
-        //     console.log(array);
-        // }
-        array.splice(index,1)
-        setDemoArray(array);
-        console.log(demoArray)
-    }
-
     
     return (
         <div>
+            {/* <Router> */}
             <Grid container direction="row" style={{ width: '100%', textAlign: 'left' }}>
                 <Grid item xs={12}>
                     <Typography className={classes.sectionHeading}>
@@ -203,6 +304,7 @@ function Invitations() {
                     <Wrapper>
                         <Slider {...carouselSettings}>
                             {demoArray.map((element, index) => (
+                                <div>
                                 <Page>
                                     <Paper className={classes.carouselPaper} elevation={5}>
                                         <Avatar alt="List"
@@ -228,7 +330,7 @@ function Invitations() {
                                             >
                                                 <Grid item xs={6}>
                                                     <Button color='primary' style={{fontSize:15,fontWeight:'bold'}} size='small'
-                                                    // onClick={()=>handleHrefClick(listing)}
+                                                    onClick={()=>handleOpenConfirmationDialog(index,'invitation')}
                                                     >
                                                         Accept
                                                     </Button>
@@ -245,76 +347,159 @@ function Invitations() {
                                         </Grid>
                                     </Paper>
                                 </Page>
+                                <Dialog
+                                open={index === selectedInvitationIndex ? openInvitation: false}
+                                TransitionComponent={Transition}
+                                keepMounted
+                                onClose={handleCloseDialog}
+                                aria-labelledby="alert-dialog-slide-title"
+                                aria-describedby="alert-dialog-slide-description"
+                                >
+                                    <DialogTitle id="alert-dialog-slide-title">{"Find Out More About Yi Qiong!"}</DialogTitle>
+                                    <DialogContent>
+                                        <Grid container >
+                                            <Grid item xs={3}>
+                                                <Avatar alt="List"
+                                                    src='' 
+                                                    className={classes.carouselAvatar} 
+                                                    imgProps={{style:{objectFit:'contain',border:0}}}
+                                                    // onClick={()=> handleHrefClick(listing)}
+                                                />
+                                            </Grid>
+                                            <Grid Item xs={9}>
+                                                <DialogContentText id="alert-dialog-slide-description">
+                                                    Let Google help apps determine location. This means sending anonymous location data to
+                                                    Google, even when no apps are running.
+                                                </DialogContentText>
+                                            </Grid>
+                                        </Grid>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Link to={{
+                                            pathname: "/profile",
+                                            state: { user: true }
+                                        }} 
+                                        style={{textDecoration:'none'}}>
+                                            <Button 
+                                                color="primary"
+                                                onClick={()=> handleCloseDialog()}
+                                                >
+                                                    View Profile 
+                                            </Button>
+                                        </Link>
+                                            
+                                        <Button onClick={handleCloseDialog} color="primary">
+                                            Accept
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                                </div>
                             ))}
                         </Slider>
                     </Wrapper>
                 </Grid>
             </Grid>
         
-                <Grid container spacing={4}>
-
-                
+            <Grid container spacing={6}>
                 <Grid container item xs={12} md={6} style={{}}>
                     <Grid item xs={12}>
                         <Typography className={classes.sectionHeading} style={{marginTop:'10%'}}>
                             Upcoming Meetups
                         </Typography>
                     </Grid>
-                    <Card style={{width:'100%', height:'fit-content', padding:'5%'}}>
-                    <Grid container item xs={12}>
-                        <Grid item xs={3}> 
-                            <Avatar alt="List"
-                                src='' 
-                                className={classes.listAvatar} 
-                                imgProps={{style:{objectFit:'contain',border:0}}}
-                                // onClick={()=> handleHrefClick(listing)}
-                            />
-                        </Grid>
-                        <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
-                            <Typography>
-                                Chong Yi Qiong
-                            </Typography>
-                            <Typography>
-                                Chong Yi Qiong
-                            </Typography>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} >
-                                <KeyboardDatePicker
-                                    margin="normal"
-                                    id="date-picker-dialog"
-                                    format="MM/dd/yyyy"
-                                    value={selectedDate}
-                                    onChange={handleDateChange}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                    style={{width:'65%'}}
-                                />
-                            </MuiPickersUtilsProvider>
-                            
-                        </Grid>
-                        <Grid container item xs={3} direction="row" justify="space-between"> 
-                            <Grid item  xs={12}>
-                                <Typography>
-                                    2 Days Left
+                    {demoArray.map((element, index) => (
+                        <div>
+                            <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
+                                <Grid container item xs={12}>
+                                    <Grid item xs={3}> 
+                                        <Avatar alt="List"
+                                            src='' 
+                                            className={classes.listAvatar} 
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                            // onClick={()=> handleHrefClick(listing)}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
+                                        <Typography>
+                                            Chong Yi Qiong
+                                        </Typography>
+                                        <Typography>
+                                            Chong Yi Qiong
+                                        </Typography>
+                                        <MuiPickersUtilsProvider utils={DateFnsUtils} >
+                                            <KeyboardDatePicker
+                                                margin="normal"
+                                                id="date-picker-dialog"
+                                                format="MM/dd/yyyy"
+                                                value={selectedDate}
+                                                onChange={handleDateChange}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                                style={{width:'65%'}}
+                                                onOpen={()=> handleSelectUser(element)}
+                                            />
+                                        </MuiPickersUtilsProvider>
+                                    </Grid>
+                                    <Grid container item xs={3} direction="row" justify="space-between"> 
+                                        <Grid item  xs={12}>
+                                            <Typography>
+                                                2 Days Left
+                                            </Typography>
+                                        </Grid>   
+                                        <Grid item container xs={12}>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                <Avatar
+                                                className={classes.controlButtons}
+                                                src={RemoveMeetupIcon}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                <Avatar
+                                                className={classes.controlButtons}
+                                                src={CompleteMeetupIcon}
+                                                onClick={()=>handleOpenConfirmationDialog(index,'meetupWithDate')}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                            <Dialog
+                            open={index === selectedMeetupIndexWithDate ? openMeetupConfirmation: false}
+                            TransitionComponent={Transition}
+                            keepMounted
+                            onClose={handleCloseDialog}
+                            aria-labelledby="alert-dialog-slide-title"
+                            aria-describedby="alert-dialog-slide-description"
+                            >
+                                <DialogContent>
+                                    <Grid container>
+                                        <Grid item xs={12} style={{textAlign:'-webkit-center'}}>
+                                            <Avatar alt="List"
+                                            src={CompleteMeetupIcon} 
+                                            className={classes.carouselAvatar} 
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                            // onClick={()=> handleHrefClick(listing)}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                <Typography style={{fontSize:20, fontWeight:"bold"}}>
+                                    Have you completed your MeetUp with [User]?
                                 </Typography>
-                            </Grid>   
-                            <Grid item container xs={12}>
-                                <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                    <Avatar
-                                    className={classes.controlButtons}
-                                    src={RemoveMeetupIcon}
-                                    />
-                                </Grid>
-                                <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                    <Avatar
-                                    className={classes.controlButtons}
-                                    src={CompleteMeetupIcon}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    </Card>
+                                </DialogContent>
+                                <DialogActions>
+                                <Button onClick={handleCloseDialog} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleMeetupConfirmation} color="primary">
+                                    Yes
+                                </Button>
+                                </DialogActions>
+                            </Dialog>
+                        
+                        </div>
+                    ))}
                 </Grid>
             
                 <Grid container item xs={12} md={6}>
@@ -323,82 +508,105 @@ function Invitations() {
                             Pending Meetup Date
                         </Typography>
                     </Grid>
-                    <Card style={{width:'100%', height:'fit-content', padding:'5%'}}>
-                    <Grid container item xs={12}>
-                        <Grid item xs={3}> 
-                            <Avatar alt="List"
-                                src='' 
-                                className={classes.listAvatar} 
-                                imgProps={{style:{objectFit:'contain',border:0}}}
-                                // onClick={()=> handleHrefClick(listing)}
-                            />
-                        </Grid>
-                        <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
-                            <Typography>
-                                Chong Yi Qiong
-                            </Typography>
-                            <Typography>
-                                Chong Yi Qiong
-                            </Typography>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} >
-                                <KeyboardDatePicker
-                                    margin="normal"
-                                    id="date-picker-dialog"
-                                    format="MM/dd/yyyy"
-                                    value={selectedDate}
-                                    onChange={handleDateChange}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                    style={{width:'65%'}}
-                                />
-                            </MuiPickersUtilsProvider>
-                            
-                        </Grid>
-                        <Grid container item xs={3} direction="row" justify="space-between"> 
-                            <Grid item  xs={12}>
-                                <Typography>
-                                    2 Days Left
+                    {demoArray.map((element, index) => (
+                        <div>
+                            <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
+                                <Grid container item xs={12}>
+                                    <Grid item xs={3}> 
+                                        <Avatar alt="List"
+                                            src='' 
+                                            className={classes.listAvatar} 
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                            // onClick={()=> handleHrefClick(listing)}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
+                                        <Typography>
+                                            Chong Yi Qiong
+                                        </Typography>
+                                        <Typography>
+                                            Chong Yi Qiong
+                                        </Typography>
+                                        <MuiPickersUtilsProvider utils={DateFnsUtils} style={{color:'#992E24'}}>
+                                            <KeyboardDatePicker
+                                                margin="normal"
+                                                id="date-picker-dialog"
+                                                format="MM/dd/yyyy"
+                                                value={null}
+                                                onChange={handleDateChange}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                    'color':'#992E24'
+                                                }}
+                                                onOpen={()=> handleSelectUser(element)}
+                                                style={{width:'65%', }}
+                                            />
+                                        </MuiPickersUtilsProvider>
+                                        
+                                    </Grid>
+                                    <Grid container item xs={3} direction="row" justify="space-between"> 
+                                        <Grid item  xs={12}>
+                                            <Typography>
+                                                2 Days Left
+                                            </Typography>
+                                        </Grid>   
+                                        <Grid item container xs={12}>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                <Avatar
+                                                className={classes.controlButtons}
+                                                src={RemoveMeetupIcon}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                <Avatar
+                                                className={classes.controlButtons}
+                                                src={CompleteMeetupIcon}
+                                                onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                            <Dialog
+                            open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
+                            TransitionComponent={Transition}
+                            keepMounted
+                            onClose={handleCloseDialog}
+                            aria-labelledby="alert-dialog-slide-title"
+                            aria-describedby="alert-dialog-slide-description"
+                            >
+                                <DialogContent>
+                                    <Grid container>
+                                        <Grid item xs={12} style={{textAlign:'-webkit-center'}}>
+                                            <Avatar alt="List"
+                                            src={CompleteMeetupIcon} 
+                                            className={classes.carouselAvatar} 
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                            // onClick={()=> handleHrefClick(listing)}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                <Typography style={{fontSize:20, fontWeight:"bold"}}>
+                                    Have you completed your MeetUp with [User]?
                                 </Typography>
-                            </Grid>   
-                            <Grid item container xs={12}>
-                                <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                    <Avatar
-                                    className={classes.controlButtons}
-                                    src={RemoveMeetupIcon}
-                                    />
-                                </Grid>
-                                <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                    <Avatar
-                                    className={classes.controlButtons}
-                                    src={CompleteMeetupIcon}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    </Card>
+                                </DialogContent>
+                                <DialogActions>
+                                <Button onClick={handleCloseDialog} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleMeetupConfirmation} color="primary">
+                                    Yes
+                                </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </div>
+                    ))}
                 </Grid>
-                </Grid>
-            {/* </Grid> */}
+            </Grid>
+            
         </div>
     )
 }
 
 export default Invitations;
-
-
-{/* <List>
-                            <Paper>
-                                <ListItem alignItems="flex-start">
-                                    <ListItemAvatar style={{marginRight:20}}>
-                                        <Avatar className={classes.listAvatar}  alt="Remy Sharp" src="" />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                    primary="Chong Yi Qiong"
-                                    secondary="Software Developer - FINTECH Pte ltd"
-                                    />
-                                    
-                                </ListItem>
-                            </Paper>
-                        </List> */}

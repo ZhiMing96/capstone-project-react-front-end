@@ -62,23 +62,27 @@ const CarouselArrowNext = (props) => {
 }
 const CarouselArrowPrev = (props) => {
   const classes = useStyles();
-  const { className, onClick, style } = props;
-  return (
-    <div 
-      className={className}
-      style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
-      onClick={onClick}
-    >
-      <Fab
-        size='medium'
-        style={{backgroundColor:'black', opacity:'0.6'}}
-      > 
-      <KeyboardArrowLeftIcon style={{color:'white',}}/>
-    </Fab>
+  const { className, onClick, style, currentSlide } = props;
+  if(currentSlide !==0){
+    return (
+      <div 
+        className={className}
+        style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
+        onClick={onClick}
+      >
+        <Fab
+          size='medium'
+          style={{backgroundColor:'black', opacity:'0.6'}}
+        > 
+        <KeyboardArrowLeftIcon style={{color:'white',}}/>
+      </Fab>
 
-    </div>
-    
-  );
+      </div>
+      
+    );
+  } else {
+    return(<div></div>)
+  }
 }
 const miniCarouselSettings = {
   accessibiliy: true,
@@ -128,13 +132,15 @@ const largeCarouselSettings = {
   speed:1800,
   slidesToShow: 1,
   slidesToScroll: 1,
-  infinite:true,
+  infinite:false,
   autoplay: true,
   arrows:true,
   autoplaySpeed:5000,
   draggable:true,
   lazyLoad: "progressive",
   pauseOnHover: true,
+  nextArrow: <CarouselArrowNext />,
+  prevArrow: <CarouselArrowPrev />,
 };
 
 const useStyles = makeStyles(theme => ({

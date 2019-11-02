@@ -54,6 +54,12 @@ function SocialProfileRead(props) {
         meetup_ind:'',
         job_search_stage:''
     })
+    console.log(props)
+
+    var otherUserId = null;
+    if(props.user){
+        otherUserId = props.user;
+    }
 
     //initialise
     useEffect(() => {

@@ -204,31 +204,36 @@ const employmentTypes = [
 
         const { className, style, onClick } = props;
         console.log(style)
+        if(onClick !== null){
         return (
-          <div 
-            className={className}
-            style={{ display: "block",zIndex:60, marginRight:'1%',}}
-            onClick={onClick}
-          >
-            <Fab
-              className={className}
-              size='medium'
-              style={{display: "block",zIndex:60, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
-              onClick={onClick}
-            > 
-            <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
-          </Fab>
+            <div 
+                className={className}
+                style={{ display: "block",zIndex:60, marginRight:'1%',}}
+                onClick={onClick}
+            >
+                <Fab
+                className={className}
+                size='medium'
+                style={{display: "block",zIndex:60, marginRight:'5%',backgroundColor:'black', opacity:'0.6'}}
+                onClick={onClick}
+                > 
+                    <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
+            </Fab>
           </div>
-          
         );
+        } else {
+            return(<div></div>)
+        }
       }
       const CarouselArrowPrev = (props) => {
         const classes = useStyles();
-        const { className, onClick, style } = props;
+        const { className, onClick, style, currentSlide} = props;
+        
+        if(currentSlide !==0){
         return (
           <div 
             className={className}
-            style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
+            style={{ ...style, display: "block",zIndex:60,content:'none'}}
             onClick={onClick}
           >
             <Fab
@@ -241,6 +246,9 @@ const employmentTypes = [
           </div>
           
         );
+        } else {
+            return(<div></div>)
+        }
       }
 
   const carouselSettings = {

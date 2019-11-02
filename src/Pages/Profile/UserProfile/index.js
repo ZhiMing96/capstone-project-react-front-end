@@ -23,6 +23,11 @@ function Profile(props) {
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [setupState, setSetupState] = useState(false);
+    var user = null;
+    console.log(props)
+    if(props.location.state && props.location.state.user){
+         user = props.location.state.user
+    } 
 
 
     /*useEffect(()=>{
@@ -89,7 +94,7 @@ function Profile(props) {
             {editProfileState ? <UserDetailsView changeState={changeProfileState} setSnackbar={setSnackbar} /> :
                 <ReadOnlyView changeState={changeProfileState} />}
             <br />
-            {setupState || editSocialProfileState? <SocialProfileEdit changeState={changeSocialProfileState} setSnackbar={setSnackbar}/> : <SocialProfileRead changeState={changeSocialProfileState}/>} 
+            {setupState || editSocialProfileState? <SocialProfileEdit changeState={changeSocialProfileState} setSnackbar={setSnackbar}/> : <SocialProfileRead changeState={changeSocialProfileState} user={user} />} 
                 <br />
             <WorkWithDatepicker setSnackbar={setSnackbar}/>
 

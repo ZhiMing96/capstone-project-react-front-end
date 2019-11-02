@@ -256,9 +256,9 @@ function addBookmark(job){
                                                 ? list.postedCompany.name
                                                 : ""
                                             }
-                                        </Box>
+                                        </Box> 
                                     </Typography>
-                                    <Typography >
+                                    <Typography>
                                         <Box fontWeight="fontWeightBold" align="left"  style={{marginLeft:10, color:'#5E2CA5'}}>
                                             {list.title}
                                         </Box>
