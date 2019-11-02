@@ -29,7 +29,7 @@ const Page = styled.div`
 `;
 
 const carouselSettings = {
-    accessibiliy: true,
+    accessibility: true,
     speed:1700,
     slidesToShow: 5,
     slidesToScroll: 1,

@@ -1,11 +1,6 @@
 import React from 'react';
-import clsx from 'clsx';
 import { Grid, Typography, Box, Card, CardActions, CardContent, CardHeader, Avatar, IconButton, Collapse, Button, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import PersonIcon from '@material-ui/icons/Person';
-import TelegramIcon from '@material-ui/icons/Telegram';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(theme => ({
@@ -56,7 +51,7 @@ export default function RecoRequestCard(props) {
             </IconButton>
             <CardContent>
                 <Grid container justify="center" alignItems="center">
-                    <Avatar className={classes.avatar} src="/static/images/avatar/1.jpg" />
+                    <Avatar className={classes.avatar} src={null} />
                 </Grid>
                 <Grid container justify="center" alignItems="center">
                     <Box alignContent='center'>
