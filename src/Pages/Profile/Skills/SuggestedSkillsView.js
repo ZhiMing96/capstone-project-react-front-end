@@ -116,7 +116,7 @@ class SuggestedSkillsView extends React.Component {
 
                 SUGGESTED SKILLS
 
-                  <Typography variant='body2' color='textSecondary' align='left'>
+                  <Typography variant='body2' color='textSecondary' align='left' style={{fontSize:'medium'}}>
                   Based on your career interests, these are some skills that will get you further in your job hunt!
               </Typography>
               </Box>

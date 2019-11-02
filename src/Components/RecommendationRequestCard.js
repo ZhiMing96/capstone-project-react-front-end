@@ -1,18 +1,13 @@
 import React from 'react';
-import clsx from 'clsx';
 import { Grid, Typography, Box, Card, CardActions, CardContent, CardHeader, Avatar, IconButton, Collapse, Button, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import PersonIcon from '@material-ui/icons/Person';
-import TelegramIcon from '@material-ui/icons/Telegram';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(theme => ({
     card: {
         height: '100%',
         textAlign: 'center',
-        alignItems:'center',
+        alignItems: 'center',
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -26,37 +21,38 @@ const useStyles = makeStyles(theme => ({
     },
     avatar: {
         marginBottom: 20,
+        marginTop: -10,
         width: 100,
         height: 100,
     },
-    close:{
-        float:"right",
-        margin:theme.spacing(1),
+    close: {
+        float: "right",
+        margin: theme.spacing(1),
     },
-    button:{
-        margin:theme.spacing(2),
-        marginTop:0
+    button: {
+        margin: theme.spacing(2),
+        marginTop: 0
     }
 }));
 
 export default function RecoRequestCard(props) {
     const classes = useStyles();
 
-    const handleClose=()=>{
+    const handleClose = () => {
         //remove the request what to do for API here ah
     }
 
-    const handleRecommend=()=>{
+    const handleRecommend = () => {
         //
     }
     return (
         <Card className={classes.card}>
             <IconButton aria-label="settings" className={classes.close} size='small'>
-                <CloseIcon onClick={handleClose} size='small' className={classes.close} />
+                <CloseIcon onClick={handleClose} fontSize="inherit" className={classes.close} />
             </IconButton>
             <CardContent>
                 <Grid container justify="center" alignItems="center">
-                    <Avatar className={classes.avatar} src="/static/images/avatar/1.jpg" />
+                    <Avatar className={classes.avatar} src={null} />
                 </Grid>
                 <Grid container justify="center" alignItems="center">
                     <Box alignContent='center'>
@@ -68,17 +64,17 @@ export default function RecoRequestCard(props) {
                             color="textPrimary"
                         >
                             Hello world
-                            </Typography>
-                        <Typography variant="body2" color="textSecondary" gutterBottom style={{fontSize:'medium'}}>
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" gutterBottom style={{ fontSize: 'medium' }}>
                             graphic designer
-                            </Typography>
+                        </Typography>
                     </Box>
                 </Grid>
             </CardContent>
             <CardActions disableSpacing >
-            <Grid container justify="center" alignItems="center">
-                <Button color="primary" variant="outlined" className={classes.button} fullWidth onClick={handleRecommend}>
-                    Recommend           
+                <Grid container justify="center" alignItems="center">
+                    <Button color="primary" variant="outlined" className={classes.button} fullWidth onClick={handleRecommend}>
+                        Recommend
                 </Button>
                 </Grid>
             </CardActions>

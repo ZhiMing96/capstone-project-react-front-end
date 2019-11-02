@@ -15,13 +15,13 @@ import Drawer from '@material-ui/core/Drawer';
 
 const useStyles = makeStyles(() => ({
   drawer: {
-    width: '23%',
+    width: '17%',
     flexShrink: 0,
     //position:'relative',
     //zIndex: 40
   },
   drawerPaper: {
-    width: '23%',
+    width: '17%',
     flexShrink: 0,
     zIndex: 40,
     marginTop: 64//appbar height
@@ -64,7 +64,7 @@ function Main(props) {
         {/* <MobileSideBar show={openSideBar} backdropClickHandler={backdropClickHandler}/> */}
         {/* {backdrop} */}
         <Grid container style={{width: '100%'}} >
-        <Grid item sm={3} >
+        <Grid item sm={2} >
               <Hidden xsDown>
               <Drawer
         className={classes.drawer}
@@ -86,7 +86,7 @@ function Main(props) {
                   </IconButton>
                 </Grid>
               </Hidden> */}
-              <Grid item sm={9} xs={12} style={{width:'100%', paddingRight:'5%', paddingLeft:'2%'}}>
+              <Grid item sm={10} xs={12} style={{width:'100%', paddingRight:'5%', paddingLeft:'2%'}}>
                 {/*<Typography component="div">
                   <Box 
                     fontSize="h6.fontSize" 

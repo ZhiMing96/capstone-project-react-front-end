@@ -36,6 +36,119 @@ const Page = styled.div`
     width:90%
 `;
 
+const CarouselArrowNext = (props) => {
+
+    const { className, style, onClick} = props;
+    // console.log(props)
+
+    if(onClick !== null){
+    return (
+        <div 
+            className={className}
+            style={{ display: "block",zIndex:60, marginRight:'1%',}}
+            onClick={onClick}
+        >
+            <Fab
+            className={className}
+            size='medium'
+            style={{display: "block",zIndex:60, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
+            onClick={onClick}
+            > 
+                <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
+            </Fab>
+        </div>
+    );
+    } else {
+        return(<div></div>)
+    }
+  }
+  const CarouselArrowPrev = (props) => {
+    const classes = useStyles();
+    const { className, onClick, style, currentSlide } = props;
+
+    if(currentSlide !==0){
+        return (
+            <div 
+              className={className}
+              style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
+              onClick={onClick}
+            >
+              <Fab
+                size='medium'
+                style={{backgroundColor:'black', opacity:'0.6'}}
+              > 
+              <KeyboardArrowLeftIcon style={{color:'white',}}/>
+            </Fab>
+        
+            </div>
+            
+        );
+    } else {
+        return(<div></div>)
+    }
+    
+  }
+
+const carouselSettings = {
+    accessibiliy: true,
+    speed:1000,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    infinite: false,
+    dots:false,
+    //autoplay: true,
+    arrows:true,
+    //autoplaySpeed:8000,
+    draggable:true,
+    //lazyLoad: "progressive",
+    pauseOnHover: true,
+    nextArrow: <CarouselArrowNext />,
+    prevArrow: <CarouselArrowPrev />,
+    responsive: [
+      {
+        breakpoint: 1920, //lg
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+          infinite: false,
+        }
+      },
+      {
+        breakpoint: 1280, //md
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          infinite: false,
+        }
+      },
+      {
+        breakpoint: 1000, //md
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          //infinite: true,
+        }
+      },
+      {
+        breakpoint: 600, //sm
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          //initialSlide: 2
+          infinite: false,
+        }
+      },
+      {
+        breakpoint: 480, //xs
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: false,
+        }
+      }]
+  };
+    
+
   const useStyles = makeStyles(theme => ({
     root:{
 
@@ -177,120 +290,6 @@ function Invitations(props) {
     }
 
 
-const CarouselArrowNext = (props) => {
-
-    const { className, style, onClick} = props;
-    // console.log(props)
-
-    if(onClick !== null){
-    return (
-        <div 
-            className={className}
-            style={{ display: "block",zIndex:60, marginRight:'1%',}}
-            onClick={onClick}
-        >
-            <Fab
-            className={className}
-            size='medium'
-            style={{display: "block",zIndex:60, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
-            onClick={onClick}
-            > 
-                <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
-            </Fab>
-        </div>
-    );
-    } else {
-        return(<div></div>)
-    }
-  }
-  const CarouselArrowPrev = (props) => {
-    const classes = useStyles();
-    const { className, onClick, style, currentSlide } = props;
-
-    if(currentSlide !==0){
-        return (
-            <div 
-              className={className}
-              style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
-              onClick={onClick}
-            >
-              <Fab
-                size='medium'
-                style={{backgroundColor:'black', opacity:'0.6'}}
-              > 
-              <KeyboardArrowLeftIcon style={{color:'white',}}/>
-            </Fab>
-        
-            </div>
-            
-        );
-    } else {
-        return(<div></div>)
-    }
-    
-  }
-
-const carouselSettings = {
-    accessibiliy: true,
-    speed:1000,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    infinite: false,
-    dots:false,
-    //autoplay: true,
-    arrows:true,
-    //autoplaySpeed:8000,
-    draggable:true,
-    //lazyLoad: "progressive",
-    pauseOnHover: true,
-    nextArrow: <CarouselArrowNext />,
-    prevArrow: <CarouselArrowPrev />,
-    responsive: [
-      {
-        breakpoint: 1920, //lg
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 1,
-          infinite: false,
-        }
-      },
-      {
-        breakpoint: 1280, //md
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          infinite: false,
-        }
-      },
-      {
-        breakpoint: 1000, //md
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          //infinite: true,
-        }
-      },
-      {
-        breakpoint: 600, //sm
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          //initialSlide: 2
-          infinite: false,
-        }
-      },
-      {
-        breakpoint: 480, //xs
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: false,
-        }
-      }]
-  };
-
-        
-    
     return (
         <div>
             {/* <Router> */}
