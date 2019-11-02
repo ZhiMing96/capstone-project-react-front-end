@@ -208,13 +208,13 @@ const employmentTypes = [
         return (
             <div 
                 className={className}
-                style={{ display: "block",zIndex:60, marginRight:'1%',}}
+                style={{ display: "block",zIndex:40, marginRight:'1%',}}
                 onClick={onClick}
             >
                 <Fab
                 className={className}
                 size='medium'
-                style={{display: "block",zIndex:60, marginRight:'5%',backgroundColor:'black', opacity:'0.6'}}
+                style={{display: "block",zIndex:40, marginRight:'5%',backgroundColor:'black', opacity:'0.6'}}
                 onClick={onClick}
                 > 
                     <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
@@ -233,7 +233,7 @@ const employmentTypes = [
         return (
           <div 
             className={className}
-            style={{ ...style, display: "block",zIndex:60,content:'none'}}
+            style={{ ...style, display: "block",zIndex:40,content:'none'}}
             onClick={onClick}
           >
             <Fab

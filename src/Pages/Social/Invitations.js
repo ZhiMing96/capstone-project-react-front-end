@@ -18,6 +18,7 @@ import {
 } from '@material-ui/pickers';
 import CompleteMeetupIcon from  '../../images/completeMeetup.svg';
 import RemoveMeetupIcon from '../../images/removeMeetup.svg';
+import TelegramIcon from '../../images/telegram.svg';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -26,6 +27,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Recommendations from './Recommendations';
 import './Invitations.css';
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import ClearIcon from '@material-ui/icons/Clear'
 
 
 const Wrapper = styled.div`
@@ -45,13 +48,13 @@ const CarouselArrowNext = (props) => {
     return (
         <div 
             className={className}
-            style={{ display: "block",zIndex:60, marginRight:'1%',}}
+            style={{ display: "block",zIndex:40, marginRight:'1%',}}
             onClick={onClick}
         >
             <Fab
             className={className}
             size='medium'
-            style={{display: "block",zIndex:60, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
+            style={{display: "block",zIndex:40, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
             onClick={onClick}
             > 
                 <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
@@ -70,7 +73,7 @@ const CarouselArrowNext = (props) => {
         return (
             <div 
               className={className}
-              style={{ ...style, display: "block",zIndex:60,marginLeft:'1%',content:'none'}}
+              style={{ ...style, display: "block",zIndex:40,marginLeft:'1%',content:'none'}}
               onClick={onClick}
             >
               <Fab
@@ -450,51 +453,77 @@ function Invitations(props) {
                                             <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
                                                 <Avatar
                                                 className={classes.controlButtons}
-                                                src={RemoveMeetupIcon}
+                                                src={TelegramIcon}
                                                 />
                                             </Grid>
                                             <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                                <Avatar
-                                                className={classes.controlButtons}
-                                                src={CompleteMeetupIcon}
-                                                onClick={()=>handleOpenConfirmationDialog(index,'meetupWithDate')}
-                                                />
+                                                <IconButton
+                                                // className={classes.controlButtons}
+                                                onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
+                                                >
+                                                    <MoreVertIcon/>
+                                                </IconButton>
                                             </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>
                             </Card>
                             <Dialog
-                            open={index === selectedMeetupIndexWithDate ? openMeetupConfirmation: false}
+                            open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
                             TransitionComponent={Transition}
                             keepMounted
+                            fullWidth
                             onClose={handleCloseDialog}
                             aria-labelledby="alert-dialog-slide-title"
                             aria-describedby="alert-dialog-slide-description"
+                            style={{}}
                             >
-                                <DialogContent>
+                                <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0}}>
                                     <Grid container>
-                                        <Grid item xs={12} style={{textAlign:'-webkit-center'}}>
-                                            <Avatar alt="List"
-                                            src={CompleteMeetupIcon} 
-                                            className={classes.carouselAvatar} 
-                                            imgProps={{style:{objectFit:'contain',border:0}}}
-                                            // onClick={()=> handleHrefClick(listing)}
-                                            />
+                                        <Grid item xs={12} style={{textAlign:'right'}}>
+                                            <IconButton
+                                            onClick={handleCloseDialog}
+                                            style={{margin:'1%'}}
+                                            >
+                                                <ClearIcon style={{width:45, height:45}}/>
+                                            </IconButton>
+                                        </Grid>
+                                        <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%', paddingRight:'9%'}}>
+                                            <Typography style={{fontSize:20}}>
+                                                How was your meetup with John Doe?
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item container spacing={7} style={{ paddingRight:'9%'}}>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
+                                                <Avatar alt="List"
+                                                    src={RemoveMeetupIcon} 
+                                                    className={classes.listAvatar} 
+                                                    imgProps={{style:{objectFit:'contain',border:0}}}
+                                                    style={{marginRight:'16%'}}
+                                                />
+                                                <Button 
+                                                style={{fontWeight:'bold', fontSize:18}}
+                                                >
+                                                    Cancelled
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
+                                                <Avatar alt="List"
+                                                    src={CompleteMeetupIcon} 
+                                                    className={classes.listAvatar} 
+                                                    imgProps={{style:{objectFit:'contain',border:0}}}
+                                                    style={{marginLeft:'16%'}}
+                                                />
+                                                <Button 
+                                                style={{fontWeight:'bold', fontSize:18}}
+                                                onClick={handleMeetupConfirmation} 
+                                                >
+                                                    Completed
+                                                </Button>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                <Typography style={{fontSize:20, fontWeight:"bold"}}>
-                                    Have you completed your MeetUp with [User]?
-                                </Typography>
                                 </DialogContent>
-                                <DialogActions>
-                                <Button onClick={handleCloseDialog} color="primary">
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleMeetupConfirmation} color="primary">
-                                    Yes
-                                </Button>
-                                </DialogActions>
                             </Dialog>
                         
                         </div>
@@ -553,15 +582,16 @@ function Invitations(props) {
                                             <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
                                                 <Avatar
                                                 className={classes.controlButtons}
-                                                src={RemoveMeetupIcon}
+                                                src={TelegramIcon}
                                                 />
                                             </Grid>
                                             <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                                <Avatar
-                                                className={classes.controlButtons}
-                                                src={CompleteMeetupIcon}
+                                                <IconButton
+                                                // className={classes.controlButtons}
                                                 onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
-                                                />
+                                                >
+                                                    <MoreVertIcon/>
+                                                </IconButton>
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -574,31 +604,56 @@ function Invitations(props) {
                             onClose={handleCloseDialog}
                             aria-labelledby="alert-dialog-slide-title"
                             aria-describedby="alert-dialog-slide-description"
+                            style={{}}
                             >
-                                <DialogContent>
+                                <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0}}>
                                     <Grid container>
-                                        <Grid item xs={12} style={{textAlign:'-webkit-center'}}>
-                                            <Avatar alt="List"
-                                            src={CompleteMeetupIcon} 
-                                            className={classes.carouselAvatar} 
-                                            imgProps={{style:{objectFit:'contain',border:0}}}
-                                            // onClick={()=> handleHrefClick(listing)}
-                                            />
+                                        <Grid item xs={12} style={{textAlign:'right'}}>
+                                            <IconButton
+                                            onClick={handleCloseDialog}
+                                            style={{margin:'1%'}}
+                                            >
+                                                <ClearIcon style={{width:45, height:45}}/>
+                                            </IconButton>
+                                        </Grid>
+                                        <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%', paddingRight:'9%'}}>
+                                            <Typography style={{fontSize:20}}>
+                                                How was your meetup with John Doe?
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item container spacing={7} style={{ paddingRight:'9%'}}>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
+                                                <Avatar alt="List"
+                                                    src={RemoveMeetupIcon} 
+                                                    className={classes.listAvatar} 
+                                                    imgProps={{style:{objectFit:'contain',border:0}}}
+                                                    style={{marginRight:'16%'}}
+                                                />
+                                                <Button 
+                                                style={{fontWeight:'bold', fontSize:18}}
+                                                >
+                                                    Cancelled
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
+                                                <Avatar alt="List"
+                                                    src={CompleteMeetupIcon} 
+                                                    className={classes.listAvatar} 
+                                                    imgProps={{style:{objectFit:'contain',border:0}}}
+                                                    style={{marginLeft:'16%'}}
+                                                />
+                                                <Button 
+                                                style={{fontWeight:'bold', fontSize:18}}
+                                                onClick={handleMeetupConfirmation} 
+                                                >
+                                                    Completed
+                                                </Button>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                <Typography style={{fontSize:20, fontWeight:"bold"}}>
-                                    Have you completed your MeetUp with [User]?
-                                </Typography>
                                 </DialogContent>
-                                <DialogActions>
-                                <Button onClick={handleCloseDialog} color="primary">
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleMeetupConfirmation} color="primary">
-                                    Yes
-                                </Button>
-                                </DialogActions>
                             </Dialog>
+                        
                         </div>
                     ))}
                 </Grid>
@@ -607,5 +662,6 @@ function Invitations(props) {
         </div>
     )
 }
+
 
 export default Invitations;
