@@ -154,12 +154,12 @@ const carouselSettings = {
 
     },
     sectionHeading: {
-        fontSize:18, 
+        fontSize:20, 
         fontWeight:'bold', 
-        color:'grey',
-         marginBottom:'2%',
-         marginTop:'2%',
-         textAlign:'left',
+        color:'#0091ea',
+        marginBottom:'2%',
+        marginTop:'2%',
+        textAlign:'left',
     },
     carouselPaper: {
         width:'80%',
@@ -296,7 +296,7 @@ function Invitations(props) {
             <Grid container direction="row" style={{ width: '100%', textAlign: 'left' }}>
                 <Grid item xs={12}>
                     <Typography className={classes.sectionHeading}>
-                        Interested In Meeting You!
+                        INVITATION REQUESTS
                     </Typography>
                 </Grid>
                 <Grid container style={{ margin:10, marginTop:10, }} spacing={1} justify="space-between" > 
@@ -403,7 +403,7 @@ function Invitations(props) {
                 <Grid container item xs={12} md={6} style={{}}>
                     <Grid item xs={12}>
                         <Typography className={classes.sectionHeading} style={{marginTop:'10%'}}>
-                            Upcoming Meetups
+                            UPCOMING MEETUPS
                         </Typography>
                     </Grid>
                     {demoArray.map((element, index) => (
@@ -503,8 +503,8 @@ function Invitations(props) {
             
                 <Grid container item xs={12} md={6}>
                     <Grid item xs={12}>
-                        <Typography className={classes.sectionHeading} style={{marginTop:'10%'}}>
-                            Pending Meetup Date
+                        <Typography className={classes.sectionHeading} style={{marginTop:'10%', color:'#992E24'}}>
+                            PENDING MEETUP DATE
                         </Typography>
                     </Grid>
                     {demoArray.map((element, index) => (
