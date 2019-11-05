@@ -96,6 +96,45 @@ const dailyDigest = {
   }),
   getPublic: () => axios.get('http://localhost:3000/daily')
 }
+
+const invitations = {
+  getPending: () => axios.get('http://localhost:3000/meetup/invite/pending', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+
+  getCurrent: () => axios.get('http://localhost:3000/meetup/invite/all', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }), 
+
+  acceptInvitation: params => axios.post('http://localhost:3000/meetup/invite/accept', params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+
+  rejectInvitation: params => axios.post('http://localhost:3000/meetup/invite/reject', params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+
+  
+}
+
+const meetups = {
+    getTeleLink: params => axios.post('http://localhost:3000/telegram/user', params),
+
+    changeDate: params => axios.post('http://localhost:3000/meetup/update', params, {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
+
+    completeMeetup: params => axios.post('http://localhost:3000/meetup/complete', params, {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
+    cancelMeetup: params => axios.post('http://localhost:3000/meetup/cancel', params, {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
+}
+
+const recommendations = {
+  request: () => axios.post(),
+}
   
   export default {
     auth,
@@ -108,4 +147,7 @@ const dailyDigest = {
     articles,
     dailyDigest,
     events,
+    invitations,
+    meetups,
+    recommendations,
   }

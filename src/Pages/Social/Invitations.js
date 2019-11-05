@@ -29,6 +29,7 @@ import Recommendations from './Recommendations';
 import './Invitations.css';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
+import Badge from '@material-ui/core/Badge';
 
 
 const Wrapper = styled.div`
@@ -161,7 +162,7 @@ const carouselSettings = {
         fontWeight:'bold', 
         color:'#0091ea',
         marginBottom:'2%',
-        marginTop:'2%',
+        // marginTop:'2%',
         textAlign:'left',
     },
     carouselPaper: {
@@ -215,6 +216,151 @@ const carouselSettings = {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
+  const pendingDemo = {
+    "response_code": 200,
+    "response_message": "OK",
+    "invites_sent": [
+        {
+            "request_id": 96,
+            "meetup_search_id": null,
+            "to_user": {
+                "profile": {
+                    "telegram_id": "117216954",
+                    "user_id": 69,
+                    "first_name": "yi",
+                    "last_name": "QIONG",
+                    "username": "yiqiong"
+                },
+                "social": {
+                    "profile_image_link": "https://miro.medium.com/max/2400/0*45EL1rU3FiAbGAI_",
+                    "description": null,
+                    "facebook_profile": null,
+                    "linkedin_profile": null,
+                    "meetup_ind": 1,
+                    "preferred_locations": [
+                        {
+                            "district_id": 14,
+                            "code": "D14",
+                            "location": "Geylang, Eunos",
+                            "sector": "38, 39, 40, 41"
+                        }
+                    ]
+                }
+            },
+            "message": "HELLO i want to meet you tenks",
+            "accepted": null,
+            "suggested_datetime": "2010-01-01 00:00:00",
+            "sent_datetime": "2019-11-03 11:53:09",
+            "accepted_datetime": null,
+            "rejected_datetime": null,
+            "updated_datetime": null
+        }
+    ],
+    "invites_received": [
+        {
+            "request_id": 55,
+            "meetup_search_id": null,
+            "from_user": {
+                "profile": {
+                    "telegram_id": "956473132",
+                    "user_id": 74,
+                    "first_name": "ern",
+                    "last_name": "tek",
+                    "username": "erntek2"
+                },
+                "social": {
+                    "profile_image_link": null,
+                    "description": null,
+                    "facebook_profile": null,
+                    "linkedin_profile": null,
+                    "meetup_ind": 1,
+                    "preferred_locations": []
+                }
+            },
+            "message": "HELLO i want to meet you tenks",
+            "accepted": null,
+            "suggested_datetime": "2010-01-01 00:00:00",
+            "sent_datetime": "2019-11-03 11:53:09",
+            "accepted_datetime": null,
+            "rejected_datetime": null,
+            "updated_datetime": null
+        }
+    ]
+ }
+  const allDemo = {
+    "response_code": 200,
+    "response_message": "OK",
+    "invites_sent": [
+        {
+            "request_id": 96,
+            "meetup_search_id": null,
+            "to_user": {
+                "profile": {
+                    "telegram_id": "117216954",
+                    "user_id": 69,
+                    "first_name": "yi",
+                    "last_name": "QIONG",
+                    "username": "yiqiong"
+                },
+                "social": {
+                    "profile_image_link": "https://miro.medium.com/max/2400/0*45EL1rU3FiAbGAI_",
+                    "description": null,
+                    "facebook_profile": null,
+                    "linkedin_profile": null,
+                    "meetup_ind": 1,
+                    "preferred_locations": [
+                        {
+                            "district_id": 14,
+                            "code": "D14",
+                            "location": "Geylang, Eunos",
+                            "sector": "38, 39, 40, 41"
+                        }
+                    ]
+                }
+            },
+            "message": "HELLO i want to meet you tenks",
+            "accepted": 0,
+            "suggested_datetime": "2019-01-01 00:00:00",
+            "sent_datetime": "2019-11-03 11:53:09",
+            "accepted_datetime": null,
+            "rejected_datetime": "2019-11-03 15:16:08",
+            "updated_datetime": null
+        }
+    ],
+    "invites_received": [
+        {
+            "request_id": 55,
+            "meetup_search_id": null,
+            "from_user": {
+                "profile": {
+                    "telegram_id": "956473132",
+                    "user_id": 74,
+                    "first_name": "ern",
+                    "last_name": "tek",
+                    "username": "erntek2"
+                },
+                "social": {
+                    "profile_image_link": null,
+                    "description": null,
+                    "facebook_profile": null,
+                    "linkedin_profile": null,
+                    "meetup_ind": 1,
+                    "preferred_locations": []
+                }
+            },
+            "message": "HELLO i want to meet you tenks",
+            "accepted": 1,
+            "suggested_datetime": "2019-01-01 00:00:00",
+            "sent_datetime": "2019-11-03 11:53:09",
+            "accepted_datetime": "2019-11-03 13:25:11",
+            "rejected_datetime": null,
+            "updated_datetime": null
+        }
+    ]
+ }
+ 
+
+
 function Invitations(props) {
 
     const classes=useStyles();
@@ -224,19 +370,128 @@ function Invitations(props) {
     const [openInvitation, setOpenInvitation] = useState(false);
     const [selectedMeetupIndexWithDate, setSelectedMeetupIndexWithDate] = useState()
     const [selectedMeetupIndexWithoutDate, setSelectedMeetupIndexWithoutDate] = useState()
-    const [openMeetupConfirmation, setOpenMeetupConfirmation] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(123456);
-    const [openMeetupCancellation, setOpenMeetupCancellation] = useState(false);
+    const [openMeetupConfirmation, setOpenMeetupConfirmation] = useState(false); 
+    const [ selectedMeetup, setSelectedMeetup] = useState();
+    const [ openMeetupCancellation, setOpenMeetupCancellation ] = useState(false);
+    const [ pendingInvitations, setPendingInvitations ] = useState();
+    const [ upcomingMeetups, setUpcomingMeetups ] = useState();
 
-    const handleSelectUser = userId => {
-        console.log("***** Entered Handled Select User ****");
-        console.log(userId);
-        setSelectedUserId(userId);
+    const getPendingInvitation = () => {
+        api.invitations.getPending()
+        .then(res=>{
+            console.log(res.data)
+            if(res.data.response_code === 200) {
+                const invitesSent = res.data.invites_sent
+                const invitesReceived = res.data.invites_received
+
+                console.log('****** Invitations Sent *****')
+                console.log(invitesSent);
+
+                console.log('****** Invitations Received *****')
+                console.log(invitesReceived);
+
+                // var combined = invitesSent.concat(invitesReceived)
+                // console.log('****** Combined Invitations *****')
+                // console.log(combined);
+
+                setPendingInvitations(invitesReceived)
+            }
+        })
+    }
+
+    const getUpcomingMeetups = () => {
+        api.invitations.getCurrent()
+        .then(res=>{
+            console.log(res.data)
+            if(res.data.response_code === 200) {
+                const invitesSent = res.data.invites_sent
+                const invitesReceived = res.data.invites_received
+                console.log('****** Invitations Sent *****')
+                console.log(invitesSent);
+                console.log('****** Invitations Received *****')
+                console.log(invitesReceived);
+                var combined = invitesSent.concat(invitesReceived)
+                console.log('****** Combined Invitations *****')
+                console.log(combined);
+                var temp = [];
+                for(let i=0; i<combined.length;i++){
+                    const invitation = combined[i]
+                    console.log(invitation)
+                    if(invitation.accepted === 1){
+                        temp.push(invitation)
+                    }
+                }
+                setUpcomingMeetups(temp)
+            }
+        })
+    }
+    
+    
+    useEffect(()=>{
+        getPendingInvitation();
+        getUpcomingMeetups();
+    },[props]) 
+
+    const handleAcceptInvitation = (requestId) => {
+        console.log(requestId)
+        api.invitations.acceptInvitation({request_id: requestId})
+        .then(res=>{
+            if(res.data.response_code === 200){
+                console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
+                getUpcomingMeetups();
+            } else {
+                console.log("**** UNABLE TO ACCEPT INVITATION ****")
+                console.log(res.data.response_code + res.data.response_message)
+            }
+        })
+        handleCloseDialog();
+    } 
+
+    const handleDeclineInvitation = invitation =>{
+
+        console.log(invitation)
+        api.invitations.rejectInvitation({request_id: invitation.request_id})
+        .then(res => {
+            if(res.data.response_code === 200){
+                console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
+                getPendingInvitation();
+            } else {
+                console.log("**** UNABLE TO CANCEL INVITATION ****")
+                console.log(res.data.response_code + res.data.response_message)
+            }
+        })
+    }
+
+    const handleSelectedMeetup = meetup => {
+        console.log("***** Entered Handled Select Meetup ****");
+        console.log(meetup);
+        setSelectedMeetup(meetup);
     }
     
     const handleDateChange = date => {
-        console.log(date)  
-        //API Call to update of this change in date 
+        console.log('*** ENTERED handleDateChange ****')
+        const processDate = new Date(date)
+
+        const formattedDate= processDate.getFullYear() + "-" + (processDate.getMonth()+1) + "-" + processDate.getDate() + " " + + processDate.getHours() + ":" + processDate.getMinutes() + ":" + processDate.getSeconds() 
+        console.log(formattedDate)  
+        console.log(selectedMeetup ?selectedMeetup.request_id:'NO SELECTED MEETUP')
+
+        api.meetups.changeDate({
+            request_id: selectedMeetup ? selectedMeetup.request_id : null,
+            datetime: formattedDate,
+        })
+        .then(res=>{
+            console.log(res.data);
+            if(res.data.response_code === 200){
+                //open snackbar?
+                console.log('***** DATE CHANGE RECORDED SUCESSFULLY ****');
+                setSelectedMeetup(null);
+                getUpcomingMeetups()
+            } else {
+                console.log('***** DATE CHANGE NOT RECORDED ****')
+            }
+           
+        })
     }; 
 
     const handleOpenConfirmationDialog = (index,type) => {
@@ -273,391 +528,509 @@ function Invitations(props) {
             setOpenMeetupCancellation(false);
         // }
     };
- 
+
 
     const deleteElement = (index) => {
         console.log('Index = ' + index)
-        var array = [...demoArray]
+        var array = [...pendingInvitations]
         array.splice(index,1)
-        setDemoArray(array);
-        console.log(demoArray)
+        // setPendingInvitations(array);
     }
     
     const timeLeft = (date) => {
         const dateFormat =  new Date(date);
     }
 
-    const handleMeetupConfirmation = () => {
-        //API call to confirm Meetup 
-        setOpenMeetupConfirmation(false);
-    }
+    const handleMeetupConfirmation = (meetup) => {
+        console.log(meetup)
 
+        api.meetups.completeMeetup({request_id: meetup.request_id})
+        .then(res => {
+            console.log(res.data)
+            if(res.data.response_code===200){
+                getUpcomingMeetups()
+                setOpenMeetupConfirmation(false);
+            } else {
+                console.log('**** ERROR IN CONFIRMING MEETUP ***');
+            }
+        }).catch(err=> console.log(err));
+    }
+    const handleMeetupCancellation = (meetup) => {
+        console.log(meetup)
+
+        api.meetups.cancelMeetup({request_id: meetup.request_id})
+        .then(res => {
+            console.log(res.data)
+            if(res.data.response_code===200){
+                getUpcomingMeetups()
+                setOpenMeetupConfirmation(false);
+            } else {
+                console.log('**** ERROR IN CANCELLING MEETUP ***');
+            }
+        }).catch(err=> console.log(err));
+    }
+    const handleTelegramRedirect = ( telegramId ) => {
+        if(telegramId!==null){
+            api.meetups.getTeleLink({telegram_id : telegramId})
+            .then(res=>{
+                console.log(res.data)
+                if(res.data.response_code === 200){
+                    const teleLink = res.data.telegram_link
+                    if(teleLink){
+                        window.open(teleLink,'_blank');
+                    }
+                }
+            })
+        }
+    }
 
     return (
         <div>
             {/* <Router> */}
             <Grid container direction="row" style={{ width: '100%', textAlign: 'left' }}>
-                <Grid item xs={12}>
+                <Grid item xs={12} style={{marginTop:'5%'}}>
+                <Badge badgeContent={9} color="error">
                     <Typography className={classes.sectionHeading}>
                         INVITATION REQUESTS
                     </Typography>
+                </Badge>
                 </Grid>
                 <Grid container style={{ margin:10, marginTop:10, }} spacing={1} justify="space-between" > 
-                    <Wrapper>
-                        <Slider {...carouselSettings}>
-                            {demoArray.map((element, index) => (
-                                <div>
-                                <Page>
-                                    <Paper className={classes.carouselPaper} elevation={5}>
-                                        <Avatar alt="List"
-                                        src='' 
-                                        className={classes.carouselAvatar} 
-                                        imgProps={{style:{objectFit:'contain',border:0}}}
-                                        // onClick={()=> handleHrefClick(listing)}
-                                        />
-                                        <Grid container  justify='space-between' style={{height:'15vh'}}>
-                                            <Grid item xs={12}>
-                                            <Typography gutterBottom className={classes.carouselUsername} style={{}}>
-                                                Yi Qiong
-                                            </Typography>
-                                            <Typography style={{fontSize:13, color:'grey'}}>
-                                                Fintech Analyst 
-                                            </Typography>
-                                            </Grid>
-                                            <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
-                                            <Grid container item xs={12} direction="row"
-                                            justify="space-between"
-                                            alignItems="flex-end"
-                                            style={{height:'fit-content'}}
-                                            >
-                                                <Grid item xs={6}>
-                                                    <Button color='primary' style={{fontSize:15,fontWeight:'bold'}} size='small'
-                                                    onClick={()=>handleOpenConfirmationDialog(index,'invitation')}
-                                                    >
-                                                        Accept
-                                                    </Button>
-                                                </Grid>
-                                                <Grid item xs={6}>
-                                                    <Button color='primary' style={{fontSize:15,fontWeight:'bold', color:'#992E24'}} size='small'
-                                                    onClick={()=>deleteElement(index)}
-                                                    >
-                                                        Decline
-                                                    </Button>
-                                                </Grid>
-                                                
-                                            </Grid>
-                                        </Grid>
-                                    </Paper>
-                                </Page>
-                                <Dialog
-                                open={index === selectedInvitationIndex ? openInvitation: false}
-                                TransitionComponent={Transition}
-                                keepMounted
-                                onClose={handleCloseDialog}
-                                aria-labelledby="alert-dialog-slide-title"
-                                aria-describedby="alert-dialog-slide-description"
-                                >
-                                    <DialogTitle id="alert-dialog-slide-title">{"Find Out More About Yi Qiong!"}</DialogTitle>
-                                    <DialogContent>
-                                        <Grid container >
-                                            <Grid item xs={3}>
-                                                <Avatar alt="List"
-                                                    src='' 
-                                                    className={classes.carouselAvatar} 
-                                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                                    // onClick={()=> handleHrefClick(listing)}
-                                                />
-                                            </Grid>
-                                            <Grid Item xs={9}>
-                                                <DialogContentText id="alert-dialog-slide-description">
-                                                    Let Google help apps determine location. This means sending anonymous location data to
-                                                    Google, even when no apps are running.
-                                                </DialogContentText>
-                                            </Grid>
-                                        </Grid>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Link to={{
+                {pendingInvitations
+                ? 
+                <Wrapper>
+                    <Slider {...carouselSettings}>
+                        {pendingInvitations.map((invitation, index) => (
+                            <div key={index}>
+                            <Page>
+                                <Paper className={classes.carouselPaper} elevation={5}>
+                                    <Link to={{
                                             pathname: "/profile",
-                                            state: { user: true }
+                                            state: { user: 
+                                                invitation.from_user
+                                                ? invitation.from_user.profile.user_id 
+                                                : null
+                                            }
                                         }} 
                                         style={{textDecoration:'none'}}>
-                                            <Button 
-                                                color="primary"
-                                                onClick={()=> handleCloseDialog()}
-                                                >
-                                                    View Profile 
-                                            </Button>
-                                        </Link>
-                                            
-                                        <Button onClick={handleCloseDialog} color="primary">
-                                            Accept
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-                                </div>
-                            ))}
-                        </Slider>
-                    </Wrapper>
-                </Grid>
-            </Grid>
-        
-            <Grid container spacing={6}>
-                <Grid container item xs={12} md={6} style={{}}>
-                    <Grid item xs={12}>
-                        <Typography className={classes.sectionHeading} style={{marginTop:'10%'}}>
-                            UPCOMING MEETUPS
-                        </Typography>
-                    </Grid>
-                    {demoArray.map((element, index) => (
-                        <div>
-                            <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
-                                <Grid container item xs={12}>
-                                    <Grid item xs={3}> 
-                                        <Avatar alt="List"
-                                            src='' 
-                                            className={classes.listAvatar} 
+                                            <Avatar alt="List"
+                                            src={invitation.to_user && invitation.to_user.social.profile_image_link ? invitation.to_user.social.profile_image_link : 
+                                            ""
+                                            } 
+                                            className={classes.carouselAvatar} 
                                             imgProps={{style:{objectFit:'contain',border:0}}}
                                             // onClick={()=> handleHrefClick(listing)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
-                                        <Typography>
-                                            Chong Yi Qiong
-                                        </Typography>
-                                        <Typography>
-                                            Chong Yi Qiong
-                                        </Typography>
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils} >
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="date-picker-dialog"
-                                                format="MM/dd/yyyy"
-                                                value={selectedDate}
-                                                onChange={handleDateChange}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                                style={{width:'65%'}}
-                                                onOpen={()=> handleSelectUser(element)}
                                             />
-                                        </MuiPickersUtilsProvider>
-                                    </Grid>
-                                    <Grid container item xs={3} direction="row" justify="space-between"> 
-                                        <Grid item  xs={12}>
-                                            <Typography>
-                                                2 Days Left
-                                            </Typography>
-                                        </Grid>   
-                                        <Grid item container xs={12}>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                                <Avatar
-                                                className={classes.controlButtons}
-                                                src={TelegramIcon}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                                <IconButton
-                                                // className={classes.controlButtons}
-                                                onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
+                                    </Link>
+                                    <Grid container  justify='space-between' style={{height:'15vh'}}>
+                                        <Grid item xs={12}>
+                                        <Typography gutterBottom className={classes.carouselUsername} style={{}}>
+                                            {invitation.to_user 
+                                                ? invitation.to_user.profile.username 
+                                                : invitation.from_user
+                                                ? invitation.from_user.profile.username 
+                                                : ''
+                                            }
+                                        </Typography>
+                                        <Typography style={{fontSize:13, color:'grey'}}>
+                                            Fintech Analyst 
+                                        </Typography>
+                                        </Grid>
+                                        <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
+                                        <Grid container item xs={12} direction="row"
+                                        justify="space-between"
+                                        alignItems="flex-end"
+                                        style={{height:'fit-content'}}
+                                        >
+                                            <Grid item xs={6}>
+                                                <Button color='primary' style={{fontSize:15,fontWeight:'bold'}} size='small'
+                                                onClick={()=>handleOpenConfirmationDialog(index,'invitation')}
                                                 >
-                                                    <MoreVertIcon/>
-                                                </IconButton>
+                                                    Accept
+                                                </Button>
                                             </Grid>
+                                            <Grid item xs={6}>
+                                                <Button color='primary' style={{fontSize:15,fontWeight:'bold', color:'#992E24'}} size='small'
+                                                onClick={()=>handleDeclineInvitation(invitation)}
+                                                >
+                                                    Decline
+                                                </Button>
+                                            </Grid>
+                                            
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                            </Card>
+                                </Paper>
+                            </Page>
                             <Dialog
-                            open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
+                            open={index === selectedInvitationIndex ? openInvitation: false}
                             TransitionComponent={Transition}
                             keepMounted
                             fullWidth
                             onClose={handleCloseDialog}
                             aria-labelledby="alert-dialog-slide-title"
                             aria-describedby="alert-dialog-slide-description"
-                            style={{}}
                             >
-                                <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0}}>
-                                    <Grid container>
-                                        <Grid item xs={12} style={{textAlign:'right'}}>
-                                            <IconButton
-                                            onClick={handleCloseDialog}
-                                            style={{margin:'1%'}}
-                                            >
-                                                <ClearIcon style={{width:45, height:45}}/>
-                                            </IconButton>
-                                        </Grid>
-                                        <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%', paddingRight:'9%'}}>
-                                            <Typography style={{fontSize:20}}>
-                                                How was your meetup with John Doe?
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item container spacing={7} style={{ paddingRight:'9%'}}>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
-                                                <Avatar alt="List"
-                                                    src={RemoveMeetupIcon} 
-                                                    className={classes.listAvatar} 
-                                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                                    style={{marginRight:'16%'}}
-                                                />
-                                                <Button 
-                                                style={{fontWeight:'bold', fontSize:18}}
-                                                >
-                                                    Cancelled
-                                                </Button>
-                                            </Grid>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
-                                                <Avatar alt="List"
-                                                    src={CompleteMeetupIcon} 
-                                                    className={classes.listAvatar} 
-                                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                                    style={{marginLeft:'16%'}}
-                                                />
-                                                <Button 
-                                                style={{fontWeight:'bold', fontSize:18}}
-                                                onClick={handleMeetupConfirmation} 
-                                                >
-                                                    Completed
-                                                </Button>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </DialogContent>
-                            </Dialog>
-                        
-                        </div>
-                    ))}
-                </Grid>
-            
-                <Grid container item xs={12} md={6}>
-                    <Grid item xs={12}>
-                        <Typography className={classes.sectionHeading} style={{marginTop:'10%', color:'#992E24'}}>
-                            PENDING MEETUP DATE
-                        </Typography>
-                    </Grid>
-                    {demoArray.map((element, index) => (
-                        <div>
-                            <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
-                                <Grid container item xs={12}>
-                                    <Grid item xs={3}> 
-                                        <Avatar alt="List"
-                                            src='' 
-                                            className={classes.listAvatar} 
-                                            imgProps={{style:{objectFit:'contain',border:0}}}
-                                            // onClick={()=> handleHrefClick(listing)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
-                                        <Typography>
-                                            Chong Yi Qiong
-                                        </Typography>
-                                        <Typography>
-                                            Chong Yi Qiong
-                                        </Typography>
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils} style={{color:'#992E24'}}>
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="date-picker-dialog"
-                                                format="MM/dd/yyyy"
-                                                value={null}
-                                                onChange={handleDateChange}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                    'color':'#992E24'
-                                                }}
-                                                onOpen={()=> handleSelectUser(element)}
-                                                style={{width:'65%', }}
+                                <DialogContent style={{padding:'4%', paddingTop:'5%'}}>
+                                    <Grid container >
+                                        <Grid item xs={12} sm={4} style={{textAlign:'-webkit-center'}}>
+                                            <Avatar alt="List"
+                                                src={invitation.to_user 
+                                                    ? invitation.to_user.social.profile_image_link
+                                                    : invitation.from_user
+                                                    ? invitation.from_user.social.profile_image_link
+                                                    : ''} 
+                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                style={{width:90, height:90, marginBottom:'5%' }}
                                             />
-                                        </MuiPickersUtilsProvider>
-                                        
-                                    </Grid>
-                                    <Grid container item xs={3} direction="row" justify="space-between"> 
-                                        <Grid item  xs={12}>
-                                            <Typography>
-                                                2 Days Left
+                                        </Grid>
+                                        <Grid Item xs={12} sm={8} style={{textAlign:'-webkit-center'}}>
+                                            <Typography style={{fontSize:20, fontWeight:"bold"}} gutterBottom>
+                                                {invitation.to_user 
+                                                    ? invitation.to_user.profile.username.toUpperCase() 
+                                                    : invitation.from_user
+                                                    ? invitation.from_user.profile.username.toUpperCase()  
+                                                    : ''
+                                                }'S MESSAGE
                                             </Typography>
-                                        </Grid>   
-                                        <Grid item container xs={12}>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                                <Avatar
-                                                className={classes.controlButtons}
-                                                src={TelegramIcon}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
-                                                <IconButton
-                                                // className={classes.controlButtons}
-                                                onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
-                                                >
-                                                    <MoreVertIcon/>
-                                                </IconButton>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Card>
-                            <Dialog
-                            open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
-                            TransitionComponent={Transition}
-                            keepMounted
-                            onClose={handleCloseDialog}
-                            aria-labelledby="alert-dialog-slide-title"
-                            aria-describedby="alert-dialog-slide-description"
-                            style={{}}
-                            >
-                                <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0}}>
-                                    <Grid container>
-                                        <Grid item xs={12} style={{textAlign:'right'}}>
-                                            <IconButton
-                                            onClick={handleCloseDialog}
-                                            style={{margin:'1%'}}
-                                            >
-                                                <ClearIcon style={{width:45, height:45}}/>
-                                            </IconButton>
-                                        </Grid>
-                                        <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%', paddingRight:'9%'}}>
-                                            <Typography style={{fontSize:20}}>
-                                                How was your meetup with John Doe?
+                                            <Typography style={{fontSize:17, fontWeight:"medium"}}>
+                                                {invitation.message}
                                             </Typography>
-                                        </Grid>
-                                        <Grid item container spacing={7} style={{ paddingRight:'9%'}}>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
-                                                <Avatar alt="List"
-                                                    src={RemoveMeetupIcon} 
-                                                    className={classes.listAvatar} 
-                                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                                    style={{marginRight:'16%'}}
-                                                />
-                                                <Button 
-                                                style={{fontWeight:'bold', fontSize:18}}
-                                                >
-                                                    Cancelled
-                                                </Button>
-                                            </Grid>
-                                            <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
-                                                <Avatar alt="List"
-                                                    src={CompleteMeetupIcon} 
-                                                    className={classes.listAvatar} 
-                                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                                    style={{marginLeft:'16%'}}
-                                                />
-                                                <Button 
-                                                style={{fontWeight:'bold', fontSize:18}}
-                                                onClick={handleMeetupConfirmation} 
-                                                >
-                                                    Completed
-                                                </Button>
-                                            </Grid>
+                                            
                                         </Grid>
                                     </Grid>
                                 </DialogContent>
+                                <DialogActions>
+                                    <Link to={{
+                                        pathname: "/profile",
+                                        state: { user: 
+                                            invitation.to_user 
+                                                ? invitation.to_user.profile.user_id 
+                                                : invitation.from_user
+                                                ? invitation.from_user.profile.user_id 
+                                                : null
+                                        }
+                                    }} 
+                                    style={{textDecoration:'none'}}>
+                                        <Button 
+                                            color="primary"
+                                            onClick={()=> handleCloseDialog()}
+                                            style={{fontWeight:'bold'}}
+                                            >
+                                                View Profile 
+                                        </Button>
+                                    </Link>
+                                        
+                                    <Button 
+                                    onClick={() => handleAcceptInvitation(invitation.request_id)} color="primary"
+                                    style={{fontWeight:'bold'}}>
+                                        Accept
+                                    </Button>
+                                </DialogActions>
                             </Dialog>
-                        
-                        </div>
-                    ))}
+                            </div>
+                        ))}
+                    </Slider>
+                </Wrapper>
+                :
+                "NO INVITATIONS"
+                }
                 </Grid>
             </Grid>
+        
+            { upcomingMeetups 
+            ?
+            <Grid container spacing={6}>
+
+                    <Grid container item xs={12} md={6}>
+                        <Grid item xs={12} style={{marginTop:'10%'}}>
+                            <Badge badgeContent={2} color="error">
+                                <Typography className={classes.sectionHeading} style={{}}>
+                                    UPCOMING MEETUPS
+                                </Typography>
+                            </Badge>
+                        </Grid>
+                        {upcomingMeetups.map((meetup, index) => {
+                            if(meetup.suggested_datetime !== null){
+                                return(
+                                    <div style={{width:'90%'}}>
+                                        <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
+                                            <Grid container item xs={12}>
+                                                <Grid item xs={3}> 
+                                                    <Avatar alt="List"
+                                                        src='' 
+                                                        className={classes.listAvatar} 
+                                                        imgProps={{style:{objectFit:'contain',border:0}}}
+                                                        // onClick={()=> handleViewProfile()}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
+                                                    <Typography>
+                                                    {meetup.from_user && meetup.from_user.profile
+                                                        ? meetup.from_user.profile.username 
+                                                        : meetup.to_user && meetup.to_user.profile
+                                                        ? meetup.to_user.profile.username 
+                                                        : ''
+                                                    }
+                                                    </Typography>
+                                                    <Typography>
+                                                        Chong Yi Qiong
+                                                    </Typography>
+                                                    <MuiPickersUtilsProvider utils={DateFnsUtils} >
+                                                        <KeyboardDatePicker
+                                                            margin="normal"
+                                                            id="date-picker-dialog"
+                                                            format="MM/dd/yyyy"
+                                                            value={meetup.suggested_datetime}
+                                                            KeyboardButtonProps={{
+                                                                'aria-label': 'change date',
+                                                            }}
+                                                            style={{width:'65%'}}
+                                                            onChange={handleDateChange}
+                                                            onOpen={()=> handleSelectedMeetup(meetup)}
+                                                        />
+                                                    </MuiPickersUtilsProvider>
+                                                </Grid>
+                                                <Grid container item xs={3} direction="row" justify="space-between"> 
+                                                    <Grid item  xs={12}>
+                                                        <Typography>
+                                                            2 Days Left
+                                                        </Typography>
+                                                    </Grid>   
+                                                    <Grid item container xs={12}>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                            <Avatar
+                                                            className={classes.controlButtons}
+                                                            onClick={() => handleTelegramRedirect(
+                                                                meetup.to_user 
+                                                                ? meetup.to_user.profile.telegram_id 
+                                                                : meetup.from_user
+                                                                ? meetup.from_user.profile.telegram_id 
+                                                                : null
+                                                            )}
+                                                            src={TelegramIcon}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                            <IconButton
+                                                            // className={classes.controlButtons}
+                                                            onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
+                                                            >
+                                                                <MoreVertIcon/>
+                                                            </IconButton>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Card>
+                                        <Dialog
+                                        open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
+                                        TransitionComponent={Transition}
+                                        keepMounted
+                                        fullWidth
+                                        onClose={handleCloseDialog}
+                                        aria-labelledby="alert-dialog-slide-title"
+                                        aria-describedby="alert-dialog-slide-description"
+                                        style={{}}
+                                        >
+                                            <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0}}>
+                                                <Grid container>
+                                                    <Grid item xs={12} style={{textAlign:'right'}}>
+                                                        <IconButton
+                                                        onClick={handleCloseDialog}
+                                                        style={{margin:'1%'}}
+                                                        >
+                                                            <ClearIcon style={{width:45, height:45}}/>
+                                                        </IconButton>
+                                                    </Grid>
+                                                    <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%', paddingRight:'9%'}}>
+                                                        <Typography style={{fontSize:20}}>
+                                                            How was your meetup with John Doe?
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item container spacing={7} style={{ paddingRight:'9%'}}>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
+                                                            <Avatar alt="List"
+                                                                src={RemoveMeetupIcon} 
+                                                                className={classes.listAvatar} 
+                                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                                style={{marginRight:'16%'}}
+                                                            />
+                                                            <Button 
+                                                            style={{fontWeight:'bold', fontSize:18}}
+                                                            onClick={()=> handleMeetupCancellation(meetup)}
+                                                            >
+                                                                Cancelled
+                                                            </Button>
+                                                        </Grid>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
+                                                            <Avatar alt="List"
+                                                                src={CompleteMeetupIcon} 
+                                                                className={classes.listAvatar} 
+                                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                                style={{marginLeft:'16%'}}
+                                                            />
+                                                            <Button 
+                                                            style={{fontWeight:'bold', fontSize:18}}
+                                                            onClick={()=> handleMeetupConfirmation(meetup)} 
+                                                            >
+                                                                Completed
+                                                            </Button>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </DialogContent>
+                                        </Dialog>
+                                    
+                                    </div>
+                                )
+                            }
+                        })}
+                    </Grid>
+                
+                    <Grid container item xs={12} md={6}>
+                        <Grid item xs={12} style={{marginTop:'10%'}}>
+                            <Badge badgeContent={2} color="error">
+                                <Typography className={classes.sectionHeading} style={{ color:'#992E24'}}>
+                                    PENDING MEETUP DATE
+                                </Typography>
+                            </Badge>
+                        </Grid>
+                        {upcomingMeetups.map((meetup, index) => {
+                            if(meetup.suggested_datetime === null){
+                                return(
+                                    <div style={{width:'90%'}}>
+                                        <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
+                                            <Grid container item xs={12}>
+                                                <Grid item xs={3}> 
+                                                    <Avatar alt="List"
+                                                        src='' 
+                                                        className={classes.listAvatar} 
+                                                        imgProps={{style:{objectFit:'contain',border:0}}}
+                                                        // onClick={()=> handleHrefClick(listing)}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
+                                                    <Typography>s
+                                                        {meetup.to_user 
+                                                            ? meetup.to_user.profile.username 
+                                                            : meetup.from_user
+                                                            ? meetup.from_user.profile.username 
+                                                            : ''
+                                                        }
+                                                    </Typography>
+                                                    <Typography>
+                                                        Chong Yi Qiong
+                                                    </Typography>
+                                                    <MuiPickersUtilsProvider utils={DateFnsUtils} style={{color:'#992E24'}}>
+                                                        <KeyboardDatePicker
+                                                            margin="normal"
+                                                            id="date-picker-dialog"
+                                                            format="MM/dd/yyyy"
+                                                            value={null}
+                                                            onChange={handleDateChange}
+                                                            KeyboardButtonProps={{
+                                                                'aria-label': 'change date',
+                                                                'color':'#992E24'
+                                                            }}
+                                                            onOpen={()=> handleSelectedMeetup(meetup)}
+                                                            style={{width:'65%', }}
+                                                        />
+                                                    </MuiPickersUtilsProvider>
+                                                    
+                                                </Grid>
+                                                <Grid container item xs={3} direction="row" justify="space-between"> 
+                                                    <Grid item  xs={12}>
+                                                        <Typography>
+                                                            2 Days Left
+                                                        </Typography>
+                                                    </Grid>   
+                                                    <Grid item container xs={12}>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                            <Avatar
+                                                            className={classes.controlButtons}
+                                                            src={TelegramIcon}
+                                                            onClick={()=> handleTelegramRedirect(117216954)}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
+                                                            <IconButton
+                                                            // className={classes.controlButtons}
+                                                            onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
+                                                            >
+                                                                <MoreVertIcon/>
+                                                            </IconButton>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Card>
+                                        <Dialog
+                                        open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
+                                        TransitionComponent={Transition}
+                                        keepMounted
+                                        onClose={handleCloseDialog}
+                                        aria-labelledby="alert-dialog-slide-title"
+                                        aria-describedby="alert-dialog-slide-description"
+                                        style={{}}
+                                        >
+                                            <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0}}>
+                                                <Grid container>
+                                                    <Grid item xs={12} style={{textAlign:'right'}}>
+                                                        <IconButton
+                                                        onClick={handleCloseDialog}
+                                                        style={{margin:'1%'}}
+                                                        >
+                                                            <ClearIcon style={{width:45, height:45}}/>
+                                                        </IconButton>
+                                                    </Grid>
+                                                    <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%', paddingRight:'9%'}}>
+                                                        <Typography style={{fontSize:20}}>
+                                                            How was your meetup with John Doe?
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item container spacing={7} style={{ paddingRight:'9%'}}>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
+                                                            <Avatar alt="List"
+                                                                src={RemoveMeetupIcon} 
+                                                                className={classes.listAvatar} 
+                                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                                style={{marginRight:'16%'}}
+                                                            />
+                                                            <Button 
+                                                            style={{fontWeight:'bold', fontSize:18}}
+                                                            onClick={()=> handleMeetupCancellation(55)}
+                                                            >
+                                                                Cancelled
+                                                            </Button>
+                                                        </Grid>
+                                                        <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
+                                                            <Avatar alt="List"
+                                                                src={CompleteMeetupIcon} 
+                                                                className={classes.listAvatar} 
+                                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                                style={{marginLeft:'16%'}}
+                                                            />
+                                                            <Button 
+                                                            style={{fontWeight:'bold', fontSize:18}}
+                                                            onClick={()=> handleMeetupConfirmation(55)} 
+                                                            >
+                                                                Completed
+                                                            </Button>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </DialogContent>
+                                        </Dialog>
+                                    
+                                    </div>
+                                )
+                            }
+                        })}
+                    </Grid>
+                
+            </Grid>
+            :'NO UPCOMING MEETUPS'
+        }
             
         </div>
     )

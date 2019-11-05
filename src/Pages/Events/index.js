@@ -232,9 +232,9 @@ function Events() {
   const token = window.localStorage.getItem('authToken');
 
   const doGeocoding = (long, lat) => {
-    console.log('**** LONG LAT ***')
-    console.log(long)
-    console.log(lat)
+    // console.log('**** LONG LAT ***')
+    // console.log(long)
+    // console.log(lat)
     var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + long + ',' + lat + '.json?access_token=' + process.env.REACT_APP_MAPBOX_TOKEN
     axios.get(url).then(res => {
       return res.data.features[0].place_name
@@ -284,20 +284,26 @@ function Events() {
     //   setMarkerAddress(null);
     // }
 
-    if(event.longitude && event.latitude){
-      setMarkerAddress(event.longitude, event.latitude);
-    }  else  {
-      setMarkerAddress(null);
-    }
+    // if(event.longitude && event.latitude){
+    //   setMarkerAddress(event.longitude, event.latitude);
+    // }  else  {
+    //   setMarkerAddress(null);
+    // }
 
-    const venue = doGeocoding(event.longitude, event.latitude)
-    console.log('*** LOCATION IS: ***')
-    console.log(venue)
+    // const venue = doGeocoding(event.longitude, event.latitude)
+    // console.log('*** LOCATION IS: ***')
+    // console.log(venue)
+
+    if(event.venue){
+      setMarkerAddress(event.venue)
+    } else {
+      setMarkerAddress(event.venue)
+    }
 
 
     setOpen(true);
     // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-    setSelectedEventLocation(venue);
+    setSelectedEventLocation(event.venue);
   };
 
   const handleClose = () => {
@@ -389,7 +395,10 @@ function Events() {
 
   const getDate =(dateString) => {
     var date = new Date(dateString);
+    console.log(date)
+
     var time = date.getHours();
+    console.log(time)
     if (time <= 12) {
       time = `${time}am`
       //console.log(time);
@@ -399,7 +408,11 @@ function Events() {
     }
 
     var month = date.toLocaleString('en-GB', { month: 'short' });
-    var day = date.getMonth();
+    console.log(month)
+
+    var day = date.getDate();
+    console.log(day)
+
     var year = date.getFullYear();
     return(`${day} ${month} ${year}: ${time}`);
   }
@@ -531,11 +544,15 @@ function Events() {
     console.log('*** LOCATION IS: ***')
     console.log(venue)
 
-    if(event.longitude && event.latitude){
-      setMarkerAddress(event.longitude, event.latitude);
-    }  else  {
-      setMarkerAddress(null);
+    if(event.venue){
+      setMarkerAddress(event.venue);
     }
+
+    // if(event.longitude && event.latitude){
+    //   setMarkerAddress(event.longitude, event.latitude);
+    // }  else  {
+    //   setMarkerAddress(null);
+    // }
 
     // if (event.venue !== null) {
     //   setMarkerAddress(event.sessions[0].buildingName);
@@ -554,7 +571,7 @@ function Events() {
     }
     // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
 
-    setSelectedEventLocation(venue ? venue : 'Singapore');
+    setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
     console.log('Exiting view Event Details')
     // window.scrollTo(0,document.body.scrollHeight);
   }

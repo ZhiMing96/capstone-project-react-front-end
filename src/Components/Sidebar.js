@@ -80,7 +80,7 @@ function Sidebar(props) {
   useEffect(() => {
     api.profile.get().then(
       res => {
-        setName(res.data.profile.first_name)
+        setName(res.data.profile ? res.data.profile.first_name : 'User')
       }
     ).catch({})
     if (props.profile_image_link !== null) {

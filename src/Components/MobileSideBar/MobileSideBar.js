@@ -99,7 +99,7 @@ function MobileSideBar(props){
               fontWeight="fontWeightBold"
               fontSize={20}
             >
-              {name.toUpperCase()}
+              {name ? name.toUpperCase() : 'USER'}
               <br/>
               <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
               <TelegramIcon />

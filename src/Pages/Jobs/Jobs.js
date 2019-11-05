@@ -645,7 +645,7 @@ function Jobs (props) {
                 console.log(response);
                 if(response.data.response_code===200){
                     console.log("Click Stored SUCCESSFULLY ");
-                    const url = jobUrlDefault + list.job_uuidl
+                    const url = jobUrlDefault + list.job_uuid
                     window.open(url,'_blank');
                 }
             })
