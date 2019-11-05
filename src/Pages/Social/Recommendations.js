@@ -1,5 +1,5 @@
-import React from 'react';
-import { Grid, Typography, Box, List } from '@material-ui/core'
+import React, { useState, useEffect} from 'react';
+import { Grid, Typography, Box, List, Badge } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import RecoRequestCard from '../../Components/RecommendationRequestCard'
 import RecoRequestListItem from '../../Components/RecoRequestListItem'
@@ -8,6 +8,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled from 'styled-components';
+import api from '../../api';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -83,9 +84,48 @@ const Wrapper = styled.div`
 width:97%
 `;
 
-export default function Reco() {
+export default function Reco(props) {
     const classes = useStyles();
     const requests = [0, 1, 2, 3, 4, 5] //api
+    const [completedMeetups, setCompletedMeetups] = useState();
+
+    const getCompletedMeetups = () => { 
+
+        //REM TO FILTER ONCE ERN TEK FIX THE IS_COMPLETED ATTRIBUTE 
+        api.invitations.getCurrent()
+        .then(res=>{
+            if(res.data.response_code === 200){
+                console.log('**** Completed Meetups Retrieved ***')
+                const invitesSent = res.data.invites_sent
+                const invitesReceived = res.data.invites_received
+                console.log('****** Invitations Sent *****')
+                console.log(invitesSent);
+                console.log('****** Invitations Received *****')
+                console.log(invitesReceived);
+                var combined = invitesSent.concat(invitesReceived)
+                console.log('****** Combined Invitations *****')
+                console.log(combined);
+                var temp = [];
+                for(let i=0; i<combined.length;i++){
+                    const invitation = combined[i]
+                    console.log(invitation)
+                    if(invitation.accepted === 1){
+                        temp.push(invitation)
+                    }
+                }
+                setCompletedMeetups(temp);
+
+            } else {
+                console.log('**** ERROR: Unable to Retrieve Completed Meetups  ***')
+            }
+        }).catch(err=> console.error(err));
+    }
+
+
+    useEffect(()=>{
+        getCompletedMeetups();
+    },[props])
+
 
     return (
         <Grid container className={classes.root}>
@@ -128,27 +168,37 @@ export default function Reco() {
                 <Grid item container sm={12} md={5}>
                     <Grid item container style={{ marginTop: 20, marginBottom: 20, width: '100%' }}>
                         <Typography component="div">
-                            <Box
-                                fontSize="h6.fontSize"
-                                style={{ fontSize: 'large' }}
-                                letterSpacing={2}
-                                textAlign='left'
-                                color="primary.main"
-                                fontWeight="fontWeightBold"
+                            <Badge 
+                            badgeContent={completedMeetups? completedMeetups.length:null} 
+                            color="error"
+                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}
                             >
-                                RECOMMENDATION REQUEST
+                                <Box
+                                    fontSize="h6.fontSize"
+                                    style={{ fontSize: 'large' }}
+                                    letterSpacing={2}
+                                    textAlign='left'
+                                    color="primary.main"
+                                    fontWeight="fontWeightBold"
+                                >
+                                    RECOMMENDATION REQUEST
 
-                            </Box>
+                                </Box>
+                            </Badge>
                         </Typography>
                     </Grid>
+                    {completedMeetups
+                    ?
                     <Grid item style={{ width: '100%' }}>
                         <List>
-                            <RecoRequestListItem />
-                            <RecoRequestListItem />
-                            <RecoRequestListItem />
-                            <RecoRequestListItem />
+                            {completedMeetups.map((meetup, index)=>(
+                                <RecoRequestListItem meetup={meetup}/>
+                            ))}
                         </List>
                     </Grid>
+                    : 'Complete A Meetup to Request for a Recommendation!'
+                    }
+                    
                 </Grid>
             </Grid>
 

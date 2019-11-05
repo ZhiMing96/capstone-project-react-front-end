@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -13,6 +13,12 @@ import Typography from '@material-ui/core/Typography';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { Hidden } from '@material-ui/core';
 import { Block } from '@material-ui/icons';
+import api from '../api';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import TextField from '@material-ui/core/TextField';
+import Badge from '@material-ui/core/Badge';
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -32,11 +38,61 @@ const useStyles = makeStyles(theme => ({
     },
     button: {
         margin: theme.spacing(1)
-    }
+    },
+    dialogAvatar : {
+        width:90,
+        height:90,
+    },
+    textField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: '100%',
+      },
 }));
 
-export default function AlignItemsList() {
+export default function AlignItemsList({ meetup }) {
     const classes = useStyles();
+    const [requestMessage, setRequestMessage] = useState()
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const handleChange = event => {
+        //console.log(event.target.value);
+        setRequestMessage(event.target.value);
+      };
+
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    }
+    const handleCloseDialog = () => {
+        setOpenDialog(false)
+    }
+    
+    const handleSendRequest = () => {
+        console.log('**** Entered handleSendRequest ****')
+        console.log(meetup)
+        console.log(requestMessage)
+        const targetUser = 
+        meetup.to_user && meetup.to_user.profile
+        ? meetup.to_user.profile.user_id
+        : meetup.from_user && meetup.from_user.profile
+        ? meetup.from_user.profile.user_id
+        : null ;
+
+        console.log(targetUser)
+
+        api.recommendations.request({
+            target_user: targetUser,
+            message: requestMessage
+        })
+        .then(res => {
+            console.log(res.data)
+            if(res.data.response_code === 200){
+                console.log('**** Successfully Send Recommendation Request ****')
+            }
+        })
+    }
+
+
     return (
         <div>
             <ListItem alignItems="flex">
@@ -54,7 +110,12 @@ export default function AlignItemsList() {
                                     className={classes.inline}
                                     color="textPrimary"
                                 >
-                                    Hello world
+                                    {meetup.to_user && meetup.to_user.profile
+                                    ? meetup.to_user.profile.username
+                                    : meetup.from_user && meetup.from_user.profile
+                                    ? meetup.from_user.profile.username
+                                    : 'USER' 
+                                    }
                                 </Typography>
                             }
                             secondary={
@@ -67,10 +128,8 @@ export default function AlignItemsList() {
                                         color="textSecondary"
                                         style={{ fontSize: 'medium' }}
                                     >
-
                                         5 Nov 2019
                                     </Typography>
-
                                 </Grid>
                             }
                         />
@@ -78,15 +137,72 @@ export default function AlignItemsList() {
 
                     <Grid item>
 
-                        <Button color="primary" edge="end" variant="outlined" className={classes.button}>
+                        <Button color="primary" edge="end" variant="outlined" className={classes.button}
+                        onClick={() => handleOpenDialog()}>
                             Request
                         </Button>
-
                     </Grid>
 
                 </Grid>
             </ListItem>
-
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                fullWidth
+            >
+                <DialogContent style={{padding:'10%', paddingBottom:'1%'}}>
+                    <Grid container>
+                        <Grid item container xs={12}>
+                            <Grid item xs={12} sm={3} style={{paddingRight:'7%', textAlign:'-webkit-center', marginBottom:'6%'}}>
+                                <Avatar
+                                src=''
+                                alt='list'
+                                className={classes.dialogAvatar}/>
+                            </Grid>
+                            <Grid item xs={12} sm={9} style={{paddingLeft:'4%'}}>
+                                <Typography gutterBottom>
+                                    {meetup.to_user && meetup.to_user.profile
+                                    ? meetup.to_user.profile.first_name + ' ' + meetup.to_user.profile.last_name
+                                    : meetup.from_user && meetup.from_user.profile
+                                    ? meetup.from_user.profile.first_name + ' ' + meetup.from_user.profile.last_name
+                                    : 'USER' 
+                                    }
+                                </Typography>
+                                <Typography gutterBottom>
+                                    NUS Lecturer
+                                </Typography>
+                                <Typography gutterBottom>
+                                    15 November 2019
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid container style={{marginTop:'2%',}}>
+                        <Grid item xs={12} style={{textAlign:'center'}}>
+                            <TextField
+                                id="standard-multiline-static"
+                                multiline
+                                rows="5"
+                                className={classes.textField}
+                                margin="normal"
+                                variant="outlined"
+                                onChange={handleChange}
+                                label="Type a Message"
+                            />
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleCloseDialog} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleSendRequest} color="primary" autoFocus>
+                    Submit
+                </Button>
+                </DialogActions>
+            </Dialog>
             <Divider variant="inset" component="li" />
         </div>)
 }

@@ -133,7 +133,9 @@ const meetups = {
 }
 
 const recommendations = {
-  request: () => axios.post(),
+  request: (params) => axios.post('http://localhost:3000/recommendation/request', params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
   
   export default {

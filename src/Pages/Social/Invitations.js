@@ -216,156 +216,10 @@ const carouselSettings = {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-  const pendingDemo = {
-    "response_code": 200,
-    "response_message": "OK",
-    "invites_sent": [
-        {
-            "request_id": 96,
-            "meetup_search_id": null,
-            "to_user": {
-                "profile": {
-                    "telegram_id": "117216954",
-                    "user_id": 69,
-                    "first_name": "yi",
-                    "last_name": "QIONG",
-                    "username": "yiqiong"
-                },
-                "social": {
-                    "profile_image_link": "https://miro.medium.com/max/2400/0*45EL1rU3FiAbGAI_",
-                    "description": null,
-                    "facebook_profile": null,
-                    "linkedin_profile": null,
-                    "meetup_ind": 1,
-                    "preferred_locations": [
-                        {
-                            "district_id": 14,
-                            "code": "D14",
-                            "location": "Geylang, Eunos",
-                            "sector": "38, 39, 40, 41"
-                        }
-                    ]
-                }
-            },
-            "message": "HELLO i want to meet you tenks",
-            "accepted": null,
-            "suggested_datetime": "2010-01-01 00:00:00",
-            "sent_datetime": "2019-11-03 11:53:09",
-            "accepted_datetime": null,
-            "rejected_datetime": null,
-            "updated_datetime": null
-        }
-    ],
-    "invites_received": [
-        {
-            "request_id": 55,
-            "meetup_search_id": null,
-            "from_user": {
-                "profile": {
-                    "telegram_id": "956473132",
-                    "user_id": 74,
-                    "first_name": "ern",
-                    "last_name": "tek",
-                    "username": "erntek2"
-                },
-                "social": {
-                    "profile_image_link": null,
-                    "description": null,
-                    "facebook_profile": null,
-                    "linkedin_profile": null,
-                    "meetup_ind": 1,
-                    "preferred_locations": []
-                }
-            },
-            "message": "HELLO i want to meet you tenks",
-            "accepted": null,
-            "suggested_datetime": "2010-01-01 00:00:00",
-            "sent_datetime": "2019-11-03 11:53:09",
-            "accepted_datetime": null,
-            "rejected_datetime": null,
-            "updated_datetime": null
-        }
-    ]
- }
-  const allDemo = {
-    "response_code": 200,
-    "response_message": "OK",
-    "invites_sent": [
-        {
-            "request_id": 96,
-            "meetup_search_id": null,
-            "to_user": {
-                "profile": {
-                    "telegram_id": "117216954",
-                    "user_id": 69,
-                    "first_name": "yi",
-                    "last_name": "QIONG",
-                    "username": "yiqiong"
-                },
-                "social": {
-                    "profile_image_link": "https://miro.medium.com/max/2400/0*45EL1rU3FiAbGAI_",
-                    "description": null,
-                    "facebook_profile": null,
-                    "linkedin_profile": null,
-                    "meetup_ind": 1,
-                    "preferred_locations": [
-                        {
-                            "district_id": 14,
-                            "code": "D14",
-                            "location": "Geylang, Eunos",
-                            "sector": "38, 39, 40, 41"
-                        }
-                    ]
-                }
-            },
-            "message": "HELLO i want to meet you tenks",
-            "accepted": 0,
-            "suggested_datetime": "2019-01-01 00:00:00",
-            "sent_datetime": "2019-11-03 11:53:09",
-            "accepted_datetime": null,
-            "rejected_datetime": "2019-11-03 15:16:08",
-            "updated_datetime": null
-        }
-    ],
-    "invites_received": [
-        {
-            "request_id": 55,
-            "meetup_search_id": null,
-            "from_user": {
-                "profile": {
-                    "telegram_id": "956473132",
-                    "user_id": 74,
-                    "first_name": "ern",
-                    "last_name": "tek",
-                    "username": "erntek2"
-                },
-                "social": {
-                    "profile_image_link": null,
-                    "description": null,
-                    "facebook_profile": null,
-                    "linkedin_profile": null,
-                    "meetup_ind": 1,
-                    "preferred_locations": []
-                }
-            },
-            "message": "HELLO i want to meet you tenks",
-            "accepted": 1,
-            "suggested_datetime": "2019-01-01 00:00:00",
-            "sent_datetime": "2019-11-03 11:53:09",
-            "accepted_datetime": "2019-11-03 13:25:11",
-            "rejected_datetime": null,
-            "updated_datetime": null
-        }
-    ]
- }
- 
-
-
 function Invitations(props) {
 
     const classes=useStyles();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [demoArray, setDemoArray] = useState([1,2,3,4,5])
     const [selectedInvitationIndex, setSelectedInvitationIndex] = useState()
     const [openInvitation, setOpenInvitation] = useState(false);
     const [selectedMeetupIndexWithDate, setSelectedMeetupIndexWithDate] = useState()
@@ -375,6 +229,7 @@ function Invitations(props) {
     const [ openMeetupCancellation, setOpenMeetupCancellation ] = useState(false);
     const [ pendingInvitations, setPendingInvitations ] = useState();
     const [ upcomingMeetups, setUpcomingMeetups ] = useState();
+    const [ pendingMeetupDate, setPendingMeetupDate ] = useState();
 
     const getPendingInvitation = () => {
         api.invitations.getPending()
@@ -389,10 +244,6 @@ function Invitations(props) {
 
                 console.log('****** Invitations Received *****')
                 console.log(invitesReceived);
-
-                // var combined = invitesSent.concat(invitesReceived)
-                // console.log('****** Combined Invitations *****')
-                // console.log(combined);
 
                 setPendingInvitations(invitesReceived)
             }
@@ -413,15 +264,23 @@ function Invitations(props) {
                 var combined = invitesSent.concat(invitesReceived)
                 console.log('****** Combined Invitations *****')
                 console.log(combined);
-                var temp = [];
+                var tempWithDate = [];
+                var tempWithoutDate = [];
+
                 for(let i=0; i<combined.length;i++){
                     const invitation = combined[i]
                     console.log(invitation)
                     if(invitation.accepted === 1){
-                        temp.push(invitation)
+                        if(invitation.suggested_datetime !== null){
+                            tempWithDate.push(invitation)
+                        } else {
+                            tempWithoutDate.push(invitation)
+                        }
+                        
                     }
                 }
-                setUpcomingMeetups(temp)
+                setUpcomingMeetups(tempWithDate)
+                setPendingMeetupDate(tempWithoutDate)
             }
         })
     }
@@ -589,7 +448,8 @@ function Invitations(props) {
             {/* <Router> */}
             <Grid container direction="row" style={{ width: '100%', textAlign: 'left' }}>
                 <Grid item xs={12} style={{marginTop:'5%'}}>
-                <Badge badgeContent={9} color="error">
+                <Badge badgeContent={pendingInvitations ? pendingInvitations.length : null} color="error" 
+                anchorOrigin={{ vertical: 'top', horizontal: 'left',}}>
                     <Typography className={classes.sectionHeading}>
                         INVITATION REQUESTS
                     </Typography>
@@ -737,19 +597,21 @@ function Invitations(props) {
                 </Grid>
             </Grid>
         
-            { upcomingMeetups 
-            ?
+            
             <Grid container spacing={6}>
 
                     <Grid container item xs={12} md={6}>
-                        <Grid item xs={12} style={{marginTop:'10%'}}>
-                            <Badge badgeContent={2} color="error">
+                        <Grid item xs={12} style={{marginTop:'10%',textAlign:'left'}}>
+                            <Badge badgeContent={upcomingMeetups? upcomingMeetups.length : null } color="error"
+                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}>
                                 <Typography className={classes.sectionHeading} style={{}}>
                                     UPCOMING MEETUPS
                                 </Typography>
                             </Badge>
                         </Grid>
-                        {upcomingMeetups.map((meetup, index) => {
+                        {upcomingMeetups
+                        ?
+                        upcomingMeetups.map((meetup, index) => {
                             if(meetup.suggested_datetime !== null){
                                 return(
                                     <div style={{width:'90%'}}>
@@ -884,18 +746,23 @@ function Invitations(props) {
                                     </div>
                                 )
                             }
-                        })}
+                        })
+                        : "NO UPCOMING MEETUPS"
+                        }
                     </Grid>
                 
                     <Grid container item xs={12} md={6}>
-                        <Grid item xs={12} style={{marginTop:'10%'}}>
-                            <Badge badgeContent={2} color="error">
+                        <Grid item xs={12} style={{marginTop:'10%', textAlign:'left'}}>
+                            <Badge badgeContent={pendingMeetupDate? pendingMeetupDate.length : null } color="error"
+                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}>
                                 <Typography className={classes.sectionHeading} style={{ color:'#992E24'}}>
                                     PENDING MEETUP DATE
                                 </Typography>
                             </Badge>
                         </Grid>
-                        {upcomingMeetups.map((meetup, index) => {
+                        {pendingMeetupDate
+                        ?
+                        pendingMeetupDate.map((meetup, index) => {
                             if(meetup.suggested_datetime === null){
                                 return(
                                     <div style={{width:'90%'}}>
@@ -1025,13 +892,11 @@ function Invitations(props) {
                                     </div>
                                 )
                             }
-                        })}
+                        })
+                        : 'NO UPCOMING MEETUPS' 
+                        }
                     </Grid>
-                
             </Grid>
-            :'NO UPCOMING MEETUPS'
-        }
-            
         </div>
     )
 }
