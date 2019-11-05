@@ -30,6 +30,7 @@ import { withStyles,makeStyles } from '@material-ui/core/styles';
 import { ImportantDevices } from '@material-ui/icons';
 import { typography } from '@material-ui/system';
 import DailyDigest from '../Pages/DailyDigest';
+import logo from '../images/logo.png'
 
 
 const styles = theme => ({
@@ -162,7 +163,7 @@ class NavTabs extends React.Component {
             <Typography>
               <Box fontWeight={600} fontSize={20} >
                 <Link to="/" style={{textDecoration:'none', color:'#0091ea'}}>
-                  JOPIFY
+                  <img src={logo} style={{width:150}}/>
                 </Link>
               </Box>
             </Typography>
