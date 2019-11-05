@@ -245,15 +245,19 @@ function Events() {
     setselectedIndex(null);
     setSelectedRecommendedIndex(index);
 
-    const venue = doGeocoding(event.longitude, event.latitude)
-    console.log('*** LOCATION IS: ***')
-    console.log(venue)
+    // const venue = doGeocoding(event.longitude, event.latitude)
+    // console.log(venue)
 
-    if(event.longitude && event.latitude){
-      setMarkerAddress(event.longitude, event.latitude);
-    }  else  {
-      setMarkerAddress(null);
-    }
+    console.log('*** LOCATION IS: ***')
+    
+
+    const venueArray = event.venue ? event.venue.split('·') : null
+    console.log(venueArray)
+
+    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
+    console.log(formattedVenue)
+
+    setMarkerAddress(formattedVenue);
 
     // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
     //   setMarkerAddress(event.sessions[0].buildingName);
@@ -269,7 +273,7 @@ function Events() {
     // setSelectedEventLocation(location);
 
 
-    setSelectedEventLocation(venue ? venue : 'Singapore');
+    setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
 
   }
 
@@ -294,12 +298,13 @@ function Events() {
     // console.log('*** LOCATION IS: ***')
     // console.log(venue)
 
-    if(event.venue){
-      setMarkerAddress(event.venue)
-    } else {
-      setMarkerAddress(event.venue)
-    }
+    const venueArray = event.venue ? event.venue.split('·') : null
+    console.log(venueArray)
 
+    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
+    console.log(formattedVenue)
+    
+    setMarkerAddress(formattedVenue);
 
     setOpen(true);
     // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
@@ -395,10 +400,10 @@ function Events() {
 
   const getDate =(dateString) => {
     var date = new Date(dateString);
-    console.log(date)
+    //console.log(date)
 
     var time = date.getHours();
-    console.log(time)
+    //console.log(time)
     if (time <= 12) {
       time = `${time}am`
       //console.log(time);
@@ -408,10 +413,10 @@ function Events() {
     }
 
     var month = date.toLocaleString('en-GB', { month: 'short' });
-    console.log(month)
+    //console.log(month)
 
     var day = date.getDate();
-    console.log(day)
+    //console.log(day)
 
     var year = date.getFullYear();
     return(`${day} ${month} ${year}: ${time}`);
@@ -501,15 +506,19 @@ function Events() {
 
     console.log(event)
 
-    const venue = doGeocoding(event.longitude, event.latitude)
-    console.log('*** LOCATION IS: ***')
-    console.log(venue)
+    // const venue = doGeocoding(event.longitude, event.latitude)
+    // console.log(venue)
 
-    if(event.longitude && event.latitude){
-      setMarkerAddress(event.longitude, event.latitude);
-    }  else  {
-      setMarkerAddress(null);
-    }
+    console.log('*** LOCATION IS: ***')
+    
+
+    const venueArray = event.venue ? event.venue.split('·') : null
+    console.log(venueArray)
+
+    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
+    console.log(formattedVenue)
+
+    setMarkerAddress(formattedVenue);
 
     // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
     //   setMarkerAddress(event.sessions[0].buildingName);
@@ -527,7 +536,7 @@ function Events() {
       setSelectedEventDescription('No Description Available')
     }
     // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-    setSelectedEventLocation(venue ? venue : 'Singapore');
+    setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
     
   }
 
@@ -539,14 +548,20 @@ function Events() {
     console.log(index);
     console.log(event);
 
-    const venue = doGeocoding(event.longitude, event.latitude)
+    // const venue = doGeocoding(event.longitude, event.latitude)
+    // console.log(venue)
 
     console.log('*** LOCATION IS: ***')
-    console.log(venue)
+    
 
-    if(event.venue){
-      setMarkerAddress(event.venue);
-    }
+    const venueArray = event.venue ? event.venue.split('·') : null
+    console.log(venueArray)
+
+    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
+    console.log(formattedVenue)
+
+    setMarkerAddress(formattedVenue);
+    
 
     // if(event.longitude && event.latitude){
     //   setMarkerAddress(event.longitude, event.latitude);
@@ -653,7 +668,7 @@ function Events() {
                                   ? `${event.sessions[0].buildingName}, Singapore`
                                   : 'Singapore'
                                 } */}
-                                {doGeocoding(event.longitude,event.latitude)? doGeocoding(event.longitude,event.latitude)  : 'Singapore'}
+                                {event.venue}
                               </Box>
                               <Grid
                                 container
@@ -823,7 +838,7 @@ function Events() {
                                   ? `${event.sessions[0].buildingName}, Singapore`
                                   : 'Singapore'
                                 } */}
-                                {doGeocoding(event.longitude,event.latitude)? doGeocoding(event.longitude,event.latitude)  : 'Singapore'}
+                                {event.venue}
                               </Box>
                               <Grid
                                 container
