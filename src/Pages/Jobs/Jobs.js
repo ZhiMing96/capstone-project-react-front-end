@@ -544,6 +544,7 @@ function Jobs (props) {
     };
 
     const handleSubmit = event => {
+        console.log(event.target)
         setLoading(true);
         console.log("Entered Handle Submit")
         setCurrentPage(1);
@@ -777,7 +778,14 @@ function Jobs (props) {
             </Grid>
            
         </Grid>
-        
+        <Grid container direction='row'>
+            <Grid item container direction='column' sm={4}>
+
+            </Grid>
+            <Grid item container sm={8}>
+
+            </Grid>
+        </Grid>
         { loading 
         ? <CircularLoading/>
         : 

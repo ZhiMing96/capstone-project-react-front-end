@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { Grid, Typography, Box, List, Badge } from '@material-ui/core'
+import { Grid, Typography, Box, List, Badge, Fab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import RecoRequestCard from '../../Components/RecommendationRequestCard'
 import RecoRequestListItem from '../../Components/RecoRequestListItem'
@@ -9,6 +9,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled from 'styled-components';
 import api from '../../api';
+import './index.css';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -20,6 +23,59 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.text.secondary,
     },
 }));
+
+const CarouselArrowNext = (props) => {
+
+    const { className, style, onClick} = props;
+    // console.log(props)
+
+    if(onClick !== null){
+    return (
+        <div 
+            className={className}
+            style={{ display: "block",zIndex:40, marginRight:'1%',}}
+            onClick={onClick}
+        >
+            <Fab
+            className={className}
+            size='medium'
+            style={{display: "block",zIndex:40, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
+            onClick={onClick}
+            > 
+                <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
+            </Fab>
+        </div>
+    );
+    } else {
+        return(<div></div>)
+    }
+  }
+  const CarouselArrowPrev = (props) => {
+    const classes = useStyles();
+    const { className, onClick, style, currentSlide } = props;
+
+    if(currentSlide !==0){
+        return (
+            <div 
+              className={className}
+              style={{ ...style, display: "block",zIndex:40,marginLeft:'1%',content:'none'}}
+              onClick={onClick}
+            >
+              <Fab
+                size='medium'
+                style={{backgroundColor:'black', opacity:'0.6'}}
+              > 
+              <KeyboardArrowLeftIcon style={{color:'white',}}/>
+            </Fab>
+        
+            </div>
+            
+        );
+    } else {
+        return(<div></div>)
+    }
+    
+  }
 
 const carouselSettings = {
     accessibility: true,
@@ -34,8 +90,8 @@ const carouselSettings = {
     draggable: true,
     //lazyLoad: "progressive",
     pauseOnHover: true,
-    // nextArrow: <CarouselArrowNext />,
-    // prevArrow: <CarouselArrowPrev />,
+    nextArrow: <CarouselArrowNext />,
+    prevArrow: <CarouselArrowPrev />,
     responsive: [
         {
             breakpoint: 1920, //lg

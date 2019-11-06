@@ -26,7 +26,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Recommendations from './Recommendations';
-import './Invitations.css';
+import './index.css';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
 import Badge from '@material-ui/core/Badge';
