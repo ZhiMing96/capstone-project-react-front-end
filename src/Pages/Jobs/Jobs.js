@@ -26,7 +26,8 @@ import "slick-carousel/slick/slick-theme.css";
 import Popover from '@material-ui/core/Popover';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
-import './index.css'
+import './index.css';
+import JobFilterSideBar from './JobFilterSideBar';
 
 
 const employmentTypes = [
@@ -529,8 +530,6 @@ function Jobs (props) {
         }
     }
 
-    
-
     const handleChange = name => event => {
         setState({ ...state, [name]: (event.target.value) });
     };
@@ -681,9 +680,7 @@ function Jobs (props) {
 
 
   return (
-    
     <div>
-        {/* <Container> */}
         <CssBaseline/>
         <Grid container alignContent="flex-start" style={{background: `linear-gradient(#039be5,#43BDF8 )` , height:'40vh', padding:20, paddingTop:'5%'}}>
             <Grid item xs={12} >
@@ -721,7 +718,6 @@ function Jobs (props) {
                         </IconButton>
                     </Box>
                  </Paper>
-                    
                 
                 <Dialog
                     // disableBackdropClick 
@@ -778,19 +774,11 @@ function Jobs (props) {
             </Grid>
            
         </Grid>
-        <Grid container direction='row'>
-            <Grid item container direction='column' sm={4}>
-
-            </Grid>
-            <Grid item container sm={8}>
-
-            </Grid>
-        </Grid>
+        
         { loading 
         ? <CircularLoading/>
         : 
         <div>
-        
         { searchResults  && searchResults.length !== 0 
         ? 
         <div>
@@ -810,116 +798,44 @@ function Jobs (props) {
                 
             </Router>
         </div>
-        : 
-        token && byPass==false
+        : token && byPass==false
         ? //USER WITH ACCOUNT           
-        <div>
-            <div style={{}}>
-            {searchHistoryJobs.length!=0
-            ?
+        <Grid container>
+            {/* <Grid item container xs={3} >
+                <JobFilterSideBar/>
+            </Grid> */}
 
-            <div style={{}}>
-            <Typography variant='h5' className={classes.sectionHeading}>
-                You Might Be Interested <span className={classes.sectionCaption}> Based on your search hisory</span>
-            </Typography>
-        
-            <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
-            <Wrapper>
-                <Slider {...carouselSettings}>
-                    { searchHistoryJobs.map((listing) => (
-                        <Page>
-                            <Paper className={classes.jobListingBox}>
-                                <Grid container justify='space-between'>
-                                    <Grid item>
-                                        <Avatar alt="List"
-                                            src={ 
-                                                listing.company_logo 
-                                                ? listing.company_logo   
-                                                : defaultIcon
-                                            } 
-                                            style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
-                                            imgProps={{style:{objectFit:'contain',border:0}}}
-                                            onClick={()=> handleHrefClick(listing)}
-                                        />
-                                    </Grid>
-                                    <Grid item style={{ }}>
-                                    { listing.skills_match < 0.3
-                                        ?
-                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
-                                            Add Skills
-                                        </Typography>
-                                        : listing.skills_match < 0.7
-                                        ?
-                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
-                                            Recommended
-                                        </Typography>
-                                        : listing.skills_match < 1
-                                        ?
-                                        <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
-                                            Apply Now
-                                        </Typography>
-                                        :''
-                                    }
-                                    </Grid>
-                                </Grid>
-                            <Grid container  justify='space-between' style={{height:'15vh'}}>
-                                <Grid item xs={12} style={{paddingRight:'6%'}}>
-                                <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
-                                    {listing.title}
-                                </Typography>
-                                <Typography style={{fontWeight:'light', fontSize:10}}>
-                                    { listing.posted_company 
-                                        ? listing.posted_company
-                                        : ""
-                                    }
-                                </Typography>
-                                </Grid>
-                                <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
-                                    <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
-                                    onClick={()=>handleHrefClick(listing)}
-                                    >
-                                        Details
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            
-                            </Paper>
-                        </Page>
-                    ))}
-                </Slider>
-            </Wrapper>
-            </Grid>
-            </div>
-            : 
-            ''
-            }
-            {skillsJobs.length !== 0
-            ? 
-            <div style={{marginTop:'1%'}}>
-            <Typography variant='h5' className={classes.sectionHeading}>
-                Suitable For You <span className={classes.sectionCaption}> Based on your skills</span>
-            </Typography>
+            <Grid item container xs={12}> 
+
+                {searchHistoryJobs.length!=0
+                ?
+
+                // <div style={{}}>
+                <Grid item xs={12}>
+                <Typography variant='h5' className={classes.sectionHeading}>
+                    You Might Be Interested <span className={classes.sectionCaption}> Based on your search hisory</span>
+                </Typography>
             
                 <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
-                        { skillsJobs.map((listing) => (
-                            <Page >
+                        { searchHistoryJobs.map((listing) => (
+                            <Page>
                                 <Paper className={classes.jobListingBox}>
-                                <Grid container justify='space-between'>
-                                    <Grid item>
-                                        <Avatar alt="List"
-                                            src={ 
-                                                listing.company_logo  
-                                                ? listing.company_logo   
-                                                : defaultIcon
-                                            } 
-                                            style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
-                                            imgProps={{style:{objectFit:'contain',border:0}}}
-                                            onClick={()=> handleHrefClick(listing)}
-                                        />
-                                    </Grid>
-                                    <Grid item style={{ }}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
+                                            <Avatar alt="List"
+                                                src={ 
+                                                    listing.company_logo 
+                                                    ? listing.company_logo   
+                                                    : defaultIcon
+                                                } 
+                                                style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
+                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                onClick={()=> handleHrefClick(listing)}
+                                            />
+                                        </Grid>
+                                        <Grid item style={{ }}>
                                         { listing.skills_match < 0.3
                                             ?
                                             <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
@@ -937,8 +853,8 @@ function Jobs (props) {
                                             </Typography>
                                             :''
                                         }
+                                        </Grid>
                                     </Grid>
-                                </Grid>
                                 <Grid container  justify='space-between' style={{height:'15vh'}}>
                                     <Grid item xs={12} style={{paddingRight:'6%'}}>
                                     <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
@@ -948,106 +864,10 @@ function Jobs (props) {
                                         { listing.posted_company 
                                             ? listing.posted_company
                                             : ""
-                                        }}
+                                        }
                                     </Typography>
                                     </Grid>
                                     <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
-                                        <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
-                                        onMouseEnter={handlePopoverOpen}
-                                        onMouseLeave={handlePopoverClose}
-                                        onClick={()=>handleHrefClick(listing)}
-                                        >
-                                            Details
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-                                </Paper>
-                                <Popover
-                                    classes={{
-                                    paper: classes.paper,
-                                    }}
-                                    open={open}
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
-                                    }}
-                                    transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
-                                    }}
-                                    onClose={handlePopoverClose}
-                                    disableRestoreFocus
-                                >
-                                    <Typography>I use Popover.</Typography>
-                                </Popover>
-                            </Page>
-                        ))}
-                    </Slider>
-                </Wrapper>
-                </Grid>
-                </div>
-            :
-            ''
-            }
-            <Typography variant='h5' className={classes.sectionHeading}>
-                Popular <span className={classes.sectionCaption}> Trending</span>
-            </Typography>
-            {popularJobs.length !== 0
-            ? 
-            <div style={{marginTop:'1%'}}>
-                <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
-                <Wrapper>
-                    <Slider {...carouselSettings}>
-                        { popularJobs.map((listing) => (
-                            <Page >
-                                <Paper className={classes.jobListingBox}>
-                                <Grid container justify='space-between'>
-                                    <Grid item>
-                                        <Avatar alt="List"
-                                            src={ 
-                                                listing.company_logo  
-                                                ? listing.company_logo  
-                                                : defaultIcon
-                                            } 
-                                            style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
-                                            imgProps={{style:{objectFit:'contain',border:0}}}
-                                            onClick={()=> handleHrefClick(listing)}
-                                        />
-                                    </Grid>
-                                    <Grid item style={{ }}>
-                                        { listing.skills_match < 0.3
-                                            ?
-                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
-                                                Add More Skills
-                                            </Typography>
-                                            : listing.skills_match < 0.7
-                                            ?
-                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
-                                                Recommended
-                                            </Typography>
-                                            : listing.skills_match < 1
-                                            ?
-                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
-                                                Apply Now
-                                            </Typography>
-                                            :''
-                                        }
-                                    </Grid>
-                                </Grid>
-                                <Grid container  justify='space-between' style={{height:'15vh'}}>
-                                    <Grid item xs={12} style={{paddingRight:'6%'}}>
-                                    <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
-                                        {listing.title}
-                                    </Typography>
-                                    <Typography style={{fontWeight:'light', fontSize:10}}>
-                                        { listing.posted_company 
-                                            ? listing.posted_company
-                                            : ""
-                                        }}
-                                    </Typography>
-                                    </Grid>
-                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end', paddingRight:'5%'}}>
                                         <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
                                         onClick={()=>handleHrefClick(listing)}
                                         >
@@ -1062,19 +882,196 @@ function Jobs (props) {
                     </Slider>
                 </Wrapper>
                 </Grid>
-                </div>
-            :
-            <div style={{textAlign:'center', marginLeft:'3%',}}>
-                <Typography style={{fontWeight:'lighter', color:''}}>
-                    <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span> There are no results at the moment 
+                </Grid>
+                : 
+                ''
+                }
+                {skillsJobs.length !== 0
+                ? 
+                // <div style={{marginTop:'1%'}}>
+                <Grid item xs={12} style={{marginTop:'1%'}}>
+                    <Typography variant='h5' className={classes.sectionHeading}>
+                        Suitable For You <span className={classes.sectionCaption}> Based on your skills</span>
+                    </Typography>
+                
+                    <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
+                    <Wrapper>
+                        <Slider {...carouselSettings}>
+                            { skillsJobs.map((listing) => (
+                                <Page >
+                                    <Paper className={classes.jobListingBox}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
+                                            <Avatar alt="List"
+                                                src={ 
+                                                    listing.company_logo  
+                                                    ? listing.company_logo   
+                                                    : defaultIcon
+                                                } 
+                                                style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
+                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                onClick={()=> handleHrefClick(listing)}
+                                            />
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                            { listing.skills_match < 0.3
+                                                ?
+                                                <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                    Add Skills
+                                                </Typography>
+                                                : listing.skills_match < 0.7
+                                                ?
+                                                <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                    Recommended
+                                                </Typography>
+                                                : listing.skills_match < 1
+                                                ?
+                                                <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                    Apply Now
+                                                </Typography>
+                                                :''
+                                            }
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container  justify='space-between' style={{height:'15vh'}}>
+                                        <Grid item xs={12} style={{paddingRight:'6%'}}>
+                                        <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
+                                            {listing.title}
+                                        </Typography>
+                                        <Typography style={{fontWeight:'light', fontSize:10}}>
+                                            { listing.posted_company 
+                                                ? listing.posted_company
+                                                : ""
+                                            }}
+                                        </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
+                                            <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                            onMouseEnter={handlePopoverOpen}
+                                            onMouseLeave={handlePopoverClose}
+                                            onClick={()=>handleHrefClick(listing)}
+                                            >
+                                                Details
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                    </Paper>
+                                    <Popover
+                                        classes={{
+                                        paper: classes.paper,
+                                        }}
+                                        open={open}
+                                        anchorEl={anchorEl}
+                                        anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                        }}
+                                        transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                        }}
+                                        onClose={handlePopoverClose}
+                                        disableRestoreFocus
+                                    >
+                                        <Typography>I use Popover.</Typography>
+                                    </Popover>
+                                </Page>
+                            ))}
+                        </Slider>
+                    </Wrapper>
+                    </Grid>
+                </Grid>
+                :
+                ''
+                }
+                <Grid item xs={12} style={{marginTop:'1%'}}>
+                <Typography variant='h5' className={classes.sectionHeading}>
+                    Popular <span className={classes.sectionCaption}> Trending</span>
                 </Typography>
-                <Typography style={{fontWeight:'bold'}}>
+                {popularJobs.length !== 0
+                ? 
+                <div style={{marginTop:'1%'}}>
+                    <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
+                    <Wrapper>
+                        <Slider {...carouselSettings}>
+                            { popularJobs.map((listing) => (
+                                <Page >
+                                    <Paper className={classes.jobListingBox}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
+                                            <Avatar alt="List"
+                                                src={ 
+                                                    listing.company_logo  
+                                                    ? listing.company_logo  
+                                                    : defaultIcon
+                                                } 
+                                                style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',margin:'2%'}} 
+                                                imgProps={{style:{objectFit:'contain',border:0}}}
+                                                onClick={()=> handleHrefClick(listing)}
+                                            />
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                            { listing.skills_match < 0.3
+                                                ?
+                                                <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                    Add More Skills
+                                                </Typography>
+                                                : listing.skills_match < 0.7
+                                                ?
+                                                <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                    Recommended
+                                                </Typography>
+                                                : listing.skills_match < 1
+                                                ?
+                                                <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                    Apply Now
+                                                </Typography>
+                                                :''
+                                            }
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container  justify='space-between' style={{height:'15vh'}}>
+                                        <Grid item xs={12} style={{paddingRight:'6%'}}>
+                                        <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
+                                            {listing.title}
+                                        </Typography>
+                                        <Typography style={{fontWeight:'light', fontSize:10}}>
+                                            { listing.posted_company 
+                                                ? listing.posted_company
+                                                : ""
+                                            }}
+                                        </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end', paddingRight:'5%'}}>
+                                            <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                            onClick={()=>handleHrefClick(listing)}
+                                            >
+                                                Details
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                    
+                                    </Paper>
+                                </Page>
+                            ))}
+                        </Slider>
+                    </Wrapper>
+                    </Grid>
+                    </div>
                     
-                </Typography>
-            </div>
-            }
-            </div>
-            <div>
+                :
+                <div style={{textAlign:'center', marginLeft:'3%',}}>
+                    <Typography style={{fontWeight:'lighter', color:''}}>
+                        <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span> There are no results at the moment 
+                    </Typography>
+                    <Typography style={{fontWeight:'bold'}}>
+                        
+                    </Typography>
+                </div>
+                }
+                </Grid>
+            {/* <div> */}
+            <Grid item xs={12} style={{marginTop:'1%'}}>
                 {searchHistoryJobs.length===0
                 ?
                 <div>
@@ -1090,6 +1087,8 @@ function Jobs (props) {
                 </div>
                 : ''
                 }
+            </Grid>
+            <Grid item xs={12} style={{marginTop:'1%'}}>
                 {skillsJobs.length===0
                 ?
                 <div>
@@ -1107,139 +1106,108 @@ function Jobs (props) {
                 </div>
                 :''
                 }
-            </div>
-            {/* <Grid container style={{}}>
-                <Grid item xs={12}>
-                    <Typography>
-                        <Box fontSize={40} m={0}>
-                        Career<strong> Guidance</strong> 
-                        </Box>
-                    </Typography>
-                </Grid>
-                <div className={classes.root}>
-                    <a href={carouselImgs[0].link} target="_blank">
-                        <img src={carouselImgs[0].imgUrl} className={classes.img} alt=""/>
-                    </a>
-                </div>
-                <div className={classes.root}>
-                    <a href={carouselImgs[1].link} target="_blank">
-                        <img src={carouselImgs[1].imgUrl} className={classes.img} alt=""/>
-                    </a>
-                </div>
-            </Grid> */}
-            
-        </div>
+            {/* </div> */}
+            </Grid>
+        </Grid>
+        </Grid>
         : token==null  && byPass==false 
         ?//USER WITHOUT ACCOUNT 
-        <div>
-            <Typography variant='h5' style={{textAlign:"justify", marginLeft:30, color:'#024966e', fontWeight:'bold', marginTop:20}}>
-            Popular Jobs
-            </Typography>
-            {popularJobs.length !== 0
-            ? 
-            <div style={{}}>
-                <Grid container style={{height:'35vh', margin:10, marginTop:10}} spacing={1} justify="space-between" >
-                <Wrapper>
-                    <Slider {...carouselSettings}>
-                        { popularJobs.map((listing) => (
-                            <Page>
-                                <Paper style={{width:'90%',textAlign: 'start', padding:15, marginBottom:5}} elevation={0}>
-                                <Avatar alt="List"
-                                src={ 
-                                    listing.company_logo  
-                                    ? listing.company_logo   
-                                    : defaultIcon
-                                } 
-                                style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)'}} 
-                                imgProps={{style:{objectFit:'contain',border:0}}}
-                                onClick={()=> handleHrefClick(listing)}
-                                />
-                                <Grid container  justify='space-between' style={{height:'15vh'}}>
-                                    <Grid item xs={12}>
-                                    <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
-                                        {listing.title}
-                                    </Typography>
-                                    <Typography style={{fontWeight:'light', fontSize:10}}>
-                                        { listing.posted_company 
-                                            ? listing.posted_company
-                                            : ""
-                                        }}
-                                    </Typography>
-                                    </Grid>
-                                    <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
-                                        <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
-                                        onClick={()=>handleHrefClick(listing)}
-                                        >
-                                            Details
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-                                
-                                </Paper>
-                            </Page>
-                        ))}
-                    </Slider>
-                </Wrapper>
-                </Grid>
-            </div>
-            : 
-            <div style={{textAlign:'center', marginLeft:'3%',}}>
-                <Typography style={{fontWeight:'lighter', color:''}}>
-                    <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span>Seems like you're new here, Start Searching To Activate This Section!
-                </Typography>
-                <Typography style={{fontWeight:'bold'}}>
-                    
-                </Typography>
-            </div>
-            }
-            <div style={{ backgroundColor:'white'}}>
-                <Grid Container style={{padding:'10%', paddingLeft:'8%'}}>
-                    <Grid item xs={12} sm style={{marginBottom:'1%'}} >
-                        <Typography variant='subtitle1' color='primary' style={{fontSize:18, fontWeight:'Bold', textAlign:'left', marginBottom:'3%'}}>
-                            Be A Member Today
-                        </Typography>
-                        <Typography gutterBottom style={{fontSize:38, fontWeight:'lighter', textAlign:'left'}}>
-                            Bookmarks <span style={{fontSize:25,textAlign:'left'}}> Save a Job Listing and View Later </span>
-                        </Typography>
-                        <Typography gutterBottom style={{fontSize:38, fontWeight:'lighter', textAlign:'center'}}>
-                            Browse Again <span style={{fontSize:25,}}> Never lose track of your favourite searches </span>
-                        </Typography>
-                        <Typography style={{fontSize:38, fontWeight:'lighter', textAlign:'left'}}>
-                            Smart Search <span style={{fontSize:25,}}> we recommend Jobs that you like </span>
-                        </Typography>
-                        <Typography>
-                        </Typography>
-                       
-                    </Grid>
-                    <Grid item xs={12} sm style={{marginTop:'4%'}}>
-                        <Typography  style={{fontSize:50, fontWeight:'bold',textAlign:'right',}}>
-                            SIGN UP NOW.
-                        </Typography>
-                    </Grid>
-                </Grid>
-                
-            </div>
+        <Grid container>
+            {/* <Grid item container xs={3} >
+                <JobFilterSideBar/>
+            </Grid> */}
 
-            {/* <Grid container style={{}}>
+            <Grid item container xs={12}> 
+                <Typography variant='h5' style={{textAlign:"justify", marginLeft:30, color:'#024966e', fontWeight:'bold', marginTop:20}}>
+                Popular Jobs
+                </Typography>
+                {popularJobs.length !== 0
+                ? 
                 <Grid item xs={12}>
-                    <Typography>
-                        <Box fontSize={40} m={0}>
-                        Career<strong> Guidance</strong> 
-                        </Box>
+                    <Grid container style={{height:'35vh', margin:10, marginTop:10}} spacing={1} justify="space-between" >
+                    <Wrapper>
+                        <Slider {...carouselSettings}>
+                            { popularJobs.map((listing) => (
+                                <Page>
+                                    <Paper style={{width:'90%',textAlign: 'start', padding:15, marginBottom:5}} elevation={0}>
+                                    <Avatar alt="List"
+                                    src={ 
+                                        listing.company_logo  
+                                        ? listing.company_logo   
+                                        : defaultIcon
+                                    } 
+                                    style={{width:70, height:70, boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)'}} 
+                                    imgProps={{style:{objectFit:'contain',border:0}}}
+                                    onClick={()=> handleHrefClick(listing)}
+                                    />
+                                    <Grid container  justify='space-between' style={{height:'15vh'}}>
+                                        <Grid item xs={12}>
+                                        <Typography gutterBottom className={classes.carouselJobTitile} style={{}}>
+                                            {listing.title}
+                                        </Typography>
+                                        <Typography style={{fontWeight:'light', fontSize:10}}>
+                                            { listing.posted_company 
+                                                ? listing.posted_company
+                                                : ""
+                                            }}
+                                        </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>
+                                            <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                            onClick={()=>handleHrefClick(listing)}
+                                            >
+                                                Details
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                    
+                                    </Paper>
+                                </Page>
+                            ))}
+                        </Slider>
+                    </Wrapper>
+                    </Grid>
+                </Grid>
+                : 
+                <Grid item xs={12} style={{textAlign:'center', marginLeft:'3%',}}>
+                    <Typography style={{fontWeight:'lighter', color:''}}>
+                        <span style={{fontSize:30, color:'#4B4343',fontWeight:'light',marginRight:'1%'}}>Oops...</span>Seems like you're new here, Start Searching To Activate This Section!
+                    </Typography>
+                    <Typography style={{fontWeight:'bold'}}>
+                        
                     </Typography>
                 </Grid>
-                <div className={classes.root}>
-                    <a href={carouselImgs[0].link} target="_blank">
-                        <img src={carouselImgs[0].imgUrl} className={classes.img} alt=""/>
-                    </a>
-                </div>
-                <div className={classes.root}>
-                    <a href={carouselImgs[1].link} target="_blank">
-                        <img src={carouselImgs[1].imgUrl} className={classes.img} alt=""/>
-                    </a>
-                </div>
-            </Grid> */}
-        </div>
+                }
+                <Grid item xs={12} style={{ backgroundColor:'white', marginLeft:5}}>
+                    <Grid Container style={{padding:'10%', paddingLeft:'8%'}}>
+                        <Grid item xs={12} sm style={{marginBottom:'1%'}} >
+                            <Typography variant='subtitle1' color='primary' style={{fontSize:18, fontWeight:'Bold', textAlign:'left', marginBottom:'3%'}}>
+                                Be A Member Today
+                            </Typography>
+                            <Typography gutterBottom style={{fontSize:38, fontWeight:'lighter', textAlign:'left'}}>
+                                Bookmarks <span style={{fontSize:25,textAlign:'left'}}> Save a Job Listing and View Later </span>
+                            </Typography>
+                            <Typography gutterBottom style={{fontSize:38, fontWeight:'lighter', textAlign:'center'}}>
+                                Browse Again <span style={{fontSize:25,}}> Never lose track of your favourite searches </span>
+                            </Typography>
+                            <Typography style={{fontSize:38, fontWeight:'lighter', textAlign:'left'}}>
+                                Smart Search <span style={{fontSize:25,}}> we recommend Jobs that you like </span>
+                            </Typography>
+                            <Typography>
+                            </Typography>
+                        
+                        </Grid>
+                        <Grid item xs={12} sm style={{marginTop:'4%'}}>
+                            <Typography  style={{fontSize:50, fontWeight:'bold',textAlign:'right',}}>
+                                SIGN UP NOW.
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    
+                </Grid>
+                
+            </Grid>
+        </Grid>
         :''
         }
         <Snackbar
@@ -1269,8 +1237,8 @@ function Jobs (props) {
             </IconButton>
             ]}
         /> 
-    {/* </Container>  */}
-            </div>
+    
+        </div>
         }
     </div>
     

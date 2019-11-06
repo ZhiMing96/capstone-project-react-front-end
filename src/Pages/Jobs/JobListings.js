@@ -8,6 +8,7 @@ import {Bookmark as BookmarkIcon, Schedule as ScheduleIcon, Done as DoneIcon, Ne
 import CloseIcon from '@material-ui/icons/Close';
 import FilterSelect from '../../Components/FilterSelect';
 import api from '../../api';
+import JobFilterSideBar from './JobFilterSideBar';
 
 const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";  
 
@@ -213,7 +214,12 @@ function addBookmark(job){
     return (
         <Fragment>
         <CssBaseline />
-        <Grid container style={{padding:'3%'}}>
+        <Grid container>
+            <Grid item container xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
+                <JobFilterSideBar/>
+            </Grid>
+            <Grid item container xs={9}>
+            <Grid container style={{padding:'3%'}}>
             <Grid item xs={12} sm={6} container justify="flex-start"> 
                 <Typography style={{marginLeft:20, marginTop:20}}>
                     <Box>
@@ -525,6 +531,9 @@ function addBookmark(job){
             ]
             }
         />
+            </Grid>
+        </Grid>
+        
         
     </Fragment>
     )
