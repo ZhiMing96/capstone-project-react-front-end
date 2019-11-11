@@ -137,6 +137,15 @@ const recommendations = {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
 }
+
+const alerts = {
+  retrieve: (params) => axios.post("http://localhost:3000/alert/all", params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  seen: (params) => axios.post("http://localhost:3000/alert/seen", params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+}
   
   export default {
     auth,
@@ -152,4 +161,5 @@ const recommendations = {
     invitations,
     meetups,
     recommendations,
+    alerts,
   }

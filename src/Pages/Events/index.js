@@ -936,7 +936,7 @@ function Events() {
                   </Collapse>
                 </Card>
                 <ThemeProvider theme={theme}>
-                  <Dialog open={selectedIndex === index ? open : false} onClose={handleClose} style={{ boxShadow: 0, opacity: 1, margin: '7px', width: '100vw' }}>
+                  <Dialog fullWidth open={selectedIndex === index ? open : false} onClose={handleClose} style={{ boxShadow: 0, opacity: 1, margin: '7px', width: '100vw' }}>
                     <DialogContent style={{ textAlign: 'center' }}>
                       <Map markerAddress={markerAddress} style={{ width: '98%', }} />
                       <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >

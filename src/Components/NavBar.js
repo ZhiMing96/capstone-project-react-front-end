@@ -30,7 +30,15 @@ import { withStyles,makeStyles } from '@material-ui/core/styles';
 import { ImportantDevices } from '@material-ui/icons';
 import { typography } from '@material-ui/system';
 import DailyDigest from '../Pages/DailyDigest';
-import logo from '../images/logo.png'
+import logo from '../images/logo.png';
+import Collapse from '@material-ui/core/Collapse';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Fade from '@material-ui/core/Fade';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone'
+import Notifications from '../Components/Notifications';
+import Popper from '@material-ui/core/Popper';
+import Badge from '@material-ui/core/Badge';
+
 
 
 const styles = theme => ({
@@ -49,11 +57,15 @@ class NavTabs extends React.Component {
       message: '',
       onProfilePage: false,
       sideBarOpen: false,
+      notificationBoxOpen: false,
+      anchorEl:false,
+      alertLength:null,
       tabStyle:{
         jobs: 'light',
         events: 'light',
         articles: 'light',
       },
+      alerts : null,
     };
     console.log(this.props)
     console.log(this.props.location.pathname)
@@ -69,8 +81,26 @@ class NavTabs extends React.Component {
         }
       })
     }
+
+    api.alerts.retrieve({"alert_type": "MEETUP_INVITE"})
+      .then(res => {
+          console.log(res.data)
+          if (res.data.response_code === 200){
+              console.log(res.data.alerts)
+              this.setState({alerts: res.data.alerts })
+      
+          }
+      }).catch(err => console.log(err))
     
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    //Typical usage, don't forget to compare the props
+    console.log(prevState)
+    // if (this.props !== prevProps) {
+    //   console.log("TESTING")
+    // }
+   }
 
   drawerTogglerClickHandler = () => {
     this.setState((prevState) => {
@@ -98,11 +128,18 @@ class NavTabs extends React.Component {
     this.props.history.push("/auth/signin");
   };
 
+  handleClick = event => {
+    this.setState({anchorEl : this.state.anchorEl ? null : event.currentTarget });
+  };
+
 
   render() {
     const token = window.localStorage.getItem('authToken');
     console.log(token)
     var isHomePage=false
+    const open = Boolean(this.state.anchorEl);
+    console.log(open)
+    const id = open ? 'transitions-popper' : undefined;
 
     if(this.props.location.pathname === '/'){
       isHomePage=true
@@ -143,6 +180,7 @@ class NavTabs extends React.Component {
       <div>
         <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler}/>
         {backdrop}
+
         <AppBar position="sticky" color="#FFFFFF" style={{zIndex:50}}>
         {/* <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}> */}
         <Toolbar>
@@ -233,6 +271,29 @@ class NavTabs extends React.Component {
                 }}>
                   <PersonIcon />
                 </IconButton>
+                <Badge badgeContent={this.state.alerts ? this.state.alerts.length : null} color="error">
+                  <NotificationsNoneIcon onClick={this.handleClick}/>
+                </Badge>
+                
+                <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
+                placement="bottom-end"
+                disablePortal={false}
+                modifiers={{
+                  flip: {
+                    enabled: true,
+                  },
+                  preventOverflow: {
+                    enabled: true,
+                    boundariesElement: 'undefined',
+                  },
+                  arrow: {
+                    enabled: true,
+                    element: '[x-arrow]',
+                  },
+                }}>
+                  <Notifications setAlertLength={this.setAlertLength} alerts={this.state.alerts}/>
+                </Popper>
+
                 <Logout handleLogout={this.handleLogout}/>
                 </div>
                 }

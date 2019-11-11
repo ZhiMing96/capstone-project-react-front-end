@@ -30,6 +30,7 @@ import './index.css';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
 import Badge from '@material-ui/core/Badge';
+import CircularLoading from '../../Components/LoadingBars/CircularLoading';
 
 
 const Wrapper = styled.div`
@@ -230,8 +231,11 @@ function Invitations(props) {
     const [ pendingInvitations, setPendingInvitations ] = useState();
     const [ upcomingMeetups, setUpcomingMeetups ] = useState();
     const [ pendingMeetupDate, setPendingMeetupDate ] = useState();
+    const [ invitationsLoading, setInvitationsLoading ] = useState(false);
+    const [ meetupsloading, setMeetupsLoading ] = useState(false);
 
     const getPendingInvitation = () => {
+        setInvitationsLoading(true);
         api.invitations.getPending()
         .then(res=>{
             console.log(res.data)
@@ -246,13 +250,15 @@ function Invitations(props) {
                 console.log(invitesReceived);
 
                 setPendingInvitations(invitesReceived)
-            }
-        })
+            } 
+            setInvitationsLoading(false);
+        }).catch(err => console.log(err))
     }
 
     const getUpcomingMeetups = () => {
+        setMeetupsLoading(true);
         api.invitations.getCurrent()
-        .then(res=>{
+        .then(res=> {
             console.log(res.data)
             if(res.data.response_code === 200) {
                 const invitesSent = res.data.invites_sent
@@ -282,6 +288,7 @@ function Invitations(props) {
                 setUpcomingMeetups(tempWithDate)
                 setPendingMeetupDate(tempWithoutDate)
             }
+            setMeetupsLoading(false);
         })
     }
     
@@ -297,6 +304,7 @@ function Invitations(props) {
         .then(res=>{
             if(res.data.response_code === 200){
                 console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
+                getPendingInvitation();
                 getUpcomingMeetups();
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
@@ -456,7 +464,9 @@ function Invitations(props) {
                 </Badge>
                 </Grid>
                 <Grid container style={{ margin:10, marginTop:10, }} spacing={1} justify="space-between" > 
-                {pendingInvitations
+                {invitationsLoading
+                ? <CircularLoading/>
+                : pendingInvitations
                 ? 
                 <Wrapper>
                     <Slider {...carouselSettings}>
@@ -599,7 +609,6 @@ function Invitations(props) {
         
             
             <Grid container spacing={6}>
-
                     <Grid container item xs={12} md={6}>
                         <Grid item xs={12} style={{marginTop:'10%',textAlign:'left'}}>
                             <Badge badgeContent={upcomingMeetups? upcomingMeetups.length : null } color="error"
@@ -609,7 +618,10 @@ function Invitations(props) {
                                 </Typography>
                             </Badge>
                         </Grid>
-                        {upcomingMeetups
+                        
+                        {meetupsloading
+                        ? <CircularLoading/>
+                        : upcomingMeetups
                         ?
                         upcomingMeetups.map((meetup, index) => {
                             if(meetup.suggested_datetime !== null){
@@ -760,7 +772,9 @@ function Invitations(props) {
                                 </Typography>
                             </Badge>
                         </Grid>
-                        {pendingMeetupDate
+                        {meetupsloading
+                        ? <CircularLoading/>
+                        : pendingMeetupDate
                         ?
                         pendingMeetupDate.map((meetup, index) => {
                             if(meetup.suggested_datetime === null){
