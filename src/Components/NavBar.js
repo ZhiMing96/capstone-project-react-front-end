@@ -81,26 +81,47 @@ class NavTabs extends React.Component {
         }
       })
     }
-
-    api.alerts.retrieve({"alert_type": "MEETUP_INVITE"})
-      .then(res => {
-          console.log(res.data)
-          if (res.data.response_code === 200){
-              console.log(res.data.alerts)
-              this.setState({alerts: res.data.alerts })
-      
-          }
-      }).catch(err => console.log(err))
+    this.retrieveAlerts()
+    setInterval(this.retrieveAlerts, 10000);
     
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    //Typical usage, don't forget to compare the props
-    console.log(prevState)
-    // if (this.props !== prevProps) {
-    //   console.log("TESTING")
-    // }
-   }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log("****ENTERED SHOULD COMPONENT UPDATE METHOD ***")
+  //   console.log(nextState)
+  //   return this.state.alerts !== nextState.alerts
+  // }
+
+
+  retrieveAlerts = () =>{
+    api.alerts.retrieve({"alert_type": "MEETUP_INVITE"})
+    .then(res => {
+        console.log(res.data)
+        if (res.data.response_code === 200){
+            console.log(res.data.alerts)
+            if(res.data.alerts){
+
+            const currentLength = this.state.alerts ? this.state.alerts.length : 0
+            const incomingLength = res.data.alerts.length
+
+            if(!this.state.alerts || this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
+              
+              if(this.state.alerts){
+                // console.log("******* COMPARING THE LAST ALERT ID ******")
+                // console.log(this.state.alerts[currentLength-1].alert_id)
+                // console.log(res.data.alerts[incomingLength-1].alert_id)
+              }
+  
+              this.setState({alerts: res.data.alerts })
+            }
+
+            }
+            
+        }
+    }).catch(err => console.log(err))
+  }
+
+
 
   drawerTogglerClickHandler = () => {
     this.setState((prevState) => {
@@ -291,7 +312,7 @@ class NavTabs extends React.Component {
                     element: '[x-arrow]',
                   },
                 }}>
-                  <Notifications setAlertLength={this.setAlertLength} alerts={this.state.alerts}/>
+                  <Notifications alerts={this.state.alerts} retrieveAlerts={this.retrieveAlerts}/>
                 </Popper>
 
                 <Logout handleLogout={this.handleLogout}/>

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
 import Paper from '@material-ui/core/Paper';
 import Collapse from '@material-ui/core/Collapse';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone'
-import { Typography, ListItem, ListItemAvatar, List, ListItemText, Avatar, Grid, Divider } from '@material-ui/core';
+import { Typography, ListItem, ListItemAvatar, List, ListItemText, Avatar, Grid, Divider, Button } from '@material-ui/core';
 import api from '../api';
+import Social from '../Pages/Social/index';
+import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -26,34 +27,25 @@ const useStyles = makeStyles(theme => ({
 export default function Notifications(props) {
     const classes = useStyles();
     const [checked, setChecked] = useState(false);
-    const [alerts, setAlerts] = useState(null);
+    const [alerts, setAlerts] = useState(props.alerts);
+    const alertTypes = ["MEETUP_INVITE", "ACCEPT_INVITE" , "CANCEL_MEETUP", "CHANGE_MEETUP_DATE", "COMPLETE_MEETUP", "RECOMMENDATION_REQUEST", "WRITE_RECOMMENDATION"]
+    const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Meetup Completed", "New Recommendation Request", "Write a Recommendation", ]
 
     console.log(props);
-    // useEffect(()=>{
-    //     api.alerts.retrieve({"alert_type": "MEETUP_INVITE"})
-    //     .then(res => {
-    //         console.log(res.data)
-    //         if (res.data.response_code === 200){
-    //             console.log(res.data.alerts)
-    //             setAlerts(res.data.alerts);
-                
-    //         }
-    //     }).catch(err => console.log(err))
-    // },[])
-
-    useEffect(() => {
-        // props.setAlertLength(alerts ? alerts.length : null)
-    }, [alerts])
-
-    const handleSeen = (alert) => { 
-        api.alerts.seen({"alert_id": alert.alert_id })
-    }
+    
 
     
 
-    const handleChange = () => {
-        setChecked(prev => !prev);
-    };
+    const handleSeen = (alert) => { 
+        api.alerts.seen({"alert_id": alert.alert_id })
+        .then(res => {
+            console.log(res.data);
+            if(res.data.response_code === 200){
+                console.log("** SUCCESSFULLY MARKED AS SEEN **")
+                props.retrieveAlerts();
+            }
+        })
+    }
 
     
 
@@ -67,24 +59,46 @@ export default function Notifications(props) {
                 </Grid>
                 <Grid item xs={12}>
                     <List style={{ padding:0 }} >
-                        <ListItem style={{ paddingLeft:0 }}>
-                            <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15}}>
-                                <Avatar alt="Remy Sharp" src="" style={{width:50, height:50}}/>
-                            </ListItemAvatar>
-                            <ListItemText>
-                                <Typography>
-                                    New Meetup Invitation
-                                </Typography>
-                                <Typography>
-                                    From Zhi Ming
-                                </Typography>
-                                <Typography>
-                                    2 days ago
-                                </Typography>
-
-                            </ListItemText>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
+                        {alerts
+                        ? alerts.map((alert, index) => (
+                            <Link
+                            to={{
+                                pathname: "/profile/social",
+                                state: { tabIndex: 1 }
+                              }}
+                            style={{textDecoration:'none', color:'inherit'}}
+                            >
+                                <ListItem style={{ paddingLeft:0 }} onClick={() => handleSeen(alert)}>
+                                    <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15}}>
+                                        <Avatar alt="Remy Sharp" src="" style={{width:50, height:50}}/>
+                                    </ListItemAvatar>
+                                    <ListItemText>
+                                        <Typography>
+                                            {alertHeaders[alertTypes.indexOf(alert.alert_type)]}
+                                        </Typography>
+                                        <Typography>
+                                            From Zhi Ming
+                                        </Typography>
+                                        <Grid container justify="space-between" alignItems="center">
+                                            <Grid item>
+                                                <Typography>
+                                                    2 days ago
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Button size="small" onClick={()=> handleSeen(alert)}>
+                                                    Mark as Seen
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItemText>
+                                </ListItem>
+                                <Divider variant="inset" component="li" />
+                            </Link>
+                        ))
+                        : "There are no Notifications at the Moment"
+                        }
+                        
                     </List>
                 </Grid>
             </Grid>

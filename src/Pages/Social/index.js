@@ -37,9 +37,13 @@ const useStyles = makeStyles(theme => ({
   
 }));
 
-export default function Social() {
+export default function Social(props) {
+    console.log("**** PROPS FOR SOCIAL INDEX ******")
+    console.log(props)
     const classes = useStyles();
-    const [tabState, setTabState] = React.useState(1)
+    const [tabState, setTabState] = React.useState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 0)
+
+
 
     const handleChangeIndex = (event, index) => {
         setTabState(index)
