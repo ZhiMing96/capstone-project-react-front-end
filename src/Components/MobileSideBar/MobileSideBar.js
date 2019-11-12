@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './MobileSideBar.css'
 import { Grid, makeStyles, Typography, Avatar, Box, Button, Paper, IconButton } from '@material-ui/core'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
@@ -9,6 +9,7 @@ import ArticlesIcon from '@material-ui/icons/MenuBook';
 import JobsIcon from '@material-ui/icons/BusinessCenter';
 import api from '../../api'
 import TelegramIcon from '@material-ui/icons/Telegram';
+import FaceIcon from '@material-ui/icons/Face';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,6 +55,8 @@ function MobileSideBar(props){
   
   const [value, setValue] = React.useState(0);
   const [name, setName] = React.useState("");
+  const [file, setFile] = useState();
+  const [base64, setBase64] = useState();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -75,6 +78,29 @@ function MobileSideBar(props){
   if(props.show){
     sideBarClasses = 'mobileSideBar open' ;
   }
+
+  const handleImageChange = e => {
+    e.preventDefault();
+    let file = e.target.files[0];
+    console.log(file)
+    if(file){
+      let reader = new FileReader();
+      console.log(reader)
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        console.log(reader.result)
+        setFile(file)
+        setBase64(reader.result)
+        handleSubmitNewImg()
+      };
+
+    }
+    
+  }
+  const handleSubmitNewImg = () => {
+      console.log("SUBMITTING")
+  }
+
   return(
     <nav className={sideBarClasses}> 
       <Paper square className={classes.root} elevation={3}>
@@ -92,7 +118,16 @@ function MobileSideBar(props){
         </Tabs>
       </Paper>
       <Grid container alignItems="center" justify="center">
-        <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" className={classes.bigAvatar} />
+        <label for='image_upload'>
+          <div title={'Change profile picture'}>
+            {base64
+            ? <Avatar src={base64} className={classes.bigAvatar}/>
+            : <FaceIcon fontSize="large" className={classes.icon} />
+            }
+          </div>
+        </label>
+        <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
+
         <Grid container justify="center">
           <Typography>
             <Box 

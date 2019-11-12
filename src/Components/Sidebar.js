@@ -77,9 +77,6 @@ function Sidebar(props) {
   const [profileImageLink, setProfileImageLink] = React.useState('')
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
-  const image = document.createElement('img');
-  
-  image.src = base64 ;
 
   useEffect(() => {
     api.profile.get().then(
@@ -128,13 +125,13 @@ function Sidebar(props) {
         console.log(reader.result)
         setFile(file)
         setBase64(reader.result)
-        handleSubmit()
+        handleSubmitNewImg()
       };
 
     }
     
   }
-  const handleSubmit = () => {
+  const handleSubmitNewImg = () => {
       console.log("SUBMITTING")
   }
 
@@ -147,9 +144,9 @@ function Sidebar(props) {
       <Grid container alignItems="center" justify="center" style={{ position: 'relative' }}>
         {props.profile_image_link !== null && props.profile_image_link !== '' 
         ?
-          <input type='file' onChange={handleImageChange}>
+          
             <Avatar src={props.profile_image_link} className={classes.bigAvatar} /> 
-          </input>
+          
         :
         <div style={{textAlign:'-webkit-center'}}>
         <label for='image_upload'>
@@ -158,8 +155,6 @@ function Sidebar(props) {
             ? <Avatar src={base64} className={classes.icon}/>
             : <FaceIcon fontSize="large" className={classes.icon} />
             }
-            
-            
           </div>
         </label>
         <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
