@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid, makeStyles, Typography, Avatar, Box, Button, IconButton, Dialog, DialogActions, DialogContent, TextField, DialogContentText } from '@material-ui/core'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import api from '../api'
@@ -75,7 +75,11 @@ function Sidebar(props) {
   const [name, setName] = React.useState('')
   const [dialog, setDialog] = React.useState(false)
   const [profileImageLink, setProfileImageLink] = React.useState('')
-
+  const [file, setFile] = useState();
+  const [base64, setBase64] = useState();
+  const image = document.createElement('img');
+  
+  image.src = base64 ;
 
   useEffect(() => {
     api.profile.get().then(
@@ -112,22 +116,61 @@ function Sidebar(props) {
     setProfileImageLink(event.target.value);
   };
 
+  const handleImageChange = e => {
+    e.preventDefault();
+    let file = e.target.files[0];
+    console.log(file)
+    if(file){
+      let reader = new FileReader();
+      console.log(reader)
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        console.log(reader.result)
+        setFile(file)
+        setBase64(reader.result)
+        handleSubmit()
+      };
+
+    }
+    
+  }
+  const handleSubmit = () => {
+      console.log("SUBMITTING")
+  }
+
+  console.log(file)
+  console.log(base64)
+
 
   return (
     <div>
       <Grid container alignItems="center" justify="center" style={{ position: 'relative' }}>
-        {props.profile_image_link !== null && props.profile_image_link !== '' ?
-          <Avatar src={props.profile_image_link} className={classes.bigAvatar} onClick={openDialog} /> :
-
+        {props.profile_image_link !== null && props.profile_image_link !== '' 
+        ?
+          <input type='file' onChange={handleImageChange}>
+            <Avatar src={props.profile_image_link} className={classes.bigAvatar} /> 
+          </input>
+        :
+        <div style={{textAlign:'-webkit-center'}}>
+        <label for='image_upload'>
           <div title={'Change profile picture'}>
-            <FaceIcon fontSize="large" className={classes.icon} onClick={openDialog} />
-            {/*
-          <div title={'Change profile picture'} className={classes.overlay} onClick={openDialog}>
-            <CameraAltIcon  fontSize="large"/>
+            {base64
+            ? <Avatar src={base64} className={classes.icon}/>
+            : <FaceIcon fontSize="large" className={classes.icon} />
+            }
+            
+            
           </div>
-         
-          */}
-          </div>
+        </label>
+        <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
+        </div>
+          
+        
+            
+          // <div title={'Change profile picture'} className={classes.overlay} onClick={openDialog}>
+          //   <CameraAltIcon  fontSize="large"/>
+          // </div> 
+          
         }
         <Grid container justify="center">
           <Typography>

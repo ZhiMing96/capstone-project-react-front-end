@@ -12,6 +12,8 @@ import api from '../../api';
 import './index.css';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
+import CircularLoading from '../../Components/LoadingBars/CircularLoading'
+import Snackbar from '../../Components/Snackbar';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -144,10 +146,16 @@ export default function Reco(props) {
     const classes = useStyles();
     const requests = [0, 1, 2, 3, 4, 5] //api
     const [completedMeetups, setCompletedMeetups] = useState();
+    const [loadingCompletedMeetups, setLoadingCompletedMeetups] = useState(false);
+    const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+    const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+    const requestErrorMsg = "An Error Has Occured! Request was Unsucessful"
+    const requestSuccessMsg = "Requst Sent Successfully! "
+
 
     const getCompletedMeetups = () => { 
 
-        //REM TO FILTER ONCE ERN TEK FIX THE IS_COMPLETED ATTRIBUTE 
+        setLoadingCompletedMeetups(true);
         api.invitations.getCurrent()
         .then(res=>{
             if(res.data.response_code === 200){
@@ -165,7 +173,7 @@ export default function Reco(props) {
                 for(let i=0; i<combined.length;i++){
                     const invitation = combined[i]
                     console.log(invitation)
-                    if(invitation.accepted === 1){
+                    if(invitation.is_completed === 1){
                         temp.push(invitation)
                     }
                 }
@@ -173,7 +181,10 @@ export default function Reco(props) {
 
             } else {
                 console.log('**** ERROR: Unable to Retrieve Completed Meetups  ***')
+                console.log(res.data.response_message)
             }
+
+            setLoadingCompletedMeetups(false)
         }).catch(err=> console.error(err));
     }
 
@@ -181,6 +192,24 @@ export default function Reco(props) {
     useEffect(()=>{
         getCompletedMeetups();
     },[props])
+
+    const resetSnackBars = (reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenErrorSnackbar(false);
+        // setOpenSuccessSnackbar(false);
+    }
+
+    const handleOpenSnackBar = (type) => {
+        console.log(" $$$$ ENTERED OPEN SNACKBAR ")
+
+        if(type === "Error"){
+            setOpenErrorSnackbar(true);
+        } else if (type == "Success"){
+            setOpenSuccessSnackbar(true);
+        }
+     }
 
 
     return (
@@ -224,11 +253,11 @@ export default function Reco(props) {
                 <Grid item container sm={12} md={5}>
                     <Grid item container style={{ marginTop: 20, marginBottom: 20, width: '100%' }}>
                         <Typography component="div">
-                            <Badge 
+                            {/* <Badge 
                             badgeContent={completedMeetups? completedMeetups.length:null} 
                             color="error"
                             anchorOrigin={{ vertical: 'top', horizontal: 'left',}}
-                            >
+                            > */}
                                 <Box
                                     fontSize="h6.fontSize"
                                     style={{ fontSize: 'large' }}
@@ -240,23 +269,34 @@ export default function Reco(props) {
                                     RECOMMENDATION REQUEST
 
                                 </Box>
-                            </Badge>
+                            {/* </Badge> */}
                         </Typography>
                     </Grid>
-                    {completedMeetups
+                    {loadingCompletedMeetups
+                    ? <CircularLoading/>
+                    : completedMeetups
                     ?
                     <Grid item style={{ width: '100%' }}>
                         <List>
                             {completedMeetups.map((meetup, index)=>(
-                                <RecoRequestListItem meetup={meetup}/>
+                                <RecoRequestListItem meetup={meetup} 
+                                handleOpenSnackBar={handleOpenSnackBar} />
                             ))}
                         </List>
                     </Grid>
                     : 'Complete A Meetup to Request for a Recommendation!'
                     }
-                    
                 </Grid>
             </Grid>
+            {
+                
+            }
+            <Snackbar
+            open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
+            handleClose={resetSnackBars}
+            variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
+            message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
+        />
 
             <Grid item container style={{ width: '100%' }}>
                 <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>

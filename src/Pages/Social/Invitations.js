@@ -456,12 +456,12 @@ function Invitations(props) {
             {/* <Router> */}
             <Grid container direction="row" style={{ width: '100%', textAlign: 'left' }}>
                 <Grid item xs={12} style={{marginTop:'5%'}}>
-                <Badge badgeContent={pendingInvitations ? pendingInvitations.length : null} color="error" 
-                anchorOrigin={{ vertical: 'top', horizontal: 'left',}}>
+                {/* <Badge badgeContent={pendingInvitations ? pendingInvitations.length : null} color="error" 
+                anchorOrigin={{ vertical: 'top', horizontal: 'left',}}> */}
                     <Typography className={classes.sectionHeading}>
                         INVITATION REQUESTS
                     </Typography>
-                </Badge>
+                {/* </Badge> */}
                 </Grid>
                 <Grid container style={{ margin:10, marginTop:10, }} spacing={1} justify="space-between" > 
                 {invitationsLoading
@@ -544,9 +544,9 @@ function Invitations(props) {
                                     <Grid container >
                                         <Grid item xs={12} sm={4} style={{textAlign:'-webkit-center'}}>
                                             <Avatar alt="List"
-                                                src={invitation.to_user 
+                                                src={invitation.to_user && invitation.to_user.social 
                                                     ? invitation.to_user.social.profile_image_link
-                                                    : invitation.from_user
+                                                    : invitation.from_user && invitation.from_user.social
                                                     ? invitation.from_user.social.profile_image_link
                                                     : ''} 
                                                 imgProps={{style:{objectFit:'contain',border:0}}}
@@ -611,12 +611,12 @@ function Invitations(props) {
             <Grid container spacing={6}>
                     <Grid container item xs={12} md={6}>
                         <Grid item xs={12} style={{marginTop:'10%',textAlign:'left'}}>
-                            <Badge badgeContent={upcomingMeetups? upcomingMeetups.length : null } color="error"
-                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}>
+                            {/* <Badge badgeContent={upcomingMeetups? upcomingMeetups.length : null } color="error"
+                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}> */}
                                 <Typography className={classes.sectionHeading} style={{}}>
                                     UPCOMING MEETUPS
                                 </Typography>
-                            </Badge>
+                            {/* </Badge> */}
                         </Grid>
                         
                         {meetupsloading
@@ -765,12 +765,12 @@ function Invitations(props) {
                 
                     <Grid container item xs={12} md={6}>
                         <Grid item xs={12} style={{marginTop:'10%', textAlign:'left'}}>
-                            <Badge badgeContent={pendingMeetupDate? pendingMeetupDate.length : null } color="error"
-                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}>
+                            {/* <Badge badgeContent={pendingMeetupDate? pendingMeetupDate.length : null } color="error"
+                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}> */}
                                 <Typography className={classes.sectionHeading} style={{ color:'#992E24'}}>
                                     PENDING MEETUP DATE
                                 </Typography>
-                            </Badge>
+                            {/* </Badge> */}
                         </Grid>
                         {meetupsloading
                         ? <CircularLoading/>

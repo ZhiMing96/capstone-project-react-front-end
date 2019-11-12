@@ -38,6 +38,8 @@ const styles1 = theme => ({
 function SnackbarContentWrapper(props) {
   const { classes, className, message, onClose, variant, ...other } = props;
   const Icon = variantIcon[variant];
+  console.log(variant)
+  console.log(onClose)
 
   return (
     <SnackbarContent

@@ -40,20 +40,36 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1)
     },
     dialogAvatar : {
-        width:90,
-        height:90,
+        width:95,
+        height:95,
     },
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: '100%',
-      },
+        width: '-webkit-fill-available',
+    },
+    avatarGrid: {
+        marginRight:'5%', 
+        textAlign:'-webkit-center', 
+        paddingLeft:'4%',
+        [theme.breakpoints.down('xs')]: {
+            marginBottom:'7%'
+        },
+
+    }
 }));
 
-export default function AlignItemsList({ meetup }) {
+export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
     const classes = useStyles();
     const [requestMessage, setRequestMessage] = useState()
     const [openDialog, setOpenDialog] = useState(false);
+    // const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+    // const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+    const errorMsg = "An Error Has Occured! Request was Unsucessful"
+    const successMsg = "Requst Sent! "
+
+    console.log('<< Meetup Item >> ')
+    console.log(meetup)
 
     const handleChange = event => {
         //console.log(event.target.value);
@@ -72,27 +88,48 @@ export default function AlignItemsList({ meetup }) {
         console.log(meetup)
         console.log(requestMessage)
         const targetUser = 
-        meetup.to_user && meetup.to_user.profile
-        ? meetup.to_user.profile.user_id
-        : meetup.from_user && meetup.from_user.profile
-        ? meetup.from_user.profile.user_id
+        meetup.other_user && meetup.other_user.profile
+        ? meetup.other_user.profile.user_id
         : null ;
 
         console.log(targetUser)
+        setOpenDialog(false);
 
         api.recommendations.request({
             target_user: targetUser,
             message: requestMessage
         })
         .then(res => {
+            
             console.log(res.data)
             if(res.data.response_code === 200){
                 console.log('**** Successfully Send Recommendation Request ****')
+                handleOpenSnackBar("Success");
+            } else {
+                handleOpenSnackBar("Error");
             }
+            
+        }).catch(err=>{
+            console.log(err)
+            setOpenDialog(false);
         })
     }
 
+    
 
+    const formatDate = (stringDate, length) => {
+         const date = new Date(stringDate)
+         if(length === "short") {
+            var month = date.toLocaleString('en-GB', { month: 'short' });
+         } else {
+            var month = date.toLocaleString('en-GB', { month: 'long' });
+         }
+         
+
+         return(date.getDate() + " " +  month + " " + date.getFullYear())
+    }
+
+    console.log("JUST BEFORE RENDER")
     return (
         <div>
             <ListItem alignItems="flex">
@@ -110,10 +147,8 @@ export default function AlignItemsList({ meetup }) {
                                     className={classes.inline}
                                     color="textPrimary"
                                 >
-                                    {meetup.to_user && meetup.to_user.profile
-                                    ? meetup.to_user.profile.username
-                                    : meetup.from_user && meetup.from_user.profile
-                                    ? meetup.from_user.profile.username
+                                    {meetup.other_user && meetup.other_user.profile
+                                    ? meetup.other_user.profile.username
                                     : 'USER' 
                                     }
                                 </Typography>
@@ -128,7 +163,7 @@ export default function AlignItemsList({ meetup }) {
                                         color="textSecondary"
                                         style={{ fontSize: 'medium' }}
                                     >
-                                        5 Nov 2019
+                                        {formatDate(meetup.suggested_datetime,'short')}
                                     </Typography>
                                 </Grid>
                             }
@@ -155,27 +190,57 @@ export default function AlignItemsList({ meetup }) {
                 <DialogContent style={{padding:'10%', paddingBottom:'1%'}}>
                     <Grid container>
                         <Grid item container xs={12}>
-                            <Grid item xs={12} sm={3} style={{paddingRight:'7%', textAlign:'-webkit-center', marginBottom:'6%'}}>
+                            <Grid item xs={12} sm={3} className={classes.avatarGrid}>
                                 <Avatar
                                 src=''
                                 alt='list'
                                 className={classes.dialogAvatar}/>
                             </Grid>
-                            <Grid item xs={12} sm={9} style={{paddingLeft:'4%'}}>
-                                <Typography gutterBottom>
-                                    {meetup.to_user && meetup.to_user.profile
-                                    ? meetup.to_user.profile.first_name + ' ' + meetup.to_user.profile.last_name
-                                    : meetup.from_user && meetup.from_user.profile
-                                    ? meetup.from_user.profile.first_name + ' ' + meetup.from_user.profile.last_name
-                                    : 'USER' 
-                                    }
-                                </Typography>
-                                <Typography gutterBottom>
-                                    NUS Lecturer
-                                </Typography>
-                                <Typography gutterBottom>
-                                    15 November 2019
-                                </Typography>
+                            <Grid item container xs={12} sm={8} style={{}}>
+                                <Grid item container xs={12}>
+                                    <Grid item xs={4}>
+                                        Name:
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography gutterBottom>
+                                            {meetup.other_user && meetup.other_user.profile
+                                            ? meetup.other_user.profile.username.toUpperCase()
+                                            : 'USER' 
+                                            }
+                                        </Typography>
+                                    </Grid>
+
+                                </Grid>
+                                <Grid item container xs={12}>
+                                    <Grid item xs={4}>
+                                        JobTitle
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography gutterBottom>
+                                            NUS Lecturer
+                                        </Typography>
+                                    </Grid>
+
+                                </Grid>
+                                <Grid item container xs={12}>
+                                    <Grid item xs={4}>
+                                        Company
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        National University of Singapore
+                                    </Grid>
+
+                                </Grid>
+                                <Grid item container xs={12}>
+                                    <Grid item xs={4}>
+                                        Meetup Date
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography gutterBottom>
+                                            {formatDate(meetup.suggested_datetime,'long')}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -203,6 +268,7 @@ export default function AlignItemsList({ meetup }) {
                 </Button>
                 </DialogActions>
             </Dialog>
+
             <Divider variant="inset" component="li" />
         </div>)
 }

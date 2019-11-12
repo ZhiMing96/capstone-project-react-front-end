@@ -13,8 +13,10 @@ import CircularLoading from '../Components/LoadingBars/CircularLoading'
 const useStyles = makeStyles(theme => ({
     root: {
     width:400, 
-    height:500,
-    backgroundColor:'whitesmoke',
+    height:"fit-content",
+    backgroundColor:'white',
+    maxHeight: 500, 
+    overflowY: 'auto'
     },
     paper: {
       margin: theme.spacing(1),
@@ -38,7 +40,7 @@ export default function Notifications(props) {
     useEffect(()=>{
         console.log("**** NEW PROPS DETECTED ****")
         setAlerts(props.alerts)
-        setLoadingNotifications(false);
+        setLoadingNotifications(props.loading);
     }, [props])
     
 
@@ -51,6 +53,7 @@ export default function Notifications(props) {
                 console.log("** SUCCESSFULLY MARKED AS SEEN **")
                 props.retrieveAlerts();
             }
+        setLoadingNotifications(false);
         }).catch (err => {
             console.log(err)
         })

@@ -20,7 +20,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu'
 import Logout from './Logout';
-import { Hidden, Box } from '@material-ui/core';
+import { Hidden, Box, Snackbar } from '@material-ui/core';
 import LoginIcon from '@material-ui/icons/Input';
 import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
 import Backdrop from '../Components/MobileSideBar/Backdrop';
@@ -38,8 +38,10 @@ import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone'
 import Notifications from '../Components/Notifications';
 import Popper from '@material-ui/core/Popper';
 import Badge from '@material-ui/core/Badge';
+import CloseIcon from '@material-ui/icons/Close';
 
-
+import TooltipTrigger from "react-popper-tooltip";
+import "react-popper-tooltip/dist/styles.css";
 
 const styles = theme => ({
   root: {
@@ -65,6 +67,9 @@ class NavTabs extends React.Component {
         articles: 'light',
       },
       alerts : null,
+      openSnackBar: false,
+      messageInfo: "You have a new Notification!",
+      notificationLoading: true, 
     };
     console.log(this.props)
     console.log(this.props.location.pathname)
@@ -81,22 +86,18 @@ class NavTabs extends React.Component {
       })
     }
     this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 10000);
+    setInterval(this.retrieveAlerts, 100000);
     
   }
 
-  
-
 
   retrieveAlerts = () =>{
+    // this.setState({notificationLoading: true})
     api.alerts.retrieve({"alert_type": "MEETUP_INVITE"})
     .then(res => {
         console.log(res.data)
         if (res.data.response_code === 200){
             console.log(res.data.alerts)
-
-
-
             if(res.data.alerts.length !== 0 || !res.data.alerts){
               if(!this.state.alerts) {
                 this.setState({alerts: res.data.alerts })
@@ -112,14 +113,15 @@ class NavTabs extends React.Component {
               console.log(res.data.alerts[incomingLength-1].alert_id)
 
               if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
-
+                
                 this.setState({alerts: res.data.alerts })
+                this.setState({notificationLoading: false})
+                  
               }
             }
-
           }
-
         }
+        
     }).catch(err => console.log(err))
   }
 
@@ -173,6 +175,7 @@ class NavTabs extends React.Component {
   };
 
 
+
   render() {
     const token = window.localStorage.getItem('authToken');
     console.log(token)
@@ -216,6 +219,8 @@ class NavTabs extends React.Component {
       
     }
 
+    console.log("STATE OF SNACKBAR = ") 
+    console.log(this.state.openSnackBar)
     return (
       <div>
         <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler}/>
@@ -311,27 +316,25 @@ class NavTabs extends React.Component {
                 }}>
                   <PersonIcon />
                 </IconButton>
-                <Badge badgeContent={this.state.alerts ? this.state.alerts.length : null} color="error">
-                  <NotificationsNoneIcon onClick={this.handleClick}/>
+                <Badge badgeContent={this.state.alerts ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
+                  <NotificationsNoneIcon onClick={this.handleClick} />
                 </Badge>
                 <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
-                  placement="bottom-end"
+                className="popper_class"
+                  placement="left-start"
                   disablePortal={false}
                   modifiers={{
                     flip: {
-                      enabled: true,
-                    },
-                    preventOverflow: {
-                      enabled: true,
-                      boundariesElement: 'undefined',
+                      enabled: false,
                     },
                     arrow: {
                       enabled: true,
-                      element: '[x-arrow]',
+                      
                     },
                 }}>
-                  <Notifications alerts={this.state.alerts} retrieveAlerts={this.retrieveAlerts}/>
+                  <Notifications alerts={this.state.alerts} retrieveAlerts={this.retrieveAlerts} loading={this.state.notificationLoading}/>
                 </Popper>
+                
                 <Logout handleLogout={this.handleLogout}/>
                 </div>
                 }
@@ -342,34 +345,33 @@ class NavTabs extends React.Component {
         </Grid>
       </Toolbar>
       </AppBar>
+      
+      <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/jobs" render={()=> (<Jobs searchResults={[]}/> )}/>
+          <Route path="/events" component={Events} />
+          <Route path="/articles" component={Articles} />
+          <Route exact path="/dailydigest" component={DailyDigest} />
+          <Route path="/auth/signin" component={Login} />
+          {/* <Route exact path="/auth/signup" component={SignUp} /> */}
+          <Route path="/auth/signup/:id" render={({match}) => (
+            <SignUp id={match.params.id} />)} />
+          <Route exact path="/auth/signup">
+            <Redirect to={{
+              pathname: '/auth/signin',
+              state: { canSignUp: 'false'}
+            }}/>
+          </Route>
+          <Route path="/profile" component={Profile} />
+          <Route path="/jobs/listings/:queryString" component={Jobs} 
+          />
+          <Route path="/dailydigest/:token" component={DailyDigest} 
+          />
 
-
-        <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/jobs" render={()=> (<Jobs searchResults={[]}/> )}/>
-            <Route path="/events" component={Events} />
-            <Route path="/articles" component={Articles} />
-            <Route exact path="/dailydigest" component={DailyDigest} />
-            <Route path="/auth/signin" component={Login} />
-            {/* <Route exact path="/auth/signup" component={SignUp} /> */}
-            <Route path="/auth/signup/:id" render={({match}) => (
-              <SignUp id={match.params.id} />)} />
-            <Route exact path="/auth/signup">
-              <Redirect to={{
-                pathname: '/auth/signin',
-                state: { canSignUp: 'false'}
-              }}/>
-            </Route>
-            <Route path="/profile" component={Profile} />
-            <Route path="/jobs/listings/:queryString" component={Jobs} 
-            />
-            <Route path="/dailydigest/:token" component={DailyDigest} 
-            />
-
-            {/* <Route path="/profile" render={props => <Profile {...props} openSideBar={this.props.openSideBar} />} /> */}
-            
-        </Switch>
-        </div>
+          {/* <Route path="/profile" render={props => <Profile {...props} openSideBar={this.props.openSideBar} />} /> */}
+          
+      </Switch>
+    </div>
       
     );
   }
@@ -384,3 +386,19 @@ const mapStateToProps = state => {
 
 //export default (NavTabs);
 export default connect(mapStateToProps, { doLogin })(withStyles(styles, { withTheme: true}) (NavTabs));
+
+
+
+/*
+handleClose = (event, reason) => {
+  console.log("***** ENTERED handleClose ****")
+  if (reason === 'clickaway') {
+      return;
+  }
+  this.setState({openSnackBar : false})
+};
+
+  handleExited = () => {
+    this.setState({openSnackBar : false})
+  }
+*/
