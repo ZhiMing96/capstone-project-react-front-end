@@ -8,6 +8,7 @@ import { Typography, ListItem, ListItemAvatar, List, ListItemText, Avatar, Grid,
 import api from '../api';
 import Social from '../Pages/Social/index';
 import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
+import CircularLoading from '../Components/LoadingBars/CircularLoading'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -30,13 +31,19 @@ export default function Notifications(props) {
     const [alerts, setAlerts] = useState(props.alerts);
     const alertTypes = ["MEETUP_INVITE", "ACCEPT_INVITE" , "CANCEL_MEETUP", "CHANGE_MEETUP_DATE", "COMPLETE_MEETUP", "RECOMMENDATION_REQUEST", "WRITE_RECOMMENDATION"]
     const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Meetup Completed", "New Recommendation Request", "Write a Recommendation", ]
+    const [ loadingNotifications, setLoadingNotifications ] = useState(false);
 
     console.log(props);
-    
 
+    useEffect(()=>{
+        console.log("**** NEW PROPS DETECTED ****")
+        setAlerts(props.alerts)
+        setLoadingNotifications(false);
+    }, [props])
     
 
     const handleSeen = (alert) => { 
+        setLoadingNotifications(true);
         api.alerts.seen({"alert_id": alert.alert_id })
         .then(res => {
             console.log(res.data);
@@ -44,6 +51,8 @@ export default function Notifications(props) {
                 console.log("** SUCCESSFULLY MARKED AS SEEN **")
                 props.retrieveAlerts();
             }
+        }).catch (err => {
+            console.log(err)
         })
     }
 
@@ -59,7 +68,9 @@ export default function Notifications(props) {
                 </Grid>
                 <Grid item xs={12}>
                     <List style={{ padding:0 }} >
-                        {alerts
+                        { loadingNotifications 
+                        ? <CircularLoading/>
+                        : alerts
                         ? alerts.map((alert, index) => (
                             <Link
                             to={{

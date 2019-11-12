@@ -477,7 +477,7 @@ function Invitations(props) {
                                     <Link to={{
                                             pathname: "/profile",
                                             state: { user: 
-                                                invitation.from_user
+                                                invitation.from_user && invitation.from_user.profile
                                                 ? invitation.from_user.profile.user_id 
                                                 : null
                                             }
@@ -495,9 +495,9 @@ function Invitations(props) {
                                     <Grid container  justify='space-between' style={{height:'15vh'}}>
                                         <Grid item xs={12}>
                                         <Typography gutterBottom className={classes.carouselUsername} style={{}}>
-                                            {invitation.to_user 
+                                            {invitation.to_user && invitation.to_user.profile
                                                 ? invitation.to_user.profile.username 
-                                                : invitation.from_user
+                                                : invitation.from_user && invitation.from_user.profile
                                                 ? invitation.from_user.profile.username 
                                                 : ''
                                             }
@@ -555,9 +555,9 @@ function Invitations(props) {
                                         </Grid>
                                         <Grid Item xs={12} sm={8} style={{textAlign:'-webkit-center'}}>
                                             <Typography style={{fontSize:20, fontWeight:"bold"}} gutterBottom>
-                                                {invitation.to_user 
+                                                {invitation.to_user &&  invitation.to_user.profile
                                                     ? invitation.to_user.profile.username.toUpperCase() 
-                                                    : invitation.from_user
+                                                    : invitation.from_user && invitation.from_user.profile
                                                     ? invitation.from_user.profile.username.toUpperCase()  
                                                     : ''
                                                 }'S MESSAGE
@@ -573,9 +573,9 @@ function Invitations(props) {
                                     <Link to={{
                                         pathname: "/profile",
                                         state: { user: 
-                                            invitation.to_user 
+                                            invitation.to_user && invitation.to_user.profile
                                                 ? invitation.to_user.profile.user_id 
-                                                : invitation.from_user
+                                                : invitation.from_user && invitation.from_user.profile
                                                 ? invitation.from_user.profile.user_id 
                                                 : null
                                         }
@@ -675,9 +675,9 @@ function Invitations(props) {
                                                             <Avatar
                                                             className={classes.controlButtons}
                                                             onClick={() => handleTelegramRedirect(
-                                                                meetup.to_user 
+                                                                meetup.to_user && meetup.to_user.profile
                                                                 ? meetup.to_user.profile.telegram_id 
-                                                                : meetup.from_user
+                                                                : meetup.from_user && meetup.from_user.profile
                                                                 ? meetup.from_user.profile.telegram_id 
                                                                 : null
                                                             )}
@@ -792,9 +792,9 @@ function Invitations(props) {
                                                 </Grid>
                                                 <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
                                                     <Typography>s
-                                                        {meetup.to_user 
+                                                        {meetup.to_user && meetup.to_user.profile
                                                             ? meetup.to_user.profile.username 
-                                                            : meetup.from_user
+                                                            : meetup.from_user && meetup.from_user.profile
                                                             ? meetup.from_user.profile.username 
                                                             : ''
                                                         }

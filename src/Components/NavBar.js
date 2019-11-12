@@ -58,8 +58,7 @@ class NavTabs extends React.Component {
       onProfilePage: false,
       sideBarOpen: false,
       notificationBoxOpen: false,
-      anchorEl:false,
-      alertLength:null,
+      anchorEl : null ,
       tabStyle:{
         jobs: 'light',
         events: 'light',
@@ -86,11 +85,7 @@ class NavTabs extends React.Component {
     
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log("****ENTERED SHOULD COMPONENT UPDATE METHOD ***")
-  //   console.log(nextState)
-  //   return this.state.alerts !== nextState.alerts
-  // }
+  
 
 
   retrieveAlerts = () =>{
@@ -99,29 +94,48 @@ class NavTabs extends React.Component {
         console.log(res.data)
         if (res.data.response_code === 200){
             console.log(res.data.alerts)
-            if(res.data.alerts){
 
-            const currentLength = this.state.alerts ? this.state.alerts.length : 0
-            const incomingLength = res.data.alerts.length
 
-            if(!this.state.alerts || this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
-              
-              if(this.state.alerts){
-                // console.log("******* COMPARING THE LAST ALERT ID ******")
-                // console.log(this.state.alerts[currentLength-1].alert_id)
-                // console.log(res.data.alerts[incomingLength-1].alert_id)
+
+            if(res.data.alerts.length !== 0 || !res.data.alerts){
+              if(!this.state.alerts) {
+                this.setState({alerts: res.data.alerts })
+
+            } else {
+              const currentLength = this.state.alerts ? this.state.alerts.length : 0
+              const incomingLength = res.data.alerts.length
+    
+                
+              console.log(currentLength)
+              console.log(incomingLength)
+              console.log(this.state.alerts[currentLength-1].alert_id)
+              console.log(res.data.alerts[incomingLength-1].alert_id)
+
+              if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
+
+                this.setState({alerts: res.data.alerts })
               }
-  
-              this.setState({alerts: res.data.alerts })
             }
 
-            }
-            
+          }
+
         }
     }).catch(err => console.log(err))
   }
 
+  componentShouldUpdate(nextProps, nextState){
+    console.log("%%%%% THIS Props") 
+    console.log(this.props)
+    console.log("%%%%% NEXT Props") 
+    console.log(nextProps)
+    console.log("%%%%% THIS State")
+    console.log(this.state) 
+    console.log("%%%%% NEXT State")
+    console.log(this.nextState) 
 
+  //|| this.state !== nextState
+    return (this.props !== nextProps  )
+  }
 
   drawerTogglerClickHandler = () => {
     this.setState((prevState) => {
@@ -150,7 +164,12 @@ class NavTabs extends React.Component {
   };
 
   handleClick = event => {
+    console.log("***** ENTERED HANDLE CLICK ****")
+    // console.log(this.openNotification)
+    console.log(event.currentTarget)
+
     this.setState({anchorEl : this.state.anchorEl ? null : event.currentTarget });
+  
   };
 
 
@@ -295,26 +314,24 @@ class NavTabs extends React.Component {
                 <Badge badgeContent={this.state.alerts ? this.state.alerts.length : null} color="error">
                   <NotificationsNoneIcon onClick={this.handleClick}/>
                 </Badge>
-                
                 <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
-                placement="bottom-end"
-                disablePortal={false}
-                modifiers={{
-                  flip: {
-                    enabled: true,
-                  },
-                  preventOverflow: {
-                    enabled: true,
-                    boundariesElement: 'undefined',
-                  },
-                  arrow: {
-                    enabled: true,
-                    element: '[x-arrow]',
-                  },
+                  placement="bottom-end"
+                  disablePortal={false}
+                  modifiers={{
+                    flip: {
+                      enabled: true,
+                    },
+                    preventOverflow: {
+                      enabled: true,
+                      boundariesElement: 'undefined',
+                    },
+                    arrow: {
+                      enabled: true,
+                      element: '[x-arrow]',
+                    },
                 }}>
                   <Notifications alerts={this.state.alerts} retrieveAlerts={this.retrieveAlerts}/>
                 </Popper>
-
                 <Logout handleLogout={this.handleLogout}/>
                 </div>
                 }
