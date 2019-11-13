@@ -83,8 +83,7 @@ class NavTabs extends React.Component {
       })
     }
     this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 100000);
-    
+    setInterval(this.retrieveAlerts, 10000);
   }
 
 

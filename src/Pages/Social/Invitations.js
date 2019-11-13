@@ -1,6 +1,6 @@
 import React, { useEffect, useState, } from 'react';
 import api from '../../api';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText } from '@material-ui/core';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
@@ -33,7 +33,8 @@ import Badge from '@material-ui/core/Badge';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading';
 import Skeleton from '@material-ui/lab/Skeleton';
 import InvitationRequestSkeleton from '../../Components/SkeletonLoading/InvitationRequestSkeleton'
-import  UpcomingMeetupsSkeletonLoading from '../../Components/SkeletonLoading/UpcomingMeetupsSkeletonLoading'
+import  UpcomingMeetupsSkeletonLoading from '../../Components/SkeletonLoading/UpcomingMeetupsSkeletonLoading';
+import Snackbar from '../../Components/Snackbar';
 
 
 const Wrapper = styled.div`
@@ -237,6 +238,8 @@ function Invitations(props) {
     const [ pendingMeetupDate, setPendingMeetupDate ] = useState();
     const [ invitationsLoading, setInvitationsLoading ] = useState(false);
     const [ meetupsloading, setMeetupsLoading ] = useState(false);
+    const [ openSnackBarError, setOpenSnackBarError ] = useState(false);
+    const [ openSnackBarSuccess, setOpenSnackBarSuccess ] = useState(false);
 
     const getPendingInvitation = () => {
         setInvitationsLoading(true);
@@ -424,7 +427,11 @@ function Invitations(props) {
             } else {
                 console.log('**** ERROR IN CONFIRMING MEETUP ***');
             }
-        }).catch(err=> console.log(err));
+            handleCloseDialog();
+        }).catch(err=> {
+            console.log(err)
+            handleCloseDialog();
+        });
     }
     const handleMeetupCancellation = (meetup) => {
         console.log(meetup)
@@ -438,7 +445,11 @@ function Invitations(props) {
             } else {
                 console.log('**** ERROR IN CANCELLING MEETUP ***');
             }
-        }).catch(err=> console.log(err));
+            handleCloseDialog()
+        }).catch(err=> {
+            console.log(err)
+            handleCloseDialog();
+        });
     }
     const handleTelegramRedirect = ( telegramId ) => {
         if(telegramId!==null){
@@ -933,3 +944,11 @@ function Invitations(props) {
 
 
 export default Invitations;
+
+
+/* <Snackbar
+            open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
+            handleClose={resetSnackBars}
+            variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
+            message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
+        />*/

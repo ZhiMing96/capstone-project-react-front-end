@@ -29,6 +29,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import './index.css';
 import JobFilterSideBar from './JobFilterSideBar';
 import JobsCarouselSkeletonLoading from '../../Components/SkeletonLoading/JobsCarouselSkeletonLoading';
+import JobListingsSkeletonLoading from '../../Components/SkeletonLoading/JobListingsSkeletonLoading';
 
 
 const employmentTypes = [
@@ -793,7 +794,14 @@ function Jobs (props) {
         </Grid>
         
         { loadingResults 
-        ? <JobsCarouselSkeletonLoading/>
+        ? 
+        <Grid container>
+            <Grid item xs={3}>
+            </Grid>    
+            <Grid item xs={9}>
+                <JobListingsSkeletonLoading/>
+            </Grid>    
+        </Grid>
         : 
         <div>
         { searchResults  && searchResults.length !== 0 

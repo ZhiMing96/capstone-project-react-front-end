@@ -50,7 +50,7 @@ export default function Notifications(props) {
     const [checked, setChecked] = useState(false);
     const [alerts, setAlerts] = useState(props.alerts);
     const alertTypes = ["MEETUP_INVITE", "ACCEPT_INVITE", "CANCEL_MEETUP", "CHANGE_MEETUP_DATE", "COMPLETE_MEETUP", "RECOMMENDATION_REQUEST", "WRITE_RECOMMENDATION"]
-    const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Meetup Completed", "New Recommendation Request", "Write a Recommendation", ]
+    const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Write a Recommendation", "New Recommendation Request", "Write a Recommendation", ]
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
 
     console.log(props);

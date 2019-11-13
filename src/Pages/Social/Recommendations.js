@@ -297,12 +297,12 @@ export default function Reco(props) {
             {
                 
             }
-            {/* <Snackbar
+            <Snackbar
             open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
             handleClose={resetSnackBars}
             variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
             message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
-        /> */}
+        />
 
             <Grid item container style={{ width: '100%' }}>
                 <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
