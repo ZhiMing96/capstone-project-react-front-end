@@ -41,7 +41,7 @@ const work ={
   get: () => axios.get('http://localhost:3000/work/all', {
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
-  add: params => axios.post('http://localhost:3000/jobs/bookmarks/add', params,{
+  add: params => axios.post('http://localhost:3000/work/add', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
   remove: params => axios.post('http://localhost:3000/work/remove', params,{

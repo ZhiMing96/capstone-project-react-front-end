@@ -31,6 +31,9 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
 import Badge from '@material-ui/core/Badge';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading';
+import Skeleton from '@material-ui/lab/Skeleton';
+import InvitationRequestSkeleton from '../../Components/SkeletonLoading/InvitationRequestSkeleton'
+import  UpcomingMeetupsSkeletonLoading from '../../Components/SkeletonLoading/UpcomingMeetupsSkeletonLoading'
 
 
 const Wrapper = styled.div`
@@ -213,6 +216,7 @@ const carouselSettings = {
   }))
 
   const defaultAvatar = '';
+
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
@@ -465,7 +469,19 @@ function Invitations(props) {
                 </Grid>
                 <Grid container style={{ margin:10, marginTop:10, }} spacing={1} justify="space-between" > 
                 {invitationsLoading
-                ? <CircularLoading/>
+                // ? <Skeleton variant="rect" width={246} height={249}>
+                //      <Skeleton variant="circle" width={85} height={85} style={{margin:'5%', marginLeft:'32%', marginTop:'10%'}}/>
+                //      <Skeleton variant='rect' height='20%' style={{marginLeft:'20%',marginRight:'20%', marginBottom:'8%'}} />
+                //      <Grid container >
+                //          <Grid item xs={6}>
+                //             <Skeleton variant='rect' width="60%" height={30} style={{marginLeft:'21%'}} />
+                //          </Grid>
+                //          <Grid item xs={6}>
+                //             <Skeleton variant='rect'  width="60%" height={30} style={{marginLeft:'10%'}} />
+                //          </Grid>
+                //      </Grid>
+                // </Skeleton>
+                ? <InvitationRequestSkeleton/>
                 : pendingInvitations
                 ? 
                 <Wrapper>
@@ -620,7 +636,7 @@ function Invitations(props) {
                         </Grid>
                         
                         {meetupsloading
-                        ? <CircularLoading/>
+                        ? <UpcomingMeetupsSkeletonLoading/>
                         : upcomingMeetups
                         ?
                         upcomingMeetups.map((meetup, index) => {
@@ -773,7 +789,7 @@ function Invitations(props) {
                             {/* </Badge> */}
                         </Grid>
                         {meetupsloading
-                        ? <CircularLoading/>
+                        ? <UpcomingMeetupsSkeletonLoading/>
                         : pendingMeetupDate
                         ?
                         pendingMeetupDate.map((meetup, index) => {

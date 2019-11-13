@@ -14,6 +14,7 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import CircularLoading from '../../Components/LoadingBars/CircularLoading'
 import Snackbar from '../../Components/Snackbar';
+import  RecommendationRequestSkeletonLoading from '../../Components/SkeletonLoading/RecommendationRequestSkeletonLoading'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -151,6 +152,7 @@ export default function Reco(props) {
     const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
     const requestErrorMsg = "An Error Has Occured! Request was Unsucessful"
     const requestSuccessMsg = "Requst Sent Successfully! "
+    const demoArray = [1,2,3];
 
 
     const getCompletedMeetups = () => { 
@@ -273,7 +275,11 @@ export default function Reco(props) {
                         </Typography>
                     </Grid>
                     {loadingCompletedMeetups
-                    ? <CircularLoading/>
+                    ? demoArray.map((element,index)=>(
+                        <RecommendationRequestSkeletonLoading/>
+                    ))
+
+                    
                     : completedMeetups
                     ?
                     <Grid item style={{ width: '100%' }}>
@@ -291,12 +297,12 @@ export default function Reco(props) {
             {
                 
             }
-            <Snackbar
+            {/* <Snackbar
             open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
             handleClose={resetSnackBars}
             variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
             message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
-        />
+        /> */}
 
             <Grid item container style={{ width: '100%' }}>
                 <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>

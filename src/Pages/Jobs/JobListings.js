@@ -104,6 +104,8 @@ function addBookmark(job){
         'Customer Service'
     ]
 
+    console.log(props.handleSidebarSubmit)
+
     const classes = useStyles();
 
     const handleHrefClick = list => {
@@ -216,7 +218,7 @@ function addBookmark(job){
         <CssBaseline />
         <Grid container>
             <Grid item container xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
-                <JobFilterSideBar/>
+                <JobFilterSideBar handleSidebarSubmit={props.handleSidebarSubmit}/>
             </Grid>
             <Grid item container xs={9}>
             <Grid container style={{padding:'3%'}}>

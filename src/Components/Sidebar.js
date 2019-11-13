@@ -8,6 +8,9 @@ import { updateSocialProfile } from '../redux/actions/socialProfile'
 import FaceIcon from '@material-ui/icons/Face';
 import Tooltip from '@material-ui/core/Tooltip';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import InstagramIcon from '@material-ui/icons/Instagram';
 
 
 //INCOMPLETE
@@ -168,15 +171,18 @@ function Sidebar(props) {
           
         }
         <Grid container justify="center">
-          <Typography>
-            <Box fontWeight="fontWeightBold" fontSize={20}>
-              {name.toUpperCase()}
-              <br />
+          <Grid item xs={12} >
+            <Typography>
+              <Box fontWeight="fontWeightBold" fontSize={20}>
+                {name.toUpperCase()}
+              </Box>
+            </Typography>
+          </Grid>
+          <Grid item xs={12} >
               <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
                 <TelegramIcon />
               </IconButton>
-            </Box>
-          </Typography>
+          </Grid>
         </Grid>
         <Grid container justify="center">
           {profileArray.map((item, index) => (

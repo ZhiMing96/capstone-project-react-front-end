@@ -55,8 +55,11 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('xs')]: {
             marginBottom:'7%'
         },
-
+    },
+    headers : {
+        fontWeight:'bold'
     }
+    
 }));
 
 export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
@@ -198,7 +201,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
                             </Grid>
                             <Grid item container xs={12} sm={8} style={{}}>
                                 <Grid item container xs={12}>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={4} className={classes.headers}>
                                         Name:
                                     </Grid>
                                     <Grid item xs={8}>
@@ -211,8 +214,8 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
                                     </Grid>
 
                                 </Grid>
-                                <Grid item container xs={12}>
-                                    <Grid item xs={4}>
+                                <Grid item container xs={12} >
+                                    <Grid item xs={4} className={classes.headers}>
                                         JobTitle
                                     </Grid>
                                     <Grid item xs={8}>
@@ -222,7 +225,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
                                     </Grid>
 
                                 </Grid>
-                                <Grid item container xs={12}>
+                                <Grid item container xs={12} className={classes.headers}>
                                     <Grid item xs={4}>
                                         Company
                                     </Grid>
@@ -231,7 +234,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
                                     </Grid>
 
                                 </Grid>
-                                <Grid item container xs={12}>
+                                <Grid item container xs={12} className={classes.headers}>
                                     <Grid item xs={4}>
                                         Meetup Date
                                     </Grid>
@@ -255,6 +258,8 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
                                 variant="outlined"
                                 onChange={handleChange}
                                 label="Type a Message"
+                                required
+                                inputProps={{ maxLength: 200 }}
                             />
                         </Grid>
                     </Grid>

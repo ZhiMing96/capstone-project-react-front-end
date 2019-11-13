@@ -8,7 +8,8 @@ import { Typography, ListItem, ListItemAvatar, List, ListItemText, Avatar, Grid,
 import api from '../api';
 import Social from '../Pages/Social/index';
 import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
-import CircularLoading from '../Components/LoadingBars/CircularLoading'
+import CircularLoading from '../Components/LoadingBars/CircularLoading';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -23,6 +24,23 @@ const useStyles = makeStyles(theme => ({
       width: 200,
       height: 500,
     },
+    headerBar: {
+        paddingLeft:'13%', 
+        paddingTop:'5%', 
+        backgroundColor:'#024966',
+        position: 'sticky',
+        top: '0px',
+        zIndex: 10,
+    },
+    headerIcon : {
+        marginTop: 0,
+        width: 30,
+        height: 30 , 
+        verticalAlign: "text-top",
+        transform: "rotate(340deg)" ,
+        color:'whitesmoke',
+        marginRight:10
+    },
   }));
 
   const defaultAvatar = ""
@@ -31,7 +49,7 @@ export default function Notifications(props) {
     const classes = useStyles();
     const [checked, setChecked] = useState(false);
     const [alerts, setAlerts] = useState(props.alerts);
-    const alertTypes = ["MEETUP_INVITE", "ACCEPT_INVITE" , "CANCEL_MEETUP", "CHANGE_MEETUP_DATE", "COMPLETE_MEETUP", "RECOMMENDATION_REQUEST", "WRITE_RECOMMENDATION"]
+    const alertTypes = ["MEETUP_INVITE", "ACCEPT_INVITE", "CANCEL_MEETUP", "CHANGE_MEETUP_DATE", "COMPLETE_MEETUP", "RECOMMENDATION_REQUEST", "WRITE_RECOMMENDATION"]
     const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Meetup Completed", "New Recommendation Request", "Write a Recommendation", ]
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
 
@@ -40,7 +58,7 @@ export default function Notifications(props) {
     useEffect(()=>{
         console.log("**** NEW PROPS DETECTED ****")
         setAlerts(props.alerts)
-        setLoadingNotifications(props.loading);
+        //setLoadingNotifications(props.loading);
     }, [props])
     
 
@@ -63,13 +81,13 @@ export default function Notifications(props) {
 
     return (
         <Paper className={classes.root} elevation={5}>
-            <Grid container style={{paddingLeft:'10%'}}>
-                <Grid item xs={12} style={{ paddingTop:'8%'}}>
-                    <Typography style={{ fontWeight:'bold', fontSize:20 }}>
-                        Notifications
+            <Grid container >
+                <Grid item xs={12} className={classes.headerBar}>
+                    <Typography style={{ fontWeight:'bold', fontSize:30, marginBottom:'5%', color:'whitesmoke' }}>
+                        < NotificationsIcon  className={classes.headerIcon}/> Notifications
                     </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} style={{paddingLeft:'10%'}}>
                     <List style={{ padding:0 }} >
                         { loadingNotifications 
                         ? <CircularLoading/>
@@ -78,7 +96,7 @@ export default function Notifications(props) {
                             <Link
                             to={{
                                 pathname: "/profile/social",
-                                state: { tabIndex: 1 }
+                                state: alert.alert_type === "RECOMMENDATION_REQUEST" || alert.alert_type === "WRITE_RECOMMENDATION" || alert.alert_type === "COMPLETE_MEETUP" ? {tabIndex: 2} : {tabIndex: 1}
                               }}
                             style={{textDecoration:'none', color:'inherit'}}
                             >
@@ -87,7 +105,7 @@ export default function Notifications(props) {
                                         <Avatar alt="Remy Sharp" src="" style={{width:50, height:50}}/>
                                     </ListItemAvatar>
                                     <ListItemText>
-                                        <Typography>
+                                        <Typography style={{fontSize:17, fontWeight:'bold'}} >
                                             {alertHeaders[alertTypes.indexOf(alert.alert_type)]}
                                         </Typography>
                                         <Typography>
@@ -107,7 +125,7 @@ export default function Notifications(props) {
                                         </Grid>
                                     </ListItemText>
                                 </ListItem>
-                                <Divider variant="inset" component="li" />
+                                <Divider  />
                             </Link>
                         ))
                         : "There are no Notifications at the Moment"
