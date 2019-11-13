@@ -220,7 +220,7 @@ function Events() {
     latest: '300'
   })
   const [selectedEventLocation, setSelectedEventLocation] = useState("Please Select An Event");
-  const [selectedEventDescription, setSelectedEventDescription] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [markerAddress, setMarkerAddress] = useState('Singapore')
   const [selectedUrl, setSelectedUrl] = useState('');
   const [selectedIndex, setselectedIndex] = useState(null);
@@ -274,6 +274,7 @@ function Events() {
 
 
     setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
+    setSelectedEvent(event)
 
   }
 
@@ -309,6 +310,7 @@ function Events() {
     setOpen(true);
     // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
     setSelectedEventLocation(event.venue);
+    setSelectedEvent(event)
   };
 
   const handleClose = () => {
@@ -531,12 +533,13 @@ function Events() {
     setSelectedUrl(event.url);
 
     if (event.summary !== '') {
-      setSelectedEventDescription(event.summary);
+      // setSelectedEventDescription(event.summary);
     } else {
-      setSelectedEventDescription('No Description Available')
+      // setSelectedEventDescription('No Description Available')
     }
     // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
     setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
+    setSelectedEvent(event)
     
   }
 
@@ -580,13 +583,14 @@ function Events() {
     setSelectedUrl(event.url);
 
     if (event.summary !== '') {
-      setSelectedEventDescription(event.summary);
+      // setSelectedEventDescription(event.summary);
     } else {
-      setSelectedEventDescription('No Description Available')
+      // setSelectedEventDescription('No Description Available')
     }
     // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
 
     setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
+    setSelectedEvent(event)
     console.log('Exiting view Event Details')
     // window.scrollTo(0,document.body.scrollHeight);
   }
@@ -603,6 +607,9 @@ function Events() {
   const handleHrefClick = url => {
     window.open(url, '_blank');
   }
+
+  console.log("@@@@ SELECTED EVENT = ")
+  console.log(selectedEvent)
 
   return (
     <div style={{ backgroundColor: '#FFFFFF' }}>
@@ -770,7 +777,7 @@ function Events() {
                     <DialogContent style={{ textAlign: 'center' }}>
                       <Map markerAddress={markerAddress} style={{ width: '98%', }} />
                       <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                        LOCATION
+                        {selectedEvent ? selectedEvent.event_title : "LOCATION"}
                       </Typography>
                       <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
                         {selectedEventLocation}
@@ -940,7 +947,7 @@ function Events() {
                     <DialogContent style={{ textAlign: 'center' }}>
                       <Map markerAddress={markerAddress} style={{ width: '98%', }} />
                       <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                        LOCATION
+                      {selectedEvent ? selectedEvent.event_title : "LOCATION"}
                       </Typography>
                       <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
                         {selectedEventLocation}
@@ -969,7 +976,7 @@ function Events() {
               <Grid container justify="space-between">
                 <Grid item xs={12}>
                   <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                    LOCATION
+                    {selectedEvent ? selectedEvent.event_title : "LOCATION"}
                       </Typography>
                   <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
                     {selectedEventLocation}

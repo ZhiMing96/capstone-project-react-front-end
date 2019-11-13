@@ -316,6 +316,7 @@ function Invitations(props) {
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
+                setOpenSnackBarError(true);
             }
         })
         handleCloseDialog();
@@ -332,6 +333,7 @@ function Invitations(props) {
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
+                setOpenSnackBarError(true);
             }
         })
     }
@@ -426,11 +428,13 @@ function Invitations(props) {
                 setOpenMeetupConfirmation(false);
             } else {
                 console.log('**** ERROR IN CONFIRMING MEETUP ***');
+                setOpenSnackBarError(true);
             }
             handleCloseDialog();
         }).catch(err=> {
             console.log(err)
             handleCloseDialog();
+            setOpenSnackBarError(true);
         });
     }
     const handleMeetupCancellation = (meetup) => {
@@ -465,6 +469,13 @@ function Invitations(props) {
             })
         }
     }
+
+    const handleCloseSnackbar = () => {
+        setOpenSnackBarError(false);
+        setOpenSnackBarSuccess(false);
+    }
+
+    console.log(openSnackBarError);
 
     return (
         <div>
@@ -938,6 +949,19 @@ function Invitations(props) {
                         }
                     </Grid>
             </Grid>
+        
+            <Snackbar
+            open={openSnackBarSuccess}
+            handleClose={handleCloseSnackbar}
+            variant="success"
+            message={"Process Completed! "}
+            />
+            <Snackbar
+            open={openSnackBarError}
+            handleClose={handleCloseSnackbar}
+            variant="error"
+            message={"Unable to Perform Operation! "}
+            />
         </div>
     )
 }

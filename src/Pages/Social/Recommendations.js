@@ -161,6 +161,7 @@ export default function Reco(props) {
         api.invitations.getCurrent()
         .then(res=>{
             if(res.data.response_code === 200){
+                setLoadingCompletedMeetups(false)
                 console.log('**** Completed Meetups Retrieved ***')
                 const invitesSent = res.data.invites_sent
                 const invitesReceived = res.data.invites_received
@@ -180,13 +181,13 @@ export default function Reco(props) {
                     }
                 }
                 setCompletedMeetups(temp);
-
             } else {
+                setLoadingCompletedMeetups(false)
                 console.log('**** ERROR: Unable to Retrieve Completed Meetups  ***')
                 console.log(res.data.response_message)
             }
 
-            setLoadingCompletedMeetups(false)
+            
         }).catch(err=> console.error(err));
     }
 
@@ -200,7 +201,7 @@ export default function Reco(props) {
             return;
         }
         setOpenErrorSnackbar(false);
-        // setOpenSuccessSnackbar(false);
+        setOpenSuccessSnackbar(false);
     }
 
     const handleOpenSnackBar = (type) => {
@@ -298,11 +299,23 @@ export default function Reco(props) {
                 
             }
             <Snackbar
+            open={openErrorSnackbar}
+            handleClose={resetSnackBars}
+            variant="error"
+            message={requestErrorMsg}
+            />
+            <Snackbar
+            open={openSuccessSnackbar}
+            handleClose={resetSnackBars}
+            variant="success"
+            message={requestSuccessMsg}
+            />
+            {/* <Snackbar
             open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
             handleClose={resetSnackBars}
             variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
             message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
-        />
+        /> */}
 
             <Grid item container style={{ width: '100%' }}>
                 <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
