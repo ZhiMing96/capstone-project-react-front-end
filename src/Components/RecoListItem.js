@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { Hidden } from '@material-ui/core';
 import { Block } from '@material-ui/icons';
+import FaceIcon from '@material-ui/icons/Face';
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -34,25 +35,31 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function AlignItemsList() {
+export default function AlignItemsList(props) {
     const classes = useStyles();
+    const author = props.reco.from_user
     return (
         <div>
             <ListItem alignItems="flex">
                 <ListItemAvatar className={classes.root}>
-                    <Avatar src="" className={classes.avatar} />
+                    {author.social.profile_image_link !== null && author.social.profile_image_link !== ''
+                        ?
+                        <Avatar src={author.social.profile_image_link} className={classes.avatar} />
+                        :
+                        <FaceIcon fontSize="large" className={classes.avatar} />
+                    }
                 </ListItemAvatar>
 
                 <ListItemText
                     primary={
-                        <div style={{marginBottom:10}}>
+                        <div style={{ marginBottom: 10 }}>
                             <Typography
                                 component="div"
                                 variant="h6"
                                 style={{ fontWeight: 'bold', lineHeight: 1.1 }}
                                 color="textPrimary"
                             >
-                                Hello world
+                                {author.profile.first_name}
                             </Typography>
                             <Typography
                                 component="span"
@@ -60,7 +67,7 @@ export default function AlignItemsList() {
                                 color="textSecondary"
                                 style={{ fontSize: 'medium' }}
                             >
-                                senior analyst, DBS bank
+                                {author.job_title}
                             </Typography>
                         </div>
                     }
@@ -72,7 +79,7 @@ export default function AlignItemsList() {
                             color="textPrimary"
                             style={{ fontSize: 'medium' }}
                         >
-                            full of spirit and passionate about his goals. testing a very long phrase testing a very long phrase testing a very long phrase testing a very long phrase testing a very long phrasetesting a very long phrase
+                            {props.reco.message}
                         </Typography>
                     }
                 />

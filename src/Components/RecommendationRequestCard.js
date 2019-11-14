@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function RecoRequestCard(props) {
-    const classes = useStyles();
+    const classes = useStyles()
 
     const handleClose = () => {
         //remove the request what to do for API here ah
@@ -52,7 +52,7 @@ export default function RecoRequestCard(props) {
             </IconButton>
             <CardContent>
                 <Grid container justify="center" alignItems="center">
-                    <Avatar className={classes.avatar} src={null} />
+                    <Avatar className={classes.avatar} src={props.request.from_user.social.profile_image_link} />
                 </Grid>
                 <Grid container justify="center" alignItems="center">
                     <Box alignContent='center'>
@@ -63,10 +63,10 @@ export default function RecoRequestCard(props) {
                             className={classes.inline}
                             color="textPrimary"
                         >
-                            Hello world
+                            {props.request.from_user.profile.first_name}
                         </Typography>
                         <Typography variant="body2" color="textSecondary" gutterBottom style={{ fontSize: 'medium' }}>
-                            graphic designer
+                            {props.request.from_user.job_title}
                         </Typography>
                     </Box>
                 </Grid>
