@@ -28,6 +28,8 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import './index.css';
 import JobFilterSideBar from './JobFilterSideBar';
+import JobsCarouselSkeletonLoading from '../../Components/SkeletonLoading/JobsCarouselSkeletonLoading';
+import JobListingsSkeletonLoading from '../../Components/SkeletonLoading/JobListingsSkeletonLoading';
 
 
 const employmentTypes = [
@@ -190,6 +192,9 @@ const employmentTypes = [
         fontSize:11, 
         fontWeight:'bold',
         zIndex:100,
+    },
+    segmentArea : {
+        marginBottom:'-5%'
     },
   }));
 
@@ -378,7 +383,6 @@ function Jobs (props) {
     } 
     console.log('PROPS FOR JOBS COMPONENT')
     console.log(props)
-   
 
     const searchLimit = 100;
     const token= window.localStorage.getItem('authToken');
@@ -398,7 +402,8 @@ function Jobs (props) {
         proceed: false,
         queryString:"",
     });
-    const [loading, setLoading] = useState(false);
+    const [loadingResults, setLoadingResults] = useState(false);
+    const [loadingHome, setLoadingHome] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(10);
     const [sorted, setSorted] = useState(false);
@@ -412,9 +417,9 @@ function Jobs (props) {
     }
     const [searchHistoryJobs, setSearchHistoryJobs] = useState([]);
     const [skillsJobs, setSkillsJobs] = useState([]);
-    const [viewAgain, setViewAgain] = useState([]);
     const [jobTitles, setJobTitles] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [sideBarQuery, setSideBarQuery ] = useState("");
 
     const handlePopoverOpen = event => {
         setAnchorEl(event.currentTarget);
@@ -427,7 +432,7 @@ function Jobs (props) {
     const openDetails = Boolean(anchorEl);
 
     useEffect(()=>{
-        setLoading(true);
+        setLoadingHome(true);
         if(token !== null ){
             api.dailyDigest.get()
             .then(res=>{
@@ -445,7 +450,7 @@ function Jobs (props) {
             console.log(res.data)
             console.log('ENTERED SAVING POPULAR JOBS METHOD')
             setPopularJobs(results.recommended_jobs);
-            setLoading(false);
+            setLoadingHome(false);
         }).catch(err=>console.log(err));
 
         if(urlParams === ''){
@@ -476,7 +481,8 @@ function Jobs (props) {
 
 
     function getSearchResults(queryString){
-        setLoading(true);
+        console.log(queryString)
+        setLoadingResults(true);
         if(token !== null) {
             console.log("GOT TOKEN");
             //axios.get(query, {headers: {"Authorization" : "Token "+token}})
@@ -498,12 +504,12 @@ function Jobs (props) {
                     // setSkillsJobs(result);
                 }
                 // submitFilter('skills_match', 'desc');
-                setLoading(false);
+                setLoadingResults(false);
                 
             })
             .catch(err=>{
                 console.error(err);  
-                setLoading(false);
+                setLoadingResults(false);
             })
         } else {
             console.log("NO TOKEN");
@@ -521,11 +527,11 @@ function Jobs (props) {
                     const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
                     setSearchResults(sortedResults);
                 }
-                setLoading(false);
+                setLoadingResults(false);
             })
             .catch(err=>{
                 console.error(err);  
-                setLoading(false);
+                setLoadingResults(false);
             })
         }
     }
@@ -544,7 +550,7 @@ function Jobs (props) {
 
     const handleSubmit = event => {
         console.log(event.target)
-        setLoading(true);
+        // setLoadingResults(true);
         console.log("Entered Handle Submit")
         setCurrentPage(1);
 
@@ -673,6 +679,18 @@ function Jobs (props) {
         setSearchResults(popularJobs);
     }
 
+    const handleSidebarSubmit = (queryString) => {
+        console.log("*** ENTERED HANDLE SIDEBAR SUBMIT IN JOBS COMPONENT")
+        console.log("<<< QueryString = " + queryString)
+        //getCurrentUrl and append then call API
+        console.log(props.location)
+        const currentPath = props.location && props.location.pathname ?  props.location.pathname.slice(15) : ''
+        const newQuery = currentPath + queryString
+        console.log("<<< newQuery = " + newQuery)
+        getSearchResults(newQuery)
+        setState({ ...state, queryString: newQuery });
+    }
+
     //console.log('Keyword Before Render = ');
     console.log('State Before Render =')
     console.log(state)
@@ -775,8 +793,15 @@ function Jobs (props) {
            
         </Grid>
         
-        { loading 
-        ? <CircularLoading/>
+        { loadingResults 
+        ? 
+        <Grid container>
+            <Grid item xs={3}>
+            </Grid>    
+            <Grid item xs={9}>
+                <JobListingsSkeletonLoading/>
+            </Grid>    
+        </Grid>
         : 
         <div>
         { searchResults  && searchResults.length !== 0 
@@ -790,7 +815,8 @@ function Jobs (props) {
                 render={()=>
                     <div>
                         {/* <FilterSelect submitFilter={submitFilter}/> */}
-                        <JobListings searchResults={currentPosts} loading={loading} keyword={keyword} submitFilter={submitFilter}/>
+                        <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit}/>
+
                         <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                     </div> 
                 }
@@ -801,21 +827,16 @@ function Jobs (props) {
         : token && byPass==false
         ? //USER WITH ACCOUNT           
         <Grid container>
-            {/* <Grid item container xs={3} >
-                <JobFilterSideBar/>
-            </Grid> */}
-
             <Grid item container xs={12}> 
-
-                {searchHistoryJobs.length!=0
-                ?
-
-                // <div style={{}}>
-                <Grid item xs={12}>
+                <Grid item xs={12} className={classes.segmentArea} >
                 <Typography variant='h5' className={classes.sectionHeading}>
                     You Might Be Interested <span className={classes.sectionCaption}> Based on your search hisory</span>
                 </Typography>
-            
+                {loadingHome
+                ? <JobsCarouselSkeletonLoading/>
+                :
+                searchHistoryJobs.length!=0
+                ?
                 <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
                 <Wrapper>
                     <Slider {...carouselSettings}>
@@ -882,18 +903,19 @@ function Jobs (props) {
                     </Slider>
                 </Wrapper>
                 </Grid>
-                </Grid>
                 : 
                 ''
                 }
-                {skillsJobs.length !== 0
-                ? 
-                // <div style={{marginTop:'1%'}}>
-                <Grid item xs={12} style={{marginTop:'1%'}}>
+                </Grid>
+                <Grid item xs={12} className={classes.segmentArea}>
                     <Typography variant='h5' className={classes.sectionHeading}>
                         Suitable For You <span className={classes.sectionCaption}> Based on your skills</span>
                     </Typography>
-                
+                    {loadingHome
+                ? <JobsCarouselSkeletonLoading/>
+                :
+                skillsJobs.length !== 0
+                ? 
                     <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
                     <Wrapper>
                         <Slider {...carouselSettings}>
@@ -980,15 +1002,19 @@ function Jobs (props) {
                         </Slider>
                     </Wrapper>
                     </Grid>
-                </Grid>
                 :
                 ''
                 }
-                <Grid item xs={12} style={{marginTop:'1%'}}>
+                </Grid>
+                
+                <Grid item xs={12} className={classes.segmentArea}>
                 <Typography variant='h5' className={classes.sectionHeading}>
                     Popular <span className={classes.sectionCaption}> Trending</span>
                 </Typography>
-                {popularJobs.length !== 0
+                
+                {loadingHome
+                ? <JobsCarouselSkeletonLoading/>
+                :popularJobs.length !== 0
                 ? 
                 <div style={{marginTop:'1%'}}>
                     <Grid container className={classes.sectionArea} spacing={0} justify="space-between" >
@@ -1071,7 +1097,7 @@ function Jobs (props) {
                 }
                 </Grid>
             {/* <div> */}
-            <Grid item xs={12} style={{marginTop:'1%'}}>
+            <Grid item xs={12} className={classes.segmentArea}>
                 {searchHistoryJobs.length===0
                 ?
                 <div>
@@ -1088,7 +1114,7 @@ function Jobs (props) {
                 : ''
                 }
             </Grid>
-            <Grid item xs={12} style={{marginTop:'1%'}}>
+            <Grid item xs={12} className={classes.segmentArea}>
                 {skillsJobs.length===0
                 ?
                 <div>
@@ -1109,6 +1135,12 @@ function Jobs (props) {
             {/* </div> */}
             </Grid>
         </Grid>
+        
+        
+        
+        
+        
+        
         </Grid>
         : token==null  && byPass==false 
         ?//USER WITHOUT ACCOUNT 
@@ -1117,11 +1149,14 @@ function Jobs (props) {
                 <JobFilterSideBar/>
             </Grid> */}
 
-            <Grid item container xs={12}> 
+            <Grid item container xs={12} className={classes.segmentArea}> 
                 <Typography variant='h5' style={{textAlign:"justify", marginLeft:30, color:'#024966e', fontWeight:'bold', marginTop:20}}>
                 Popular Jobs
                 </Typography>
-                {popularJobs.length !== 0
+                {loadingHome
+                ? <JobsCarouselSkeletonLoading/>
+                :
+                popularJobs.length !== 0
                 ? 
                 <Grid item xs={12}>
                     <Grid container style={{height:'35vh', margin:10, marginTop:10}} spacing={1} justify="space-between" >

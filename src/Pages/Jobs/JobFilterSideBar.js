@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }));
   
 
-function JobFilterSideBar(props) {
+function JobFilterSideBar({ handleSidebarSubmit }) {
     const classes = useStyles();
     const [expandedArea, setExpandedArea] = useState(false);
     const [selectedAreaIndex, setSelectedAreaIndex] = useState(null);
@@ -118,6 +118,7 @@ function JobFilterSideBar(props) {
         var tempArray = [...governmentSchemes];
         tempArray[index].value = !tempArray[index].value;
         setGovernmentSchemes(tempArray)
+        formQuery();
     };
     const handleJobLevelChange = (name , index) => event => {
         console.log('*** ENTERED HANDLE JOB LEVEL CHANGE METHOD  ***')
@@ -126,6 +127,7 @@ function JobFilterSideBar(props) {
         var tempArray = [...jobLevels];
         tempArray[index].value = !tempArray[index].value;
         setJobLevels(tempArray)
+        formQuery();
     };
     const handleDistrictChange = (areaIndex, districtIndex) => event => {
         console.log('*** ENTERED HANDLE LOCATION CHANGE METHOD  ***')
@@ -135,7 +137,9 @@ function JobFilterSideBar(props) {
         var tempArray = [...location];
         tempArray[areaIndex].districts[districtIndex].value = !tempArray[areaIndex].districts[districtIndex].value;
         setLocation(tempArray)
+        formQuery();
     };
+
     const handleShowAllDistrict = areaIndex => {
         setExpandedArea(!expandedArea);
         setSelectedAreaIndex(areaIndex);
@@ -156,7 +160,50 @@ function JobFilterSideBar(props) {
         setLocation(tempArray)
         setSelectedAreaIndex(index);
         setExpandedArea(true)
+        formQuery();
     }
+
+    const formQuery = () => {
+
+        console.log("!!! ENTERED FORM QUERY METHOD ")
+
+
+        var query = ''
+        for (let i = 0; i < jobLevels.length ; i++) {
+            if(jobLevels[i].value === true){
+                query = query + `&positionLevel=${jobLevels[i].name}`
+            }
+        }
+        for(let i = 0; i < governmentSchemes.length ;i++){
+            if(governmentSchemes[i].value === true){
+                query = query + `&schemeIds=${governmentSchemes[i].index}`
+            }
+        }
+        for (let i = 0; i < location.length ; i++) {
+            const districts = location[i].districts
+
+            if(location[i].value === true && location[i].index ){
+                query = query + `&districts=${location[i].index}`
+
+            } else if (location[i].value === true) {
+                for(let a=0 ; a<districts.length ; a++){
+                    query = query + `&districts=${districts[a].index}`
+                }
+
+            } else if (districts !== null) {
+                for(let a=0 ; a<districts.length ; a++){
+                    if(districts[a].value === true){
+                        query = query + `&districts=${districts[a].index}`
+                    }
+                }
+            }
+        }
+
+        console.log(query)
+        handleSidebarSubmit(query)
+    }
+
+     
 
 
     return (

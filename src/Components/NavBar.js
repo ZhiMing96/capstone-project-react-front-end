@@ -40,9 +40,6 @@ import Popper from '@material-ui/core/Popper';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
 
-import TooltipTrigger from "react-popper-tooltip";
-import "react-popper-tooltip/dist/styles.css";
-
 const styles = theme => ({
   root: {
     //position:'relative',
@@ -86,14 +83,13 @@ class NavTabs extends React.Component {
       })
     }
     this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 100000);
-    
+    setInterval(this.retrieveAlerts, 10000);
   }
 
 
   retrieveAlerts = () =>{
     // this.setState({notificationLoading: true})
-    api.alerts.retrieve({"alert_type": "MEETUP_INVITE"})
+    api.alerts.retrieve({"alert_type": ""})
     .then(res => {
         console.log(res.data)
         if (res.data.response_code === 200){

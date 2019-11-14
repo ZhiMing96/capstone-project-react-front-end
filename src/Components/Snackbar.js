@@ -68,18 +68,18 @@ function SnackbarContentWrapper(props) {
   );
 }
 
-SnackbarContentWrapper.propTypes = {
-  classes: PropTypes.shape({
-    success: PropTypes.string,
-    error: PropTypes.string,
-    icon: PropTypes.string,
-    iconVariant: PropTypes.string,
-    message: PropTypes.string,
-  }).isRequired,
-  message: PropTypes.node.isRequired,
-  onClose: PropTypes.func.isRequired,
-  variant: PropTypes.oneOf(["success", "error"]).isRequired
-};
+// SnackbarContentWrapper.propTypes = {
+//   classes: PropTypes.shape({
+//     success: PropTypes.string,
+//     error: PropTypes.string,
+//     icon: PropTypes.string,
+//     iconVariant: PropTypes.string,
+//     message: PropTypes.string,
+//   }).isRequired,
+//   message: PropTypes.node.isRequired,
+//   onClose: PropTypes.func.isRequired,
+//   variant: PropTypes.oneOf(["success", "error"]).isRequired
+// };
 
 const MySnackbarContentWrapper = withStyles(styles1)(SnackbarContentWrapper);
 
@@ -110,11 +110,11 @@ const CustomizedSnackbar = ({
   );
 };
 
-CustomizedSnackbar.propTypes = {
-  open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  variant: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired
-};
+// CustomizedSnackbar.propTypes = {
+//   open: PropTypes.bool.isRequired,
+//   handleClose: PropTypes.func.isRequired,
+//   variant: PropTypes.string.isRequired,
+//   message: PropTypes.string.isRequired
+// };
 
 export default CustomizedSnackbar;

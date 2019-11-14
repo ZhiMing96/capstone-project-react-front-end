@@ -14,6 +14,7 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import CircularLoading from '../../Components/LoadingBars/CircularLoading'
 import Snackbar from '../../Components/Snackbar';
+import  RecommendationRequestSkeletonLoading from '../../Components/SkeletonLoading/RecommendationRequestSkeletonLoading'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -152,6 +153,7 @@ export default function Reco(props) {
     const requestErrorMsg = "An Error Has Occured! Request was Unsucessful"
     const requestSuccessMsg = "Requst Sent Successfully! "
     const [recommendations, setRecommendations] =useState([])
+    const demoArray = [1,2,3];
 
 
     const getCompletedMeetups = () => {
@@ -300,18 +302,22 @@ export default function Reco(props) {
                         </Typography>
                     </Grid>
                     {loadingCompletedMeetups
-                        ? <CircularLoading />
-                        : completedMeetups
-                            ?
-                            <Grid item style={{ width: '100%' }}>
-                                <List>
-                                    {completedMeetups.map((meetup, index) => (
-                                        <RecoRequestListItem meetup={meetup}
-                                            handleOpenSnackBar={handleOpenSnackBar} />
-                                    ))}
-                                </List>
-                            </Grid>
-                            : 'Complete A Meetup to Request for a Recommendation!'
+                    ? demoArray.map((element,index)=>(
+                        <RecommendationRequestSkeletonLoading/>
+                    ))
+
+                    
+                    : completedMeetups
+                    ?
+                    <Grid item style={{ width: '100%' }}>
+                        <List>
+                            {completedMeetups.map((meetup, index)=>(
+                                <RecoRequestListItem meetup={meetup} 
+                                handleOpenSnackBar={handleOpenSnackBar} />
+                            ))}
+                        </List>
+                    </Grid>
+                    : 'Complete A Meetup to Request for a Recommendation!'
                     }
                 </Grid>
             </Grid>
@@ -330,7 +336,7 @@ export default function Reco(props) {
                     <Typography component="div">
                         <Box
                             fontSize="h6.fontSize"
-                            style={{ fontSize: 'large' }}
+                            style={{ fsontSize: 'large' }}
                             letterSpacing={2}
                             textAlign='left'
                             color="primary.main"
