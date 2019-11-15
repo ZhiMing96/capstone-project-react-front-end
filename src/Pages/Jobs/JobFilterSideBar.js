@@ -109,7 +109,7 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
             index : 998,
             districts : null
         },
-    ])
+    ]);
 
     const handleSchemeChange = index => event => {
         console.log('*** ENTERED HANDLE SCHEME CHANGE METHOD  ***')

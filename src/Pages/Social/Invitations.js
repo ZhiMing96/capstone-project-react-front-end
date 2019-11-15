@@ -249,7 +249,6 @@ function Invitations(props) {
             if(res.data.response_code === 200) {
                 const invitesSent = res.data.invites_sent
                 const invitesReceived = res.data.invites_received
-
                 console.log('****** Invitations Sent *****')
                 console.log(invitesSent);
 
@@ -504,7 +503,7 @@ function Invitations(props) {
                 //      </Grid>
                 // </Skeleton>
                 ? <InvitationRequestSkeleton/>
-                : pendingInvitations
+                : pendingInvitations && pendingInvitations.length!==0
                 ? 
                 <Wrapper>
                     <Slider {...carouselSettings}>
@@ -659,7 +658,7 @@ function Invitations(props) {
                         
                         {meetupsloading
                         ? <UpcomingMeetupsSkeletonLoading/>
-                        : upcomingMeetups
+                        : upcomingMeetups && upcomingMeetups.length!==0
                         ?
                         upcomingMeetups.map((meetup, index) => {
                             if(meetup.suggested_datetime !== null){

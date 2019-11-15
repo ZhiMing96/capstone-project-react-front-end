@@ -281,7 +281,7 @@ export default function Reco(props) {
                     ))
 
                     
-                    : completedMeetups
+                    : completedMeetups && completedMeetups.length !== 0
                     ?
                     <Grid item style={{ width: '100%' }}>
                         <List>
