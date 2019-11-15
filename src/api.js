@@ -50,6 +50,9 @@ const work ={
   update: params => axios.post('http://localhost:3000/work/update', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  matchCategory: params =>axios.post('http://localhost:3000/work/match_category', params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const bookmarks = { 
@@ -140,6 +143,9 @@ const recommendations = {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
   retrieveAllRequest:()=>axios.get('http://localhost:3000/recommendation/request/all', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  submitRecommendation:(params)=>axios.post('http://localhost:3000/recommendation/all', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
 }
