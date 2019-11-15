@@ -39,8 +39,8 @@ class Login extends React.Component {
     this.setState({[name]: value});
   }
 
-  async setUserDetails(token) {
-    await api.profile.get() 
+  setUserDetails(token) {
+    api.profile.get() 
     .then(response => {
       let userId = response.data.profile.user_id
       this.props.doLogin(userId) //link to store action to hydrate store, connect

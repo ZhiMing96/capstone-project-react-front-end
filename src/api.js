@@ -136,6 +136,12 @@ const recommendations = {
   request: (params) => axios.post('http://localhost:3000/recommendation/request', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  retrieveAll: ()=>axios.get('http://localhost:3000/recommendation/all', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  retrieveAllRequest:()=>axios.get('http://localhost:3000/recommendation/request/all', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const alerts = {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box, List, Badge, Fab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import RecoRequestCard from '../../Components/RecommendationRequestCard'
@@ -29,56 +29,56 @@ const useStyles = makeStyles(theme => ({
 
 const CarouselArrowNext = (props) => {
 
-    const { className, style, onClick} = props;
+    const { className, style, onClick } = props;
     // console.log(props)
 
-    if(onClick !== null){
-    return (
-        <div 
-            className={className}
-            style={{ display: "block",zIndex:40, marginRight:'1%',}}
-            onClick={onClick}
-        >
-            <Fab
-            className={className}
-            size='medium'
-            style={{display: "block",zIndex:40, marginRight:'20%',backgroundColor:'black', opacity:'0.6'}}
-            onClick={onClick}
-            > 
-                <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
-            </Fab>
-        </div>
-    );
+    if (onClick !== null) {
+        return (
+            <div
+                className={className}
+                style={{ display: "block", zIndex: 40, marginRight: '1%', }}
+                onClick={onClick}
+            >
+                <Fab
+                    className={className}
+                    size='medium'
+                    style={{ display: "block", zIndex: 40, marginRight: '20%', backgroundColor: 'black', opacity: '0.6' }}
+                    onClick={onClick}
+                >
+                    <KeyboardArrowRightIcon style={{ color: 'white', marginTop: 6 }} />
+                </Fab>
+            </div>
+        );
     } else {
-        return(<div></div>)
+        return (<div></div>)
     }
-  }
-  const CarouselArrowPrev = (props) => {
+}
+const CarouselArrowPrev = (props) => {
     const classes = useStyles();
     const { className, onClick, style, currentSlide } = props;
 
-    if(currentSlide !==0){
+    if (currentSlide !== 0) {
         return (
-            <div 
-              className={className}
-              style={{ ...style, display: "block",zIndex:40,marginLeft:'1%',content:'none'}}
-              onClick={onClick}
+            <div
+                className={className}
+                style={{ ...style, display: "block", zIndex: 40, marginLeft: '1%', content: 'none' }}
+                onClick={onClick}
             >
-              <Fab
-                size='medium'
-                style={{backgroundColor:'black', opacity:'0.6'}}
-              > 
-              <KeyboardArrowLeftIcon style={{color:'white',}}/>
-            </Fab>
-        
+                <Fab
+                    size='medium'
+                    style={{ backgroundColor: 'black', opacity: '0.6' }}
+                >
+                    <KeyboardArrowLeftIcon style={{ color: 'white', }} />
+                </Fab>
+
             </div>
-            
+
         );
     } else {
-        return(<div></div>)
+        return (<div></div>)
     }
-    
-  }
+
+}
 
 const carouselSettings = {
     accessibility: true,
@@ -145,56 +145,82 @@ width:97%
 
 export default function Reco(props) {
     const classes = useStyles();
-    const requests = [0, 1, 2, 3, 4, 5] //api
+    const [recoRequests, setRecoRequests] = useState([])
     const [completedMeetups, setCompletedMeetups] = useState();
     const [loadingCompletedMeetups, setLoadingCompletedMeetups] = useState(false);
     const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
     const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
     const requestErrorMsg = "An Error Has Occured! Request was Unsucessful"
     const requestSuccessMsg = "Requst Sent Successfully! "
+    const [recommendations, setRecommendations] =useState([])
     const demoArray = [1,2,3];
 
 
-    const getCompletedMeetups = () => { 
+    const getCompletedMeetups = () => {
 
         setLoadingCompletedMeetups(true);
         api.invitations.getCurrent()
-        .then(res=>{
-            if(res.data.response_code === 200){
-                setLoadingCompletedMeetups(false)
-                console.log('**** Completed Meetups Retrieved ***')
-                const invitesSent = res.data.invites_sent
-                const invitesReceived = res.data.invites_received
-                console.log('****** Invitations Sent *****')
-                console.log(invitesSent);
-                console.log('****** Invitations Received *****')
-                console.log(invitesReceived);
-                var combined = invitesSent.concat(invitesReceived)
-                console.log('****** Combined Invitations *****')
-                console.log(combined);
-                var temp = [];
-                for(let i=0; i<combined.length;i++){
-                    const invitation = combined[i]
-                    console.log(invitation)
-                    if(invitation.is_completed === 1){
-                        temp.push(invitation)
+            .then(res => {
+                if (res.data.response_code === 200) {
+                    console.log('**** Completed Meetups Retrieved ***')
+                    const invitesSent = res.data.invites_sent
+                    const invitesReceived = res.data.invites_received
+                    console.log('****** Invitations Sent *****')
+                    console.log(invitesSent);
+                    console.log('****** Invitations Received *****')
+                    console.log(invitesReceived);
+                    var combined = invitesSent.concat(invitesReceived)
+                    console.log('****** Combined Invitations *****')
+                    console.log(combined);
+                    var temp = [];
+                    for (let i = 0; i < combined.length; i++) {
+                        const invitation = combined[i]
+                        console.log(invitation)
+                        if (invitation.is_completed === 1) {
+                            temp.push(invitation)
+                        }
                     }
-                }
-                setCompletedMeetups(temp);
-            } else {
-                setLoadingCompletedMeetups(false)
-                console.log('**** ERROR: Unable to Retrieve Completed Meetups  ***')
-                console.log(res.data.response_message)
-            }
+                    setCompletedMeetups(temp);
 
-            
-        }).catch(err=> console.error(err));
+                } else {
+                    console.log('**** ERROR: Unable to Retrieve Completed Meetups  ***')
+                    console.log(res.data.response_message)
+                }
+
+                setLoadingCompletedMeetups(false)
+            }).catch(err => console.error(err));
+    }
+
+    const getRecoRequests = () => {
+        api.recommendations.retrieveAllRequest()
+            .then(res => {
+                if (res.data.response_code === 200) {
+                    setRecoRequests(res.data.requests)
+                } else {
+                    console.log("error retrieving recommendation requests")
+                }
+
+            }).catch(err => console.error(err));
+    }
+
+    const getRecommendations = () => {
+        api.recommendations.retrieveAll()
+            .then(res => {
+                if (res.data.response_code === 200) {
+                    setRecommendations(res.data.recommendations)
+                } else {
+                    console.log("error retrieving recommendations")
+                }
+
+            }).catch(err => console.error(err));
     }
 
 
-    useEffect(()=>{
+    useEffect(() => {
         getCompletedMeetups();
-    },[props])
+        getRecoRequests()
+        getRecommendations()
+    }, [props])
 
     const resetSnackBars = (reason) => {
         if (reason === 'clickaway') {
@@ -207,17 +233,17 @@ export default function Reco(props) {
     const handleOpenSnackBar = (type) => {
         console.log(" $$$$ ENTERED OPEN SNACKBAR ")
 
-        if(type === "Error"){
+        if (type === "Error") {
             setOpenErrorSnackbar(true);
-        } else if (type == "Success"){
+        } else if (type == "Success") {
             setOpenSuccessSnackbar(true);
         }
-     }
+    }
 
 
     return (
         <Grid container className={classes.root}>
-            <Grid item container spacing={10} alignItems='flex-start' style={{marginBottom:40, marginTop:40}}>
+            <Grid item container spacing={10} alignItems='flex-start' style={{ marginBottom: 40, marginTop: 40 }}>
                 <Grid item container sm={12} md={7}>
                     <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
                         <Typography component="div">
@@ -240,10 +266,10 @@ export default function Reco(props) {
                     <Grid item container direction="row" justify="space-evenly" alignItems="stretch" spacing={3} style={{ marginTop: 20, marginBottom: 20 }}>
                         <Wrapper>
                             <Slider {...carouselSettings}>
-                                {requests.map((value, index) => {
+                                {recoRequests.map((value, index) => {
                                     return (
                                         <Grid item xs={10}>
-                                            <RecoRequestCard />
+                                            <RecoRequestCard request={value} />
                                         </Grid>
                                     )
                                 })
@@ -261,15 +287,15 @@ export default function Reco(props) {
                             color="error"
                             anchorOrigin={{ vertical: 'top', horizontal: 'left',}}
                             > */}
-                                <Box
-                                    fontSize="h6.fontSize"
-                                    style={{ fontSize: 'large' }}
-                                    letterSpacing={2}
-                                    textAlign='left'
-                                    color="primary.main"
-                                    fontWeight="fontWeightBold"
-                                >
-                                    RECOMMENDATION REQUEST
+                            <Box
+                                fontSize="h6.fontSize"
+                                style={{ fontSize: 'large' }}
+                                letterSpacing={2}
+                                textAlign='left'
+                                color="primary.main"
+                                fontWeight="fontWeightBold"
+                            >
+                                RECOMMENDATION REQUEST
 
                                 </Box>
                             {/* </Badge> */}
@@ -296,7 +322,7 @@ export default function Reco(props) {
                 </Grid>
             </Grid>
             {
-                
+
             }
             <Snackbar
             open={openErrorSnackbar}
@@ -322,7 +348,7 @@ export default function Reco(props) {
                     <Typography component="div">
                         <Box
                             fontSize="h6.fontSize"
-                            style={{ fontSize: 'large' }}
+                            style={{ fsontSize: 'large' }}
                             letterSpacing={2}
                             textAlign='left'
                             color="primary.main"
@@ -336,10 +362,12 @@ export default function Reco(props) {
                 </Grid>
                 <Grid item style={{ width: '100%' }}>
                     <List>
-                        <RecoListItem />
-                        <RecoListItem />
-                        <RecoListItem />
-                        <RecoListItem />
+                        {recommendations.map((reco, index) => {
+                            return (
+                                <RecoListItem reco={reco}/>
+                            )
+                        })
+                        }
                     </List>
                 </Grid>
             </Grid>
