@@ -249,7 +249,6 @@ function Invitations(props) {
             if(res.data.response_code === 200) {
                 const invitesSent = res.data.invites_sent
                 const invitesReceived = res.data.invites_received
-
                 console.log('****** Invitations Sent *****')
                 console.log(invitesSent);
 
@@ -316,6 +315,7 @@ function Invitations(props) {
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
+                setOpenSnackBarError(true);
             }
         })
         handleCloseDialog();
@@ -332,6 +332,7 @@ function Invitations(props) {
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
+                setOpenSnackBarError(true);
             }
         })
     }
@@ -426,11 +427,13 @@ function Invitations(props) {
                 setOpenMeetupConfirmation(false);
             } else {
                 console.log('**** ERROR IN CONFIRMING MEETUP ***');
+                setOpenSnackBarError(true);
             }
             handleCloseDialog();
         }).catch(err=> {
             console.log(err)
             handleCloseDialog();
+            setOpenSnackBarError(true);
         });
     }
     const handleMeetupCancellation = (meetup) => {
@@ -466,6 +469,13 @@ function Invitations(props) {
         }
     }
 
+    const handleCloseSnackbar = () => {
+        setOpenSnackBarError(false);
+        setOpenSnackBarSuccess(false);
+    }
+
+    console.log(openSnackBarError);
+
     return (
         <div>
             {/* <Router> */}
@@ -493,7 +503,7 @@ function Invitations(props) {
                 //      </Grid>
                 // </Skeleton>
                 ? <InvitationRequestSkeleton/>
-                : pendingInvitations
+                : pendingInvitations && pendingInvitations.length!==0
                 ? 
                 <Wrapper>
                     <Slider {...carouselSettings}>
@@ -648,7 +658,7 @@ function Invitations(props) {
                         
                         {meetupsloading
                         ? <UpcomingMeetupsSkeletonLoading/>
-                        : upcomingMeetups
+                        : upcomingMeetups && upcomingMeetups.length!==0
                         ?
                         upcomingMeetups.map((meetup, index) => {
                             if(meetup.suggested_datetime !== null){
@@ -938,6 +948,19 @@ function Invitations(props) {
                         }
                     </Grid>
             </Grid>
+        
+            <Snackbar
+            open={openSnackBarSuccess}
+            handleClose={handleCloseSnackbar}
+            variant="success"
+            message={"Process Completed! "}
+            />
+            <Snackbar
+            open={openSnackBarError}
+            handleClose={handleCloseSnackbar}
+            variant="error"
+            message={"Unable to Perform Operation! "}
+            />
         </div>
     )
 }

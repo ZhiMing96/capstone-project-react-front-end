@@ -227,7 +227,7 @@ export default function Reco(props) {
             return;
         }
         setOpenErrorSnackbar(false);
-        // setOpenSuccessSnackbar(false);
+        setOpenSuccessSnackbar(false);
     }
 
     const handleOpenSnackBar = (type) => {
@@ -307,7 +307,7 @@ export default function Reco(props) {
                     ))
 
                     
-                    : completedMeetups
+                    : completedMeetups && completedMeetups.length !== 0
                     ?
                     <Grid item style={{ width: '100%' }}>
                         <List>
@@ -325,11 +325,23 @@ export default function Reco(props) {
 
             }
             <Snackbar
-                open={openSuccessSnackbar || openErrorSnackbar ? true : false}
-                handleClose={resetSnackBars}
-                variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
-                message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
+            open={openErrorSnackbar}
+            handleClose={resetSnackBars}
+            variant="error"
+            message={requestErrorMsg}
             />
+            <Snackbar
+            open={openSuccessSnackbar}
+            handleClose={resetSnackBars}
+            variant="success"
+            message={requestSuccessMsg}
+            />
+            {/* <Snackbar
+            open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
+            handleClose={resetSnackBars}
+            variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
+            message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
+        /> */}
 
             <Grid item container style={{ width: '100%' }}>
                 <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
