@@ -145,7 +145,7 @@ const recommendations = {
   retrieveAllRequest:()=>axios.get('http://localhost:3000/recommendation/request/all', {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
-  submitRecommendation:(params)=>axios.post('http://localhost:3000/recommendation/all', params, {
+  submitRecommendation:(params)=>axios.post('http://localhost:3000/recommendation/submit', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
 }
