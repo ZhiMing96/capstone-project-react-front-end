@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
+        width: "100%",
     },
     formControl: {
         margin: theme.spacing(3, 1, 1, 1),
@@ -56,10 +56,10 @@ const useStyles = makeStyles(theme => ({
     description: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
-        ['@media (min-width:920px)']: {
-            width: 710,
-        },
+        width: "100%",
+        //['@media (min-width:920px)']: {
+            //width: 790,
+        //},
     },
 
 }));
@@ -161,10 +161,10 @@ function SocialProfileEdit(props) {
 
                     </Grid>
 
-                    <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
+                    <Grid item style={{width: "100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
 
                         <form className={classes.form} onSubmit={(event) => { handleSubmit(event) }}>
-                            <Grid container style={{ width: '100%', justify: 'center' }}>
+                            <Grid container style={{ width: '85%', justify: 'center' }}>
                                 <Grid item xs={12} md={12}>
                                     <FormControlLabel
                                         control={

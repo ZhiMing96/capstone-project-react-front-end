@@ -83,7 +83,7 @@ class NavTabs extends React.Component {
       })
     }
     this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 10000);
+    //setInterval(this.retrieveAlerts, 10000);
   }
 
 
@@ -240,9 +240,9 @@ class NavTabs extends React.Component {
           }
           <Grid item xs={2} sm={3}>
             <Typography>
-              <Box fontWeight={600} fontSize={20} >
-                <Link to="/" style={{textDecoration:'none', color:'#0091ea'}}>
-                  <img src={logo} style={{width:150}}/>
+              <Box fontWeight={600} fontSize={20}>
+                <Link to="/" >
+                  <img src={logo} style={{width:130, marginBottom:-7 }}/>
                 </Link>
               </Box>
             </Typography>
