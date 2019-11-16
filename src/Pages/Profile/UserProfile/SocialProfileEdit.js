@@ -47,19 +47,19 @@ const useStyles = makeStyles(theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
+        width: "100%",
     },
     formControl: {
         margin: theme.spacing(3, 1, 1, 1),
-        minWidth: 280,
+        width: "100%",
     },
     description: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
-        ['@media (min-width:920px)']: {
-            width: 710,
-        },
+        width: "100%",
+        //['@media (min-width:920px)']: {
+        //width: 790,
+        //},
     },
 
 }));
@@ -71,7 +71,8 @@ function SocialProfileEdit(props) {
         profile_image_link: '',
         description: '',
         meetup_ind: '',
-        job_search_stage: ''
+        job_search_stage: '',
+        preferred_locations: []
     })
 
     //initialise
@@ -79,19 +80,21 @@ function SocialProfileEdit(props) {
         setLabelWidth(inputLabel.current.offsetWidth);
         console.log('useEffect')
         api.profile.get().then(res => {
-            const { profile_image_link, description, meetup_ind, job_search_stage } = res.data.social
+            const { profile_image_link, description, meetup_ind, job_search_stage, preferred_locations } = res.data.social
             console.log(res.data.social)
             setProfileState({
                 profile_image_link: profile_image_link,
                 description: description,
                 meetup_ind: meetup_ind,
-                job_search_stage: job_search_stage
+                job_search_stage: job_search_stage,
+                preferred_locations: preferred_locations
             })
             props.updateSocialProfile({
                 profile_image_link: profile_image_link,
                 description: description,
                 meetup_ind: meetup_ind,
-                job_search_stage: job_search_stage
+                job_search_stage: job_search_stage,
+                preferred_locations: preferred_locations
             })
         }).catch(err => {
             console.log('error initialising w user details')
@@ -161,10 +164,10 @@ function SocialProfileEdit(props) {
 
                     </Grid>
 
-                    <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
+                    <Grid item style={{ width: "100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
 
                         <form className={classes.form} onSubmit={(event) => { handleSubmit(event) }}>
-                            <Grid container style={{ width: '100%', justify: 'center' }}>
+                            <Grid container style={{ width: '85%', justify: 'center' }}>
                                 <Grid item xs={12} md={12}>
                                     <FormControlLabel
                                         control={
@@ -178,23 +181,45 @@ function SocialProfileEdit(props) {
                                         label="I'm interested to receive notifications for possible networking meet-ups with other users."
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <FormControl variant="outlined" className={classes.formControl}>
-                                        <InputLabel ref={inputLabel} >
-                                            Current Career Focus
+                                <Grid container item xs={12} justify="space-between">
+                                    <Grid item xs={12} md={5}>
+                                        <FormControl variant="outlined" className={classes.formControl}>
+                                            <InputLabel ref={inputLabel} >
+                                                Current Career Focus
                                         </InputLabel>
-                                        <Select
-                                            value={profileState.job_search_stage}
-                                            onChange={handleChange('job_search_stage')}
-                                            labelWidth={labelWidth}
-                                        >
+                                            <Select
+                                                value={profileState.job_search_stage}
+                                                onChange={handleChange('job_search_stage')}
+                                                labelWidth={labelWidth}
+                                            >
 
-                                            <MenuItem value={"SEARCH_JOB"}>Search for a Job</MenuItem>
-                                            <MenuItem value={"GROW_CAREER"}>Grow Your Career</MenuItem>
-                                            
-                                        </Select>
-                                    </FormControl>
+                                                <MenuItem value={"SEARCH_JOB"}>Search for a Job</MenuItem>
+                                                <MenuItem value={"GROW_CAREER"}>Grow Your Career</MenuItem>
+
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} md={5}>
+                                        <FormControl variant="outlined" className={classes.formControl}>
+                                            <InputLabel ref={inputLabel} >
+                                                Current Career Focus
+                                        </InputLabel>
+                                            <Select
+                                                value={profileState.job_search_stage}
+                                                onChange={handleChange('job_search_stage')}
+                                                labelWidth={labelWidth}
+                                            >
+
+                                                <MenuItem value={"SEARCH_JOB"}>Search for a Job</MenuItem>
+                                                <MenuItem value={"GROW_CAREER"}>Grow Your Career</MenuItem>
+
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+
+
                                 </Grid>
+
                                 <Grid item xs={12} md={12}>
                                     <TextField
                                         label="Bio Description"
@@ -244,7 +269,8 @@ const mapStateToProps = (state) => {
         profile_image_link: state.socialProfile.profile_image_link,
         description: state.socialProfile.description,
         meetup_ind: state.socialProfile.meetup_ind,
-        job_search_stage: state.socialProfile.job_search_stage
+        job_search_stage: state.socialProfile.job_search_stage,
+        preferred_locations: state.socialProfile.preferred_locations
     }
 }
 

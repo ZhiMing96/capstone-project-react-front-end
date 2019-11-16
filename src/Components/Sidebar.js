@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     margin: theme.spacing(1.5),
-    width: 180,
+    width: 165,
     height: 45
   },
   overlay: {

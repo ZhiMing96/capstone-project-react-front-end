@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
+        width: "100%",
     },
     button: {
         marginRight: theme.spacing(1),
@@ -38,10 +38,10 @@ const useStyles = makeStyles(theme => ({
     description: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
-        ['@media (min-width:920px)']: {
-            width: 710,
-        },
+        width: "100%",
+        //['@media (min-width:920px)']: {
+            //width: 790,
+        //},
     },
 }));
 
@@ -116,11 +116,12 @@ function SocialProfileRead(props) {
                         </Typography>
                     </Grid>
 
-                    <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
+                    <Grid item style={{width: "100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
 
                         <form className={classes.form} >
-                            <Grid container style={{ width: '100%', textAlign: 'left' }}>
-                                <Grid item xs={12} md={6}>
+                            <Grid container style={{ width: '85%', textAlign: 'left' }}>
+                            <Grid container item xs={12} justify="space-between">
+                                <Grid item xs={12} md={5}>
                                     <TextField
                                         label="Interested in networking?"
                                         value={profileState.meetup_ind ===1? 'Yes': 'No'}
@@ -131,7 +132,7 @@ function SocialProfileRead(props) {
                                         }}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={5}>
                                     <TextField
                                         label="Current Career Focus"
                                         value={
@@ -150,7 +151,9 @@ function SocialProfileRead(props) {
                                         }}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={12}>
+                                </Grid>
+
+                                <Grid item xs={12}>
                                 <TextField
                                         label="Bio Description"
                                         value={profileState.description ==='' || profileState.description === null ? '-' : profileState.description}

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Box, List, Badge, Fab } from '@material-ui/core'
+import React, { useState, useEffect,useRef } from 'react';
+import { Grid, Typography, Box, List, Badge, Fab,IconButton,Snackbar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import RecoRequestCard from '../../Components/RecommendationRequestCard'
 import RecoRequestListItem from '../../Components/RecoRequestListItem'
@@ -13,12 +13,15 @@ import './index.css';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import CircularLoading from '../../Components/LoadingBars/CircularLoading'
-import Snackbar from '../../Components/Snackbar';
-import  RecommendationRequestSkeletonLoading from '../../Components/SkeletonLoading/RecommendationRequestSkeletonLoading'
+//import Snackbar from '../../Components/Snackbar';
+import RecommendationRequestSkeletonLoading from '../../Components/SkeletonLoading/RecommendationRequestSkeletonLoading'
+import './Recommendations.css'
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
+        marginTop: theme.spacing(2),
     },
     paper: {
         padding: theme.spacing(2),
@@ -93,6 +96,7 @@ const carouselSettings = {
     draggable: true,
     //lazyLoad: "progressive",
     pauseOnHover: true,
+    focusOnSelect: false,
     nextArrow: <CarouselArrowNext />,
     prevArrow: <CarouselArrowPrev />,
     responsive: [
@@ -118,6 +122,15 @@ const carouselSettings = {
                 slidesToShow: 3,
                 slidesToScroll: 1,
                 //infinite: true,
+            }
+        },
+        {
+            breakpoint: 800, 
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                //initialSlide: 2
+                infinite: false,
             }
         },
         {
@@ -152,8 +165,13 @@ export default function Reco(props) {
     const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
     const requestErrorMsg = "An Error Has Occured! Request was Unsucessful"
     const requestSuccessMsg = "Requst Sent Successfully! "
-    const [recommendations, setRecommendations] =useState([])
-    const demoArray = [1,2,3];
+    const [recommendations, setRecommendations] = useState([])
+    const demoArray = [1, 2, 3];
+
+    //*****SNACKBAR BLACK VERSION W QUEUE AND PROPS
+    const queueRef = useRef([]);
+    const [open, setOpen] = useState(false);
+    const [messageInfo, setMessageInfo] = useState(undefined);
 
 
     const getCompletedMeetups = () => {
@@ -240,137 +258,199 @@ export default function Reco(props) {
         }
     }
 
+    //*****SNACKBAR BLACK VERSION W QUEUE AND PROPS
+    const processQueue = () => {
+    if (queueRef.current.length > 0) {
+      setMessageInfo(queueRef.current.shift());
+      setOpen(true);
+    }
+    };
+
+    const setSnackbar = (message, undoButton = false) => {
+        queueRef.current.push({
+            message,
+            key: new Date().getTime(),
+            undoButton
+        });
+        if (open) {
+            // immediately begin dismissing current message
+            // to start showing new one
+            setOpen(false);
+        } else {
+            processQueue();
+        }
+    }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+    const handleExited = () => {
+        processQueue();
+    };
+    //*****
 
     return (
-        <Grid container className={classes.root}>
-            <Grid item container spacing={10} alignItems='flex-start' style={{ marginBottom: 40, marginTop: 40 }}>
-                <Grid item container sm={12} md={7}>
-                    <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
-                        <Typography component="div">
-                            <Box
-                                fontSize="h6.fontSize"
-                                style={{ fontSize: 'large' }}
-                                letterSpacing={2}
-                                textAlign='left'
-                                color="primary.main"
-                                fontWeight="fontWeightBold"
-                            >
+        <div>
+            <Grid container className={classes.root}>
+                <Grid item container spacing={10} alignItems='flex-start'>
+                    <Grid item container sm={12} md={7}>
+                        <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
+                            <Typography component="div">
+                                <Box
+                                    fontSize="h6.fontSize"
+                                    style={{ fontSize: 'large' }}
+                                    letterSpacing={2}
+                                    textAlign='left'
+                                    color="primary.main"
+                                    fontWeight="fontWeightBold"
+                                >
 
-                                WRITE A RECOMMENDATION
-
+                                    WRITE A RECOMMENDATION
+    
                             </Box>
-                        </Typography>
+                            </Typography>
+                        </Grid>
+
+
+                        <Grid item container direction="row" justify="space-evenly" alignItems="stretch" spacing={3} style={{ marginTop: 20, marginBottom: 20 }}>
+                            <Wrapper>
+                                <Slider {...carouselSettings}>
+                                    {recoRequests.map((value, index) => {
+                                        return (
+                                            <Grid item xs={10}>
+                                                <RecoRequestCard request={value} setSnackbar={setSnackbar}/>
+                                            </Grid>
+                                        )
+                                    })
+                                    }
+                                </Slider>
+                            </Wrapper>
+                        </Grid>
                     </Grid>
 
-
-                    <Grid item container direction="row" justify="space-evenly" alignItems="stretch" spacing={3} style={{ marginTop: 20, marginBottom: 20 }}>
-                        <Wrapper>
-                            <Slider {...carouselSettings}>
-                                {recoRequests.map((value, index) => {
-                                    return (
-                                        <Grid item xs={10}>
-                                            <RecoRequestCard request={value} />
-                                        </Grid>
-                                    )
-                                })
-                                }
-                            </Slider>
-                        </Wrapper>
-                    </Grid>
-                </Grid>
-
-                <Grid item container sm={12} md={5}>
-                    <Grid item container style={{ marginTop: 20, marginBottom: 20, width: '100%' }}>
-                        <Typography component="div">
-                            {/* <Badge 
+                    <Grid item container sm={12} md={5}>
+                        <Grid item container style={{ marginTop: 20, marginBottom: 20, width: '100%' }}>
+                            <Typography component="div">
+                                {/* <Badge 
                             badgeContent={completedMeetups? completedMeetups.length:null} 
                             color="error"
                             anchorOrigin={{ vertical: 'top', horizontal: 'left',}}
                             > */}
-                            <Box
-                                fontSize="h6.fontSize"
-                                style={{ fontSize: 'large' }}
-                                letterSpacing={2}
-                                textAlign='left'
-                                color="primary.main"
-                                fontWeight="fontWeightBold"
-                            >
-                                RECOMMENDATION REQUEST
-
+                                <Box
+                                    fontSize="h6.fontSize"
+                                    style={{ fontSize: 'large' }}
+                                    letterSpacing={2}
+                                    textAlign='left'
+                                    color="primary.main"
+                                    fontWeight="fontWeightBold"
+                                >
+                                    RECOMMENDATION REQUEST
+    
                                 </Box>
-                            {/* </Badge> */}
-                        </Typography>
-                    </Grid>
-                    {loadingCompletedMeetups
-                    ? demoArray.map((element,index)=>(
-                        <RecommendationRequestSkeletonLoading/>
-                    ))
+                                {/* </Badge> */}
+                            </Typography>
+                        </Grid>
+                        {loadingCompletedMeetups
+                            ? demoArray.map((element, index) => (
+                                <RecommendationRequestSkeletonLoading />
+                            ))
 
-                    
-                    : completedMeetups && completedMeetups.length !== 0
-                    ?
-                    <Grid item style={{ width: '100%' }}>
-                        <List>
-                            {completedMeetups.map((meetup, index)=>(
-                                <RecoRequestListItem meetup={meetup} 
-                                handleOpenSnackBar={handleOpenSnackBar} />
-                            ))}
-                        </List>
+
+                            : completedMeetups && completedMeetups.length !== 0
+                                ?
+                                <Grid item style={{ width: '100%' }}>
+                                    <List>
+                                        {completedMeetups.map((meetup, index) => (
+                                            <RecoRequestListItem meetup={meetup}
+                                                handleOpenSnackBar={handleOpenSnackBar} />
+                                        ))}
+                                    </List>
+                                </Grid>
+                                : 'Complete A Meetup to Request for a Recommendation!'
+                        }
                     </Grid>
-                    : 'Complete A Meetup to Request for a Recommendation!'
-                    }
                 </Grid>
-            </Grid>
-            {
+                {
 
-            }
-            <Snackbar
-            open={openErrorSnackbar}
-            handleClose={resetSnackBars}
-            variant="error"
-            message={requestErrorMsg}
-            />
-            <Snackbar
-            open={openSuccessSnackbar}
-            handleClose={resetSnackBars}
-            variant="success"
-            message={requestSuccessMsg}
-            />
-            {/* <Snackbar
+                }
+                <Snackbar
+                    open={openErrorSnackbar}
+                    handleClose={resetSnackBars}
+                    variant="error"
+                    message={requestErrorMsg}
+                />
+                <Snackbar
+                    open={openSuccessSnackbar}
+                    handleClose={resetSnackBars}
+                    variant="success"
+                    message={requestSuccessMsg}
+                />
+                {/* <Snackbar
             open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
             handleClose={resetSnackBars}
             variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
             message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
         /> */}
 
-            <Grid item container style={{ width: '100%' }}>
-                <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
-                    <Typography component="div">
-                        <Box
-                            fontSize="h6.fontSize"
-                            style={{ fsontSize: 'large' }}
-                            letterSpacing={2}
-                            textAlign='left'
-                            color="primary.main"
-                            fontWeight="fontWeightBold"
-                        >
+                <Grid item container style={{ width: '100%' }}>
+                    <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
+                        <Typography component="div">
+                            <Box
+                                fontSize="h6.fontSize"
+                                style={{ fsontSize: 'large' }}
+                                letterSpacing={2}
+                                textAlign='left'
+                                color="primary.main"
+                                fontWeight="fontWeightBold"
+                            >
 
-                            YOUR RECOMMENDATIONS
-
+                                YOUR RECOMMENDATIONS
+    
                         </Box>
-                    </Typography>
-                </Grid>
-                <Grid item style={{ width: '100%' }}>
-                    <List>
-                        {recommendations.map((reco, index) => {
-                            return (
-                                <RecoListItem reco={reco}/>
-                            )
-                        })
-                        }
-                    </List>
+                        </Typography>
+                    </Grid>
+                    <Grid item style={{ width: '100%' }}>
+                        <List>
+                            {recommendations.map((reco, index) => {
+                                return (
+                                    <RecoListItem reco={reco} />
+                                )
+                            })
+                            }
+                        </List>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+
+            <Snackbar
+                key={messageInfo ? messageInfo.key : undefined}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={open}
+                autoHideDuration={5000}
+                onClose={handleClose}
+                onExited={handleExited}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
+
+                action={
+                    <IconButton
+                        key="close"
+                        aria-label="close"
+                        color="inherit"
+                        className={classes.close}
+                        onClick={handleClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                }
+            />
+        </div>
     )
 }
