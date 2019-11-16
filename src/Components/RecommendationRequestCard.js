@@ -16,6 +16,7 @@ const useStyles = makeStyles(theme => ({
         height: '100%',
         textAlign: 'center',
         alignItems: 'center',
+        maxWidth:300
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -123,7 +124,7 @@ export default function RecoRequestCard(props) {
                     </Grid>
                 </CardContent>
                 <CardActions disableSpacing >
-                    <Grid container justify="space-evenly" alignItems="center">
+                    <Grid container justify="space-between" alignItems="center">
                         <Grid item xs={7}>
                             <Button color="primary" variant="outlined" className={classes.button} onClick={handleOpenDialog} size="small">
                                 Recommend

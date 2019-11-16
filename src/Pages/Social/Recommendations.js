@@ -125,6 +125,15 @@ const carouselSettings = {
             }
         },
         {
+            breakpoint: 800, 
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                //initialSlide: 2
+                infinite: false,
+            }
+        },
+        {
             breakpoint: 600, //sm
             settings: {
                 slidesToShow: 2,
