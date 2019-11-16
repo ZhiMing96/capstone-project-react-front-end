@@ -35,6 +35,9 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import InvitationRequestSkeleton from '../../Components/SkeletonLoading/InvitationRequestSkeleton'
 import  UpcomingMeetupsSkeletonLoading from '../../Components/SkeletonLoading/UpcomingMeetupsSkeletonLoading';
 import Snackbar from '../../Components/Snackbar';
+import axios from 'axios'
+import { updatePendingInvitations, updateUpcomingMeetups} from '../../redux/actions/socialInteraction' ; 
+import { connect } from "react-redux";
 
 
 const Wrapper = styled.div`
@@ -230,7 +233,7 @@ function Invitations(props) {
     const [openInvitation, setOpenInvitation] = useState(false);
     const [selectedMeetupIndexWithDate, setSelectedMeetupIndexWithDate] = useState()
     const [selectedMeetupIndexWithoutDate, setSelectedMeetupIndexWithoutDate] = useState()
-    const [openMeetupConfirmation, setOpenMeetupConfirmation] = useState(false); 
+    const [OpenMeetupDialog, setOpenMeetupDialog] = useState(false); 
     const [ selectedMeetup, setSelectedMeetup] = useState();
     const [ openMeetupCancellation, setOpenMeetupCancellation ] = useState(false);
     const [ pendingInvitations, setPendingInvitations ] = useState();
@@ -240,69 +243,81 @@ function Invitations(props) {
     const [ meetupsloading, setMeetupsLoading ] = useState(false);
     const [ openSnackBarError, setOpenSnackBarError ] = useState(false);
     const [ openSnackBarSuccess, setOpenSnackBarSuccess ] = useState(false);
+    const [ reloadInvitation, setReloadInvitation ] = useState(false);
+    const [ reloadMeetup, setReloadMeetup ] = useState(false);
 
     const getPendingInvitation = () => {
+        console.log("ENTERED PEDNING INVITATION ")
         setInvitationsLoading(true);
         api.invitations.getPending()
         .then(res=>{
             console.log(res.data)
             if(res.data.response_code === 200) {
-                const invitesSent = res.data.invites_sent
-                const invitesReceived = res.data.invites_received
-                console.log('****** Invitations Sent *****')
-                console.log(invitesSent);
+                setTimeout(() => {
+                    const invitesSent = res.data.invites_sent
+                    const invitesReceived = res.data.invites_received
+                    console.log('****** Invitations Sent *****')
+                    console.log(invitesSent);
 
-                console.log('****** Invitations Received *****')
-                console.log(invitesReceived);
-
-                setPendingInvitations(invitesReceived)
+                    console.log('****** Invitations Received *****')
+                    console.log(invitesReceived);
+                    setPendingInvitations(invitesReceived);
+                    setInvitationsLoading(false);
+                    props.updatePendingInvitations(invitesReceived)
+                }, 2000)
             } 
-            setInvitationsLoading(false);
         }).catch(err => console.log(err))
     }
 
     const getUpcomingMeetups = () => {
+        console.log("ENTERED UPCOMING MEETUPS ")
         setMeetupsLoading(true);
         api.invitations.getCurrent()
         .then(res=> {
             console.log(res.data)
             if(res.data.response_code === 200) {
-                const invitesSent = res.data.invites_sent
-                const invitesReceived = res.data.invites_received
-                console.log('****** Invitations Sent *****')
-                console.log(invitesSent);
-                console.log('****** Invitations Received *****')
-                console.log(invitesReceived);
-                var combined = invitesSent.concat(invitesReceived)
-                console.log('****** Combined Invitations *****')
-                console.log(combined);
-                var tempWithDate = [];
-                var tempWithoutDate = [];
+                
+                setTimeout(() => {
+                    var invitesSent = res.data.invites_sent
+                    var invitesReceived = res.data.invites_received
+                    console.log('****** Invitations Sent *****')
+                    console.log(invitesSent);
+                    console.log('****** Invitations Received *****')
+                    console.log(invitesReceived);
+                    var combined = invitesSent.concat(invitesReceived)
+                    console.log('****** Combined Invitations *****')
+                    console.log(combined);
+                    props.updateUpcomingMeetups(combined)
 
-                for(let i=0; i<combined.length;i++){
-                    const invitation = combined[i]
-                    console.log(invitation)
-                    if(invitation.accepted === 1){
-                        if(invitation.suggested_datetime !== null){
-                            tempWithDate.push(invitation)
-                        } else {
-                            tempWithoutDate.push(invitation)
+                    var tempWithDate = [];
+                    var tempWithoutDate = [];
+    
+                    for(let i=0; i<combined.length;i++){
+                        const invitation = combined[i]
+                        console.log(invitation)
+                        if(invitation.accepted === 1 && invitation.is_completed === null){
+                            console.log(invitation.suggested_datetime)
+                            if(invitation.suggested_datetime !== null){
+                                tempWithDate.push(invitation)
+                            } else {
+                                tempWithoutDate.push(invitation)
+                            }
+                            
                         }
-                        
                     }
+                    setUpcomingMeetups(tempWithDate)
+                    setPendingMeetupDate(tempWithoutDate)
+                    setMeetupsLoading(false);
                 }
-                setUpcomingMeetups(tempWithDate)
-                setPendingMeetupDate(tempWithoutDate)
-            }
-            setMeetupsLoading(false);
+                , 3000)} 
         })
     }
-    
+
     
     useEffect(()=>{
         getPendingInvitation();
         getUpcomingMeetups();
-    },[props]) 
+    },[]) 
 
     const handleAcceptInvitation = (requestId) => {
         console.log(requestId)
@@ -310,7 +325,10 @@ function Invitations(props) {
         .then(res=>{
             if(res.data.response_code === 200){
                 console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
+                // getBoth();
                 getPendingInvitation();
+                // setReloadInvitation(!reloadInvitation);
+                // setReloadMeetup(!reloadMeetup)
                 getUpcomingMeetups();
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
@@ -329,6 +347,7 @@ function Invitations(props) {
             if(res.data.response_code === 200){
                 console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
                 getPendingInvitation();
+                // setReloadInvitation(true);
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
@@ -341,6 +360,7 @@ function Invitations(props) {
         console.log("***** Entered Handled Select Meetup ****");
         console.log(meetup);
         setSelectedMeetup(meetup);
+
     }
     
     const handleDateChange = date => {
@@ -362,6 +382,7 @@ function Invitations(props) {
                 console.log('***** DATE CHANGE RECORDED SUCESSFULLY ****');
                 setSelectedMeetup(null);
                 getUpcomingMeetups()
+                // setReloadMeetup(!reloadMeetup)
             } else {
                 console.log('***** DATE CHANGE NOT RECORDED ****')
             }
@@ -369,48 +390,40 @@ function Invitations(props) {
         })
     }; 
 
-    const handleOpenConfirmationDialog = (index,type) => {
+    const handleOpenMeetupDialog = (index,type) => {
         if(type === 'invitation'){
             setSelectedInvitationIndex(index)
             setOpenInvitation(true);
         } else if (type === 'meetupWithDate') {
             setSelectedMeetupIndexWithDate(index)
             setSelectedMeetupIndexWithoutDate(null)
-            setOpenMeetupConfirmation(true);
+            setOpenMeetupDialog(true);
         } else if (type === 'meetupWithoutDate') {
             setSelectedMeetupIndexWithoutDate(index)
             setSelectedMeetupIndexWithDate(null)
-            setOpenMeetupConfirmation(true);
+            setOpenMeetupDialog(true);
         }
     };
-    const handleOpenCancellationDialog = (index,type) => {
-        if (type === 'meetupWithDate') {
-            setSelectedMeetupIndexWithDate(index)
-            setSelectedMeetupIndexWithoutDate(null)
-            setOpenMeetupCancellation(true);
-        } else if (type === 'meetupWithoutDate') {
-            setSelectedMeetupIndexWithoutDate(index)
-            setSelectedMeetupIndexWithDate(null)
-            setOpenMeetupCancellation(true);
-        }
-    };
+    // const handleOpenCancellationDialog = (index,type) => {
+    //     if (type === 'meetupWithDate') {
+    //         setSelectedMeetupIndexWithDate(index)
+    //         setSelectedMeetupIndexWithoutDate(null)
+    //         setOpenMeetupCancellation(true);
+    //     } else if (type === 'meetupWithoutDate') {
+    //         setSelectedMeetupIndexWithoutDate(index)
+    //         setSelectedMeetupIndexWithDate(null)
+    //         setOpenMeetupCancellation(true);
+    //     }
+    // };
 
     const handleCloseDialog = () => {
         // if(type === 'invitation'){
             setOpenInvitation(false);
         // } else if (type === 'meetup') {
-            setOpenMeetupConfirmation(false);
+            setOpenMeetupDialog(false);
             setOpenMeetupCancellation(false);
         // }
     };
-
-
-    const deleteElement = (index) => {
-        console.log('Index = ' + index)
-        var array = [...pendingInvitations]
-        array.splice(index,1)
-        // setPendingInvitations(array);
-    }
     
     const timeLeft = (date) => {
         const dateFormat =  new Date(date);
@@ -424,7 +437,8 @@ function Invitations(props) {
             console.log(res.data)
             if(res.data.response_code===200){
                 getUpcomingMeetups()
-                setOpenMeetupConfirmation(false);
+                // setReloadMeetup(!reloadMeetup);
+                setOpenMeetupDialog(false);
             } else {
                 console.log('**** ERROR IN CONFIRMING MEETUP ***');
                 setOpenSnackBarError(true);
@@ -443,8 +457,10 @@ function Invitations(props) {
         .then(res => {
             console.log(res.data)
             if(res.data.response_code===200){
-                getUpcomingMeetups()
-                setOpenMeetupConfirmation(false);
+                // getUpcomingMeetups()
+                // setReloadMeetup(!reloadMeetup)
+                setOpenMeetupDialog(false);
+                setOpenMeetupCancellation(true);
             } else {
                 console.log('**** ERROR IN CANCELLING MEETUP ***');
             }
@@ -490,18 +506,6 @@ function Invitations(props) {
                 </Grid>
                 <Grid container style={{ margin:10, marginTop:10, }} spacing={1} justify="space-between" > 
                 {invitationsLoading
-                // ? <Skeleton variant="rect" width={246} height={249}>
-                //      <Skeleton variant="circle" width={85} height={85} style={{margin:'5%', marginLeft:'32%', marginTop:'10%'}}/>
-                //      <Skeleton variant='rect' height='20%' style={{marginLeft:'20%',marginRight:'20%', marginBottom:'8%'}} />
-                //      <Grid container >
-                //          <Grid item xs={6}>
-                //             <Skeleton variant='rect' width="60%" height={30} style={{marginLeft:'21%'}} />
-                //          </Grid>
-                //          <Grid item xs={6}>
-                //             <Skeleton variant='rect'  width="60%" height={30} style={{marginLeft:'10%'}} />
-                //          </Grid>
-                //      </Grid>
-                // </Skeleton>
                 ? <InvitationRequestSkeleton/>
                 : pendingInvitations && pendingInvitations.length!==0
                 ? 
@@ -551,7 +555,7 @@ function Invitations(props) {
                                         >
                                             <Grid item xs={6}>
                                                 <Button color='primary' style={{fontSize:15,fontWeight:'bold'}} size='small'
-                                                onClick={()=>handleOpenConfirmationDialog(index,'invitation')}
+                                                onClick={()=>handleOpenMeetupDialog(invitation.request_id,'invitation')}
                                                 >
                                                     Accept
                                                 </Button>
@@ -569,7 +573,7 @@ function Invitations(props) {
                                 </Paper>
                             </Page>
                             <Dialog
-                            open={index === selectedInvitationIndex ? openInvitation: false}
+                            open={invitation.request_id === selectedInvitationIndex ? openInvitation: false}
                             TransitionComponent={Transition}
                             keepMounted
                             fullWidth
@@ -648,12 +652,9 @@ function Invitations(props) {
             <Grid container spacing={6}>
                     <Grid container item xs={12} md={6}>
                         <Grid item xs={12} style={{marginTop:'10%',textAlign:'left'}}>
-                            {/* <Badge badgeContent={upcomingMeetups? upcomingMeetups.length : null } color="error"
-                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}> */}
-                                <Typography className={classes.sectionHeading} style={{}}>
-                                    UPCOMING MEETUPS
-                                </Typography>
-                            {/* </Badge> */}
+                            <Typography className={classes.sectionHeading} style={{}}>
+                                UPCOMING MEETUPS
+                            </Typography>
                         </Grid>
                         
                         {meetupsloading
@@ -676,15 +677,13 @@ function Invitations(props) {
                                                 </Grid>
                                                 <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
                                                     <Typography>
-                                                    {meetup.from_user && meetup.from_user.profile
-                                                        ? meetup.from_user.profile.username 
-                                                        : meetup.to_user && meetup.to_user.profile
-                                                        ? meetup.to_user.profile.username 
+                                                    {meetup.other_user && meetup.other_user.profile
+                                                        ? meetup.other_user.profile.username 
                                                         : ''
                                                     }
                                                     </Typography>
                                                     <Typography>
-                                                        Chong Yi Qiong
+                                                        INSERT JOB POSITION
                                                     </Typography>
                                                     <MuiPickersUtilsProvider utils={DateFnsUtils} >
                                                         <KeyboardDatePicker
@@ -724,7 +723,7 @@ function Invitations(props) {
                                                         <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
                                                             <IconButton
                                                             // className={classes.controlButtons}
-                                                            onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
+                                                            onClick={()=> handleOpenMeetupDialog(meetup.request_id, 'meetupWithDate')}
                                                             >
                                                                 <MoreVertIcon/>
                                                             </IconButton>
@@ -734,7 +733,7 @@ function Invitations(props) {
                                             </Grid>
                                         </Card>
                                         <Dialog
-                                        open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
+                                        open={meetup.request_id === selectedMeetupIndexWithDate ? OpenMeetupDialog: false}
                                         TransitionComponent={Transition}
                                         keepMounted
                                         fullWidth
@@ -791,7 +790,6 @@ function Invitations(props) {
                                                 </Grid>
                                             </DialogContent>
                                         </Dialog>
-                                    
                                     </div>
                                 )
                             }
@@ -801,13 +799,10 @@ function Invitations(props) {
                     </Grid>
                 
                     <Grid container item xs={12} md={6}>
-                        <Grid item xs={12} style={{marginTop:'10%', textAlign:'left'}}>
-                            {/* <Badge badgeContent={pendingMeetupDate? pendingMeetupDate.length : null } color="error"
-                            anchorOrigin={{ vertical: 'top', horizontal: 'left',}}> */}
+                        <Grid item xs={12} style={{marginTop:'10%', textAlign:'left', height:'fit-content'}}>
                                 <Typography className={classes.sectionHeading} style={{ color:'#992E24'}}>
                                     PENDING MEETUP DATE
                                 </Typography>
-                            {/* </Badge> */}
                         </Grid>
                         {meetupsloading
                         ? <UpcomingMeetupsSkeletonLoading/>
@@ -828,23 +823,21 @@ function Invitations(props) {
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
-                                                    <Typography>s
-                                                        {meetup.to_user && meetup.to_user.profile
-                                                            ? meetup.to_user.profile.username 
-                                                            : meetup.from_user && meetup.from_user.profile
-                                                            ? meetup.from_user.profile.username 
-                                                            : ''
+                                                    <Typography>
+                                                        {meetup.other_user && meetup.other_user.profile
+                                                        ? meetup.other_user.profile.username 
+                                                        : ''
                                                         }
                                                     </Typography>
                                                     <Typography>
-                                                        Chong Yi Qiong
+                                                        INSERT JOB POSITION
                                                     </Typography>
-                                                    <MuiPickersUtilsProvider utils={DateFnsUtils} style={{color:'#992E24'}}>
+                                                    <MuiPickersUtilsProvider utils={DateFnsUtils} >
                                                         <KeyboardDatePicker
                                                             margin="normal"
                                                             id="date-picker-dialog"
                                                             format="MM/dd/yyyy"
-                                                            value={null}
+                                                            value={meetup.suggested_datetime}
                                                             onChange={handleDateChange}
                                                             KeyboardButtonProps={{
                                                                 'aria-label': 'change date',
@@ -873,7 +866,7 @@ function Invitations(props) {
                                                         <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
                                                             <IconButton
                                                             // className={classes.controlButtons}
-                                                            onClick={()=> handleOpenConfirmationDialog(index, 'meetupWithoutDate')}
+                                                            onClick={()=> handleOpenMeetupDialog(meetup.request_id, 'meetupWithoutDate')}
                                                             >
                                                                 <MoreVertIcon/>
                                                             </IconButton>
@@ -883,7 +876,7 @@ function Invitations(props) {
                                             </Grid>
                                         </Card>
                                         <Dialog
-                                        open={index === selectedMeetupIndexWithoutDate ? openMeetupConfirmation: false}
+                                        open={meetup.request_id === selectedMeetupIndexWithoutDate ? OpenMeetupDialog: false}
                                         TransitionComponent={Transition}
                                         keepMounted
                                         onClose={handleCloseDialog}
@@ -930,7 +923,7 @@ function Invitations(props) {
                                                             />
                                                             <Button 
                                                             style={{fontWeight:'bold', fontSize:18}}
-                                                            onClick={()=> handleMeetupConfirmation(55)} 
+                                                            onClick={()=> handleMeetupConfirmation(meetup)} 
                                                             >
                                                                 Completed
                                                             </Button>
@@ -965,13 +958,14 @@ function Invitations(props) {
     )
 }
 
-
-export default Invitations;
-
-
-/* <Snackbar
-            open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
-            handleClose={resetSnackBars}
-            variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
-            message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
-        />*/
+const mapStateToProps = state => {
+    return { 
+      pendingInvitations: state.socialInteraction.pendingInvitations,
+      upcomingMeetups: state.socialInteraction.upcomingMeetups
+     }
+  };
+  
+export default connect(
+mapStateToProps,
+{ updateUpcomingMeetups, updatePendingInvitations }
+) (Invitations); 

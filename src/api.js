@@ -113,7 +113,6 @@ const invitations = {
   rejectInvitation: params => axios.post('http://localhost:3000/meetup/invite/reject', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
-
   
 }
 

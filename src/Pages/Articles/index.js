@@ -443,16 +443,23 @@ function Articles()
           </div> */}
            { loading 
             ? <CircularLoading/>
-            : <div>
-          <Grid container style={{padding:18}}>
+            : 
+            <div>
+            <Grid container style={{padding:18}}>
               <Grid item xs={12} sm={6} style={{marginTop:'15px',}}>
                 <Typography className={classes.sectionHeading}>
                   Recommended For You 
                 </Typography>
                 <Wrapper style={{}}>
                   <Slider {...largeCarouselSettings}>
-                  {recommendedArticles.map((list,index) => (
-                    <Page>
+                    
+                  {recommendedArticles && recommendedArticles !== 0
+                  ?
+                  recommendedArticles.map((list,index) => {
+
+                    if(list[0] !== undefined) {
+                      return (
+<Page>
                     <Card className={classes.cardLarge} style={{boxShadow:'none'}}>
                       <CardActionArea href={list[0].link} target='._blank'>
                         <CardMedia
@@ -512,7 +519,12 @@ function Articles()
                       </Collapse>
                     </Card>
                     </Page>
-                  ))}
+                  
+                      )
+                    }   
+                })
+                  : "No Recommended Articles Available"
+                              }
                   </Slider>
                 </Wrapper>
                 </Grid>
@@ -584,7 +596,8 @@ function Articles()
                   </List> 
             </Grid>
           </Grid>
-          <div style={{padding:18}}>
+            
+            <div style={{padding:18}}>
             <Typography className={classes.sectionHeading}>
                 Job Searching
             </Typography>                 

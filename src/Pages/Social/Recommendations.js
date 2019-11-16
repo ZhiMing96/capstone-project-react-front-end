@@ -157,7 +157,7 @@ export default function Reco(props) {
 
 
     const getCompletedMeetups = () => {
-
+        console.log("ENTERED GET COMPLETED MEETUPS")
         setLoadingCompletedMeetups(true);
         api.invitations.getCurrent()
             .then(res => {

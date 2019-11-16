@@ -481,6 +481,7 @@ function Jobs (props) {
 
 
     function getSearchResults(queryString){
+        console.log("<<<<<<<< Entered GET SEARCH RESULTS")
         console.log(queryString)
         setLoadingResults(true);
         if(token !== null) {
@@ -680,11 +681,22 @@ function Jobs (props) {
     }
 
     const handleSidebarSubmit = (queryString) => {
+        
         console.log("*** ENTERED HANDLE SIDEBAR SUBMIT IN JOBS COMPONENT")
-        console.log("<<< QueryString = " + queryString)
+        
+        console.log("!!! QueryString = " + queryString)
         //getCurrentUrl and append then call API
         console.log(props.location)
-        const currentPath = props.location && props.location.pathname ?  props.location.pathname.slice(15) : ''
+        // const currentPath = props.location && props.location.pathname ?  props.location.pathname.slice(15) : ''
+        
+        console.log(state.queryString)
+        var currentPath = state.queryString
+        var currentPathArray = currentPath.split("&")
+        currentPath = currentPathArray[0] + "&" + currentPathArray[1]
+
+
+
+        console.log("!!! Current Path = " + currentPath)
         const newQuery = currentPath + queryString
         console.log("<<< newQuery = " + newQuery)
         getSearchResults(newQuery)
@@ -793,36 +805,41 @@ function Jobs (props) {
            
         </Grid>
         
-        { loadingResults 
-        ? 
-        <Grid container>
-            <Grid item xs={3}>
-            </Grid>    
-            <Grid item xs={9}>
-                <JobListingsSkeletonLoading/>
-            </Grid>    
-        </Grid>
-        : 
+        
         <div>
-        { searchResults  && searchResults.length !== 0 
+        { loadingResults || searchResults  && searchResults.length !== 0
         ? 
         <div>
-            <Router>
-                <Redirect to={`/jobs/listings/${state.queryString}`}/>
-                
-                <Route 
-                path="/jobs/listings" 
-                render={()=>
-                    <div>
-                        {/* <FilterSelect submitFilter={submitFilter}/> */}
-                        <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit}/>
+            <Grid container>
+                <Grid item xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
+                    <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
+                </Grid>
+                <Grid item xs={9}>
+                    <Router>
+                        <Redirect to={`/jobs/listings/${state.queryString}`}/>
+                        
+                        <Route 
+                        path="/jobs/listings" 
+                        render={()=> (
+                            <div>
+                                {  loadingResults 
+                                    ? 
+                                    <JobListingsSkeletonLoading/>
+                                    : 
+                                    <div>
+                                        <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit}/>
 
-                        <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
-                    </div> 
-                }
-                /> 
-                
-            </Router>
+                                        <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
+                                    </div>
+                                }
+                            </div> 
+                        )}
+                        /> 
+                        
+                    </Router>
+                </Grid>
+            </Grid>
+            
         </div>
         : token && byPass==false
         ? //USER WITH ACCOUNT           
@@ -1184,7 +1201,7 @@ function Jobs (props) {
                                             { listing.posted_company 
                                                 ? listing.posted_company
                                                 : ""
-                                            }}
+                                            }
                                         </Typography>
                                         </Grid>
                                         <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end',paddingRight:'5%'}}>

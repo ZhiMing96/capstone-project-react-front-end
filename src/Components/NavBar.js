@@ -83,7 +83,7 @@ class NavTabs extends React.Component {
       })
     }
     this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 10000);
+    setInterval(this.retrieveAlerts, 30000);
   }
 
 
@@ -98,22 +98,28 @@ class NavTabs extends React.Component {
               if(!this.state.alerts) {
                 this.setState({alerts: res.data.alerts })
 
-            } else {
-              const currentLength = this.state.alerts ? this.state.alerts.length : 0
-              const incomingLength = res.data.alerts.length
-    
-                
-              console.log(currentLength)
-              console.log(incomingLength)
-              console.log(this.state.alerts[currentLength-1].alert_id)
-              console.log(res.data.alerts[incomingLength-1].alert_id)
-
-              if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
-                
-                this.setState({alerts: res.data.alerts })
-                this.setState({notificationLoading: false})
+              } else {
+                const currentLength = this.state.alerts ? this.state.alerts.length : 0
+                const incomingLength = res.data.alerts.length
+      
                   
-              }
+                console.log(currentLength)
+                console.log(incomingLength)
+                console.log(this.state.alerts[currentLength-1].alert_id)
+                console.log(res.data.alerts[incomingLength-1].alert_id)
+
+                if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
+                  if(window.localStorage.getItem('viewAlert') === null){
+                    console.log("ENTEREDDDDDDD")
+                    window.localStorage.removeItem('viewAlert');
+                  } 
+
+                  window.localStorage.setItem('viewAlert', true);
+
+                  this.setState({alerts: res.data.alerts })
+                  this.setState({notificationLoading: false})
+                  
+                }
             }
           }
         }
@@ -163,7 +169,7 @@ class NavTabs extends React.Component {
 
   handleClick = event => {
     console.log("***** ENTERED HANDLE CLICK ****")
-    // console.log(this.openNotification)
+    window.localStorage.setItem('viewAlert', false);
     console.log(event.currentTarget)
 
     this.setState({anchorEl : this.state.anchorEl ? null : event.currentTarget });
@@ -172,13 +178,22 @@ class NavTabs extends React.Component {
 
 
 
+
+
   render() {
     const token = window.localStorage.getItem('authToken');
     console.log(token)
+    var showBadge = window.localStorage.getItem('viewAlert') !== null ? window.localStorage.getItem('viewAlert') : true
+
+
+
+    console.log("showBadge = " + showBadge)
+
     var isHomePage=false
     const open = Boolean(this.state.anchorEl);
     console.log(open)
     const id = open ? 'transitions-popper' : undefined;
+
 
     if(this.props.location.pathname === '/'){
       isHomePage=true
@@ -312,7 +327,7 @@ class NavTabs extends React.Component {
                 }}>
                   <PersonIcon />
                 </IconButton>
-                <Badge badgeContent={this.state.alerts ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
+                <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
                   <NotificationsNoneIcon onClick={this.handleClick} />
                 </Badge>
                 <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
