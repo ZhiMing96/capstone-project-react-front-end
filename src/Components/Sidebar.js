@@ -72,6 +72,7 @@ const profileArray = [
 ]
 
 const revealIcon = false
+const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 
 function Sidebar(props) {
   const classes = useStyles();
@@ -81,20 +82,27 @@ function Sidebar(props) {
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
 
-  useEffect(() => {
+  const getSidebarProfile = () => {
     api.profile.get().then(
       res => {
         setName(res.data.profile ? res.data.profile.first_name : 'User')
+        setProfileImageLink(res.data.social ? res.data.social.profile_image_link : null)
       }
     ).catch({})
+  }
+
+  
+  
+  useEffect(() => {
+    getSidebarProfile();
     if (props.profile_image_link !== null) {
       setProfileImageLink(props.profile_image_link)
     }
 
-    console.log(profileImageLink)
+    console.log(props)
   }, [props.profile_image_link])
 
-  const changeProfilePicture = () => {
+  const changeSideBarProfilePicture = () => {
     handleClose()
     props.updateSocialProfile({
       profile_image_link: profileImageLink,
@@ -116,7 +124,8 @@ function Sidebar(props) {
     setProfileImageLink(event.target.value);
   };
 
-  const handleImageChange = e => {
+  const handleSidebarImageChange = e => {
+    console.log('ENTERED IMAGE CHANGE TO BASE 64 METHOD ')
     e.preventDefault();
     let file = e.target.files[0];
     console.log(file)
@@ -128,48 +137,54 @@ function Sidebar(props) {
         console.log(reader.result)
         setFile(file)
         setBase64(reader.result)
-        handleSubmitNewImg()
+        handleSubmitNewSidebarImg()
       };
 
     }
     
   }
-  const handleSubmitNewImg = () => {
-      console.log("SUBMITTING")
+  const handleSubmitNewSidebarImg = () => {
+    console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
+
+      api.profile.uploadImage({ 
+        "image" : base64
+      })
+      .then(res => {
+        console.log(res.data)
+        if(res.data.response_code === 200) {
+          console.log(res.data.image_link)
+          setProfileImageLink(res.data.image_link);
+          changeSideBarProfilePicture()
+        }
+      })
   }
 
   console.log(file)
   console.log(base64)
-
-
+  console.log('RENDERING SIDEBAR COMPONENT')
+  console.log(props);
   return (
     <div>
       <Grid container alignItems="center" justify="center" style={{ position: 'relative' }}>
-        {props.profile_image_link !== null && props.profile_image_link !== '' 
-        ?
-          
-            <Avatar src={props.profile_image_link} className={classes.bigAvatar} /> 
-          
-        :
         <div style={{textAlign:'-webkit-center'}}>
         <label for='image_upload'>
           <div title={'Change profile picture'}>
-            {base64
-            ? <Avatar src={base64} className={classes.icon}/>
-            : <FaceIcon fontSize="large" className={classes.icon} />
-            }
+          { profileImageLink 
+            ? <Avatar src={ profileImageLink } className={classes.bigAvatar}/>
+            : <Avatar src={ defaultImg } className={classes.bigAvatar}/>
+          }
+            {/* <Avatar src={props.profile_image_link && props.profile_image_link !== ''? props.profile_image_link : defaultImg} className={classes.icon}/> */}
           </div>
         </label>
-        <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
+        <input type='file' onChange={handleSidebarImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
         </div>
           
-        
             
-          // <div title={'Change profile picture'} className={classes.overlay} onClick={openDialog}>
-          //   <CameraAltIcon  fontSize="large"/>
-          // </div> 
+          {/* <div title={'Change profile picture'} className={classes.overlay} onClick={openDialog}>
+             <CameraAltIcon  fontSize="large"/>
+          </div>  */}
           
-        }
+        
         <Grid container justify="center">
           <Grid item xs={12} >
             <Typography>
@@ -230,7 +245,7 @@ function Sidebar(props) {
           <Button onClick={handleClose} color="primary">
             Cancel
         </Button>
-          <Button onClick={changeProfilePicture} color="primary" autoFocus>
+          <Button onClick={changeSideBarProfilePicture} color="primary" autoFocus>
             Confirm
         </Button>
         </DialogActions>

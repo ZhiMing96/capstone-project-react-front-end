@@ -35,6 +35,9 @@ const profile={
   updateSocial: params => axios.post('http://localhost:3000/social/profile', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  uploadImage: params => axios.post('http://localhost:3000/social/profile/image', params, {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  })
 }
 
 const work ={
@@ -153,6 +156,9 @@ const recommendations = {
   reject:(params)=>axios.post('http://localhost:3000/recommendation/request/reject', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  processRecord: (params) => axios.post("http://localhost:3000/meetup/invite/process", params,{
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  })
 }
 
 const alerts = {

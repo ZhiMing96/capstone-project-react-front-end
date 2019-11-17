@@ -10,6 +10,8 @@ import JobsIcon from '@material-ui/icons/BusinessCenter';
 import api from '../../api'
 import TelegramIcon from '@material-ui/icons/Telegram';
 import FaceIcon from '@material-ui/icons/Face';
+import  { updateSocialProfile } from '../../redux/actions/socialProfile'
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,6 +50,8 @@ const profileArray = [
   },
 ]
 
+const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
+
 function MobileSideBar(props){
   const classes = useStyles();
   console.log("Props for Mobile Side Bar = " + props.show);
@@ -57,21 +61,47 @@ function MobileSideBar(props){
   const [name, setName] = React.useState("");
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
+  const [ profile, setProfile ] = useState();
+  const [profileImageLink, setProfileImageLink] = React.useState();
 
   const handleChange = (event, newValue) => {
+    event.preventDefault()
     setValue(newValue);
   };
 
-  api.profile.get().then(
-    res=>{
-      
-      if(res.data.profile){
-        console.log(res.data.profile.first_name)
-        const firstName = res.data.profile.first_name
-        setName(firstName);
-      }
-    } 
-  ).catch({})
+  const getProfile = () => {
+    console.log("ENTERED GET PROFILE IN  MOBILE SIDEBAR")
+    api.profile.get().then(
+      res=>{
+        console.log(res.data)
+        if(res.data.profile){
+          console.log(res.data.profile.first_name)
+          const firstName = res.data.profile.first_name
+          // setName(firstName);
+          setProfile(res.data.social);
+        }
+      } 
+    ).catch({})
+  }
+
+  useEffect (()=>{
+    getProfile();
+    if (props.profile_image_link !== null) {
+      setProfileImageLink(props.profile_image_link)
+    }
+  },[props])
+
+  const changeSideBarProfilePicture = (imgLink) => {
+    props.updateSocialProfile({
+      profile_image_link: imgLink,
+      description: props.description,
+      meetup_ind: props.meetup_ind,
+      job_search_stage: props.job_search_stage
+    })
+
+  }
+
+  
 
   console.log('name = '+ name)
 
@@ -90,16 +120,33 @@ function MobileSideBar(props){
       reader.onloadend = () => {
         console.log(reader.result)
         setFile(file)
-        setBase64(reader.result)
-        handleSubmitNewImg()
+        const base64String = reader.result.substring(23)
+        setBase64(base64String)
+        handleSubmitNewImg(base64String)
       };
 
     }
     
   }
-  const handleSubmitNewImg = () => {
-      console.log("SUBMITTING")
+  const handleSubmitNewImg = (base64String) => {
+    console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
+      console.log(base64String)
+      api.profile.uploadImage({ 
+        "image" : base64String
+      })
+      .then(res => {
+        console.log(res.data)
+        if(res.data.response_code === 200) {
+          console.log(res.data.image_link);
+          setProfileImageLink(res.data.image_link);
+          // getProfile();
+          changeSideBarProfilePicture(res.data.image_link);
+        }
+      })
   }
+  // console.log(file)
+  console.log("PRINTING PROPS.IMG LINK  IN MOBILE SIDEBARs")
+  console.log(props.profile_image_link)
 
   return(
     <nav className={sideBarClasses}> 
@@ -118,11 +165,11 @@ function MobileSideBar(props){
         </Tabs>
       </Paper>
       <Grid container alignItems="center" justify="center">
-        <label for='image_upload'>
-          <div title={'Change profile picture'}>
-            {base64
-            ? <Avatar src={base64} className={classes.bigAvatar}/>
-            : <FaceIcon fontSize="large" className={classes.icon} />
+        <label for='image_upload' style={{width:'100%', textAlign:'-webkit-center',}}>
+          <div title={'Change profile picture'} style={{}}>
+            { profile && profile.profile_image_link 
+            ? <Avatar src={ profile.profile_image_link } className={classes.bigAvatar}/>
+            :<Avatar src={ defaultImg } className={classes.bigAvatar}/>
             }
           </div>
         </label>
@@ -134,7 +181,8 @@ function MobileSideBar(props){
               fontWeight="fontWeightBold"
               fontSize={20}
             >
-              {name ? name.toUpperCase() : 'USER'}
+              {/* {name ? name.toUpperCase() : 'USER'} */}
+              {profile && profile.first_name ? profile.first_name.toUpperCase() : 'USER'}
               <br/>
               <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
               <TelegramIcon />
@@ -161,4 +209,11 @@ function MobileSideBar(props){
     </nav>
   )
 }
-export default MobileSideBar;
+
+const mapStateToProps = (state) => {
+  return {
+    ...state.socialProfile
+  }
+}
+
+export default connect(mapStateToProps, { updateSocialProfile })(MobileSideBar);

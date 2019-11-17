@@ -452,6 +452,7 @@ function addBookmark(job){
                                                     onClick={ () => handleClick(list)}
                                                     color='secondary'
                                                     variant="outlined"
+                                                    disabled = {token? false: true}
                                                     >
                                                     Bookmark
                                                     <BookmarkIcon className={classes.rightIcon} />
