@@ -96,7 +96,7 @@ const useStyles = makeStyles(theme => ({
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-
+const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 export default function UpcomingMeetup(props) {
     const classes=useStyles();
     console.log(props);
@@ -138,16 +138,16 @@ export default function UpcomingMeetup(props) {
        setDaysLeft(calculateDaysLeft(meetup.suggested_datetime))
     },[meetup.suggested_datetime])
 
-
+    console.log(meetup.other_user.social)
     return (
         <div>
             <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
                 <Grid container item xs={12}>
                     <Grid item xs={3}> 
                         <Avatar alt="List"
-                            src='' 
+                            src={meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
-                            imgProps={{style:{objectFit:'contain',border:0}}}
+                            // imgProps={{style:{objectFit:'contain',border:0}}}
                             // onClick={()=> handleViewProfile()}
                         />
                     </Grid>
