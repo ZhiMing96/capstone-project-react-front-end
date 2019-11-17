@@ -130,7 +130,7 @@ export default function UpcomingMeetup(props) {
         console.log("Suggested Date = " + meetupDate )
         console.log("Current Date = " + currentDate )
 
-        const calculatedDaysLeft = Math.floor((Date.UTC(meetupDate.getFullYear(), meetupDate.getMonth(), meetupDate.getDate()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) ) /(1000 * 60 * 60 * 24))
+        const calculatedDaysLeft = Math.floor((Date.UTC(meetupDate.getFullYear(), meetupDate.getMonth(), meetupDate.getDate()) - Date.UTC(currentDate.getFullYear(),currentDate.getMonth(), currentDate.getDate()) ) /(1000 * 60 * 60 * 24))
         return calculatedDaysLeft;
     }
 
@@ -138,14 +138,14 @@ export default function UpcomingMeetup(props) {
        setDaysLeft(calculateDaysLeft(meetup.suggested_datetime))
     },[meetup.suggested_datetime])
 
-    console.log(meetup.other_user.social)
+    // console.log(meetup.other_user.social)
     return (
         <div>
             <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
                 <Grid container item xs={12}>
                     <Grid item xs={3}> 
                         <Avatar alt="List"
-                            src={meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                            src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
                             // imgProps={{style:{objectFit:'contain',border:0}}}
                             // onClick={()=> handleViewProfile()}

@@ -83,18 +83,20 @@ class NavTabs extends React.Component {
       })
     }
     this.retrieveAlerts()
-    // setInterval(this.retrieveAlerts, 30000);
+    setInterval(this.retrieveAlerts, 20000);
   }
 
 
   retrieveAlerts = () =>{
     // this.setState({notificationLoading: true})
+    console.log("Entered RETRIEVE ALERTS")
     api.alerts.retrieve({"alert_type": ""})
     .then(res => {
         console.log(res.data)
         if (res.data.response_code === 200){
             console.log(res.data.alerts)
             if(res.data.alerts.length !== 0 || !res.data.alerts){
+
               if(!this.state.alerts) {
                 this.setState({alerts: res.data.alerts })
 
@@ -103,8 +105,8 @@ class NavTabs extends React.Component {
                 const incomingLength = res.data.alerts.length
       
                   
-                console.log(currentLength)
-                console.log(incomingLength)
+                console.log('currentLength = ' + currentLength)
+                console.log('incomingLength = ' + incomingLength)
                 console.log(this.state.alerts[currentLength-1].alert_id)
                 console.log(res.data.alerts[incomingLength-1].alert_id)
 
@@ -121,6 +123,8 @@ class NavTabs extends React.Component {
                   
                 }
             }
+          } else {
+            this.setState({alerts: null })
           }
         }
         
