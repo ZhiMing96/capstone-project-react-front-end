@@ -48,6 +48,8 @@ const profileArray = [
   },
 ]
 
+const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+
 function MobileSideBar(props){
   const classes = useStyles();
   console.log("Props for Mobile Side Bar = " + props.show);
@@ -57,21 +59,33 @@ function MobileSideBar(props){
   const [name, setName] = React.useState("");
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
+  const [ profile, setProfile ] = useState();
 
   const handleChange = (event, newValue) => {
+    event.preventDefault()
     setValue(newValue);
   };
 
-  api.profile.get().then(
-    res=>{
-      
-      if(res.data.profile){
-        console.log(res.data.profile.first_name)
-        const firstName = res.data.profile.first_name
-        setName(firstName);
-      }
-    } 
-  ).catch({})
+  const getProfile = () => {
+    console.log("ENTERED GET PROFILE IN  MOBILE SIDEBAR")
+    api.profile.get().then(
+      res=>{
+        console.log(res.data)
+        if(res.data.profile){
+          console.log(res.data.profile.first_name)
+          const firstName = res.data.profile.first_name
+          setName(firstName);
+          setProfile(res.data.social);
+        }
+      } 
+    ).catch({})
+  }
+
+  useEffect (()=>{
+    getProfile();
+  },[props])
+
+  
 
   console.log('name = '+ name)
 
@@ -90,16 +104,30 @@ function MobileSideBar(props){
       reader.onloadend = () => {
         console.log(reader.result)
         setFile(file)
-        setBase64(reader.result)
-        handleSubmitNewImg()
+        setBase64(reader.result.substring(24))
+        handleSubmitNewImg(reader.result.substring(24))
       };
 
     }
     
   }
-  const handleSubmitNewImg = () => {
-      console.log("SUBMITTING")
+  const handleSubmitNewImg = (base64String) => {
+    console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
+      console.log(base64String)
+      api.profile.uploadImage({ 
+        "image" : base64String
+      })
+      .then(res => {
+        console.log(res.data)
+        if(res.data.response_code === 200) {
+          console.log(res.data.image_link)
+          getProfile();
+          // setProfileImageLink(res.data.image_link);
+        }
+      })
   }
+  // console.log(file)
+  // console.log(base64)
 
   return(
     <nav className={sideBarClasses}> 
@@ -120,10 +148,7 @@ function MobileSideBar(props){
       <Grid container alignItems="center" justify="center">
         <label for='image_upload'>
           <div title={'Change profile picture'}>
-            {base64
-            ? <Avatar src={base64} className={classes.bigAvatar}/>
-            : <FaceIcon fontSize="large" className={classes.icon} />
-            }
+           <Avatar src={profile && profile.profile_image_link ? profile.profile_image_link : defaultImg} className={classes.bigAvatar}/>
           </div>
         </label>
         <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>

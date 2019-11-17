@@ -271,7 +271,7 @@ function Invitations(props) {
                     setPendingInvitations(invitesReceived);
                     setInvitationsLoading(false);
                     props.updatePendingInvitations(invitesReceived)
-                }, 2000)
+                }, 3000)
             } 
         }).catch(err => console.log(err))
     }
@@ -316,7 +316,7 @@ function Invitations(props) {
                     setPendingMeetupDate(tempWithoutDate)
                     setMeetupsLoading(false);
                 }
-                , 3000)} 
+                , 2500)} 
         })
     }
 

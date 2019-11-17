@@ -194,7 +194,7 @@ export default function Reco(props) {
                     for (let i = 0; i < combined.length; i++) {
                         const invitation = combined[i]
                         console.log(invitation)
-                        if (invitation.is_completed === 1) {
+                        if (invitation.is_completed === 1 && invitation.processed === 0) {
                             temp.push(invitation)
                         }
                     }
@@ -291,6 +291,19 @@ export default function Reco(props) {
     };
     //*****
 
+    const handleProcessRequestFromCompletedMeetup = (meetup) => {
+        console.log("Entered Handle Cancel Request Method")
+        console.log(meetup)
+        api.recommendations.processRecord({ "request_id" : meetup.request_id })
+        .then(res=>{
+            console.log(res.data);
+            if(res.data.response_code===200){
+                console.log("Meetup Record Processed SUCCESSFULLY - OPEN SNACK BAR TO INFORM")
+                getCompletedMeetups();
+            }
+        })
+    }
+
     return (
         <div>
             <Grid container className={classes.root}>
@@ -364,7 +377,7 @@ export default function Reco(props) {
                                     <List>
                                         {completedMeetups.map((meetup, index) => (
                                             <RecoRequestListItem meetup={meetup}
-                                                handleOpenSnackBar={handleOpenSnackBar} />
+                                                handleOpenSnackBar={handleOpenSnackBar} handleProcessRequestFromCompletedMeetup={handleProcessRequestFromCompletedMeetup}/>
                                         ))}
                                     </List>
                                 </Grid>

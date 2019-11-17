@@ -72,6 +72,7 @@ const profileArray = [
 ]
 
 const revealIcon = false
+const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 function Sidebar(props) {
   const classes = useStyles();
@@ -81,6 +82,8 @@ function Sidebar(props) {
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
 
+  
+  
   useEffect(() => {
     api.profile.get().then(
       res => {
@@ -117,6 +120,7 @@ function Sidebar(props) {
   };
 
   const handleImageChange = e => {
+    console.log('ENTERED IMAGE CHANGE TO BASE 64 METHOD ')
     e.preventDefault();
     let file = e.target.files[0];
     console.log(file)
@@ -135,41 +139,42 @@ function Sidebar(props) {
     
   }
   const handleSubmitNewImg = () => {
-      console.log("SUBMITTING")
+    console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
+
+      api.profile.uploadImage({ 
+        "image" : base64
+      })
+      .then(res => {
+        console.log(res.data)
+        if(res.data.response_code === 200) {
+          console.log(res.data.image_link)
+          setProfileImageLink(res.data.image_link);
+        }
+      })
   }
 
   console.log(file)
   console.log(base64)
-
+  console.log('RENDERING SIDEBAR COMPONENT')
 
   return (
     <div>
       <Grid container alignItems="center" justify="center" style={{ position: 'relative' }}>
-        {props.profile_image_link !== null && props.profile_image_link !== '' 
-        ?
-          
-            <Avatar src={props.profile_image_link} className={classes.bigAvatar} /> 
-          
-        :
         <div style={{textAlign:'-webkit-center'}}>
         <label for='image_upload'>
           <div title={'Change profile picture'}>
-            {base64
-            ? <Avatar src={base64} className={classes.icon}/>
-            : <FaceIcon fontSize="large" className={classes.icon} />
-            }
+            <Avatar src={props.profile_image_link && props.profile_image_link !== ''? props.profile_image_link : defaultImg} className={classes.icon}/>
           </div>
         </label>
         <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
         </div>
           
-        
             
-          // <div title={'Change profile picture'} className={classes.overlay} onClick={openDialog}>
-          //   <CameraAltIcon  fontSize="large"/>
-          // </div> 
+          {/* <div title={'Change profile picture'} className={classes.overlay} onClick={openDialog}>
+             <CameraAltIcon  fontSize="large"/>
+          </div>  */}
           
-        }
+        
         <Grid container justify="center">
           <Grid item xs={12} >
             <Typography>

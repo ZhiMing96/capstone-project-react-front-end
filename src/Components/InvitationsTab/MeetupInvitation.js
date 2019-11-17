@@ -1,6 +1,6 @@
 import React, { useEffect, useState, } from 'react';
 import api from '../../api';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Slide, Popover } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Slide, Popover, Tooltip } from '@material-ui/core';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -82,10 +82,11 @@ const useStyles = makeStyles(theme => ({
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
+  const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function MeetupInvitation(props) {
     const classes=useStyles();
-    console.log(props)
+    // console.log(props)
     const { invitation, handleDeclineInvitation, handleAcceptInvitation } = props
     const [OpenAcceptInvitationDialog, setOpenAcceptInvitationDialog] = useState(false); 
     const [OpenRejectInvitationDialog, setOpenRejectInvitationDialog] = useState(false); 
@@ -126,9 +127,11 @@ export default function MeetupInvitation(props) {
         <div>
              <Paper className={classes.carouselPaper} elevation={5}>
                 <div style={{textAlign:'end'}}>
-                <IconButton style={{padding:0}} onClick={()=> handleOpenRejectDialog(invitation)}>
-                    <CloseIcon style={{color:'#992E24'}} />
-                </IconButton>
+                <Tooltip title="Decline Invitation" placement="bottom-start">
+                    <IconButton style={{padding:0}} onClick={()=> handleOpenRejectDialog(invitation)}>
+                        <CloseIcon style={{color:'#992E24'}} />
+                    </IconButton>
+                </Tooltip>
                 </div>
                 
                 <Link to={{
@@ -140,9 +143,9 @@ export default function MeetupInvitation(props) {
                         }
                     }} 
                     style={{textDecoration:'none'}}>
-                        <Avatar alt="List"
-                        src={invitation.from_user && invitation.from_user.social ? invitation.from_user.social.profile_image_link : 
-                        ""
+                        <Avatar
+                        src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
+                        defaultImg
                         } 
                         className={classes.carouselAvatar} 
                         imgProps={{style:{objectFit:'contain',border:0}}}
@@ -168,16 +171,21 @@ export default function MeetupInvitation(props) {
                     style={{height:'fit-content'}}
                     >
                         <Grid item xs={6} style={{textAlign:'end', paddingRight:20}}>
-                            <IconButton color='grey' style={{padding:0, }} onClick={showMessage}>
-                                <MessageIcon style={{width:35, height:35}}/>
-                            </IconButton>
+                            <Tooltip title={invitation.from_user && invitation.from_user.profile
+                            ? `Open ${invitation.from_user.profile.username}'s Message!`: "Open Message!"} placement="bottom-end">
+                                <IconButton color='grey' style={{padding:0, }} onClick={showMessage}>
+                                    <MessageIcon style={{width:35, height:35}}/>
+                                </IconButton>
+                            </Tooltip>
                         </Grid>
                         <Grid item xs={6} style={{textAlign:'start', scrollPaddingLeft:10}}>
-                            <Button color='primary' style={{fontSize:17,fontWeight:'bold', color:'green'}} size='small'
-                            onClick={()=>handleOpenAcceptDialog(invitation.request_id)}
-                            >
-                                Accept
-                            </Button>
+                            <Tooltip title="Accept Invitation!" placement="bottom">
+                                <Button color='primary' style={{fontSize:17,fontWeight:'bold', color:'green'}} size='small'
+                                onClick={()=>handleOpenAcceptDialog(invitation.request_id)}
+                                >
+                                    Accept
+                                </Button>
+                            </Tooltip>
                         </Grid>
                         
                     </Grid>
