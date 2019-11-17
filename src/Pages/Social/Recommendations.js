@@ -109,6 +109,14 @@ const carouselSettings = {
             }
         },
         {
+            breakpoint: 1480, 
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                infinite: false,
+            }
+        },
+        {
             breakpoint: 1280, //md
             settings: {
                 slidesToShow: 2,
@@ -214,6 +222,7 @@ export default function Reco(props) {
             .then(res => {
                 if (res.data.response_code === 200) {
                     setRecoRequests(res.data.requests)
+                    console.log(res.data.requests)
                 } else {
                     console.log("error retrieving recommendation requests")
                 }
@@ -256,6 +265,24 @@ export default function Reco(props) {
         } else if (type == "Success") {
             setOpenSuccessSnackbar(true);
         }
+    }
+
+    const removeRecoRequest=(request_id)=>{
+        console.log("received request_id" +request_id)
+        api.recommendations.reject({
+            "request_id": request_id
+            }
+        ).then(res=>{
+            if(res.data.response_code===200){
+                const current = recoRequests
+                setRecoRequests(current.filter((value)=>(
+                    value.request_id !== request_id
+                )))
+                setSnackbar("Request deleted.")
+            }
+        }).catch(err=>{
+            console.log(err)
+        })
     }
 
     //*****SNACKBAR BLACK VERSION W QUEUE AND PROPS
@@ -320,7 +347,7 @@ export default function Reco(props) {
                                     {recoRequests.map((value, index) => {
                                         return (
                                             <Grid item xs={10}>
-                                                <RecoRequestCard request={value} setSnackbar={setSnackbar}/>
+                                                <RecoRequestCard request={value} setSnackbar={setSnackbar} removeCard={removeRecoRequest}/>
                                             </Grid>
                                         )
                                     })
