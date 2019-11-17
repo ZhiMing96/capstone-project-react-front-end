@@ -2,17 +2,19 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import Grid from '@material-ui/core/Grid';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+import Card from '@material-ui/core/Card';
+import Grid from '@material-ui/core/Grid';
+import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { Hidden } from '@material-ui/core';
-import { Block } from '@material-ui/icons';
 import FaceIcon from '@material-ui/icons/Face';
+import PublicProfile from '../Pages/PublicProfile/PublicProfile';
+import IconButton from '@material-ui/core/IconButton';
+import { CardActions, CardActionArea } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -26,25 +28,44 @@ const useStyles = makeStyles(theme => ({
         height: 50,
         marginTop: 10
     },
-    calendar: {
-        marginRight: 10,
-        display: 'inline'
-    },
     button: {
         margin: theme.spacing(1)
+    },
+    card:{
+        margin:theme.spacing(2), 
+        minWidth:300,
+        marginBottom: theme.spacing(5)
+    },
+    content:{
+        padding:theme.spacing(0.5)
+    },
+    actions:{
+        justifyContent:"flex-end",
+        paddingTop:0
     }
+    
 }));
+
+
 
 export default function AlignItemsList(props) {
     const classes = useStyles();
-    const author = props.reco.from_user
+    const user = props.item.user
+    console.log(props)
+
+    const redirectProfile=()=>{
+        props.redirectProfile(user.profile.user_id)
+    }
+    
     return (
-        <div>
-            <ListItem alignItems="flex">
+        <Card className={classes.card}> 
+        <CardActionArea onClick={redirectProfile}>
+            <CardContent className={classes.content}>
+            <ListItem alignItems="flex" key={user}> 
                 <ListItemAvatar className={classes.root}>
-                    {author.social.profile_image_link !== null && author.social.profile_image_link !== ''
+                    {user.social.profile_image_link !== null && user.social.profile_image_link !== ''
                         ?
-                        <Avatar src={author.social.profile_image_link} className={classes.avatar} />
+                        <Avatar src={user.social.profile_image_link} className={classes.avatar} />
                         :
                         <FaceIcon fontSize="large" className={classes.avatar} />
                     }
@@ -59,7 +80,7 @@ export default function AlignItemsList(props) {
                                 style={{ fontWeight: 'bold', lineHeight: 1.1 }}
                                 color="textPrimary"
                             >
-                                {author.profile.first_name}
+                                {user.profile.first_name}
                             </Typography>
                             <Typography
                                 component="span"
@@ -67,7 +88,7 @@ export default function AlignItemsList(props) {
                                 color="textSecondary"
                                 style={{ fontSize: 'medium' }}
                             >
-                                {author.job_title}
+                                {props.item.job_title}
                             </Typography>
                         </div>
                     }
@@ -79,11 +100,21 @@ export default function AlignItemsList(props) {
                             color="textPrimary"
                             style={{ fontSize: 'medium' }}
                         >
-                            {props.reco.message}
+                            {user.social.description}
                         </Typography>
                     }
                 />
             </ListItem>
-            <Divider variant="inset" component="li" />
-        </div>)
+            </CardContent>
+            </CardActionArea>
+            <CardActions className={classes.actions}>
+
+                <Button size="small" color="primary" className={classes.button}>
+                    Send Meetup Invitation
+                </Button>
+
+            </CardActions>
+            
+            </Card>
+)
 }

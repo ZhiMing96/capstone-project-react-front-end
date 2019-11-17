@@ -3,7 +3,7 @@ import { Grid, Typography, Box, Card, CardActions, CardContent, CardHeader, Avat
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import api from '../api';
-import EmailIcon from '@material-ui/icons/Email';
+import MessageIcon from '@material-ui/icons/Message';
 import Popover from '@material-ui/core/Popover';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     },
     button: {
         margin: theme.spacing(1),
-        marginTop: 0
+        marginRight:theme.spacing(0.5),
     },
     paper: {
         padding: theme.spacing(1.5),
@@ -72,7 +72,8 @@ export default function RecoRequestCard(props) {
         setOpenDialog(false)
     }
     const handleClose = () => {
-        //remove the request what to do for API here ah
+        console.log("removing request_id" + props.request.request_id)
+        props.removeCard(props.request.request_id)
     }
     const handleChange=(event)=>{
         setRecoMessage(event.target.value)
@@ -118,22 +119,22 @@ export default function RecoRequestCard(props) {
                                 {props.request.from_user.profile.first_name}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" gutterBottom style={{ fontSize: 'medium' }}>
-                                {/*{props.request.from_user.job_title}*/}
+                                {props.request.from_user.job_title}
                             </Typography>
                         </Box>
                     </Grid>
                 </CardContent>
                 <CardActions disableSpacing >
-                    <Grid container justify="space-between" alignItems="center">
-                        <Grid item xs={7}>
+                    <Grid container justify="center" alignItems="center">
+                        <Grid item xs={9}>
                             <Button color="primary" variant="outlined" className={classes.button} onClick={handleOpenDialog} size="small">
                                 Recommend
                             </Button>
                         </Grid>
                         <Grid item xs={3}>
 
-                            <IconButton className={classes.button} onClick={showMessage} disabled={props.request.message !== null && props.request.message.length > 0 ? false : true}>
-                                <EmailIcon />
+                            <IconButton onClick={showMessage} disabled={props.request.message !== null && props.request.message.length > 0 ? false : true}>
+                                <MessageIcon />
                             </IconButton>
                         </Grid>
 

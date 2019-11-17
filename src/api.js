@@ -135,6 +135,9 @@ const meetups = {
     cancelMeetup: params => axios.post('http://localhost:3000/meetup/cancel', params, {
       headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
     }),
+    search: params => axios.post('http://localhost:3000/meetup/search', params, {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
 }
 
 const recommendations = {
@@ -148,6 +151,9 @@ const recommendations = {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
   submitRecommendation:(params)=>axios.post('http://localhost:3000/recommendation/submit', params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  reject:(params)=>axios.post('http://localhost:3000/recommendation/request/reject', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
   processRecord: (params) => axios.post("http://localhost:3000/meetup/invite/process", params,{
