@@ -99,8 +99,8 @@ function Sidebar(props) {
       setProfileImageLink(props.profile_image_link)
     }
 
-    console.log(profileImageLink)
-  }, [props])
+    console.log(props)
+  }, [props.profile_image_link])
 
   const changeSideBarProfilePicture = () => {
     handleClose()
@@ -154,7 +154,7 @@ function Sidebar(props) {
         if(res.data.response_code === 200) {
           console.log(res.data.image_link)
           setProfileImageLink(res.data.image_link);
-          getSidebarProfile();
+          changeSideBarProfilePicture()
         }
       })
   }

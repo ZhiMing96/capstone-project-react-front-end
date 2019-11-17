@@ -10,6 +10,8 @@ import JobsIcon from '@material-ui/icons/BusinessCenter';
 import api from '../../api'
 import TelegramIcon from '@material-ui/icons/Telegram';
 import FaceIcon from '@material-ui/icons/Face';
+import  { updateSocialProfile } from '../../redux/actions/socialProfile'
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -60,6 +62,7 @@ function MobileSideBar(props){
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
   const [ profile, setProfile ] = useState();
+  const [profileImageLink, setProfileImageLink] = React.useState();
 
   const handleChange = (event, newValue) => {
     event.preventDefault()
@@ -83,7 +86,20 @@ function MobileSideBar(props){
 
   useEffect (()=>{
     getProfile();
+    if (props.profile_image_link !== null) {
+      setProfileImageLink(props.profile_image_link)
+    }
   },[props])
+
+  const changeSideBarProfilePicture = (imgLink) => {
+    props.updateSocialProfile({
+      profile_image_link: imgLink,
+      description: props.description,
+      meetup_ind: props.meetup_ind,
+      job_search_stage: props.job_search_stage
+    })
+
+  }
 
   
 
@@ -121,15 +137,16 @@ function MobileSideBar(props){
       .then(res => {
         console.log(res.data)
         if(res.data.response_code === 200) {
-          console.log(res.data.image_link)
-          getProfile();
-          // setProfileImageLink(res.data.image_link);
+          console.log(res.data.image_link);
+          setProfileImageLink(res.data.image_link);
+          // getProfile();
+          changeSideBarProfilePicture(res.data.image_link);
         }
       })
   }
   // console.log(file)
-  console.log("PRINGING SAVED PROFILE IN MOBILE SIDEBARs")
-  console.log(profile)
+  console.log("PRINTING PROPS.IMG LINK  IN MOBILE SIDEBARs")
+  console.log(props.profile_image_link)
 
   return(
     <nav className={sideBarClasses}> 
@@ -192,4 +209,11 @@ function MobileSideBar(props){
     </nav>
   )
 }
-export default MobileSideBar;
+
+const mapStateToProps = (state) => {
+  return {
+    ...state.socialProfile
+  }
+}
+
+export default connect(mapStateToProps, { updateSocialProfile })(MobileSideBar);
