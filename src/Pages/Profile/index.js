@@ -6,6 +6,7 @@ import Bookmarks from '../Bookmarks';
 import Skills from './Skills/';
 import Profile from './UserProfile'
 import Social from '../Social'
+import PublicProfile from '../PublicProfile/PublicProfile'
 import { Route, Switch,Redirect } from 'react-router-dom';
 import './index.css';
 import { connect } from "react-redux";
@@ -103,6 +104,7 @@ function Main(props) {
                   <Route path="/profile/bookmarks" component={Bookmarks} />
                   <Route path="/profile/skills" component={Skills} />
                   <Route path="/profile/social" component={Social} />
+                  <Route path="/profile/:id" component={PublicProfile} />
                 </Switch>
               </Grid> 
           

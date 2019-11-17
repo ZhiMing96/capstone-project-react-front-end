@@ -3,6 +3,7 @@ import { Grid, Typography, Box, Snackbar, Tabs, Tab, Link } from '@material-ui/c
 import { makeStyles } from '@material-ui/core/styles';
 import Reco from './Recommendations'
 import Invitations from './Invitations';
+import Search from './Search';
 
 function TabPanel(props) {
     console.log(props);
@@ -41,9 +42,11 @@ export default function Social(props) {
     console.log("**** PROPS FOR SOCIAL INDEX ******")
     console.log(props)
     const classes = useStyles();
-    const [tabState, setTabState] = React.useState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 1)
+    const [tabState, setTabState] = React.useState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 0)
 
-
+    const redirectProfile=(user_id)=>{
+        props.history.push("/profile/"+ user_id);
+    }
 
     const handleChangeIndex = (event, index) => {
         setTabState(index)
@@ -82,7 +85,8 @@ export default function Social(props) {
                 </Grid>
                 <Grid container fullWidth>
                     <TabPanel  tabState={tabState} index={0}>
-                        Find a match
+                        <Search redirectProfile={redirectProfile}/>
+
                     </TabPanel>
                     <TabPanel tabState={tabState} index={1}>
                         <Invitations/>
