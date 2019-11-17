@@ -235,6 +235,7 @@ export default function Reco(props) {
 
 
     useEffect(() => {
+        console.log("Getting getCompletedMeetups");
         getCompletedMeetups();
         getRecoRequests()
         getRecommendations()

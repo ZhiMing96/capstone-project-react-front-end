@@ -213,13 +213,17 @@ export default function MeetupInvitation(props) {
             open={ OpenAcceptInvitationDialog }
             TransitionComponent={Transition}
             keepMounted
-            fullWidth
             onClose={handleCloseDialog}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
             >
                 <DialogContent style={{padding:'4%', paddingTop:'5%'}}>
-                    {invitation.request_id}
+                    <Typography style={{fontSize:"120%", fontWeight:'lighter'}}>
+                        {invitation.from_user && invitation.from_user.profile 
+                        ? `Decline Invitation From ${invitation.from_user.profile.username} ?`
+                        : "Decline Invitation? "
+                        }
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button 
@@ -238,13 +242,23 @@ export default function MeetupInvitation(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
             >
-                <DialogContent style={{padding:'4%', paddingTop:'5%'}}>
-                    {invitation.request_id}
+                <DialogContent style={{paddingBottom:'10%', paddingTop:'10%', textAlign:'center'}}>
+                    <Typography style={{fontSize:"170%", fontWeight:'lighter'}}>
+                        {invitation.from_user && invitation.from_user.profile 
+                        ? `Decline Invitation From ${invitation.from_user.profile.username} ?`
+                        : "Decline Invitation? "
+                        }
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button 
-                    onClick={() => handleDeclineInvitation(invitation)} color="primary"
-                    style={{fontWeight:'bold'}}>
+                    onClick={() => handleCloseDialog()} color="primary" size='large'
+                    style={{fontWeight:'bold', fontSize:'20px'}}>
+                        Cancel
+                    </Button>
+                    <Button 
+                    onClick={() => handleDeclineInvitation(invitation)} color="primary" size='large'
+                    style={{fontWeight:'bold', fontSize:'20px'}}>
                         Confirm
                     </Button>
                 </DialogActions>

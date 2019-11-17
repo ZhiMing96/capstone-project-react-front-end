@@ -1,13 +1,14 @@
 import React, { useEffect, useState, } from 'react';
 import api from '../../api';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Slide } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Slide, createMuiTheme } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker,
+  useStaticState,
 } from '@material-ui/pickers';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import CompleteMeetupIcon from  '../../images/completeMeetup.svg';
 import RemoveMeetupIcon from '../../images/removeMeetup.svg';
 import TelegramIcon from '../../images/telegram.svg';
@@ -18,6 +19,18 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
+
+
+
+const theme = createMuiTheme({
+    overrides: {
+        MuiSvgIcon: {
+          root:{
+            color:'maroon'
+          }
+      },
+    }
+  });
 
 
 const useStyles = makeStyles(theme => ({
@@ -74,8 +87,9 @@ const useStyles = makeStyles(theme => ({
         width: 30,
         height: 30,
     },
-
-
+    calandar : {
+        color: "red"
+    },
   }))
 
   const Transition = React.forwardRef(function Transition(props, ref) {
@@ -87,7 +101,7 @@ export default function UpcomingMeetup(props) {
     const classes=useStyles();
     console.log(props);
     const { meetup, handleDateChange, handleSelectedMeetup, handleMeetupCancellation, handleMeetupConfirmation, handleTelegramRedirect } = props;
-
+    const [ daysLeft, setDaysLeft ] = useState();
     const [ openMeeetupDialog, setOpenMeeetupDialog ] = useState(false);
 
 
@@ -109,6 +123,20 @@ export default function UpcomingMeetup(props) {
         handleMeetupConfirmation(meetup);
         handleCloseDialog();
     }
+
+    const calculateDaysLeft = (date) => {
+        const meetupDate =  new Date(date);
+        const currentDate = new Date();
+        console.log("Suggested Date = " + meetupDate )
+        console.log("Current Date = " + currentDate )
+
+        const calculatedDaysLeft = Math.floor((Date.UTC(meetupDate.getFullYear(), meetupDate.getMonth(), meetupDate.getDate()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) ) /(1000 * 60 * 60 * 24))
+        return calculatedDaysLeft;
+    }
+
+    useEffect(()=>{
+       setDaysLeft(calculateDaysLeft(meetup.suggested_datetime))
+    },[meetup.suggested_datetime])
 
 
     return (
@@ -133,6 +161,7 @@ export default function UpcomingMeetup(props) {
                         <Typography>
                             INSERT JOB POSITION
                         </Typography>
+                        <ThemeProvider theme={meetup.suggested_datetime ? null : theme}>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} >
                             <KeyboardDatePicker
                                 margin="normal"
@@ -145,13 +174,20 @@ export default function UpcomingMeetup(props) {
                                 style={{width:'65%'}}
                                 onChange={handleDateChange}
                                 onOpen={()=> handleSelectedMeetup(meetup)}
+                                disablePast
                             />
                         </MuiPickersUtilsProvider>
+                        </ThemeProvider>
                     </Grid>
                     <Grid container item xs={3} direction="row" justify="space-between"> 
-                        <Grid item  xs={12}>
-                            <Typography>
-                                2 Days Left
+                        <Grid item  xs={12} style={ daysLeft < 5 ? {color:"maroon"} : daysLeft <20 ? {color:"green" } : {color:'blue'}}>
+                            <Typography style={{fontWeight:'bold'}}>
+                                {meetup.suggested_datetime
+                                ?
+                                `${daysLeft} Days left` 
+                                : ""
+                                }
+                                
                             </Typography>
                         </Grid>   
                         <Grid item container xs={12}>
@@ -188,7 +224,7 @@ export default function UpcomingMeetup(props) {
             aria-describedby="alert-dialog-slide-description"
             style={{}}
             >
-                <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0}}>
+                <DialogContent style={{padding:'9%', paddingTop:0, paddingRight:0, overflow:'hidden'}}>
                     <Grid container>
                         <Grid item xs={12} style={{textAlign:'right'}}>
                             <IconButton
@@ -198,15 +234,15 @@ export default function UpcomingMeetup(props) {
                                 <ClearIcon style={{width:45, height:45}}/>
                             </IconButton>
                         </Grid>
-                        <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%', paddingRight:'9%'}}>
-                            <Typography style={{fontSize:20}}>
-                                {meetup.other_user.profile 
+                        <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%',paddingRight:'7%'}}>
+                            <Typography style={{fontSize:'150%', fontWeight:'lighter'}}>
+                                {meetup.other_user && meetup.other_user.profile 
                                 ? `How was your meetup with ${meetup.other_user.profile.username} !`
                                 : 'How was your meetup! '
                                 }
                             </Typography>
                         </Grid>
-                        <Grid item container spacing={7} style={{ paddingRight:'9%'}}>
+                        <Grid item container spacing={7} style={{ paddingRight:'7%'}}>
                             <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
                                 <Avatar alt="List"
                                     src={RemoveMeetupIcon} 

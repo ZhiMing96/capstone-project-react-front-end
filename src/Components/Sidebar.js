@@ -72,7 +72,7 @@ const profileArray = [
 ]
 
 const revealIcon = false
-const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 
 function Sidebar(props) {
   const classes = useStyles();
@@ -82,22 +82,27 @@ function Sidebar(props) {
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
 
-  
-  
-  useEffect(() => {
+  const getSidebarProfile = () => {
     api.profile.get().then(
       res => {
         setName(res.data.profile ? res.data.profile.first_name : 'User')
+        setProfileImageLink(res.data.social ? res.data.social.profile_image_link : null)
       }
     ).catch({})
+  }
+
+  
+  
+  useEffect(() => {
+    getSidebarProfile();
     if (props.profile_image_link !== null) {
       setProfileImageLink(props.profile_image_link)
     }
 
     console.log(profileImageLink)
-  }, [props.profile_image_link])
+  }, [props])
 
-  const changeProfilePicture = () => {
+  const changeSideBarProfilePicture = () => {
     handleClose()
     props.updateSocialProfile({
       profile_image_link: profileImageLink,
@@ -119,7 +124,7 @@ function Sidebar(props) {
     setProfileImageLink(event.target.value);
   };
 
-  const handleImageChange = e => {
+  const handleSidebarImageChange = e => {
     console.log('ENTERED IMAGE CHANGE TO BASE 64 METHOD ')
     e.preventDefault();
     let file = e.target.files[0];
@@ -132,13 +137,13 @@ function Sidebar(props) {
         console.log(reader.result)
         setFile(file)
         setBase64(reader.result)
-        handleSubmitNewImg()
+        handleSubmitNewSidebarImg()
       };
 
     }
     
   }
-  const handleSubmitNewImg = () => {
+  const handleSubmitNewSidebarImg = () => {
     console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
 
       api.profile.uploadImage({ 
@@ -149,6 +154,7 @@ function Sidebar(props) {
         if(res.data.response_code === 200) {
           console.log(res.data.image_link)
           setProfileImageLink(res.data.image_link);
+          getSidebarProfile();
         }
       })
   }
@@ -156,17 +162,21 @@ function Sidebar(props) {
   console.log(file)
   console.log(base64)
   console.log('RENDERING SIDEBAR COMPONENT')
-
+  console.log(props);
   return (
     <div>
       <Grid container alignItems="center" justify="center" style={{ position: 'relative' }}>
         <div style={{textAlign:'-webkit-center'}}>
         <label for='image_upload'>
           <div title={'Change profile picture'}>
-            <Avatar src={props.profile_image_link && props.profile_image_link !== ''? props.profile_image_link : defaultImg} className={classes.icon}/>
+          { profileImageLink 
+            ? <Avatar src={ profileImageLink } className={classes.bigAvatar}/>
+            : <Avatar src={ defaultImg } className={classes.bigAvatar}/>
+          }
+            {/* <Avatar src={props.profile_image_link && props.profile_image_link !== ''? props.profile_image_link : defaultImg} className={classes.icon}/> */}
           </div>
         </label>
-        <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
+        <input type='file' onChange={handleSidebarImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
         </div>
           
             
@@ -235,7 +245,7 @@ function Sidebar(props) {
           <Button onClick={handleClose} color="primary">
             Cancel
         </Button>
-          <Button onClick={changeProfilePicture} color="primary" autoFocus>
+          <Button onClick={changeSideBarProfilePicture} color="primary" autoFocus>
             Confirm
         </Button>
         </DialogActions>

@@ -48,7 +48,7 @@ const profileArray = [
   },
 ]
 
-const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 
 function MobileSideBar(props){
   const classes = useStyles();
@@ -74,7 +74,7 @@ function MobileSideBar(props){
         if(res.data.profile){
           console.log(res.data.profile.first_name)
           const firstName = res.data.profile.first_name
-          setName(firstName);
+          // setName(firstName);
           setProfile(res.data.social);
         }
       } 
@@ -104,8 +104,9 @@ function MobileSideBar(props){
       reader.onloadend = () => {
         console.log(reader.result)
         setFile(file)
-        setBase64(reader.result.substring(24))
-        handleSubmitNewImg(reader.result.substring(24))
+        const base64String = reader.result.substring(23)
+        setBase64(base64String)
+        handleSubmitNewImg(base64String)
       };
 
     }
@@ -127,7 +128,8 @@ function MobileSideBar(props){
       })
   }
   // console.log(file)
-  // console.log(base64)
+  console.log("PRINGING SAVED PROFILE IN MOBILE SIDEBARs")
+  console.log(profile)
 
   return(
     <nav className={sideBarClasses}> 
@@ -146,9 +148,12 @@ function MobileSideBar(props){
         </Tabs>
       </Paper>
       <Grid container alignItems="center" justify="center">
-        <label for='image_upload'>
-          <div title={'Change profile picture'}>
-           <Avatar src={profile && profile.profile_image_link ? profile.profile_image_link : defaultImg} className={classes.bigAvatar}/>
+        <label for='image_upload' style={{width:'100%', textAlign:'-webkit-center',}}>
+          <div title={'Change profile picture'} style={{}}>
+            { profile && profile.profile_image_link 
+            ? <Avatar src={ profile.profile_image_link } className={classes.bigAvatar}/>
+            :<Avatar src={ defaultImg } className={classes.bigAvatar}/>
+            }
           </div>
         </label>
         <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
@@ -159,7 +164,8 @@ function MobileSideBar(props){
               fontWeight="fontWeightBold"
               fontSize={20}
             >
-              {name ? name.toUpperCase() : 'USER'}
+              {/* {name ? name.toUpperCase() : 'USER'} */}
+              {profile && profile.first_name ? profile.first_name.toUpperCase() : 'USER'}
               <br/>
               <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
               <TelegramIcon />

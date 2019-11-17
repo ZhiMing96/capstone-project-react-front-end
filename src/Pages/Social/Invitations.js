@@ -284,7 +284,7 @@ function Invitations(props) {
             console.log(res.data)
             if(res.data.response_code === 200) {
                 
-                setTimeout(() => {
+                // setTimeout(() => {
                     var invitesSent = res.data.invites_sent
                     var invitesReceived = res.data.invites_received
                     console.log('****** Invitations Sent *****')
@@ -312,17 +312,20 @@ function Invitations(props) {
                             
                         }
                     }
+                    setMeetupsLoading(false);
                     setUpcomingMeetups(tempWithDate)
                     setPendingMeetupDate(tempWithoutDate)
-                    setMeetupsLoading(false);
+                    
                 }
-                , 2500)} 
+                // , 3000)} 
         })
     }
 
     
     useEffect(()=>{
+        console.log("Getting Pending Invitations");
         getPendingInvitation();
+        console.log("Getting Upcoming Meetups");
         getUpcomingMeetups();
     },[]) 
 
@@ -332,11 +335,12 @@ function Invitations(props) {
         .then(res=>{
             if(res.data.response_code === 200){
                 console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
-                // getBoth();
+                
+                console.log("Getting Pending Invitations");
                 getPendingInvitation();
-                // setReloadInvitation(!reloadInvitation);
-                // setReloadMeetup(!reloadMeetup)
+                console.log("Getting Upcoming Meetups");
                 getUpcomingMeetups();
+                
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
@@ -407,9 +411,7 @@ function Invitations(props) {
         // }
     };
     
-    const timeLeft = (date) => {
-        const dateFormat =  new Date(date);
-    }
+    
 
     const handleMeetupConfirmation = (meetup) => {
         console.log(meetup)
