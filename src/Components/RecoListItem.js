@@ -67,7 +67,7 @@ export default function AlignItemsList(props) {
                                 color="textSecondary"
                                 style={{ fontSize: 'medium' }}
                             >
-                                {/*{author.job_title}*/}
+                                {author.job_title}
                             </Typography>
                         </div>
                     }

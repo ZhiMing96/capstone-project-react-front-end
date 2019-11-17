@@ -119,7 +119,7 @@ export default function RecoRequestCard(props) {
                                 {props.request.from_user.profile.first_name}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" gutterBottom style={{ fontSize: 'medium' }}>
-                                {/*{props.request.from_user.job_title}*/}
+                                {props.request.from_user.job_title}
                             </Typography>
                         </Box>
                     </Grid>
