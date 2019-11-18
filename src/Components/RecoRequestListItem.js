@@ -240,8 +240,8 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                     </Grid>
 
                                 </Grid>
-                                <Grid item container xs={12} className={classes.headers}>
-                                    <Grid item xs={4}>
+                                <Grid item container xs={12} >
+                                    <Grid item xs={4} className={classes.headers}>
                                         Company
                                     </Grid>
                                     <Grid item xs={8}>

@@ -14,6 +14,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CloseIcon from '@material-ui/icons/Close';
 import MessageIcon from '@material-ui/icons/Message';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import EmploymentDetails from '../EmploymentDetails'
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -21,7 +23,10 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         padding: theme.spacing(1.5),
-        maxWidth: 400
+        width: '30%',
+        maxWidth: 350,
+        minWidth: '226px',
+        overflowWrap: 'break-word',
     },
     sectionHeading: {
         fontSize:20, 
@@ -74,6 +79,24 @@ const useStyles = makeStyles(theme => ({
         width: 30,
         height: 30,
     },
+    dialogButtons: {
+        fontWeight:'bold', 
+        fontSize:'20px',
+        '&:hover': {
+            backgroundColor: '#ffffff',
+            color: '#024966',
+            fontWeight: 'bold',
+            borderColor: "#ffffff",
+          }
+    },
+    messageIcon : {
+        padding:0,
+        paddingRight:'3%',
+        color: 'grey',
+        '&:hover': {
+            color: 'black'
+          } 
+    },
 
 
   }))
@@ -92,6 +115,7 @@ export default function MeetupInvitation(props) {
     const [OpenRejectInvitationDialog, setOpenRejectInvitationDialog] = useState(false); 
     const [openMessage, setOpenMessage] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    
     
 
     
@@ -118,6 +142,16 @@ export default function MeetupInvitation(props) {
 
     const closeMessage = () => {
         setOpenMessage(false)
+    }
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString)
+        var day = date.getMonth();
+        var year = date.getFullYear();
+        var month = date.toLocaleString('en-GB', { month: 'short' });
+
+        return day + " " + month + " " + year
+
     }
 
     
@@ -148,7 +182,7 @@ export default function MeetupInvitation(props) {
                         defaultImg
                         } 
                         className={classes.carouselAvatar} 
-                        imgProps={{style:{objectFit:'contain',border:0}}}
+                        // imgProps={{style:{objectFit:'contain',border:0}}}
                         // onClick={()=> handleHrefClick(listing)}
                         />
                 </Link>
@@ -161,7 +195,14 @@ export default function MeetupInvitation(props) {
                         }
                     </Typography>
                     <Typography style={{fontSize:13, color:'grey'}}>
-                        Fintech Analyst 
+                        {invitation.from_user && invitation.from_user.work_experience
+                        ? 
+                        <div>
+                            {invitation.from_user.work_experience.job_title} 
+                            <EmploymentDetails jobDetails={invitation.from_user.work_experience}/>
+                        </div>
+                        : "Unknown Occupation"
+                        }
                     </Typography>
                     </Grid>
                     <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
@@ -173,7 +214,7 @@ export default function MeetupInvitation(props) {
                         <Grid item xs={6} style={{textAlign:'end', paddingRight:20}}>
                             <Tooltip title={invitation.from_user && invitation.from_user.profile
                             ? `Open ${invitation.from_user.profile.username}'s Message!`: "Open Message!"} placement="bottom-end">
-                                <IconButton color='grey' style={{padding:0, }} onClick={showMessage}>
+                                <IconButton className={classes.messageIcon} onClick={showMessage}>
                                     <MessageIcon style={{width:35, height:35}}/>
                                 </IconButton>
                             </Tooltip>
@@ -207,30 +248,59 @@ export default function MeetupInvitation(props) {
                     horizontal: 'center',
                 }}
             >
-                <Typography variant="body2">{invitation.message && invitation.message.length!==0 ? invitation.message  : "No Message Available"}</Typography>
+                <Typography style={{fontSize:20, fontWeight:'bolder', paddingBottom:'2%'}}>
+                    Message
+                </Typography>
+                <Typography style={{fontSize:15, fontWeight:100, paddingBottom:'4%'}} >
+                    {invitation.message && invitation.message.length!==0 ? invitation.message  : "No Message Available"}
+                </Typography>
+                
+                {invitation.suggested_datetime 
+                ? 
+                <Tooltip title="You Can Change it Later!" placement="right-start">
+                    <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
+                        Suggested Date: <u>{formatDate(invitation.suggested_datetime)}</u>
+                    </Typography>
+                </Tooltip>
+                :
+                <Tooltip title="Please Inform us once a date has been selected!" placement="right-start">
+                <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
+                        Suggested Date: <u>Unavailable</u>
+                    </Typography>
+                </Tooltip>
+                }
+                        
+                   
             </Popover>
             <Dialog
             open={ OpenAcceptInvitationDialog }
             TransitionComponent={Transition}
             keepMounted
+            fullWidth
             onClose={handleCloseDialog}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
             >
-                <DialogContent style={{padding:'4%', paddingTop:'5%'}}>
-                    <Typography style={{fontSize:"120%", fontWeight:'lighter'}}>
+                <DialogContent style={{paddingBottom:'5%', paddingTop:'10%', textAlign:'center'}}>
+                    <Typography style={{fontSize:"150%", fontWeight:'lighter'}}>
                         {invitation.from_user && invitation.from_user.profile 
-                        ? `Decline Invitation From ${invitation.from_user.profile.username} ?`
-                        : "Decline Invitation? "
+                        ? `Accept Invitation From ${invitation.from_user.profile.username} ?`
+                        : "Accept Invitation? "
                         }
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button 
+                <Button 
+                    className={classes.dialogButtons}
+                    onClick={() => handleCloseDialog()} color="primary" 
+                    style={{}}>
+                        Cancel
+                </Button>
+                <Button 
                     onClick={() => handleAcceptInvitation(invitation.request_id)} color="primary"
-                    style={{fontWeight:'bold'}}>
+                    className={classes.dialogButtons}>
                         Confirm
-                    </Button>
+                </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
@@ -242,8 +312,8 @@ export default function MeetupInvitation(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
             >
-                <DialogContent style={{paddingBottom:'10%', paddingTop:'10%', textAlign:'center'}}>
-                    <Typography style={{fontSize:"170%", fontWeight:'lighter'}}>
+                <DialogContent style={{paddingBottom:'5%', paddingTop:'10%', textAlign:'center'}}>
+                    <Typography style={{fontSize:"150%", fontWeight:'lighter'}}>
                         {invitation.from_user && invitation.from_user.profile 
                         ? `Decline Invitation From ${invitation.from_user.profile.username} ?`
                         : "Decline Invitation? "
@@ -253,12 +323,12 @@ export default function MeetupInvitation(props) {
                 <DialogActions>
                     <Button 
                     onClick={() => handleCloseDialog()} color="primary" size='large'
-                    style={{fontWeight:'bold', fontSize:'20px'}}>
+                    className={classes.dialogButtons}>
                         Cancel
                     </Button>
                     <Button 
                     onClick={() => handleDeclineInvitation(invitation)} color="primary" size='large'
-                    style={{fontWeight:'bold', fontSize:'20px'}}>
+                    className={classes.dialogButtons}>
                         Confirm
                     </Button>
                 </DialogActions>

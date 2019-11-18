@@ -19,6 +19,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 
 
@@ -90,6 +91,14 @@ const useStyles = makeStyles(theme => ({
     calandar : {
         color: "red"
     },
+    moreIcon : {
+        padding:0,
+        // paddingRight:'3%',
+        color: 'grey',
+        '&:hover': {
+            color: 'black'
+          } 
+    },
   }))
 
   const Transition = React.forwardRef(function Transition(props, ref) {
@@ -154,12 +163,15 @@ export default function UpcomingMeetup(props) {
                     <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
                         <Typography>
                         {meetup.other_user && meetup.other_user.profile
-                            ? meetup.other_user.profile.username 
+                            ? meetup.other_user.profile.username
                             : ''
                         }
                         </Typography>
                         <Typography>
-                            INSERT JOB POSITION
+                        {meetup.from_user && meetup.from_user.work_experience
+                        ? meetup.from_user.work_experience.job_title
+                        : "Unknown Occupation"
+                        }
                         </Typography>
                         <ThemeProvider theme={meetup.suggested_datetime ? null : theme}>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} >
@@ -204,7 +216,7 @@ export default function UpcomingMeetup(props) {
                             </Grid>
                             <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
                                 <IconButton
-                                // className={classes.controlButtons}
+                                className={classes.moreIcon}
                                 onClick={()=> handleOpenDialog()}
                                 >
                                     <MoreVertIcon/>

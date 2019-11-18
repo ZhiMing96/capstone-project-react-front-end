@@ -260,7 +260,7 @@ function Invitations(props) {
         .then(res=>{
             console.log(res.data)
             if(res.data.response_code === 200) {
-                setTimeout(() => {
+                // setTimeout(() => {
                     const invitesSent = res.data.invites_sent
                     const invitesReceived = res.data.invites_received
                     console.log('****** Invitations Sent *****')
@@ -271,7 +271,7 @@ function Invitations(props) {
                     setPendingInvitations(invitesReceived);
                     setInvitationsLoading(false);
                     props.updatePendingInvitations(invitesReceived)
-                }, 3000)
+                // }, 3000)
             } 
         }).catch(err => console.log(err))
     }
@@ -318,15 +318,21 @@ function Invitations(props) {
                     
                 }
                 // , 3000)} 
+        }).catch(err => {
+            console.log(err);
+            setMeetupsLoading(false);
         })
     }
 
     
     useEffect(()=>{
-        console.log("Getting Pending Invitations");
-        getPendingInvitation();
         console.log("Getting Upcoming Meetups");
-        getUpcomingMeetups();
+        getUpcomingMeetups()
+        
+        console.log("Getting Pending Invitations");
+       
+        setInvitationsLoading(true);
+        setTimeout(() => {getPendingInvitation() } , 1000);
     },[]) 
 
     const handleAcceptInvitation = (requestId) => {
