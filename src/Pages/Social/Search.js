@@ -160,7 +160,7 @@ function Search(props) {
         <div>
             <form className={classes.form} onSubmit={(event) => { handleSubmit(event) }}>
                 <Grid container xs={12} className={classes.root} justify="center" alignItems="center">
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined" required>
                             <InputLabel >
                                 Keyword(s)
@@ -180,7 +180,7 @@ function Search(props) {
                             />
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={2}>
+                    <Grid item xs={12} md={2}>
                         <FormControl variant="outlined" className={clsx(classes.margin, classes.textField)} required>
                             <InputLabel ref={inputLabel} >
                                 Objective
@@ -196,7 +196,7 @@ function Search(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={3} style={{ textAlign: "end" }} alignItems="center" >
+                    <Grid item xs={12} md={4} style={{ textAlign: "end" }} alignItems="center" >
                         <Button type="submit" size="large" color="primary" variant="contained" className={classes.iconButton}>
                             <SearchIcon />
                         </Button>
