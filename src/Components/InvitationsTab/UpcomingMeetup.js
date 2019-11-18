@@ -1,6 +1,6 @@
 import React, { useEffect, useState, } from 'react';
 import api from '../../api';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Slide, createMuiTheme } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Slide, createMuiTheme, Tooltip } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -20,7 +20,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-
+import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 
 
 const theme = createMuiTheme({
@@ -54,17 +54,21 @@ const useStyles = makeStyles(theme => ({
         marginTop:10,
         marginLeft:'5%'
     },
-    carouselAvatar: {
-        margin:'5%',
-        width:85, 
-        height:85, 
-        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
-    },
     listAvatar: {
         margin:'5%',
         width:60, 
         height:60, 
         boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
+        backgroundImage: "url('https://image.flaticon.com/icons/svg/64/64572.svg')",
+        backgroundSize: 'cover'
+    },
+    listAvatarImg : {
+        objectFit:'contain',
+        width: "inherit",
+        border: 0,
+        '&:hover': {
+            opacity: 0.55,
+        }
     },
     carouselUsername: {
         marginTop:'6%',
@@ -153,12 +157,24 @@ export default function UpcomingMeetup(props) {
             <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
                 <Grid container item xs={12}>
                     <Grid item xs={3}> 
-                        <Avatar alt="List"
+                    <Link 
+                    to={{
+                        pathname: "/profile",
+                        state: { user: 
+                            meetup.other_user && meetup.other_user.profile
+                            ? meetup.other_user.profile.user_id 
+                            : null
+                        }
+                    }} 
+                    style={{textDecoration:'none'}}
+                    >
+                        <Avatar
                             src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
-                            // imgProps={{style:{objectFit:'contain',border:0}}}
+                            imgProps={{className: classes.listAvatarImg}}
                             // onClick={()=> handleViewProfile()}
                         />
+                    </Link>
                     </Grid>
                     <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
                         <Typography>
@@ -173,22 +189,23 @@ export default function UpcomingMeetup(props) {
                         : "Unknown Occupation"
                         }
                         </Typography>
+                        
                         <ThemeProvider theme={meetup.suggested_datetime ? null : theme}>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} >
-                            <KeyboardDatePicker
-                                margin="normal"
-                                id="date-picker-dialog"
-                                format="MM/dd/yyyy"
-                                value={meetup.suggested_datetime}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                                style={{width:'65%'}}
-                                onChange={handleDateChange}
-                                onOpen={()=> handleSelectedMeetup(meetup)}
-                                disablePast
-                            />
-                        </MuiPickersUtilsProvider>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} >
+                                <KeyboardDatePicker
+                                    margin="normal"
+                                    id="date-picker-dialog"
+                                    format="MM/dd/yyyy"
+                                    value={meetup.suggested_datetime}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                    style={{width:'65%'}}
+                                    onChange={handleDateChange}
+                                    onOpen={()=> handleSelectedMeetup(meetup)}
+                                    disablePast
+                                />
+                            </MuiPickersUtilsProvider>
                         </ThemeProvider>
                     </Grid>
                     <Grid container item xs={3} direction="row" justify="space-between"> 

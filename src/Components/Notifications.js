@@ -12,14 +12,15 @@ import CircularLoading from '../Components/LoadingBars/CircularLoading';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NotificationsListSkeleton from './SkeletonLoading/NotificationsListSkeleton'
 import ClearIcon from '@material-ui/icons/Clear'
+import EmploymentDetails from './EmploymentDetails';
 
 const useStyles = makeStyles(theme => ({
     root: {
-    width:400, 
-    height:"fit-content",
-    backgroundColor:'white',
-    maxHeight: 500, 
-    overflowY: 'auto'
+        width:400, 
+        height:"fit-content",
+        backgroundColor:'white',
+        maxHeight: 500, 
+        overflowY: 'auto'
     },
     paper: {
       margin: theme.spacing(1),
@@ -43,6 +44,12 @@ const useStyles = makeStyles(theme => ({
         color:'whitesmoke',
         marginRight:10
     },
+    listItem: {
+        backgroundColor:'whitesmoke',
+        '&:hover': {
+            backgroundColor: 'white'
+        } 
+    }
   }));
 
   const defaultAvatar = ""
@@ -67,6 +74,7 @@ export default function Notifications(props) {
     
 
     const handleSeen = (alert) => { 
+        console.log("ENTERED HANDLE SEEN METHOD")
         setLoadingNotifications(true);
         api.alerts.seen({"alert_id": alert.alert_id })
         .then(res => {
@@ -115,6 +123,10 @@ export default function Notifications(props) {
         
     }
 
+    const handleAnchorPoint = e => {
+        console.log("ENTERED ANCHOR POINT METHOD")
+        console.log(e.currentTarget)
+    }
     
 
     return (
@@ -125,52 +137,89 @@ export default function Notifications(props) {
                         < NotificationsIcon  className={classes.headerIcon}/> Notifications
                     </Typography>
                 </Grid>
-                <Grid item xs={12} style={{paddingLeft:'10%'}}>
-                    <List style={{ padding:0 }} >
+                <Grid item xs={12} style={{}}>
+                    <List style={{ padding:0, }} >
                         { loadingNotifications 
                         ? <NotificationsListSkeleton/>
                         : alerts
                         ? alerts.map((alert, index) => (
-                            <div>
-                            <ListItem style={{ paddingLeft:0 }} >
-                                <Link
-                                to={{
-                                    pathname: "/profile/social",
-                                    state: alert.alert_type === "RECOMMENDATION_REQUEST" || alert.alert_type === "WRITE_RECOMMENDATION" || alert.alert_type === "COMPLETE_MEETUP" ? {tabIndex: 2} : {tabIndex: 1}
-                                }}
-                                style={{textDecoration:'none', color:'inherit'}}
-                                >
-                                <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15}} onClick={()=> handleSeen(alert)}>
+                            <div >
+                            <ListItem  className={classes.listItem} style={{ paddingLeft:0, }} >
+                                
+                                <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15,marginLeft:'10%' }} >
                                     <Avatar src={alert.from_user && alert.from_user.social && alert.from_user.social.profile_image_link ? alert.from_user.social.profile_image_link : defaultImg } style={{width:50, height:50}}/>
                                 </ListItemAvatar>
-                                </Link>
+                                
                                 <ListItemText>
-                                    <Grid container justify="space-between" alignItems="center">
-                                        <Grid item xs={9}>
-                                            <Typography style={{fontSize:17, fontWeight:'bold'}} >
-                                                {alertHeaders[alertTypes.indexOf(alert.alert_type)]}
-                                            </Typography>
+                                    <Grid item container justify="space-between" alignItems="center" >
+                                        <Grid item xs={10} onClick={()=> handleSeen(alert)} style={{maxWidth:'inherit'}}>
+                                            <Link
+                                                to={{
+                                                    pathname: "/profile/social",
+                                                    state: alert.alert_type === "RECOMMENDATION_REQUEST" || alert.alert_type === "WRITE_RECOMMENDATION" || alert.alert_type === "COMPLETE_MEETUP" ? {tabIndex: 2} : {tabIndex: 1}
+                                                }}
+                                                style={{textDecoration:'none', color:'inherit',}}
+                                            >
+                                            
+                                                <Typography style={{fontSize:17, fontWeight:'bold'}} >
+                                                    {alertHeaders[alertTypes.indexOf(alert.alert_type)]}
+                                                </Typography>
+                                                {alert.from_user && alert.from_user.profile 
+                                                ? `From ${alert.from_user.profile.username}`
+                                                
+                                                : 'From Unidentified Member'
+                                                }
+                                                { alert.work_experience 
+                                                ? 
+                                                <div>
+                                                    <Typography>
+                                                        {alert.work_experience.job_title}
+                                                        <EmploymentDetails jobDetails={alert.work_experience}/>
+                                                    </Typography>
+                                                </div>
+                                                : ""
+                                                }
+                                                <Typography>
+                                                    {calculateDaysAgo(alert.created_datetime)}
+                                                </Typography>
+                                            
+                                            </Link>
                                         </Grid>
-                                        
-                                        <Grid item xs={3} style={{textAlign:'end'}}>
+                                        <Grid item xs={2} style={{textAlign:'end', alignSelf: "flex-start"}}>
                                             <Tooltip title="Mark as Seen" placement="bottom-start">
-                                                <IconButton size="small" onClick={()=> handleSeen(alert)}>
+                                                <IconButton size="small" onMouseEnter={handleAnchorPoint} onClick={()=> handleSeen(alert)}>
                                                     <ClearIcon/>
                                                 </IconButton>
                                             </Tooltip>
                                         </Grid>
                                         
                                     </Grid>
-                                    <Typography>
-                                        From User {alert.meetup_invite ? alert.meetup_invite.from_user : "Unknown"}
-                                    </Typography>
-                                    <Grid container justify="space-between" alignItems="center">
+
+                                    {/* {alert.from_user && alert.from_user.profile 
+                                    ? `From ${alert.from_user.profile.username}`
+                                    
+                                    : 'From Unidentified Member'
+                                    }
+                                    { alert.work_experience 
+                                    ? 
+                                    <div>
+                                        <Typography>
+                                            {alert.work_experience.job_title}
+                                            <EmploymentDetails jobDetails={alert.work_experience}/>
+                                        </Typography>
+                                        
+                                    </div>
+                                    : ""
+                                    } */}
+
+
+                                    {/* <Grid container justify="space-between" alignItems="center">
                                         <Grid item>
                                             <Typography>
                                                 {calculateDaysAgo(alert.created_datetime)}
                                             </Typography>
                                         </Grid>
-                                    </Grid>
+                                    </Grid> */}
                                 </ListItemText>
                             </ListItem>
                             <Divider  />

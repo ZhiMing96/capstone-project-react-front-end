@@ -20,18 +20,30 @@ import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
+import EmploymentDetails from './EmploymentDetails'
 
 const useStyles = makeStyles(theme => ({
     inline: {
         display: 'inline',
     },
     root: {
-        minWidth: 80,
+        minWidth: 0,
+        marginRight:'3.5%'
     },
     avatar: {
         width: 50,
         height: 50,
-        marginTop: 10
+        marginTop: 10,
+        backgroundImage: "url('https://image.flaticon.com/icons/svg/64/64572.svg')",
+        backgroundSize: 'cover'
+    },
+    avatarImg:{
+        objectFit:'contain',
+        width: "inherit",
+        border: 0,
+        '&:hover': {
+            opacity: 0.55,
+        }
     },
     calendar: {
         marginRight: 10,
@@ -73,6 +85,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
     // const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
     const errorMsg = "An Error Has Occured! Request was Unsucessful"
     const successMsg = "Requst Sent! "
+    const [ hoverOnPic, setHoverOnPic ] = useState(false);
 
     // console.log('<< Meetup Item >> ')
     // console.log(meetup)
@@ -122,7 +135,12 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
     }
 
     
-
+    const handleEnterPic = () => {
+        setHoverOnPic(true) 
+    }
+    const handleExitPic = () => {
+        setHoverOnPic(false)
+    }
     
 
     const formatDate = (stringDate, length) => {
@@ -142,7 +160,9 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
         <div>
             <ListItem alignItems="flex">
                 <ListItemAvatar className={classes.root}>
-                    <Avatar src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} className={classes.avatar} />
+                    <Avatar src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                    className={classes.avatar} 
+                    imgProps={{className: classes.avatarImg}}/>
                 </ListItemAvatar>
                 <Grid container alignItems="center" justify="space-between">
                     <Grid item xs={8}>
@@ -162,17 +182,31 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                 </Typography>
                             }
                             secondary={
-                                <Grid container alignItems="center">
-                                    <CalendarTodayIcon className={classes.calendar} />
-                                    <Typography
-                                        component="span"
-                                        variant="body2"
-                                        className={classes.inline}
-                                        color="textSecondary"
-                                        style={{ fontSize: 'medium' }}
-                                    >
-                                        {formatDate(meetup.suggested_datetime,'short')}
-                                    </Typography>
+                                <Grid container >
+                                    <Grid item style={{paddingBottom:'3%'}}>
+                                        {meetup.other_user && meetup.other_user.work_experience 
+                                        ?
+                                        <Typography>
+                                            {meetup.other_user.work_experience.job_title}
+                                            <EmploymentDetails jobDetails={meetup.other_user.work_experience}/>
+                                        </Typography> 
+                                        
+                                        : ""}
+                                        
+                                    </Grid>
+                                    <Grid item container alignItems="center">
+                                        <CalendarTodayIcon className={classes.calendar} />
+                                        <Typography
+                                            component="span"
+                                            variant="body2"
+                                            className={classes.inline}
+                                            color="textSecondary"
+                                            style={{ fontSize: 'medium' }}
+                                        >
+                                            {formatDate(meetup.suggested_datetime,'short')}
+                                        </Typography>
+                                    </Grid>
+                                    
                                 </Grid>
                             }
                         />

@@ -719,7 +719,7 @@ function Jobs (props) {
                 <Typography variant='h4' style={{color:'#FFFFFF', fontWeight:'lighter', paddingTop:15}}>
                     Search
                 </Typography>
-                    {/*<img src={jobImg} style={{ width: '10%' }} />*/}
+                    
             </Grid>
             <Grid item xs={12} container justify="center">
                 <Grid item xs={12} sm={10} md={8} style={{textAlign:'-webkit-center'}}>

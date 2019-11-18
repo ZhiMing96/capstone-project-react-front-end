@@ -245,6 +245,8 @@ export default function Reco(props) {
 
     useEffect(() => {
         console.log("Getting getCompletedMeetups");
+        // setLoadingCompletedMeetups(true);
+        // setTimeout({getCompletedMeetups}, 1500);
         getCompletedMeetups();
         getRecoRequests()
         getRecommendations()

@@ -16,6 +16,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import MessageIcon from '@material-ui/icons/Message';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import EmploymentDetails from '../EmploymentDetails'
+import FaceIcon from '@material-ui/icons/Face';
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -50,6 +51,16 @@ const useStyles = makeStyles(theme => ({
         width:90, 
         height:90, 
         boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
+        backgroundImage: "url('https://image.flaticon.com/icons/svg/64/64572.svg')",
+        backgroundSize: 'cover'
+    },
+    carouselAvatarImg : {
+        objectFit:'contain',
+        width: "inherit",
+        border: 0,
+        '&:hover': {
+            opacity: 0.55,
+        }
     },
     listAvatar: {
         margin:'5%',
@@ -95,7 +106,7 @@ const useStyles = makeStyles(theme => ({
         color: 'grey',
         '&:hover': {
             color: 'black'
-          } 
+        } 
     },
 
 
@@ -136,6 +147,7 @@ export default function MeetupInvitation(props) {
     }
 
     const showMessage = (event) => {
+        console.log(event.currentTarget)
         setAnchorEl(event.currentTarget);
         setOpenMessage(true)
     }
@@ -168,23 +180,28 @@ export default function MeetupInvitation(props) {
                 </Tooltip>
                 </div>
                 
-                <Link to={{
-                        pathname: "/profile",
-                        state: { user: 
-                            invitation.from_user && invitation.from_user.profile
-                            ? invitation.from_user.profile.user_id 
-                            : null
-                        }
+                <Link 
+                to={{
+                    pathname: "/profile",
+                    state: { user: 
+                        invitation.from_user && invitation.from_user.profile
+                        ? invitation.from_user.profile.user_id 
+                        : null
+                    }
                     }} 
-                    style={{textDecoration:'none'}}>
+                style={{textDecoration:'none'}}
+                >
+                        <div>
                         <Avatar
                         src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
                         defaultImg
                         } 
                         className={classes.carouselAvatar} 
                         // imgProps={{style:{objectFit:'contain',border:0}}}
+                        imgProps={{className: classes.carouselAvatarImg }}
                         // onClick={()=> handleHrefClick(listing)}
                         />
+                        </div>
                 </Link>
                 <Grid container  justify='space-between' style={{height:'15vh'}}>
                     <Grid item xs={12}>

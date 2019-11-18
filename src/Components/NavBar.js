@@ -82,8 +82,8 @@ class NavTabs extends React.Component {
         }
       })
     }
-    this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 20000);
+    // this.retrieveAlerts()
+    // setInterval(this.retrieveAlerts, 20000);
   }
 
 
@@ -335,7 +335,7 @@ class NavTabs extends React.Component {
                   <NotificationsNoneIcon onClick={this.handleClick} />
                 </Badge>
                 <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
-                className="popper_class"
+                  className="popper_class"
                   placement="left-start"
                   disablePortal={false}
                   modifiers={{
