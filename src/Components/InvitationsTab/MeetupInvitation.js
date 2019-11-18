@@ -14,6 +14,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CloseIcon from '@material-ui/icons/Close';
 import MessageIcon from '@material-ui/icons/Message';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import EmploymentDetails from '../EmploymentDetails'
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -194,7 +196,11 @@ export default function MeetupInvitation(props) {
                     </Typography>
                     <Typography style={{fontSize:13, color:'grey'}}>
                         {invitation.from_user && invitation.from_user.work_experience
-                        ? invitation.from_user.work_experience.job_title
+                        ? 
+                        <div>
+                            {invitation.from_user.work_experience.job_title} 
+                            <EmploymentDetails jobDetails={invitation.from_user.work_experience}/>
+                        </div>
                         : "Unknown Occupation"
                         }
                     </Typography>
@@ -249,20 +255,20 @@ export default function MeetupInvitation(props) {
                     {invitation.message && invitation.message.length!==0 ? invitation.message  : "No Message Available"}
                 </Typography>
                 
-                        {invitation.suggested_datetime 
-                        ? 
-                        <Tooltip title="You Can Change it Later!" placement="right-start">
-                            <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                                Suggested Date: <u>{formatDate(invitation.suggested_datetime)}</u>
-                            </Typography>
-                        </Tooltip>
-                        :
-                        <Tooltip title="Please Inform us once a date has been selected!" placement="right-start">
-                        <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                                Suggested Date: <u>Unavailable</u>
-                            </Typography>
-                        </Tooltip>
-                        }
+                {invitation.suggested_datetime 
+                ? 
+                <Tooltip title="You Can Change it Later!" placement="right-start">
+                    <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
+                        Suggested Date: <u>{formatDate(invitation.suggested_datetime)}</u>
+                    </Typography>
+                </Tooltip>
+                :
+                <Tooltip title="Please Inform us once a date has been selected!" placement="right-start">
+                <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
+                        Suggested Date: <u>Unavailable</u>
+                    </Typography>
+                </Tooltip>
+                }
                         
                    
             </Popover>
