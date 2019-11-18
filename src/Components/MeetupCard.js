@@ -135,7 +135,7 @@ function MeetupCard(props) {
                                             color="textSecondary"
                                             style={{ fontSize: 'medium' }}
                                         >
-                                            {props.item.job_title}
+                                            {props.item.job_title} 
                                         </Typography>
                                     </div>
                                 }

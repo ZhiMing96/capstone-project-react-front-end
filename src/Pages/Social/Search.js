@@ -17,6 +17,7 @@ import api from '../../api'
 import MeetupSearchResults from './MeetupSearchResults'
 import { connect } from "react-redux";
 import { updateSocialSearch } from '../../redux/actions/socialSearch'
+import MeetupSuggestions from './MeetupSuggestions'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -263,8 +264,12 @@ function Search(props) {
                     </DialogActions>
                 </Dialog>
             </form>
-            <Grid container xs={12} justify="center" style={{ textAlign: "-webkit-center", margin: 8 }}>
+            <Grid container xs={12} justify="center" style={{ textAlign: "-webkit-center"}}>
+                {searchResults?
                 <MeetupSearchResults searchResults={searchResults} redirectProfile={props.redirectProfile} />
+                :
+                <MeetupSuggestions redirectProfile={props.redirectProfile}/>
+                }
             </Grid>
         </div>
 
