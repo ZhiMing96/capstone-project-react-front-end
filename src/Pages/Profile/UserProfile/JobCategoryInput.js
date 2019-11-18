@@ -343,6 +343,9 @@ export default function IntegrationReactSelect(props) {
      //setMenuClose(true)
       return
     }
+    if(value===null){
+      value=[] 
+    }
       console.log(value)
       setMulti(value);
       props.handleCategory(value)
