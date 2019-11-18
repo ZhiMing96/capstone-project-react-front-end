@@ -18,7 +18,7 @@ export default function MeetupSearchResults(props) {
 
     if (isLoaded) {
         return (
-            <div style={{width:"-webkit-fill-available"}}>
+            <div style={{width:"-webkit-fill-available", marginTop: 10}}>
                 {list.length>0 ?
                     [list.map(item => (
                         <Grid item xs={7} >
