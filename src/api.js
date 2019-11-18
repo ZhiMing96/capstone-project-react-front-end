@@ -138,6 +138,9 @@ const meetups = {
     search: params => axios.post('http://localhost:3000/meetup/search', params, {
       headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
     }),
+    invite: params => axios.post('http://localhost:3000/meetup/invite/send', params, {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
 }
 
 const recommendations = {
@@ -158,7 +161,7 @@ const recommendations = {
   }),
   processRecord: (params) => axios.post("http://localhost:3000/meetup/invite/process", params,{
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
-  })
+  }),
 }
 
 const alerts = {
