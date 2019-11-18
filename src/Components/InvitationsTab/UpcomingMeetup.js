@@ -167,7 +167,10 @@ export default function UpcomingMeetup(props) {
                         }
                         </Typography>
                         <Typography>
-                            {meetup.other_user && meetup.other_user.job_title ? meetup.other_user.job_title : "Unknown Occupation" }
+                        {meetup.from_user && meetup.from_user.work_experience
+                        ? meetup.from_user.work_experience.job_title
+                        : "Unknown Occupation"
+                        }
                         </Typography>
                         <ThemeProvider theme={meetup.suggested_datetime ? null : theme}>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} >

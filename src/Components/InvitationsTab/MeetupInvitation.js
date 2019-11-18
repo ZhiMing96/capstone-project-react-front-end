@@ -188,13 +188,13 @@ export default function MeetupInvitation(props) {
                     <Grid item xs={12}>
                     <Typography gutterBottom className={classes.carouselUsername} style={{}}>
                         {invitation.from_user && invitation.from_user.profile
-                            ? invitation.from_user.profile.username. 
+                            ? invitation.from_user.profile.username 
                             : ''
                         }
                     </Typography>
                     <Typography style={{fontSize:13, color:'grey'}}>
-                        {invitation.from_user && invitation.from_user.job_title
-                        ? invitation.from_user.job_title
+                        {invitation.from_user && invitation.from_user.work_experience
+                        ? invitation.from_user.work_experience.job_title
                         : "Unknown Occupation"
                         }
                     </Typography>
