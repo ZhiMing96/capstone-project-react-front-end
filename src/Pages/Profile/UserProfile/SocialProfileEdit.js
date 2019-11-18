@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Box, Checkbox, Select, FormControlLabel, InputLabel, MenuItem, FormControl } from '@material-ui/core'
+import { Grid, Typography, Box, Checkbox, Select, FormControlLabel, InputLabel, MenuItem, FormControl,Input, ListSubheader } from '@material-ui/core'
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -12,6 +12,8 @@ import { connect } from "react-redux";
 import { updateSocialProfile } from '../../../redux/actions/socialProfile'
 import SnackBar from '../../../Components/Snackbar'
 import api from '../../../api'
+import locationData from '../../../data/locations'
+import './SocialProfileEdit.css'
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -82,19 +84,22 @@ function SocialProfileEdit(props) {
         api.profile.get().then(res => {
             const { profile_image_link, description, meetup_ind, job_search_stage, preferred_locations } = res.data.social
             console.log(res.data.social)
+            const arr = preferred_locations.map(value=>(
+                value.location
+            ))
             setProfileState({
                 profile_image_link: profile_image_link,
                 description: description,
                 meetup_ind: meetup_ind,
                 job_search_stage: job_search_stage,
-                preferred_locations: preferred_locations
+                preferred_locations: arr
             })
             props.updateSocialProfile({
                 profile_image_link: profile_image_link,
                 description: description,
                 meetup_ind: meetup_ind,
                 job_search_stage: job_search_stage,
-                preferred_locations: preferred_locations
+                preferred_locations: arr
             })
         }).catch(err => {
             console.log('error initialising w user details')
@@ -102,28 +107,29 @@ function SocialProfileEdit(props) {
     }, [])
 
     console.log(profileState)
-    const [submitState, setSubmit] = React.useState(false)
 
     const handleSubmit = (event) => {
-        setSubmit(true) //render email validation error if present
         event.preventDefault()
-
-
         api.profile.updateSocial(profileState)
             .then(res => {
                 if (res.data.response_code === 200) {
                     console.log('success')
-                    props.setSnackbar('Details saved successfully.')
-                    props.updateSocialProfile(profileState) //update store
-                    props.changeState()
+                    api.profile.updateLocations({
+                        preferred_locations: profileState.preferred_locations
+                    }).then(res=>{
+                        if (res.data.response_code === 200) {
+                            props.setSnackbar('Details saved successfully.')
+                            props.updateSocialProfile(profileState) //update store
+                            props.changeState()
+                        }
+                    }).catch(console.log('error'))
                 } else {
                     console.log('error')
                     props.setSnackbar(res.data.response_message)
                 }
             }).catch(console.log('error'))
-
-
     }
+
     const handleChange = name => (event) => {
 
         if (name === 'meetup_ind') {
@@ -202,17 +208,41 @@ function SocialProfileEdit(props) {
                                     <Grid item xs={12} md={5}>
                                         <FormControl variant="outlined" className={classes.formControl}>
                                             <InputLabel ref={inputLabel} >
-                                                Current Career Focus
+                                                Preferred Locations
                                         </InputLabel>
                                             <Select
-                                                value={profileState.job_search_stage}
-                                                onChange={handleChange('job_search_stage')}
+                                                value={profileState.preferred_locations}
+                                                onChange={handleChange('preferred_locations')}
                                                 labelWidth={labelWidth}
+                                                multiple
                                             >
-
-                                                <MenuItem value={"SEARCH_JOB"}>Search for a Job</MenuItem>
-                                                <MenuItem value={"GROW_CAREER"}>Grow Your Career</MenuItem>
-
+                                                <ListSubheader>North</ListSubheader>
+                                                {
+                                                    locationData.North.map(value => (
+                                                        <MenuItem value={value}>{value}</MenuItem>
+                                                    ))
+                                                }
+                                                <ListSubheader>East</ListSubheader>
+                                                {
+                                                    locationData.East.map(value => (
+                                                        <MenuItem value={value}>{value}</MenuItem>
+                                                    ))
+                                                }<ListSubheader>South</ListSubheader>
+                                                {
+                                                    locationData.South.map(value => (
+                                                        <MenuItem value={value}>{value}</MenuItem>
+                                                    ))
+                                                }<ListSubheader>West</ListSubheader>
+                                                {
+                                                    locationData.West.map(value => (
+                                                        <MenuItem value={value}>{value}</MenuItem>
+                                                    ))
+                                                }<ListSubheader>Central</ListSubheader>
+                                                {
+                                                    locationData.Central.map(value => (
+                                                        <MenuItem value={value}>{value}</MenuItem>
+                                                    ))
+                                                }
                                             </Select>
                                         </FormControl>
                                     </Grid>

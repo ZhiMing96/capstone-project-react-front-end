@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Box } from '@material-ui/core'
+import { Grid, Typography, Box, FormControlLabel,Checkbox } from '@material-ui/core'
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -52,7 +52,8 @@ function SocialProfileRead(props) {
         profile_image_link: '',
         description: '',
         meetup_ind:'',
-        job_search_stage:''
+        job_search_stage:'',
+        preferred_locations:[]
     })
     console.log(props)
 
@@ -66,25 +67,37 @@ function SocialProfileRead(props) {
         console.log(profileState)
         api.profile.get().then(res => {
             console.log(res.data.social)
-            const { profile_image_link, description,  meetup_ind, job_search_stage} = res.data.social
+            const { profile_image_link, description,  meetup_ind, job_search_stage, preferred_locations} = res.data.social
             console.log(res.data.social)
+            const arr = preferred_locations.map(value=>(
+                value.location
+            ))
+            var str =""
+            for(var i = 0; i< arr.length;i++){
+                str += arr[i]
+                if(i!== arr.length-1){
+                    str+= ", "
+                }
+            }
             setProfileState({
                 profile_image_link: profile_image_link,
                 description: description,
                 meetup_ind:meetup_ind,
-                job_search_stage:job_search_stage
+                job_search_stage:job_search_stage,
+                preferred_locations: str
             })
             props.updateSocialProfile({
                 profile_image_link: profile_image_link,
                 description: description,
                 meetup_ind: meetup_ind,
-                job_search_stage: job_search_stage
+                job_search_stage: job_search_stage,
+                preferred_locations: arr
             })
+            console.log(profileState)
         }).catch(err => {
             console.log(err)
         })
     }, [])
-
 
     return (
         <div>
@@ -120,16 +133,18 @@ function SocialProfileRead(props) {
 
                         <form className={classes.form} >
                             <Grid container style={{ width: '85%', textAlign: 'left' }}>
+
                             <Grid container item xs={12} justify="space-between">
-                                <Grid item xs={12} md={5}>
-                                    <TextField
-                                        label="Interested in networking?"
-                                        value={profileState.meetup_ind ===1? 'Yes': 'No'}
-                                        className={classes.textField}
-                                        margin="normal"
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
+                            <Grid item xs={12} md={5}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={profileState.meetup_ind === 1 ? true : false}
+                                                color="primary"
+                                                readOnly
+                                            />
+                                        }
+                                        label="Interested in networking"
                                     />
                                 </Grid>
                                 <Grid item xs={12} md={5}>
@@ -151,6 +166,22 @@ function SocialProfileRead(props) {
                                         }}
                                     />
                                 </Grid>
+                                </Grid>
+                                <Grid item xs={12} >
+                                    <TextField
+                                        label="Preferred Locations"
+                                        value={
+                                            profileState.preferred_locations.length===0? 
+                                                '-'
+                                            :
+                                            profileState.preferred_locations.toString()
+                                        }
+                                        className={classes.textField}
+                                        margin="normal"
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                    />
                                 </Grid>
 
                                 <Grid item xs={12}>

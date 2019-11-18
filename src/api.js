@@ -37,7 +37,10 @@ const profile={
   }),
   uploadImage: params => axios.post('http://localhost:3000/social/profile/image', params, {
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
-  })
+  }),
+  updateLocations: params => axios.post('http://localhost:3000/social/profile/locations', params, {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const work ={
