@@ -41,6 +41,9 @@ const profile={
   updateLocations: params => axios.post('http://localhost:3000/social/profile/locations', params, {
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  getPublic: params => axios.post('http://localhost:3000/profile', params, {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const work ={
