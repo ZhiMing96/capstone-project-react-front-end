@@ -21,6 +21,7 @@ import TextField from '@material-ui/core/TextField';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
 import EmploymentDetails from './EmploymentDetails'
+import viewProfileBG from '../images/viewProfileBG.jpg'
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles(theme => ({
         width: 50,
         height: 50,
         marginTop: 10,
-        backgroundImage: "url('https://image.flaticon.com/icons/svg/64/64572.svg')",
+        backgroundImage: `url(${viewProfileBG})`,
         backgroundSize: 'cover'
     },
     avatarImg:{

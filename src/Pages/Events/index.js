@@ -643,39 +643,30 @@ function Events() {
             {recommendedEvents.map((event, index) => (
               <div key={index}>
                 <Card className={classes.eventLisiting} style={selectedRecommendedIndex === index ? { backgroundColor: 'whitesmoke' } : {}}
-                  onMouseEnter={() => viewRecommended(event, index)}>
+                  onMouseEnter={() => viewRecommended(event[0], index)}>
                   <div style={{ display: 'inline-flex', width: '100%' }}>
                     <CardMedia
                       className={classes.cover}
-                      image={event.logo? event.logo : defaultImg}
+                      image={event[0].logo? event[0].logo : defaultImg}
                       title={event.event_title}
                     />
-                    {/* <div className={classes.details}> */}
                     <CardContent style={{ paddingLeft: 20, width: '100%' }}>
                       <Grid container style={{ height: '100%', alignContent: 'center', }}>
-                        {/* <Hidden smDown>
-                        <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
-                        </Grid>
-                      </Hidden> */}
+                        
                         <Grid item xs={12} container style={{}} justify="space-between">
                           <Grid item xs={11}>
                             <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              {event.job_phase}
+                              {event[0].job_phase}
                             </Typography>
                             <Typography style={{ paddingTop: 1 }}>
                               <Box className={classes.eventTitle}>
-                                {event.event_title}
+                                {event[0].event_title}
                               </Box>
                               <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
-                                {/* {getDate(event.start_date, event.end_date)} */}
-                                {getDate(event.date_time)}
+                                {getDate(event[0].date_time)}
                               </Box>
                               <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                {/* {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
-                                  ? `${event.sessions[0].buildingName}, Singapore`
-                                  : 'Singapore'
-                                } */}
-                                {event.venue}
+                                {event[0].venue}
                               </Box>
                               <Grid
                                 container
@@ -685,7 +676,7 @@ function Events() {
                               >
                                 <Grid item>
                                   <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
-                                    {event.cost}
+                                    {event[0].cost}
                                   </Box>
                                 </Grid>
                               </Grid>
@@ -694,7 +685,7 @@ function Events() {
                           <Grid item xs={1} container justify='center' style={{ alignContent: 'space-between' }}>
                             <Hidden smUp>
                               <IconButton
-                                onClick={() => handleRecommendedClickOpen(event, index)}
+                                onClick={() => handleRecommendedClickOpen(event[0], index)}
                                 disableRipple={true}
                                 color='Secondary'
                                 style={{}}
@@ -707,52 +698,18 @@ function Events() {
                                 [classes.expandOpen]: index === selectedRecommendedIndex ? expanded : false,
                               })}
                               size='small'
-                              onClick={() => handleExpandRecommendedClick(index, event)}
+                              onClick={() => handleExpandRecommendedClick(index, event[0])}
                               aria-expanded={expanded}
                               aria-label="show more"
                             >
                               <ExpandMoreIcon />
                             </IconButton>
                           </Grid>
-                          {/* <Hidden smDown>
-                          <Grid item md={3} sm={4} style={{marginTop:1,textAlign:'end'}}>
-                            <Button
-                            disableRipple={true}
-                            size='small'
-                            onClick={() => viewDetails(event,index)}
-                            color='primary'
-                            disableTouchRipple={true}
-                            disableFocusRipple={true}
-                            style={{fontWeight:'bold', fontSize:12}}
-                            
-                            >
-                              View Details
-                            </Button>
-                            <Typography style={{fontSize:11, fontWeight:500}}>
-                              {event.targetNationality}
-                            </Typography>
-                          </Grid>
-                        </Hidden> */}
-                          {/* <Grid item sm={1} style={{marginTop:1,textAlign:'end'}}>
-                          <IconButton
-                            className={clsx(classes.expand, {
-                              [classes.expandOpen]: index === selectedIndex? expanded : false,
-                            })}
-                            size='small'
-                            onClick={() => handleExpandClick(index)}
-                            aria-expanded={expanded}
-                            aria-label="show more"
-                          >
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        </Grid> */}
                         </Grid>
                       </Grid>
                     </CardContent>
 
                   </div>
-
-                  {/* </div> */}
                   <Collapse in={index === selectedRecommendedIndex ? expanded : false} timeout="auto" unmountOnExit>
                     <CardContent style={{ padding: 0 }}>
                       <div style={{ width: '95%', margin: 9, marginTop: 15, backgroundColor: '#EDF7FA', height: 'fit-content', padding: 10, maxHeight: '100%' }}>
@@ -763,7 +720,7 @@ function Events() {
                           <Grid item xs={11}>
                             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                               <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
-                                {event.summary}
+                                {event[0].summary}
                               </Typography>
                             </div>
                           </Grid>
@@ -817,16 +774,12 @@ function Events() {
                   <div style={{ display: 'inline-flex', width: '100%' }}>
                     <CardMedia
                       className={classes.cover}
-                      image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
+                      image={ event.logo ? event.logo : defaultImg }
                       title={event.logo}
                     />
                     {/* <div className={classes.details}> */}
                     <CardContent style={{ paddingLeft: 20, width: '100%' }}>
                       <Grid container style={{ height: '100%', alignContent: 'center', }}>
-                        {/* <Hidden smDown>
-                        <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
-                        </Grid>
-                      </Hidden> */}
                         <Grid item xs={12} container style={{}} justify="space-between">
                           <Grid item xs={11}>
                             <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
@@ -837,14 +790,9 @@ function Events() {
                                 {event.event_title}
                               </Box>
                               <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
-                                {/* {getDate(event.eventStartDate, event.eventEndDate)} */}
                                 {getDate(event.date_time)}
                               </Box>
                               <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                {/* {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
-                                  ? `${event.sessions[0].buildingName}, Singapore`
-                                  : 'Singapore'
-                                } */}
                                 {event.venue}
                               </Box>
                               <Grid
