@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
         maxWidth: 350,
         minWidth: '226px',
         overflowWrap: 'break-word',
+        padding:'1%'
     },
     icon : {
         width: 20,
