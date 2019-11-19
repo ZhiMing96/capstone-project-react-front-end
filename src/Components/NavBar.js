@@ -35,10 +35,11 @@ import Collapse from '@material-ui/core/Collapse';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Fade from '@material-ui/core/Fade';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone'
-import Notifications from '../Components/Notifications';
+import Notifications from './Notifications/Notifications';
 import Popper from '@material-ui/core/Popper';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const styles = theme => ({
   root: {
@@ -67,6 +68,7 @@ class NavTabs extends React.Component {
       openSnackBar: false,
       messageInfo: "You have a new Notification!",
       notificationLoading: true, 
+      fillAlertIcon:false,
     };
     console.log(this.props)
     console.log(this.props.location.pathname)
@@ -82,8 +84,8 @@ class NavTabs extends React.Component {
         }
       })
     }
-    // this.retrieveAlerts()
-    // setInterval(this.retrieveAlerts, 20000);
+    this.retrieveAlerts()
+    setInterval(this.retrieveAlerts, 20000);
   }
 
 
@@ -179,6 +181,13 @@ class NavTabs extends React.Component {
     this.setState({anchorEl : this.state.anchorEl ? null : event.currentTarget });
   
   };
+
+  setAlertIcon = () => {
+    this.setState({ fillAlertIcon : true })
+  }
+  resetAlertIcon = () => {
+    this.setState({ fillAlertIcon : false })
+  }
 
 
 
@@ -332,7 +341,7 @@ class NavTabs extends React.Component {
                   <PersonIcon />
                 </IconButton>
                 <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
-                  <NotificationsNoneIcon onClick={this.handleClick} />
+                   <NotificationsNoneIcon onClick={this.handleClick} style={{ }} />
                 </Badge>
                 <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
                   className="popper_class"
@@ -344,7 +353,6 @@ class NavTabs extends React.Component {
                     },
                     arrow: {
                       enabled: true,
-                      
                     },
                 }}>
                   <Notifications alerts={this.state.alerts} retrieveAlerts={this.retrieveAlerts} loading={this.state.notificationLoading}/>
