@@ -21,6 +21,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
+import viewProfileBG from '../../images/viewProfileBG.jpg'
 
 
 const theme = createMuiTheme({
@@ -59,7 +60,7 @@ const useStyles = makeStyles(theme => ({
         width:60, 
         height:60, 
         boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
-        backgroundImage: "url('https://image.flaticon.com/icons/svg/64/64572.svg')",
+        backgroundImage: `url(${viewProfileBG})` ,
         backgroundSize: 'cover'
     },
     listAvatarImg : {

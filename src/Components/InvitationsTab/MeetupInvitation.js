@@ -17,6 +17,7 @@ import MessageIcon from '@material-ui/icons/Message';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import EmploymentDetails from '../EmploymentDetails'
 import FaceIcon from '@material-ui/icons/Face';
+import viewProfileBG from '../../images/viewProfileBG.jpg'
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -51,7 +52,8 @@ const useStyles = makeStyles(theme => ({
         width:90, 
         height:90, 
         boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
-        backgroundImage: "url('https://image.flaticon.com/icons/svg/64/64572.svg')",
+        // backgroundImage: "url('https://image.flaticon.com/icons/svg/64/64572.svg')",
+        backgroundImage: `url(${viewProfileBG})` ,
         backgroundSize: 'cover'
     },
     carouselAvatarImg : {
