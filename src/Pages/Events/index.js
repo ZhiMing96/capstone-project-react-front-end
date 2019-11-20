@@ -19,6 +19,7 @@ import Slide from '@material-ui/core/Slide';
 import { ThemeProvider } from '@material-ui/styles';
 import MapGL, { GeolocateControl, Marker } from 'react-map-gl';
 import api from '../../api';
+import EventListingComponent from '../../Components/EventsComponent/EventListingComponent';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -210,7 +211,7 @@ const defaultImg = 'https://portal.ssg-wsg.gov.sg/content/dam/eventCatalog/produ
 
 function Events() {
   const classes = useStyles();
-  const [events, setEvents] = useState([]);
+  const [allEvents, setAllEvents] = useState();
   const [recommendedEvents, setRecommendedEvents] = useState([]);
   const [dailyPicks, setDailyPicks] = useState([]);
   const [value, setValue] = React.useState(0);
@@ -220,7 +221,7 @@ function Events() {
     latest: '300'
   })
   const [selectedEventLocation, setSelectedEventLocation] = useState("Please Select An Event");
-  const [selectedEventDescription, setSelectedEventDescription] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [markerAddress, setMarkerAddress] = useState('Singapore')
   const [selectedUrl, setSelectedUrl] = useState('');
   const [selectedIndex, setselectedIndex] = useState(null);
@@ -231,25 +232,12 @@ function Events() {
   const [open, setOpen] = React.useState(false);
   const token = window.localStorage.getItem('authToken');
 
-  const doGeocoding = (long, lat) => {
-    // console.log('**** LONG LAT ***')
-    // console.log(long)
-    // console.log(lat)
-    var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + long + ',' + lat + '.json?access_token=' + process.env.REACT_APP_MAPBOX_TOKEN
-    axios.get(url).then(res => {
-      return res.data.features[0].place_name
-    })
-  } 
+ 
 
   const handleRecommendedClickOpen = (event, index) => {
     setselectedIndex(null);
     setSelectedRecommendedIndex(index);
-
-    // const venue = doGeocoding(event.longitude, event.latitude)
-    // console.log(venue)
-
     console.log('*** LOCATION IS: ***')
-    
 
     const venueArray = event.venue ? event.venue.split('·') : null
     console.log(venueArray)
@@ -259,44 +247,16 @@ function Events() {
 
     setMarkerAddress(formattedVenue);
 
-    // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
-    //   setMarkerAddress(event.sessions[0].buildingName);
-    // } else if (event.sessions[0].eventVenue !== 'NIL') {
-    //   setMarkerAddress(event.sessions[0].eventVenue);
-    // } else {
-    //   setMarkerAddress(null);
-    // }
-
     setOpen(true);
-    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-
-    // setSelectedEventLocation(location);
-
 
     setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
+    setSelectedEvent(event)
 
   }
 
   const handleClickOpen = (event, index) => {
     setSelectedRecommendedIndex(null);
     setselectedIndex(index);
-    // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
-    //   setMarkerAddress(event.sessions[0].buildingName);
-    // } else if (event.sessions[0].eventVenue !== 'NIL') {
-    //   setMarkerAddress(event.sessions[0].eventVenue);
-    // } else {
-    //   setMarkerAddress(null);
-    // }
-
-    // if(event.longitude && event.latitude){
-    //   setMarkerAddress(event.longitude, event.latitude);
-    // }  else  {
-    //   setMarkerAddress(null);
-    // }
-
-    // const venue = doGeocoding(event.longitude, event.latitude)
-    // console.log('*** LOCATION IS: ***')
-    // console.log(venue)
 
     const venueArray = event.venue ? event.venue.split('·') : null
     console.log(venueArray)
@@ -307,15 +267,13 @@ function Events() {
     setMarkerAddress(formattedVenue);
 
     setOpen(true);
-    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
     setSelectedEventLocation(event.venue);
+    setSelectedEvent(event)
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-
-
 
   const handleExpandRecommendedClick = (index) => {
     console.log(index);
@@ -339,7 +297,7 @@ function Events() {
       console.log('******* RESULTS FROM EVENTS API CALL ********')
       console.log(results);
       if(results.response_code === 200){
-        setEvents(results.events)
+        setAllEvents(results.events)
       } else {
 
       }
@@ -422,59 +380,6 @@ function Events() {
     return(`${day} ${month} ${year}: ${time}`);
   }
 
-  // const getDate = (startDate, endDate) => {
-  //   var newStartDate = new Date(startDate);
-  //   var newEndDate = new Date(endDate);
-  //   //console.log(newStartDate.getHours());
-  //   var startTime = newStartDate.getHours()
-  //   var endTime = newEndDate.getHours()
-
-  //   if (startTime <= 12) {
-  //     startTime = `${startTime}am`
-  //     //console.log(startTime);
-  //   } else {
-  //     startTime = `${startTime - 12}pm`
-  //     //console.log(startTime);
-  //   }
-  //   if (endTime <= 12) {
-  //     endTime = `${endTime}am`
-  //     //console.log(endTime);
-  //   } else {
-  //     endTime = `${endTime - 12}pm`
-  //     //console.log(endTime);
-  //   }
-
-  //   var month = newStartDate.toLocaleString('en-GB', { month: 'short' });
-  //   console.log(month);
-  //   var startDay = newStartDate.getMonth();
-  //   var endDay = newEndDate.getMonth();
-  //   var startYear = newStartDate.getFullYear();
-
-  //   var day = startDay
-  //   if (startDay != endDay) {
-  //     day = `${startDay}-${endDay}`
-  //   }
-
-  //   return (`${day} ${month} ${startYear}: ${startTime}-${endTime}`)
-
-
-
-  //   //  5-6 Oct 2019: 1pm-5pm
-  //   // var parsedStartDate = newStartDate.toLocaleString('en-GB', {
-  //   //   day: 'numeric',
-  //   //   month: 'short',
-  //   //   year: 'numeric',
-  //   //   hour: '2-digit',
-  //   //   minute: '2-digit',
-  //   // })
-  //   //var startTime = `${newStartDate.getTime}`
-  //   //console.log(parsedDate)
-  //   // console.log(newDate.getMonth());
-  //   // console.log(newDate.getDate());
-  //   // console.log(newDate.getFullYear());
-  //   //
-  // }
-
   const formatVenue = (building, venue, streetName, postalCode) => {
     //Lifelong Learning Center: Training Room 2-1, Eunos Road 9 S123456
     console.log('ENTERED FORMAT VENUE')
@@ -506,9 +411,6 @@ function Events() {
 
     console.log(event)
 
-    // const venue = doGeocoding(event.longitude, event.latitude)
-    // console.log(venue)
-
     console.log('*** LOCATION IS: ***')
     
 
@@ -520,23 +422,10 @@ function Events() {
 
     setMarkerAddress(formattedVenue);
 
-    // if (event.sessions[0].buildingName !== '-' && event.sessions[0].buildingName !== '0') {
-    //   setMarkerAddress(event.sessions[0].buildingName);
-    // } else if (event.sessions[0].eventVenue !== 'NIL') {
-    //   setMarkerAddress(event.sessions[0].eventVenue);
-    // } else {
-    //   setMarkerAddress('Singapore');
-    // }
-
     setSelectedUrl(event.url);
 
-    if (event.summary !== '') {
-      setSelectedEventDescription(event.summary);
-    } else {
-      setSelectedEventDescription('No Description Available')
-    }
-    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
     setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
+    setSelectedEvent(event)
     
   }
 
@@ -561,40 +450,20 @@ function Events() {
     console.log(formattedVenue)
 
     setMarkerAddress(formattedVenue);
-    
-
-    // if(event.longitude && event.latitude){
-    //   setMarkerAddress(event.longitude, event.latitude);
-    // }  else  {
-    //   setMarkerAddress(null);
-    // }
-
-    // if (event.venue !== null) {
-    //   setMarkerAddress(event.sessions[0].buildingName);
-    // } else if (event.sessions[0].eventVenue !== 'NIL') {
-    //   setMarkerAddress(event.sessions[0].eventVenue);
-    // } else {
-    //   setMarkerAddress('Singapore');
-    // }
 
     setSelectedUrl(event.url);
 
-    if (event.summary !== '') {
-      setSelectedEventDescription(event.summary);
-    } else {
-      setSelectedEventDescription('No Description Available')
-    }
-    // const location = formatVenue(event.sessions[0].buildingName, event.sessions[0].eventVenue, event.sessions[0].streetName, event.sessions[0].postalCode)
-
+    
     setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
+    setSelectedEvent(event)
     console.log('Exiting view Event Details')
     // window.scrollTo(0,document.body.scrollHeight);
   }
 
   //get current page lisitngs
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = events.slice(indexOfFirstPost, indexOfLastPost);
+  // const indexOfLastPost = currentPage * postsPerPage;
+  // const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  // const currentPosts = events.slice(indexOfFirstPost, indexOfLastPost);
 
   //Change Page 
   const paginate = pageNumber => setCurrentPage(pageNumber);
@@ -603,6 +472,26 @@ function Events() {
   const handleHrefClick = url => {
     window.open(url, '_blank');
   }
+
+
+
+  const handleSelectedEvent = (event) => {
+    const venueArray = event.venue ? event.venue.split('·') : null
+    console.log(venueArray)
+
+    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
+    console.log(formattedVenue)
+    
+    setMarkerAddress(formattedVenue);
+    setSelectedEventLocation(event.venue);
+    setSelectedUrl(event.url ? event.url : null);
+    setSelectedEvent(event)
+  }
+
+  
+
+  console.log("!!!! EVENT = ")
+  console.log(allEvents)
 
   return (
     <div style={{ backgroundColor: '#FFFFFF' }}>
@@ -633,160 +522,9 @@ function Events() {
             { recommendedEvents 
             ?
             <div style={{ maxHeight: 300, overflowY: 'auto', }}>
-            {recommendedEvents.map((event, index) => (
+            {recommendedEvents.map((recommendedEvent, index) => (
               <div key={index}>
-                <Card className={classes.eventLisiting} style={selectedRecommendedIndex === index ? { backgroundColor: 'whitesmoke' } : {}}
-                  onMouseEnter={() => viewRecommended(event, index)}>
-                  <div style={{ display: 'inline-flex', width: '100%' }}>
-                    <CardMedia
-                      className={classes.cover}
-                      image={event.logo? event.logo : defaultImg}
-                      title={event.event_title}
-                    />
-                    {/* <div className={classes.details}> */}
-                    <CardContent style={{ paddingLeft: 20, width: '100%' }}>
-                      <Grid container style={{ height: '100%', alignContent: 'center', }}>
-                        {/* <Hidden smDown>
-                        <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
-                        </Grid>
-                      </Hidden> */}
-                        <Grid item xs={12} container style={{}} justify="space-between">
-                          <Grid item xs={11}>
-                            <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              {event.job_phase}
-                            </Typography>
-                            <Typography style={{ paddingTop: 1 }}>
-                              <Box className={classes.eventTitle}>
-                                {event.event_title}
-                              </Box>
-                              <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
-                                {/* {getDate(event.start_date, event.end_date)} */}
-                                {getDate(event.date_time)}
-                              </Box>
-                              <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                {/* {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
-                                  ? `${event.sessions[0].buildingName}, Singapore`
-                                  : 'Singapore'
-                                } */}
-                                {event.venue}
-                              </Box>
-                              <Grid
-                                container
-                                direction="column"
-                                justify="flex-end"
-                                alignItems="flex-start"
-                              >
-                                <Grid item>
-                                  <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
-                                    {event.cost}
-                                  </Box>
-                                </Grid>
-                              </Grid>
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={1} container justify='center' style={{ alignContent: 'space-between' }}>
-                            <Hidden smUp>
-                              <IconButton
-                                onClick={() => handleRecommendedClickOpen(event, index)}
-                                disableRipple={true}
-                                color='Secondary'
-                                style={{}}
-                              >
-                                <MoreVertIcon />
-                              </IconButton>
-                            </Hidden>
-                            <IconButton
-                              className={clsx(classes.expand, {
-                                [classes.expandOpen]: index === selectedRecommendedIndex ? expanded : false,
-                              })}
-                              size='small'
-                              onClick={() => handleExpandRecommendedClick(index, event)}
-                              aria-expanded={expanded}
-                              aria-label="show more"
-                            >
-                              <ExpandMoreIcon />
-                            </IconButton>
-                          </Grid>
-                          {/* <Hidden smDown>
-                          <Grid item md={3} sm={4} style={{marginTop:1,textAlign:'end'}}>
-                            <Button
-                            disableRipple={true}
-                            size='small'
-                            onClick={() => viewDetails(event,index)}
-                            color='primary'
-                            disableTouchRipple={true}
-                            disableFocusRipple={true}
-                            style={{fontWeight:'bold', fontSize:12}}
-                            
-                            >
-                              View Details
-                            </Button>
-                            <Typography style={{fontSize:11, fontWeight:500}}>
-                              {event.targetNationality}
-                            </Typography>
-                          </Grid>
-                        </Hidden> */}
-                          {/* <Grid item sm={1} style={{marginTop:1,textAlign:'end'}}>
-                          <IconButton
-                            className={clsx(classes.expand, {
-                              [classes.expandOpen]: index === selectedIndex? expanded : false,
-                            })}
-                            size='small'
-                            onClick={() => handleExpandClick(index)}
-                            aria-expanded={expanded}
-                            aria-label="show more"
-                          >
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        </Grid> */}
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-
-                  </div>
-
-                  {/* </div> */}
-                  <Collapse in={index === selectedRecommendedIndex ? expanded : false} timeout="auto" unmountOnExit>
-                    <CardContent style={{ padding: 0 }}>
-                      <div style={{ width: '95%', margin: 9, marginTop: 15, backgroundColor: '#EDF7FA', height: 'fit-content', padding: 10, maxHeight: '100%' }}>
-                        <Grid container style={{ maxHeight: '100%' }}>
-                          <Grid item xs={1}>
-                            <Divider display='inline' orientation='vertical' style={{ width: 5, height: '100%', backgroundColor: '#1382B9' }} />
-                          </Grid>
-                          <Grid item xs={11}>
-                            <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                              <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
-                                {event.summary}
-                              </Typography>
-                            </div>
-                          </Grid>
-                        </Grid>
-                      </div>
-                    </CardContent>
-                  </Collapse>
-                </Card>
-                <ThemeProvider theme={theme}>
-                  <Dialog open={selectedRecommendedIndex === index ? open : false} onClose={handleClose} style={{ boxShadow: 0, opacity: 1, margin: '7px', width: '100vw'}} fullWidth>
-                    <DialogContent style={{ textAlign: 'center' }}>
-                      <Map markerAddress={markerAddress} style={{ width: '98%', }} />
-                      <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                        LOCATION
-                      </Typography>
-                      <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
-                        {selectedEventLocation}
-                      </Typography>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        href={selectedUrl}
-                        target="_blank"
-                        style={{ fontWeight: 'bold', fontSize: 17, marginTop: 10, marginBottom: 10, backgroundColor: '#0091ea', color: '#FFFFFF' }}
-                      >
-                        Sign Up
-                    </Button>
-                    </DialogContent>
-                  </Dialog>
-                </ThemeProvider>
+                <EventListingComponent key={index} event={recommendedEvent} handleSelectedEvent={handleSelectedEvent} handleHrefClick={handleHrefClick} recommended={true}/> 
               </div>
             ))}
           </div>
@@ -803,162 +541,16 @@ function Events() {
             Latest
             </Typography>
           <div style={{ maxHeight: 500, overflowY: 'auto', }}>
-            {events.map((event, index) => (
-              <div key={index}>
-                <Card className={classes.eventLisiting} style={selectedIndex === index ? { backgroundColor: 'whitesmoke' } : {}}
-                  onMouseEnter={() => viewDetails(event, index)}>
-                  <div style={{ display: 'inline-flex', width: '100%' }}>
-                    <CardMedia
-                      className={classes.cover}
-                      image='https://content-mycareersfuture-sg-admin.cwp.sg/wp-content/uploads/2019/03/shutterstock_683138257.jpg'
-                      title={event.logo}
-                    />
-                    {/* <div className={classes.details}> */}
-                    <CardContent style={{ paddingLeft: 20, width: '100%' }}>
-                      <Grid container style={{ height: '100%', alignContent: 'center', }}>
-                        {/* <Hidden smDown>
-                        <Grid item sm={2} style={{backgroundImage:`url(${event.eventImgUrl})`, backgroundSize: 'cover'}}>
-                        </Grid>
-                      </Hidden> */}
-                        <Grid item xs={12} container style={{}} justify="space-between">
-                          <Grid item xs={11}>
-                            <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              {event.job_phase}
-                            </Typography>
-                            <Typography style={{ paddingTop: 1 }}>
-                              <Box className={classes.eventTitle}>
-                                {event.event_title}
-                              </Box>
-                              <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
-                                {/* {getDate(event.eventStartDate, event.eventEndDate)} */}
-                                {getDate(event.date_time)}
-                              </Box>
-                              <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                {/* {event.sessions[0].buildingName !== '0' && event.sessions[0].buildingName !== '-'
-                                  ? `${event.sessions[0].buildingName}, Singapore`
-                                  : 'Singapore'
-                                } */}
-                                {event.venue}
-                              </Box>
-                              <Grid
-                                container
-                                direction="column"
-                                justify="flex-end"
-                                alignItems="flex-start"
-                              >
-                                <Grid item>
-                                  <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
-                                      {event.cost} 
-                                  </Box>
-                                </Grid>
-                              </Grid>
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={1} container justify='center' style={{ alignContent: 'space-between' }}>
-                            <Hidden smUp>
-                              <IconButton
-                                onClick={() => handleClickOpen(event, index)}
-                                disableRipple={true}
-                                color='Secondary'
-                                style={{}}
-                              >
-                                <MoreVertIcon />
-                              </IconButton>
-                            </Hidden>
-                            <IconButton
-                              className={clsx(classes.expand, {
-                                [classes.expandOpen]: index === selectedIndex ? expanded : false,
-                              })}
-                              size='small'
-                              onClick={() => handleExpandClick(index, event)}
-                              aria-expanded={expanded}
-                              aria-label="show more"
-                            >
-                              <ExpandMoreIcon />
-                            </IconButton>
-                          </Grid>
-                          {/* <Hidden smDown>
-                          <Grid item md={3} sm={4} style={{marginTop:1,textAlign:'end'}}>
-                            <Button
-                            disableRipple={true}
-                            size='small'
-                            onClick={() => viewDetails(event,index)}
-                            color='primary'
-                            disableTouchRipple={true}
-                            disableFocusRipple={true}
-                            style={{fontWeight:'bold', fontSize:12}}
-                            
-                            >
-                              View Details
-                            </Button>
-                            <Typography style={{fontSize:11, fontWeight:500}}>
-                              {event.targetNationality}
-                            </Typography>
-                          </Grid>
-                        </Hidden> */}
-                          {/* <Grid item sm={1} style={{marginTop:1,textAlign:'end'}}>
-                          <IconButton
-                            className={clsx(classes.expand, {
-                              [classes.expandOpen]: index === selectedIndex? expanded : false,
-                            })}
-                            size='small'
-                            onClick={() => handleExpandClick(index)}
-                            aria-expanded={expanded}
-                            aria-label="show more"
-                          >
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        </Grid> */}
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-
-                  </div>
-
-                  {/* </div> */}
-                  <Collapse in={index === selectedIndex ? expanded : false} timeout="auto" unmountOnExit>
-                    <CardContent style={{ padding: 0 }}>
-                      <div style={{ width: '95%', margin: 9, marginTop: 15, backgroundColor: '#EDF7FA', height: 'fit-content', padding: 10, maxHeight: '100%' }}>
-                        <Grid container style={{ maxHeight: '100%' }}>
-                          <Grid item xs={1}>
-                            <Divider display='inline' orientation='vertical' style={{ width: 5, height: '100%', backgroundColor: '#1382B9' }} />
-                          </Grid>
-                          <Grid item xs={11}>
-                            <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                              <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
-                                {event.summary}
-                              </Typography>
-                            </div>
-                          </Grid>
-                        </Grid>
-                      </div>
-                    </CardContent>
-                  </Collapse>
-                </Card>
-                <ThemeProvider theme={theme}>
-                  <Dialog fullWidth open={selectedIndex === index ? open : false} onClose={handleClose} style={{ boxShadow: 0, opacity: 1, margin: '7px', width: '100vw' }}>
-                    <DialogContent style={{ textAlign: 'center' }}>
-                      <Map markerAddress={markerAddress} style={{ width: '98%', }} />
-                      <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                        LOCATION
-                      </Typography>
-                      <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
-                        {selectedEventLocation}
-                      </Typography>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        href={selectedUrl}
-                        target="_blank"
-                        style={{ fontWeight: 'bold', fontSize: 17, marginTop: 10, marginBottom: 10, backgroundColor: '#0091ea', color: '#FFFFFF' }}
-                      >
-                        Sign Up
-                    </Button>
-                    </DialogContent>
-                  </Dialog>
-                </ThemeProvider>
-              </div>
-            ))}
+            {allEvents 
+            ? 
+            allEvents.map((list, index) => (
+              // <div key={index}>
+                <EventListingComponent key={index} event={list} handleSelectedEvent={handleSelectedEvent} handleHrefClick={handleHrefClick} />
+                
+              // </div>
+            ))
+            : ""
+          }
           </div>
 
         </Grid>
@@ -969,7 +561,7 @@ function Events() {
               <Grid container justify="space-between">
                 <Grid item xs={12}>
                   <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                    LOCATION
+                    {selectedEvent ? selectedEvent.event_title : "LOCATION"}
                       </Typography>
                   <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
                     {selectedEventLocation}

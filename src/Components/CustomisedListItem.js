@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'; import List from '@materi
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Grid, Typography, Box } from '@material-ui/core'
+import { Grid, Typography, Box, Chip } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -21,6 +21,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import CategoryInput from '../Pages/Profile/UserProfile/JobCategoryInput'
 
 import {
     DatePicker,
@@ -89,8 +90,8 @@ function CustomisedListItem(props) {
         company_name: '',
         start_date: '',
         end_date: '',
-        description: ''
-
+        description: '',
+        categories:[]
     });
 
     console.log(props.item)
@@ -163,7 +164,8 @@ function CustomisedListItem(props) {
                             company_name: '',
                             start_date: '',
                             end_date: '',
-                            description: ''
+                            description: '',
+                            categories:[]
                         })
                         setDateValid(false)
                         setCheckedState(false)
@@ -185,7 +187,8 @@ function CustomisedListItem(props) {
                 company_name: props.item.company_name,
                 start_date: props.item.start_date,
                 end_date: props.item.end_date,
-                description: props.item.description
+                description: props.item.description,
+                categories: props.item.categories
             })
             setDateValid(true)
             if(props.item.end_date === null){
@@ -199,7 +202,8 @@ function CustomisedListItem(props) {
                 company_name: '',
                 start_date: '',
                 end_date: '',
-                description: ''
+                description: '',
+                categories:[]
             })
             setDateValid(false)
             setCheckedState(false)
@@ -233,6 +237,23 @@ function CustomisedListItem(props) {
                     props.setSnackbar('Error deleting work experience.')
                 }
             }).catch(console.log('error'))
+    }
+    const matchCategory = () => {
+        console.log(state.description)
+        api.work.matchCategory({
+            description: state.description
+        }).then(res => {
+            setState({ ...state, categories: res.data.categories });
+            console.log(res.data.categories)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    const handleCategory=(value)=>{
+        const arr = value.map(cat=> cat.label)
+        console.log(arr)
+        setState({ ...state, categories: arr });
     }
 
 
@@ -327,7 +348,7 @@ function CustomisedListItem(props) {
                                 variant="outlined"
                                 label="Description"
                                 className={classes.description}
-                
+                                onBlur={matchCategory}
                                 multiline
                                 rows="4"
                                 margin="normal"
@@ -335,6 +356,9 @@ function CustomisedListItem(props) {
                                 value={state.description}
                             />
                         </Grid>
+                                    <Grid item xs={12}>
+                                        <CategoryInput categories={state.categories} key={state.catogories} handleCategory={handleCategory}/>
+                                    </Grid>
 
                     </Grid>
                     <Grid container style={{ alignContent: 'center' }}>
@@ -404,6 +428,10 @@ function CustomisedListItem(props) {
                                     {props.item.description}
                                 </Typography>
                                 </Grid>
+                                {props.item.categories.map(val=>(
+                                    <Chip variant="outlined" label={val} style={{ margin: 4, padding:2 }} size="small"/>
+                                ))}
+                                
                             </React.Fragment>
                         }
                     />

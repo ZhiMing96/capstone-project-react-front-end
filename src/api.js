@@ -35,6 +35,15 @@ const profile={
   updateSocial: params => axios.post('http://localhost:3000/social/profile', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  uploadImage: params => axios.post('http://localhost:3000/social/profile/image', params, {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  updateLocations: params => axios.post('http://localhost:3000/social/profile/locations', params, {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  getPublic: params => axios.post('http://localhost:3000/profile', params, {
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const work ={
@@ -48,6 +57,12 @@ const work ={
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
   update: params => axios.post('http://localhost:3000/work/update', params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  matchCategory: params =>axios.post('http://localhost:3000/work/match_category', params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  getPublic:params =>axios.post('http://localhost:3000/work/get', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
 }
@@ -113,7 +128,6 @@ const invitations = {
   rejectInvitation: params => axios.post('http://localhost:3000/meetup/invite/reject', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
-
   
 }
 
@@ -130,12 +144,43 @@ const meetups = {
     cancelMeetup: params => axios.post('http://localhost:3000/meetup/cancel', params, {
       headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
     }),
+    search: params => axios.post('http://localhost:3000/meetup/search', params, {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
+    invite: params => axios.post('http://localhost:3000/meetup/invite/send', params, {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
+    by_location: ()=> axios.post('http://localhost:3000/meetup/by_location', {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
+    by_stage: ()=> axios.post('http://localhost:3000/meetup//meetup/by_stage', {
+      headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+    }),
 }
 
 const recommendations = {
   request: (params) => axios.post('http://localhost:3000/recommendation/request', params, {
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  retrieveAll: ()=>axios.get('http://localhost:3000/recommendation/all', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  retrieveAllRequest:()=>axios.get('http://localhost:3000/recommendation/request/all', {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  submitRecommendation:(params)=>axios.post('http://localhost:3000/recommendation/submit', params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  reject:(params)=>axios.post('http://localhost:3000/recommendation/request/reject', params, {
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  processRecord: (params) => axios.post("http://localhost:3000/meetup/invite/process", params,{
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+  getPublic: (params) => axios.post("http://localhost:3000/recommendation/get", params,{
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+
 }
 
 const alerts = {

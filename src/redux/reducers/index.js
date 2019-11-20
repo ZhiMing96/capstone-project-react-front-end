@@ -4,8 +4,9 @@ import skill from "./skill";
 import profile from "./profile";
 import work from "./work";
 import socialProfile from './socialProfile'
-
+import socialInteraction from './socialInteraction'
+import socialSearch from './socialSearch'
 
 //const mainReducer = (state = {}, action) => action.type === 'hydrate' ? action.payload : reducers(state, action);
 
-export default combineReducers({auth,skill,profile,work, socialProfile});
+export default combineReducers({auth,skill,profile,work, socialProfile,socialInteraction, socialSearch});

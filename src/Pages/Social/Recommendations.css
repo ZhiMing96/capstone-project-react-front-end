@@ -1,0 +1,11 @@
+.slick-slider {
+    outline: none !important;
+}
+.container a { outline: 0; }
+
+.slick-slide, .slick-slide:focus *{outline:none!important;}
+
+*:focus {
+    outline: 0;
+    outline: none;
+  }

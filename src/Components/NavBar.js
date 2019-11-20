@@ -35,10 +35,11 @@ import Collapse from '@material-ui/core/Collapse';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Fade from '@material-ui/core/Fade';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone'
-import Notifications from '../Components/Notifications';
+import Notifications from './Notifications/Notifications';
 import Popper from '@material-ui/core/Popper';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const styles = theme => ({
   root: {
@@ -67,6 +68,7 @@ class NavTabs extends React.Component {
       openSnackBar: false,
       messageInfo: "You have a new Notification!",
       notificationLoading: true, 
+      fillAlertIcon:false,
     };
     console.log(this.props)
     console.log(this.props.location.pathname)
@@ -83,38 +85,48 @@ class NavTabs extends React.Component {
       })
     }
     this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 10000);
+    setInterval(this.retrieveAlerts, 20000);
   }
 
 
   retrieveAlerts = () =>{
     // this.setState({notificationLoading: true})
+    console.log("Entered RETRIEVE ALERTS")
     api.alerts.retrieve({"alert_type": ""})
     .then(res => {
         console.log(res.data)
         if (res.data.response_code === 200){
             console.log(res.data.alerts)
             if(res.data.alerts.length !== 0 || !res.data.alerts){
+
               if(!this.state.alerts) {
                 this.setState({alerts: res.data.alerts })
 
-            } else {
-              const currentLength = this.state.alerts ? this.state.alerts.length : 0
-              const incomingLength = res.data.alerts.length
-    
-                
-              console.log(currentLength)
-              console.log(incomingLength)
-              console.log(this.state.alerts[currentLength-1].alert_id)
-              console.log(res.data.alerts[incomingLength-1].alert_id)
-
-              if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
-                
-                this.setState({alerts: res.data.alerts })
-                this.setState({notificationLoading: false})
+              } else {
+                const currentLength = this.state.alerts ? this.state.alerts.length : 0
+                const incomingLength = res.data.alerts.length
+      
                   
-              }
+                console.log('currentLength = ' + currentLength)
+                console.log('incomingLength = ' + incomingLength)
+                console.log(this.state.alerts[currentLength-1].alert_id)
+                console.log(res.data.alerts[incomingLength-1].alert_id)
+
+                if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
+                  if(window.localStorage.getItem('viewAlert') === null){
+                    console.log("ENTEREDDDDDDD")
+                    window.localStorage.removeItem('viewAlert');
+                  } 
+
+                  window.localStorage.setItem('viewAlert', true);
+
+                  this.setState({alerts: res.data.alerts })
+                  this.setState({notificationLoading: false})
+                  
+                }
             }
+          } else {
+            this.setState({alerts: null })
           }
         }
         
@@ -163,22 +175,38 @@ class NavTabs extends React.Component {
 
   handleClick = event => {
     console.log("***** ENTERED HANDLE CLICK ****")
-    // console.log(this.openNotification)
+    window.localStorage.setItem('viewAlert', false);
     console.log(event.currentTarget)
 
     this.setState({anchorEl : this.state.anchorEl ? null : event.currentTarget });
   
   };
 
+  setAlertIcon = () => {
+    this.setState({ fillAlertIcon : true })
+  }
+  resetAlertIcon = () => {
+    this.setState({ fillAlertIcon : false })
+  }
+
+
+
 
 
   render() {
     const token = window.localStorage.getItem('authToken');
     console.log(token)
+    var showBadge = window.localStorage.getItem('viewAlert') !== null ? window.localStorage.getItem('viewAlert') : true
+
+
+
+    console.log("showBadge = " + showBadge)
+
     var isHomePage=false
     const open = Boolean(this.state.anchorEl);
     console.log(open)
     const id = open ? 'transitions-popper' : undefined;
+
 
     if(this.props.location.pathname === '/'){
       isHomePage=true
@@ -240,9 +268,9 @@ class NavTabs extends React.Component {
           }
           <Grid item xs={2} sm={3}>
             <Typography>
-              <Box fontWeight={600} fontSize={20} >
-                <Link to="/" style={{textDecoration:'none', color:'#0091ea'}}>
-                  <img src={logo} style={{width:150}}/>
+              <Box fontWeight={600} fontSize={20}>
+                <Link to="/" >
+                  <img src={logo} style={{width:130, marginBottom:-7 }}/>
                 </Link>
               </Box>
             </Typography>
@@ -312,11 +340,11 @@ class NavTabs extends React.Component {
                 }}>
                   <PersonIcon />
                 </IconButton>
-                <Badge badgeContent={this.state.alerts ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
-                  <NotificationsNoneIcon onClick={this.handleClick} />
+                <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
+                   <NotificationsNoneIcon onClick={this.handleClick} style={{ }} />
                 </Badge>
                 <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
-                className="popper_class"
+                  className="popper_class"
                   placement="left-start"
                   disablePortal={false}
                   modifiers={{
@@ -325,7 +353,6 @@ class NavTabs extends React.Component {
                     },
                     arrow: {
                       enabled: true,
-                      
                     },
                 }}>
                   <Notifications alerts={this.state.alerts} retrieveAlerts={this.retrieveAlerts} loading={this.state.notificationLoading}/>

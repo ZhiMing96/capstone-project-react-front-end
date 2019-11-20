@@ -77,7 +77,7 @@ function Profile(props) {
         processQueue();
     };
 
-
+    console.log("RENDERING SOCIAL PROFILE FOR User of user Id " + user)
     return (
         <div>
             <Typography component="div">

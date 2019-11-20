@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 280,
+    width: "100%",
   },
 
 }));
@@ -135,11 +135,12 @@ function UserDetailsView(props) {
 
           </Grid>
 
-          <Grid item style={{ marginLeft: '2.5%', marginRight: '2.5%' }}>
+          <Grid item style={{width: "100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
 
             <form className={classes.form} onSubmit={(event) => { handleSubmit(event) }}>
-              <Grid container style={{ width: '100%', justify: 'center' }}>
-                <Grid item xs={12} md={6}>
+              <Grid container style={{ width: '85%' }}>
+              <Grid container item xs={12} justify="space-between">
+                <Grid item xs={12} md={5}>
                   <TextField
 
                     variant="outlined"
@@ -154,7 +155,7 @@ function UserDetailsView(props) {
 
                   />
                 </Grid>
-                <Grid item xs={12} md={6} >
+                <Grid item xs={12} md={5} >
                   <TextField
                     variant="outlined"
                     required
@@ -167,8 +168,10 @@ function UserDetailsView(props) {
                     onChange={handleChange('last_name')}
                   />
                 </Grid>
+                </Grid>
+                <Grid container item xs={12} justify="space-between">
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={5}>
                   <TextField
                     error={submitState && !emailValid}
                     variant="outlined"
@@ -189,7 +192,7 @@ function UserDetailsView(props) {
 
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={5}>
                   <TextField
                     variant="outlined"
                     required
@@ -201,6 +204,7 @@ function UserDetailsView(props) {
                     margin="normal"
                     onChange={handleChange('username')}
                   />
+                </Grid>
                 </Grid>
 
               </Grid>

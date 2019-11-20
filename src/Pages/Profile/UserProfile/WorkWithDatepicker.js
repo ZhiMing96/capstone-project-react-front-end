@@ -14,8 +14,8 @@ import { connect } from "react-redux";
 import { updateWork, addWork } from '../../../redux/actions/work'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import CloseIcon from '@material-ui/icons/Close';
-
+import CategoryInput from './JobCategoryInput'
+import categoryDataSource from '../../../data/categories'
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
+        width: "100%",
     },
     button: {
         marginRight: theme.spacing(1),
@@ -49,13 +49,12 @@ const useStyles = makeStyles(theme => ({
     description: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 280,
-        ['@media (min-width:920px)']: {
-            width: 710,
-        },
+        width: "100%",
+        //['@media (min-width:920px)']: {
+        //width: '100%',
+        //},
     },
 }));
-
 
 function WorkWithDatepicker(props) {
     const classes = useStyles();
@@ -67,7 +66,8 @@ function WorkWithDatepicker(props) {
         company_name: '',
         start_date: '',
         end_date: '',
-        description: ''
+        description: '',
+        categories: []
     })
     const [submitState, setSubmit] = React.useState(false);
     const [dateValid, setDateValid] = React.useState(false);
@@ -75,19 +75,19 @@ function WorkWithDatepicker(props) {
 
     //initialise
     useEffect(() => {
-        
-            console.log('useEffect')
-            console.log(newWork)
-            api.work.get().then(res => {
-                props.updateWork(res.data.work_experience) //array of obj
-            }).catch(err => {
-                console.log('error initialising w user work experience')
-            })
-        
-    },[]);
+
+        console.log('useEffect')
+        console.log(newWork)
+        api.work.get().then(res => {
+            props.updateWork(res.data.work_experience) //array of obj
+        }).catch(err => {
+            console.log('error initialising w user work experience')
+        })
+
+    }, []);
 
 
-    const setSnackbar = (message, undoButton=false) => {
+    const setSnackbar = (message, undoButton = false) => {
         props.setSnackbar(message, undoButton)
     }
 
@@ -102,7 +102,8 @@ function WorkWithDatepicker(props) {
                 company_name: '',
                 start_date: '',
                 end_date: '',
-                description: ''
+                description: '',
+                categories: []
             })
         }
         setAddState(!currentState)
@@ -110,7 +111,6 @@ function WorkWithDatepicker(props) {
     }
 
     const handleChange = name => (event) => {
-        console.log(event)
         if (name === 'checkbox') {
             setCheckedState(event.target.checked)
             setDateValid(true)
@@ -137,9 +137,6 @@ function WorkWithDatepicker(props) {
             setNewWork({ ...newWork, [name]: event.target.value });
         }
 
-
-        //maybe check date valid?
-
     }
     const checkDateValid = (date, string) => {
         if (checkedState) {
@@ -155,6 +152,24 @@ function WorkWithDatepicker(props) {
         }
         console.log(startDate, endDate, dateValid)
 
+    }
+
+    const matchCategory = () => {
+        console.log(newWork.description)
+        api.work.matchCategory({
+            description: newWork.description
+        }).then(res => {
+            setNewWork({ ...newWork, categories: res.data.categories });
+            console.log(res.data.categories)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    const handleCategory=(value)=>{
+        const arr = value.map(cat=> cat.label)
+        console.log(arr)
+        setNewWork({ ...newWork, categories: arr });
     }
 
     const handleSubmit = (event) => {
@@ -180,7 +195,8 @@ function WorkWithDatepicker(props) {
                             company_name: '',
                             start_date: '',
                             end_date: '',
-                            description: ''
+                            description: '',
+                            categories:[]
                         })
                         handleStartDateChange(null)
                         handleEndDateChange(null)
@@ -228,7 +244,7 @@ function WorkWithDatepicker(props) {
                     <Grid item style={{ width: "100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
                         {addState ?
                             <form className={classes.form} onSubmit={handleSubmit}>
-                                <Grid container style={{ width: '100%', textAlign: 'left' }}>
+                                <Grid container style={{ width: '85%', textAlign: 'left' }}>
                                     <Grid item xs={12} md={12}>
                                         <FormControlLabel
                                             control={
@@ -241,83 +257,89 @@ function WorkWithDatepicker(props) {
                                             label="Current Job"
                                         />
                                     </Grid>
-                                    <Grid item xs={12} md={6}>
-                                        <TextField
-                                            variant="outlined"
-                                            required
-
-                                            label="Job Title"
-                                            className={classes.textField}
-                                            margin="normal"
-                                            autoFocus
-                                            onChange={handleChange('job_title')}
-
-                                        />
-
-                                    </Grid>
-                                    <Grid item xs={12} md={6}>
-                                        <TextField
-                                            variant="outlined"
-                                            required
-                                            label="Company Name"
-                                            className={classes.textField}
-                                            margin="normal"
-                                            onChange={handleChange('company_name')}
-
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6}>
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                            <DatePicker
-                                                views={["year", "month"]}
-                                                className={classes.textField}
-                                                value={selectedStartDate}
-                                                disableFuture
+                                    <Grid container item xs={12} justify="space-between">
+                                        <Grid item xs={12} md={5} >
+                                            <TextField
+                                                variant="outlined"
                                                 required
-                                                inputVariant="outlined"
-                                                label="Start Date"
-                                                onChange={(date) => { handleStartDateChange(date); handleChange('start_date')(date) }}
+
+                                                label="Job Title"
+                                                className={classes.textField}
                                                 margin="normal"
+                                                autoFocus
+                                                onChange={handleChange('job_title')}
+
                                             />
-                                        </MuiPickersUtilsProvider>
+                                        </Grid>
+                                        <Grid item xs={12} md={5} >
+                                            <TextField
+                                                variant="outlined"
+                                                required
+                                                label="Company Name"
+                                                className={classes.textField}
+                                                margin="normal"
+                                                onChange={handleChange('company_name')}
+
+                                            />
+
+                                        </Grid>
                                     </Grid>
 
-                                    {checkedState ? null :
-                                        <Grid item xs={12} md={6}>
+                                    <Grid container item xs={12} justify="space-between">
+                                        <Grid item xs={12} md={5}>
                                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                                 <DatePicker
                                                     views={["year", "month"]}
                                                     className={classes.textField}
-                                                    value={selectedEndDate}
+                                                    value={selectedStartDate}
                                                     disableFuture
                                                     required
                                                     inputVariant="outlined"
-                                                    label="End Date"
-                                                    onChange={(date) => { handleEndDateChange(date); handleChange('end_date')(date) }}
+                                                    label="Start Date"
+                                                    onChange={(date) => { handleStartDateChange(date); handleChange('start_date')(date) }}
                                                     margin="normal"
                                                 />
                                             </MuiPickersUtilsProvider>
                                         </Grid>
-                                    }
-                                    {!dateValid && submitState ?
-                                        <Typography variant="caption" style={{ color: "red" }} className={classes.error}>
-                                            Start Date cannot be after End Date!
+
+                                        {checkedState ? null :
+                                            <Grid item xs={12} md={5}>
+                                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                    <DatePicker
+                                                        views={["year", "month"]}
+                                                        className={classes.textField}
+                                                        value={selectedEndDate}
+                                                        disableFuture
+                                                        required
+                                                        inputVariant="outlined"
+                                                        label="End Date"
+                                                        onChange={(date) => { handleEndDateChange(date); handleChange('end_date')(date) }}
+                                                        margin="normal"
+                                                    />
+                                                </MuiPickersUtilsProvider>
+                                            </Grid>
+                                        }
+                                        {!dateValid && submitState ?
+                                            <Typography variant="caption" style={{ color: "red" }} className={classes.error}>
+                                                Start Date cannot be after End Date!
                                 </Typography>
-                                        : null}
+                                            : null}
+                                    </Grid>
 
                                     <Grid item xs={12} md={12}>
                                         <TextField
                                             variant="outlined"
                                             label="Description"
                                             className={classes.description}
-
                                             multiline
                                             rows="4"
                                             margin="normal"
                                             onChange={handleChange('description')}
-
+                                            onBlur={matchCategory}
                                         />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <CategoryInput categories={newWork.categories} key={newWork.catogories} handleCategory={handleCategory}/>
                                     </Grid>
 
                                 </Grid>
@@ -330,7 +352,7 @@ function WorkWithDatepicker(props) {
                                         style={{ alignSelf: 'center' }}
                                     >
                                         Save
-                            </Button>
+                                    </Button>
                                     <Button
                                         variant="contained"
                                         color="primary"
@@ -363,12 +385,12 @@ function WorkWithDatepicker(props) {
 const mapStateToProps = state => {
     return {
         //works: state.work.present,
-        works:state.work.work
+        works: state.work.work
     }
 
 };
 
 export default connect(mapStateToProps,
-    { updateWork, addWork,}
+    { updateWork, addWork, }
 )(WorkWithDatepicker);
 

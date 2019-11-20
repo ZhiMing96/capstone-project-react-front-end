@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { Hidden } from '@material-ui/core';
+import { Hidden, IconButton, Tooltip } from '@material-ui/core';
 import { Block } from '@material-ui/icons';
 import api from '../api';
 import Dialog from '@material-ui/core/Dialog';
@@ -19,18 +19,32 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Badge from '@material-ui/core/Badge';
+import CloseIcon from '@material-ui/icons/Close';
+import EmploymentDetails from './EmploymentDetails'
+import viewProfileBG from '../images/viewProfileBG.jpg'
 
 const useStyles = makeStyles(theme => ({
     inline: {
         display: 'inline',
     },
     root: {
-        minWidth: 80,
+        minWidth: 0,
+        marginRight:'3.5%'
     },
     avatar: {
         width: 50,
         height: 50,
-        marginTop: 10
+        marginTop: 10,
+        backgroundImage: `url(${viewProfileBG})`,
+        backgroundSize: 'cover'
+    },
+    avatarImg:{
+        objectFit:'contain',
+        width: "inherit",
+        border: 0,
+        '&:hover': {
+            opacity: 0.55,
+        }
     },
     calendar: {
         marginRight: 10,
@@ -62,7 +76,9 @@ const useStyles = makeStyles(theme => ({
     
 }));
 
-export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
+const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+
+export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProcessRequestFromCompletedMeetup}) {
     const classes = useStyles();
     const [requestMessage, setRequestMessage] = useState()
     const [openDialog, setOpenDialog] = useState(false);
@@ -70,9 +86,10 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
     // const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
     const errorMsg = "An Error Has Occured! Request was Unsucessful"
     const successMsg = "Requst Sent! "
+    const [ hoverOnPic, setHoverOnPic ] = useState(false);
 
-    console.log('<< Meetup Item >> ')
-    console.log(meetup)
+    // console.log('<< Meetup Item >> ')
+    // console.log(meetup)
 
     const handleChange = event => {
         //console.log(event.target.value);
@@ -119,6 +136,13 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
     }
 
     
+    const handleEnterPic = () => {
+        setHoverOnPic(true) 
+    }
+    const handleExitPic = () => {
+        setHoverOnPic(false)
+    }
+    
 
     const formatDate = (stringDate, length) => {
          const date = new Date(stringDate)
@@ -137,10 +161,12 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
         <div>
             <ListItem alignItems="flex">
                 <ListItemAvatar className={classes.root}>
-                    <Avatar src="" className={classes.avatar} />
+                    <Avatar src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                    className={classes.avatar} 
+                    imgProps={{className: classes.avatarImg}}/>
                 </ListItemAvatar>
                 <Grid container alignItems="center" justify="space-between">
-                    <Grid item>
+                    <Grid item xs={8}>
                         <ListItemText
                             primary={
                                 <Typography
@@ -157,28 +183,52 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
                                 </Typography>
                             }
                             secondary={
-                                <Grid container alignItems="center">
-                                    <CalendarTodayIcon className={classes.calendar} />
-                                    <Typography
-                                        component="span"
-                                        variant="body2"
-                                        className={classes.inline}
-                                        color="textSecondary"
-                                        style={{ fontSize: 'medium' }}
-                                    >
-                                        {formatDate(meetup.suggested_datetime,'short')}
-                                    </Typography>
+                                <Grid container >
+                                    <Grid item style={{paddingBottom:'3%'}}>
+                                        {meetup.other_user && meetup.other_user.work_experience 
+                                        ?
+                                        <Typography>
+                                            {meetup.other_user.work_experience.job_title}
+                                            <EmploymentDetails jobDetails={meetup.other_user.work_experience}/>
+                                        </Typography> 
+                                        
+                                        : ""}
+                                        
+                                    </Grid>
+                                    <Grid item container alignItems="center">
+                                        <CalendarTodayIcon className={classes.calendar} />
+                                        <Typography
+                                            component="span"
+                                            variant="body2"
+                                            className={classes.inline}
+                                            color="textSecondary"
+                                            style={{ fontSize: 'medium' }}
+                                        >
+                                            {formatDate(meetup.suggested_datetime,'short')}
+                                        </Typography>
+                                    </Grid>
+                                    
                                 </Grid>
                             }
                         />
                     </Grid>
 
-                    <Grid item>
-
-                        <Button color="primary" edge="end" variant="outlined" className={classes.button}
-                        onClick={() => handleOpenDialog()}>
-                            Request
-                        </Button>
+                    <Grid item xs={4} container direction="column">
+                        <Grid item style={{textAlign:'end'}}>
+                        <Tooltip title={`Remove If Recommendation From ${meetup.other_user && meetup.other_user.profile? meetup.other_user.profile.username:'User'} Is Not Needed`}  
+                        placement="top-start">
+                            <IconButton style={{padding:0}} onClick={()=> handleProcessRequestFromCompletedMeetup(meetup)} size="small">
+                                <CloseIcon style={{color:'#992E24'}} />
+                            </IconButton>
+                        </Tooltip>
+                        </Grid>
+                        <Grid item>
+                            <Button color="primary" edge="end" variant="outlined" className={classes.button}
+                            onClick={() => handleOpenDialog()}>
+                                Request
+                            </Button>
+                        </Grid>
+                        
                     </Grid>
 
                 </Grid>
@@ -225,8 +275,8 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar}) {
                                     </Grid>
 
                                 </Grid>
-                                <Grid item container xs={12} className={classes.headers}>
-                                    <Grid item xs={4}>
+                                <Grid item container xs={12} >
+                                    <Grid item xs={4} className={classes.headers}>
                                         Company
                                     </Grid>
                                     <Grid item xs={8}>

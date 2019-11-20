@@ -217,10 +217,7 @@ function addBookmark(job){
         <Fragment>
         <CssBaseline />
         <Grid container>
-            <Grid item container xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
-                <JobFilterSideBar handleSidebarSubmit={props.handleSidebarSubmit}/>
-            </Grid>
-            <Grid item container xs={9}>
+            <Grid item container xs={12}>
             <Grid container style={{padding:'3%'}}>
             <Grid item xs={12} sm={6} container justify="flex-start"> 
                 <Typography style={{marginLeft:20, marginTop:20}}>
@@ -455,6 +452,7 @@ function addBookmark(job){
                                                     onClick={ () => handleClick(list)}
                                                     color='secondary'
                                                     variant="outlined"
+                                                    disabled = {token? false: true}
                                                     >
                                                     Bookmark
                                                     <BookmarkIcon className={classes.rightIcon} />

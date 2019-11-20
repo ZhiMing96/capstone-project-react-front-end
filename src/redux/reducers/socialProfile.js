@@ -5,8 +5,8 @@ const initialState = {
     profile_image_link: '',
     description: '',
     meetup_ind:'',
-    job_search_stage:''
-    //preferred_locations
+    job_search_stage:'',
+    preferred_locations:[]
 };
 
 export default function (state = initialState, action) {

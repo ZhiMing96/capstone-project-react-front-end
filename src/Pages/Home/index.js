@@ -186,37 +186,6 @@ class Home extends Component {
 
           </div>
 
-
-
-          {/*
-        <Grid container style={{ margin: 30, marginBottom: '8%', padding: '10%' }} spacing={1} justify="space-between" >
-          <Grid item xs={12} sm={4} style={{ backgroundColor: '#FFFFFF' }}>
-            <Paper style={{ width: '80%', height: '80%', textAlign: '-webkit-center', padding: 15, borderRadius: 15 }} elevation={0}>
-              <Avatar alt="Remy Sharp" src="" style={{ width: 160, height: 160 }} />
-              <Typography style={{ marginTop: 30, fontWeight: 'lighter', fontSize: 23 }}>
-                Optimised Search
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={4} style={{}}>
-            <Paper style={{ width: '80%', height: '80%', textAlign: '-webkit-center', padding: 15, borderRadius: 15 }} elevation={0}>
-              <Avatar alt="Remy Sharp" src="" style={{ width: 160, height: 160 }} />
-              <Typography style={{ marginTop: 30, fontWeight: 'lighter', fontSize: 23 }}>
-                Career Guidance
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={4} style={{}}>
-            <Paper style={{ width: '80%', height: '80%', textAlign: '-webkit-center', padding: 15, borderRadius: 15 }} elevation={0}>
-              <Avatar alt="Remy Sharp" src="" style={{ width: 160, height: 160 }} />
-              <Typography style={{ marginTop: 30, fontWeight: 'lighter', fontSize: 23 }}>
-                Expand Network
-              </Typography>
-            </Paper>
-          </Grid>
-
-        </Grid>
-*/}
           <div style={{ maxHeight: '100vh', display: 'block', textAlign: 'left', padding: '5%', backgroundColor: 'whitesmoke', paddingTop: '10%' }}>
             <Grid container spacing={5} justify="space-between" >
               <Grid item style={{ textAlign: 'left' }} xs={7} >
