@@ -129,7 +129,7 @@ function Main(props) {
             <Route path="/profile/bookmarks" component={Bookmarks} />
             <Route path="/profile/skills" component={Skills} />
             <Route path="/profile/social" component={Social} />
-            <Route path="/profile/:id" component={PublicProfile} />
+            <Route path="/profile/public" component={PublicProfile} />
           </Switch>
         </Grid>
 

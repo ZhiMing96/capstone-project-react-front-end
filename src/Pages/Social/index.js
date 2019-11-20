@@ -42,10 +42,13 @@ export default function Social(props) {
     console.log("**** PROPS FOR SOCIAL INDEX ******")
     console.log(props)
     const classes = useStyles();
-    const [tabState, setTabState] = React.useState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 1)
+    const [tabState, setTabState] = React.useState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 0)
 
     const redirectProfile=(user_id)=>{
-        props.history.push("/profile/"+ user_id);
+        props.history.push({
+            pathname: "/profile/public",
+            state: { user_id: user_id }
+        })
     }
 
     const handleChangeIndex = (event, index) => {
