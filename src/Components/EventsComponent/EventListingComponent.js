@@ -146,7 +146,7 @@ const useStyles = makeStyles(theme => ({
       height: 'auto',
       '&:hover': {
         boxShadow: '0px 1px 8px 0px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14)',
-        color:'whitesmoke',
+        backgroundColor:'whitesmoke',
       },
       [theme.breakpoints.down('sm')]: {
         padding: 5,
@@ -199,11 +199,15 @@ const useStyles = makeStyles(theme => ({
 
 export default function EventListingComponent(props) {
   const classes = useStyles();
-  const  event  = props.event
-  const [ open, setOpen ] = false
+  const { event, handleHrefClick, handleSelectedEvent, recommended } = props
+  const [ open, setOpen ] = useState(false);
   const [ expanded, setExpanded] = useState(false);
-  const [markerAddress, setMarkerAddress] = useState('Singapore')
+  const [ markerAddress, setMarkerAddress ] = useState();
 
+  useEffect(()=>{
+    handleFormatVenue();
+
+  },[props])
 
   const handleExpandClick = () => {
     console.log("Entered handleExpandClick in events listing component");
@@ -211,26 +215,29 @@ export default function EventListingComponent(props) {
   };
 
   const handleClickOpen = () => {
-    const venueArray = event.venue ? event.venue.split('·') : null
-    console.log(venueArray)
-
-    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    console.log(formattedVenue)
-    
-    setMarkerAddress(formattedVenue);
     setOpen(true);
   }
 
-  const viewDetails = () => {
-    console.log('*** LOCATION IS: ***')
-    
+  const handleClose = () => {
+    setOpen(false);
+  };
 
+  const viewDetails = () => {
+    if(recommended){
+      handleSelectedEvent(event[0]);
+    } else {
+      handleSelectedEvent(event);
+    }
+    
+  }
+
+  const handleFormatVenue = () => {
     const venueArray = event.venue ? event.venue.split('·') : null
     console.log(venueArray)
 
     const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
     console.log(formattedVenue)
-
+    
     setMarkerAddress(formattedVenue);
   }
 
@@ -260,12 +267,10 @@ export default function EventListingComponent(props) {
     return(`${day} ${month} ${year}: ${time}`);
   }
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  
 
-
-
+console.log("PRINTING EVENT IN LISTING COMPONENT")
+console.log(event)
     return (
         <div>
             <Card className={classes.eventLisiting}
@@ -273,7 +278,7 @@ export default function EventListingComponent(props) {
                   <div style={{ display: 'inline-flex', width: '100%' }}>
                     <CardMedia
                       className={classes.cover}
-                      image={event.logo? event.logo : defaultImg}
+                      image = { event && recommended ? event[0].logo : event && !recommended ? event.logo : defaultImg }
                       title={event.event_title}
                     />
                     <CardContent style={{ paddingLeft: 20, width: '100%' }}>
@@ -282,19 +287,18 @@ export default function EventListingComponent(props) {
                         <Grid item xs={12} container style={{}} justify="space-between">
                           <Grid item xs={11}>
                             <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              {event.job_phase}
+                              { event && recommended ? event[0].job_phase : event && !recommended ?  event.job_phase : ""}
                             </Typography>
                             <Typography style={{ paddingTop: 1 }}>
                               <Box className={classes.eventTitle}>
-                                {event.event_title}
+                                {event && recommended ? event[0].event_title : event && !recommended ? event.event_title : ""}
                               </Box>
                               <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
-                                {/* {getDate(event.start_date, event.end_date)} */}
-                                {getDate(event.date_time)}
+                                
+                                {getDate(event && recommended ? event[0].date_time : event && !recommended ? event.date_time:null)}
                               </Box>
                               <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                
-                                {event.venue}
+                                {event && recommended ? event[0].venue : event && !recommended ? event.venue :""}
                               </Box>
                               <Grid
                                 container
@@ -304,7 +308,7 @@ export default function EventListingComponent(props) {
                               >
                                 <Grid item>
                                   <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
-                                    {event.cost}
+                                    {event && recommended ? event[0].cost : event && !recommended ? event.cost : "Free"}
                                   </Box>
                                 </Grid>
                               </Grid>
@@ -348,7 +352,7 @@ export default function EventListingComponent(props) {
                           <Grid item xs={11}>
                             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                               <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
-                                {event.summary}
+                                {event && recommended ? event[0].summary : event && !recommended ? event.summary : "No Description Available"}
                               </Typography>
                             </div>
                           </Grid>
@@ -362,15 +366,15 @@ export default function EventListingComponent(props) {
                     <DialogContent style={{ textAlign: 'center' }}>
                       <Map markerAddress={markerAddress} style={{ width: '98%', }} />
                       <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                        {event ? event.event_title : "LOCATION"}
+                        {event && recommended && event[0].event_title ? event[0].event_title  : event && !recommended && event.event_title ? event.event_title : "LOCATION"}
                       </Typography>
                       <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
-                        {event && event.venue ? event.venue : 'Singapore'}
+                        {event && recommended && event[0].venue ? event[0].venue : event && !recommended && event.venue ? event.venue : 'Singapore'}
                       </Typography>
                       <Button
                         fullWidth
                         variant="contained"
-                        href={event.url}
+                        href={event && recommended ? event[0].url  : event && recommended ? event.url :"http://www.meetup.com"}
                         target="_blank"
                         style={{ fontWeight: 'bold', fontSize: 17, marginTop: 10, marginBottom: 10, backgroundColor: '#0091ea', color: '#FFFFFF' }}
                       >
