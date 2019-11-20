@@ -89,10 +89,11 @@ export default function MeetupSuggestions(props) {
     const [isLoaded, setIsLoaded] = useState(false)
 
     useEffect(() => {
+        /* for testing- pre load of fake data
         setLocationSuggestions(result)
         setStageSuggestions(result)
         setIsLoaded(true)
-        /*
+        */
         api.meetups.by_location()
             .then(res => {
                 if (res.data.response_code === 200) {
@@ -110,7 +111,7 @@ export default function MeetupSuggestions(props) {
                 console.log(err)
             })
         setIsLoaded(true)
-        */
+        
     })
     
 

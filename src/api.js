@@ -62,6 +62,9 @@ const work ={
   matchCategory: params =>axios.post('http://localhost:3000/work/match_category', params,{
     headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  getPublic:params =>axios.post('http://localhost:3000/work/get', params,{
+    headers: {'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
 }
 
 const bookmarks = { 
@@ -174,6 +177,10 @@ const recommendations = {
   processRecord: (params) => axios.post("http://localhost:3000/meetup/invite/process", params,{
     headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
   }),
+  getPublic: (params) => axios.post("http://localhost:3000/recommendation/get", params,{
+    headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
+  }),
+
 }
 
 const alerts = {

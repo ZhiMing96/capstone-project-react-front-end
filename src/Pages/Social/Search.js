@@ -189,7 +189,7 @@ function Search(props) {
                             <Select
                                 value={newSearch.objective}
                                 onChange={handleChange('objective')}
-                                labelWidth={labelWidth}
+                                labelWidth={80}
                             >
                                 <MenuItem value={"MENTOR"}>Mentor</MenuItem>
                                 <MenuItem value={"NETWORK"}>Network</MenuItem>

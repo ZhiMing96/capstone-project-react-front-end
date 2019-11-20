@@ -145,7 +145,7 @@ function MeetupCard(props) {
                                         variant="body2"
                                         className={classes.inline}
                                         color="textPrimary"
-                                        style={{ fontSize: 'medium' }}
+                                        style={{ fontSize: 'small' }}
                                     >
                                         {user.social.description}
                                     </Typography>
