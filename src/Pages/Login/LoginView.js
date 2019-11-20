@@ -52,7 +52,7 @@ export default function LoginView(props) {
           Sign in
         </Typography>
 
-        <form className={classes.form} onSubmit={(event) =>props.handleSubmit(event)}>
+        <form className={classes.form} data-testcy="loginForm" onSubmit={(event) =>props.handleSubmit(event)}>
         
           <TextField
             variant="outlined"
