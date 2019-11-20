@@ -150,10 +150,10 @@ const meetups = {
     invite: params => axios.post('http://localhost:3000/meetup/invite/send', params, {
       headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
     }),
-    by_location: ()=> axios.post('http://localhost:3000/meetup/by_location', {
+    by_location: ()=> axios.get('http://localhost:3000/meetup/by_location', {
       headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
     }),
-    by_stage: ()=> axios.post('http://localhost:3000/meetup//meetup/by_stage', {
+    by_stage: ()=> axios.get('http://localhost:3000/meetup/by_stage', {
       headers:{ 'Authorization': 'Token '+ window.localStorage.getItem('authToken')}
     }),
 }

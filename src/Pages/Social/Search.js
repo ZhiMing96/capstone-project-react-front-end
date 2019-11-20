@@ -147,7 +147,7 @@ function Search(props) {
     const handleDialogClose = () => {
         setOpen(false)
     }
-    const handleClear=()=>{
+    const handleClear=(e)=>{
         setNewSearch({
             keyword: '',
             objective: '',
@@ -155,6 +155,8 @@ function Search(props) {
             locations: []
         })
         setSearchResults(null)
+        console.log(e)
+        e.preventDefault()
     }
 
     return (
