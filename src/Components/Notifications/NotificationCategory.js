@@ -73,7 +73,7 @@ export default function NotificationCategory(props) {
                         </span>
                         : ""
                     } 
-                    <IconButton disabled={alerts.length === 0 ? true : false}>
+                    <IconButton disabled={alerts.length === 0 ? true : false} style={{ padding:0 }}>
                         {openSection && alerts.length !== 0 ? <ExpandLess /> : <ExpandMore /> }
                     </IconButton>
                     
