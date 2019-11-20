@@ -14,6 +14,7 @@ import ClearIcon from '@material-ui/icons/Clear'
 import EmploymentDetails from '../EmploymentDetails';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import NotificationsListItem from './NotificationsListItem'
+import NotificationCategory from './NotificationCategory';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -62,10 +63,51 @@ export default function Notifications(props) {
     const [alerts, setAlerts] = useState();
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
 
+    const [ sorttedAlerts, setSorttedAlerts ] = useState([
+        {
+            category: "MEETUP_INVITE", title: "New Meetup Invitations",
+            alerts: [], 
+        },
+        {
+            category: "ACCEPT_INVITE", title: "Invitations Accepted",
+            alerts: [], 
+        },
+        {
+            category: "CANCEL_MEETUP", title: "Cancelled Meetups",
+            alerts: [], 
+        },
+        {
+            category: "CHANGE_MEETUP_DATE", title: "Meetup Date Modifieed",
+            alerts: [], 
+        },
+        {
+            category: "COMPLETE_MEETUP", title: "Meetup Completed",
+            alerts: [], 
+        },
+        {
+            category: "RECOMMENDATION_REQUEST", title: "Request For a Recommendation",
+            alerts: [], 
+        },
+        {
+            category: "WRITE_RECOMMENDATION", title: "Write a Recommendation",
+            alerts: [], 
+        },
+    ])
+
+
     console.log(props);
 
     useEffect(()=>{
         console.log("**** NEW PROPS DETECTED ****")
+        // if(props.alerts) {
+        //     for(let i=0; i < props.alerts.length ; i++ ) {
+        //         if(props.alerts[i].alert_type === )
+        //     }   
+        // }
+
+
+
+
         setAlerts(props.alerts)
         setLoadingNotifications(false);
     }, [props.alerts])

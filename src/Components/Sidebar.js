@@ -11,6 +11,7 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import InstagramIcon from '@material-ui/icons/Instagram';
+import UploadPhoto from '../images/UploadPhoto.jpg'
 
 
 //INCOMPLETE
@@ -20,6 +21,16 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 20,
     width: 90,
     height: 90,
+    backgroundImage: `url(${UploadPhoto})` ,
+    backgroundSize: 'cover',
+  },
+  imgProps: {
+    objectFit:'contain',
+    width: "inherit",
+    border: 0,
+    '&:hover': {
+        opacity: 0.55,
+    }
   },
   icon: {
     position: 'relative',
@@ -170,8 +181,11 @@ function Sidebar(props) {
         <label for='image_upload'>
           <div title={'Change profile picture'}>
           { profileImageLink 
-            ? <Avatar src={ profileImageLink } className={classes.bigAvatar}/>
-            : <Avatar src={ defaultImg } className={classes.bigAvatar}/>
+            ? <Avatar src={ profileImageLink } className={classes.bigAvatar}
+            imgProps={{className: classes.imgProps}}/>
+            : <Avatar src={ defaultImg } className={classes.bigAvatar}
+            imgProps={{className: classes.imgProps}}/>
+            
           }
             {/* <Avatar src={props.profile_image_link && props.profile_image_link !== ''? props.profile_image_link : defaultImg} className={classes.icon}/> */}
           </div>

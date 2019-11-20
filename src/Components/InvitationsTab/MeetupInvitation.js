@@ -278,7 +278,7 @@ export default function MeetupInvitation(props) {
                 ? 
                 <Tooltip title="You Can Change it Later!" placement="right-start">
                     <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                        Suggested Date: <u>{formatDate(invitation.suggested_datetime)}</u>
+                        Suggested Date: <u><b>{formatDate(invitation.suggested_datetime)}</b></u>
                     </Typography>
                 </Tooltip>
                 :
