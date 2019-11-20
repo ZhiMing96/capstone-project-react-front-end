@@ -86,7 +86,7 @@ class NavTabs extends React.Component {
     }
     this.retrieveAlerts()
     
-    setInterval(this.retrieveAlerts, 20000);
+    // setInterval(this.retrieveAlerts, 20000);
   }
 
 
@@ -244,8 +244,8 @@ class NavTabs extends React.Component {
       
     }
 
-    console.log("STATE OF SNACKBAR = ") 
-    console.log(this.state.openSnackBar)
+    // console.log("STATE OF SNACKBAR = ") 
+    // console.log(this.state.openSnackBar)
     return (
       <div>
         <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler}/>

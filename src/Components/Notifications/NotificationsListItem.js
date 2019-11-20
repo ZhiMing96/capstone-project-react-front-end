@@ -39,11 +39,17 @@ const useStyles = makeStyles(theme => ({
         marginRight:10
     },
     listItem: {
-        backgroundColor:'whitesmoke',
+        backgroundColor:'white',
         '&:hover': {
-            backgroundColor: 'white'
+            backgroundColor: 'whitesmoke',
         } 
-    }
+    },
+    divider: {
+        backgroundColor: 'lightgrey',
+        marginLeft: '10%',
+
+    },
+
   }));
 
   const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
@@ -61,12 +67,12 @@ export default function NotificationsListItem(props) {
 
 
     const calculateDaysAgo = (dateString) => {
-        console.log("Entered Calculate Days Ago Method")
+        // console.log("Entered Calculate Days Ago Method")
         
         const currentDate = new Date();
         const alertDate = new Date(dateString);
-        console.log(currentDate)
-        console.log(alertDate)
+        // console.log(currentDate)
+        // console.log(alertDate)
         const dayDifference = Math.floor((Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) - Date.UTC(alertDate.getFullYear(),alertDate.getMonth(), alertDate.getDate()) ) /(1000 * 60 * 60 * 24))
 
         const hourDifference = Math.floor(currentDate.getHours() - alertDate.getHours());
@@ -75,9 +81,9 @@ export default function NotificationsListItem(props) {
 
         // const minuteDifference = Math.floor((Date.UTC(alertDate.getFullYear(), alertDate.getMonth(), alertDate.getDate(), alertDate.getTime()) - Date.UTC(currentDate.getFullYear(),currentDate.getMonth(), currentDate.getDate(), currentDate.getTime()) ) /(1000 * 60))
 
-        console.log(dayDifference)
-        console.log(hourDifference)
-        console.log(minuteDifference)
+        // console.log(dayDifference)
+        // console.log(hourDifference)
+        // console.log(minuteDifference)
 
         if(dayDifference > 0){
             return (dayDifference + " days ago")
@@ -95,7 +101,7 @@ export default function NotificationsListItem(props) {
 
     const handleSeen = (alert) => { 
         console.log("ENTERED HANDLE SEEN METHOD")
-        setLoadingNotifications(true);
+        // setLoadingNotifications(true);
         api.alerts.seen({"alert_id": alert.alert_id })
         .then(res => {
             console.log(res.data);
@@ -128,7 +134,10 @@ export default function NotificationsListItem(props) {
         setOpenMessage(false);
     }
 
+    console.log("RENDERING Notification LIST ITEM")
+    
     return (
+        <div style={{marginBottom:'2%'}}>
         <ListItem  className={classes.listItem} style={{ paddingLeft:0, }} >
                                 
             <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15,marginLeft:'10%' }} >
@@ -179,8 +188,6 @@ export default function NotificationsListItem(props) {
                             <Typography>
                                 {calculateDaysAgo(alert.created_datetime)}
                             </Typography>
-                        
-                        
                     </Grid>
                     <Grid item xs={2} style={{textAlign:'end', alignSelf: "flex-start"}}>
                         <Tooltip title="Mark as Seen" placement="bottom-start">
@@ -191,33 +198,9 @@ export default function NotificationsListItem(props) {
                     </Grid>
                     
                 </Grid>
-
-                {/* {alert.from_user && alert.from_user.profile 
-                ? `From ${alert.from_user.profile.username}`
-                
-                : 'From Unidentified Member'
-                }
-                { alert.work_experience 
-                ? 
-                <div>
-                    <Typography>
-                        {alert.work_experience.job_title}
-                        <EmploymentDetails jobDetails={alert.work_experience}/>
-                    </Typography>
-                    
-                </div>
-                : ""
-                } */}
-
-
-                {/* <Grid container justify="space-between" alignItems="center">
-                    <Grid item>
-                        <Typography>
-                            {calculateDaysAgo(alert.created_datetime)}
-                        </Typography>
-                    </Grid>
-                </Grid> */}
             </ListItemText>
         </ListItem>
+        <Divider className={classes.divider} />
+        </div>
     )
 }

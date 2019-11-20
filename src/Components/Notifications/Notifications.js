@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Collapse from '@material-ui/core/Collapse';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone'
-import { Typography, ListItem, ListItemAvatar, List, ListItemText, Avatar, Grid, Divider, Button, IconButton, Tooltip } from '@material-ui/core';
+import { Typography, ListItem, ListItemAvatar, List, ListItemText, Avatar, Grid, Divider, Button, IconButton, Tooltip, InputBase } from '@material-ui/core';
 import api from '../../api';
 import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import CircularLoading from '../LoadingBars/CircularLoading';
@@ -15,6 +15,7 @@ import EmploymentDetails from '../EmploymentDetails';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import NotificationsListItem from './NotificationsListItem'
 import NotificationCategory from './NotificationCategory';
+import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -30,9 +31,9 @@ const useStyles = makeStyles(theme => ({
       height: 500,
     },
     headerBar: {
-        paddingLeft:'13%', 
-        paddingTop:'5%', 
-        backgroundColor:'#024966',
+        
+        // backgroundColor:'#024966',
+        backgroundColor:'white',
         position: 'sticky',
         top: '0px',
         zIndex: 10,
@@ -43,7 +44,8 @@ const useStyles = makeStyles(theme => ({
         height: 30 , 
         verticalAlign: "text-top",
         transform: "rotate(340deg)" ,
-        color:'whitesmoke',
+        // color:'whitesmoke',
+        color:'black',
         marginRight:10
     },
     listItem: {
@@ -51,6 +53,23 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             backgroundColor: 'white'
         } 
+    },
+    input: {
+        width: '100%',
+        flex: 1,
+        paddingLeft:'4%',
+    },
+    searchBar: {
+        borderRadius: 25, 
+        borderColor:'black',
+        
+        marginLeft:'10%',
+        marginRight:'10%',
+        borderStyle: "solid",
+        borderWidth: 1,
+        marginBottom: '3%',
+        paddingLeft:'2%',
+        display:'flex',
     }
   }));
 
@@ -62,34 +81,35 @@ export default function Notifications(props) {
     const classes = useStyles();
     const [alerts, setAlerts] = useState();
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
+    const [ keyword, setKeyword ] = useState(null);
 
     const [ sorttedAlerts, setSorttedAlerts ] = useState([
         {
-            category: "MEETUP_INVITE", title: "New Meetup Invitations",
+            type: "MEETUP_INVITE", title: "New Meetup Invitations",
             alerts: [], 
         },
         {
-            category: "ACCEPT_INVITE", title: "Invitations Accepted",
+            type: "ACCEPT_INVITE", title: "Invitations Accepted",
             alerts: [], 
         },
         {
-            category: "CANCEL_MEETUP", title: "Cancelled Meetups",
+            type: "CANCEL_MEETUP", title: "Cancelled Meetups",
             alerts: [], 
         },
         {
-            category: "CHANGE_MEETUP_DATE", title: "Meetup Date Modifieed",
+            type: "CHANGE_MEETUP_DATE", title: "Meetup Date Modified",
             alerts: [], 
         },
         {
-            category: "COMPLETE_MEETUP", title: "Meetup Completed",
+            type: "COMPLETE_MEETUP", title: "Meetup Completed",
             alerts: [], 
         },
         {
-            category: "RECOMMENDATION_REQUEST", title: "Request For a Recommendation",
+            type: "RECOMMENDATION_REQUEST", title: "Recommendation Requests",
             alerts: [], 
         },
         {
-            category: "WRITE_RECOMMENDATION", title: "Write a Recommendation",
+            type: "WRITE_RECOMMENDATION", title: "Write a Recommendation",
             alerts: [], 
         },
     ])
@@ -97,44 +117,77 @@ export default function Notifications(props) {
 
     console.log(props);
 
+    const resetAlerts = () =>{
+        for(let b=0 ; b < sorttedAlerts.length  ; b++) {
+            var arr = [...sorttedAlerts];
+            arr[b].alerts = [];
+            setSorttedAlerts(arr)
+        }
+    }
+
     useEffect(()=>{
+        console.log("ENTERED Use Effect for Notifications")
+        resetAlerts();
         console.log("**** NEW PROPS DETECTED ****")
-        // if(props.alerts) {
-        //     for(let i=0; i < props.alerts.length ; i++ ) {
-        //         if(props.alerts[i].alert_type === )
-        //     }   
-        // }
-
-
-
-
-        setAlerts(props.alerts)
+        const alerts = props.alerts
+        if(alerts) {
+            for(let i=0; i < alerts.length ; i++ ) {
+                console.log("Start of I FOR Loop Number " + i)
+                for(let a=0; a<sorttedAlerts.length ; a++){
+                    console.log("Start of A FOR Loop Number " + a)
+                    if(alerts[i].alert_type === sorttedAlerts[a].type){
+                        var temp = [...sorttedAlerts]
+                        temp[a].alerts.push(alerts[i]);
+                        setSorttedAlerts(temp);
+                        break;
+                    }
+                }
+                
+            }   
+        }
+        // setAlerts(props.alerts)
         setLoadingNotifications(false);
-    }, [props.alerts])
+    }, [props])
+
+    const handleChange = event => {
+        event.preventDefault();
+        console.log(event.target.value)
+        setKeyword(event.target.value);
+    }
     
 
-    
+    console.log("PRINTING ALERTS");
+    console.log(sorttedAlerts);
 
     return (
         <Paper className={classes.root} elevation={5}>
             <Grid container >
                 <Grid item xs={12} className={classes.headerBar}>
-                    <Typography style={{ fontWeight:'bold', fontSize:30, marginBottom:'5%', color:'whitesmoke' }}>
+                    <Typography style={{ fontWeight:'bold', fontSize:30, marginBottom:'5%', color:'black', paddingLeft:'13%', paddingTop:'5%',  }}>
                         < NotificationsIcon  className={classes.headerIcon}/> Notifications
                     </Typography>
+                    <Paper className={classes.searchBar} elevation={0}>
+                        <SearchIcon style={{alignSelf:'center'}}/>
+                        <InputBase
+                        className={classes.input}
+                        placeholder="Type your keyword(s)..."
+                        required
+                        value={keyword}
+                        onChange={handleChange}
+                        />
+                    </Paper>
                 </Grid>
                 <Grid item xs={12} style={{}}>
                     <List style={{ padding:0, }} >
                         { loadingNotifications 
                         ? <NotificationsListSkeleton/>
-                        : alerts
-                        ? alerts.map((alert, index) => (
-                            <div >
-                            <NotificationsListItem alert={alert} />
-                            <Divider  />
-                            </div>
+                        : sorttedAlerts
+                        ?
+                        sorttedAlerts.map((category, index) => (
+                            <NotificationCategory alerts={category.alerts} alertType={category.title}
+                            retrieveAlerts={props.retrieveAlerts}/>
                         ))
-                        : 
+                        :
                         <div style={{padding:'5%'}}>
                             <Typography>
                             There are no Notifications at the Moment
