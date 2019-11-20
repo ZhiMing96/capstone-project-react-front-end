@@ -12,6 +12,7 @@ import TelegramIcon from '@material-ui/icons/Telegram';
 import FaceIcon from '@material-ui/icons/Face';
 import  { updateSocialProfile } from '../../redux/actions/socialProfile'
 import { connect } from "react-redux";
+import UploadPhoto from '../../images/UploadPhoto.jpg'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,7 +23,16 @@ const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin: 30,
     width: 90,
-    height: 90,
+    height: 90,backgroundImage: `url(${UploadPhoto})` ,
+    backgroundSize: 'cover',
+  },
+  imgProps: {
+    objectFit:'contain',
+    width: "inherit",
+    border: 0,
+    '&:hover': {
+        opacity: 0.55,
+    }
   },
   button: {
     margin: theme.spacing(2),
@@ -168,8 +178,8 @@ function MobileSideBar(props){
         <label for='image_upload' style={{width:'100%', textAlign:'-webkit-center',}}>
           <div title={'Change profile picture'} style={{}}>
             { profile && profile.profile_image_link 
-            ? <Avatar src={ profile.profile_image_link } className={classes.bigAvatar}/>
-            :<Avatar src={ defaultImg } className={classes.bigAvatar}/>
+            ? <Avatar src={ profile.profile_image_link } className={classes.bigAvatar} imgProps={{className: classes.imgProps}}/>
+            :<Avatar src={ defaultImg } className={classes.bigAvatar} imgProps={{className: classes.imgProps}}/>
             }
           </div>
         </label>

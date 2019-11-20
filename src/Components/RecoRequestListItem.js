@@ -103,7 +103,8 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
         setOpenDialog(false)
     }
     
-    const handleSendRequest = () => {
+    const handleSendRequest = event => {
+        event.preventDefault();
         console.log('**** Entered handleSendRequest ****')
         console.log(meetup)
         console.log(requestMessage)
@@ -240,6 +241,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                 aria-describedby="alert-dialog-description"
                 fullWidth
             >
+                <form onSubmit={handleSendRequest}>
                 <DialogContent style={{padding:'10%', paddingBottom:'1%'}}>
                     <Grid container>
                         <Grid item container xs={12}>
@@ -297,31 +299,34 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid container style={{marginTop:'2%',}}>
-                        <Grid item xs={12} style={{textAlign:'center'}}>
-                            <TextField
-                                id="standard-multiline-static"
-                                multiline
-                                rows="5"
-                                className={classes.textField}
-                                margin="normal"
-                                variant="outlined"
-                                onChange={handleChange}
-                                label="Type a Message"
-                                required
-                                inputProps={{ maxLength: 200 }}
-                            />
+                    
+                        <Grid container style={{marginTop:'2%',}}>
+                            <Grid item xs={12} style={{textAlign:'center'}}>
+                                <TextField
+                                    id="standard-multiline-static"
+                                    multiline
+                                    rows="5"
+                                    className={classes.textField}
+                                    margin="normal"
+                                    variant="outlined"
+                                    onChange={handleChange}
+                                    label="Type a Message"
+                                    required
+                                    inputProps={{ maxLength: 200 }}
+                                />
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={handleCloseDialog} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={handleSendRequest} color="primary" autoFocus>
+                <Button type='submit' color="primary" autoFocus>
                     Submit
                 </Button>
                 </DialogActions>
+                </form>
             </Dialog>
 
             <Divider variant="inset" component="li" />

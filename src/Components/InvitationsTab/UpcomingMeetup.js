@@ -55,6 +55,12 @@ const useStyles = makeStyles(theme => ({
         marginTop:10,
         marginLeft:'5%'
     },
+    dialogAvatar: {
+        margin:'5%',
+        width:60, 
+        height:60, 
+        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
+    },
     listAvatar: {
         margin:'5%',
         width:60, 
@@ -63,6 +69,7 @@ const useStyles = makeStyles(theme => ({
         backgroundImage: `url(${viewProfileBG})` ,
         backgroundSize: 'cover'
     },
+    
     listAvatarImg : {
         objectFit:'contain',
         width: "inherit",
@@ -92,6 +99,7 @@ const useStyles = makeStyles(theme => ({
     controlButtons :{
         width: 30,
         height: 30,
+        backgroundColour:'black'
     },
     calandar : {
         color: "red"
@@ -230,6 +238,7 @@ export default function UpcomingMeetup(props) {
                                     : null
                                 )}
                                 src={TelegramIcon}
+                                imgProps={{className: classes.listAvatarImg }}
                                 />
                             </Grid>
                             <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
@@ -276,7 +285,7 @@ export default function UpcomingMeetup(props) {
                             <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
                                 <Avatar alt="List"
                                     src={RemoveMeetupIcon} 
-                                    className={classes.listAvatar} 
+                                    className={classes.dialogAvatar} 
                                     imgProps={{style:{objectFit:'contain',border:0}}}
                                     style={{marginRight:'16%'}}
                                 />
@@ -290,7 +299,7 @@ export default function UpcomingMeetup(props) {
                             <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
                                 <Avatar alt="List"
                                     src={CompleteMeetupIcon} 
-                                    className={classes.listAvatar} 
+                                    className={classes.dialogAvatar} 
                                     imgProps={{style:{objectFit:'contain',border:0}}}
                                     style={{marginLeft:'16%'}}
                                 />
