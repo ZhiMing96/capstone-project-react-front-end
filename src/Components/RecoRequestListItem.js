@@ -39,9 +39,10 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: 'cover'
     },
     avatarImg:{
-        objectFit:'contain',
-        width: "inherit",
+        width: 'inherit',
         border: 0,
+        height: 'fit-content',
+        objectFit : 'contain' ,
         '&:hover': {
             opacity: 0.55,
         }
@@ -94,7 +95,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
     const handleChange = event => {
         //console.log(event.target.value);
         setRequestMessage(event.target.value);
-      };
+    };
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -135,15 +136,6 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
             setOpenDialog(false);
         })
     }
-
-    
-    const handleEnterPic = () => {
-        setHoverOnPic(true) 
-    }
-    const handleExitPic = () => {
-        setHoverOnPic(false)
-    }
-    
 
     const formatDate = (stringDate, length) => {
          const date = new Date(stringDate)

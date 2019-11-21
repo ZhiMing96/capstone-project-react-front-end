@@ -6,6 +6,14 @@ import ClearIcon from '@material-ui/icons/Clear'
 import EmploymentDetails from '../EmploymentDetails';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import api from '../../api';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import InfoIcon from '@material-ui/icons/Info';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import InvitationResponse from './NotificationActions/InvitationResponse' ; 
+import MeetupCompleteResponse from './NotificationActions/MeetupCompleteResponse' ; 
+import WriteRecommendation from './NotificationActions/WriteRecommendation' ; 
+import ViewDetails from './NotificationActions/ViewDetails';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -49,6 +57,16 @@ const useStyles = makeStyles(theme => ({
         marginLeft: '10%',
 
     },
+    icon :{
+        height:20,
+        width:20
+    },
+    imgProps : {
+        width: 'inherit',
+        border: 0,
+        height: 'fit-content',
+        objectFit : 'contain' ,
+    },
 
   }));
 
@@ -59,31 +77,23 @@ export default function NotificationsListItem(props) {
     const { alert } = props;
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
     const [ openMessage, setOpenMessage ] = useState(false);
+    const [ openAction, setOpenAction ] = useState(false);
     const [ anchorEl, setAnchorEl ] = useState(null);
+    const [ redirect, setRedirect ] = useState(false);
+    const [ actionHover, setActionHover ] = useState(false);
 
     const alertTypes = ["MEETUP_INVITE", "ACCEPT_INVITE", "CANCEL_MEETUP", "CHANGE_MEETUP_DATE", "COMPLETE_MEETUP", "RECOMMENDATION_REQUEST", "WRITE_RECOMMENDATION"]
-    const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Write a Recommendation", "New Recommendation Request", "Write a Recommendation", ]
+    const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Write a Recommendation", "Recommendation Requested", "New Recommendation", ]
 
 
 
     const calculateDaysAgo = (dateString) => {
-        // console.log("Entered Calculate Days Ago Method")
-        
         const currentDate = new Date();
         const alertDate = new Date(dateString);
-        // console.log(currentDate)
-        // console.log(alertDate)
         const dayDifference = Math.floor((Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) - Date.UTC(alertDate.getFullYear(),alertDate.getMonth(), alertDate.getDate()) ) /(1000 * 60 * 60 * 24))
 
         const hourDifference = Math.floor(currentDate.getHours() - alertDate.getHours());
         const minuteDifference = Math.floor(currentDate.getMinutes() - alertDate.getMinutes());
-    
-
-        // const minuteDifference = Math.floor((Date.UTC(alertDate.getFullYear(), alertDate.getMonth(), alertDate.getDate(), alertDate.getTime()) - Date.UTC(currentDate.getFullYear(),currentDate.getMonth(), currentDate.getDate(), currentDate.getTime()) ) /(1000 * 60))
-
-        // console.log(dayDifference)
-        // console.log(hourDifference)
-        // console.log(minuteDifference)
 
         if(dayDifference > 0){
             return (dayDifference + " days ago")
@@ -95,11 +105,9 @@ export default function NotificationsListItem(props) {
         } else {
             return "seconds ago"
         }
-        
-        
     }
 
-    const handleSeen = (alert) => { 
+    const handleSeen = () => { 
         console.log("ENTERED HANDLE SEEN METHOD")
         // setLoadingNotifications(true);
         api.alerts.seen({"alert_id": alert.alert_id })
@@ -123,84 +131,165 @@ export default function NotificationsListItem(props) {
         // console.log(event.currentTarget)
         // console.log(event.relatedTarget)
         const anchor = event.currentTarget
-        console.log(anchor)
+        // console.log(anchor)
         setAnchorEl(anchor);
         setTimeout(()=> {setOpenMessage(true)},200)
         
     }
 
-    const handleCloseMessage = () => {
-        console.log("ENTERED Handle Close Message in Notification.js")
+    const handleCloseEmploymentDetails = () => {
+        console.log("ENTERED Handle handleCloseEmploymentDetails in Notification.js")
         setOpenMessage(false);
     }
 
+    const openActions =(event)=> {
+        console.log("ENTERED show Actions in Notification.js")
+        event.preventDefault();
+        console.log(event)
+        const anchor = event.currentTarget
+        console.log(anchor)
+        setAnchorEl(anchor);
+        setTimeout(()=> {setOpenAction(true)},200)
+    }
+
+    const handleCloseActions = () =>{
+        console.log("ENTERED handleCloseActions in Notification.js")
+        setOpenAction(false);
+    }
+
+    const enableRedirect = () => {
+        handleSeen();
+        setRedirect(true);
+    }
+
+    const handleActionHover = () => {
+        setActionHover(true);
+    }
+    const handleNoActionHover = () => {
+        setActionHover(false);
+    }
+
+
+    const handleRedirect = (alertType) => {
+
+        if(alertType==="MEETUP_INVITE" || alertType==="ACCEPT_INVITE" || alertType==="CANCEL_MEETUP" || alertType==="CHANGE_MEETUP_DATE"  ) {
+            return (
+                <Redirect
+                  to={{
+                      pathname: "/profile/social",
+                      state: {tabIndex: 1}
+                  }}
+                />
+                )
+        } else if (alertType === ""){
+            return;
+        } else {
+            return (
+                <Redirect
+                  to={{
+                      pathname: "/profile/social",
+                      state: {tabIndex: 2}
+                  }}
+                />
+            )
+        }
+
+    }
+
     console.log("RENDERING Notification LIST ITEM")
+    console.log(alert)
     
     return (
         <div style={{marginBottom:'2%'}}>
         <ListItem  className={classes.listItem} style={{ paddingLeft:0, }} >
                                 
             <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15,marginLeft:'10%' }} >
-                <Avatar src={alert.from_user && alert.from_user.social && alert.from_user.social.profile_image_link ? alert.from_user.social.profile_image_link : defaultImg } style={{width:50, height:50}}/>
+                <Avatar src={alert.from_user && alert.from_user.social && alert.from_user.social.profile_image_link ? alert.from_user.social.profile_image_link : defaultImg } style={{width:50, height:50}} imgProps={{className: classes.imgProps}}/>
             </ListItemAvatar>
             
             <ListItemText>
-                <Grid item container justify="space-between" alignItems="center" >
-                    <Grid item xs={10} style={{maxWidth:'inherit'}}>
-                        <Link
-                            to={{
-                                pathname: "/profile/social",
-                                state: alert.alert_type === "RECOMMENDATION_REQUEST" || alert.alert_type === "WRITE_RECOMMENDATION" || alert.alert_type === "COMPLETE_MEETUP" ? {tabIndex: 2} : {tabIndex: 1}
-                            }}
-                            style={{textDecoration:'none', color:'inherit',}}
-                            onClick={()=> handleSeen(alert)}
-                        >
-                        
+                <Grid item container justify="space-between" alignItems="center" style={{height:'fit-content'}}>
+                    <Grid item xs={11} style={{maxWidth:'inherit'}}>
+                        <div onClick={() => enableRedirect() } >
                             <Typography style={{fontSize:17, fontWeight:'bold'}} >
                                 {alertHeaders[alertTypes.indexOf(alert.alert_type)]}
                             </Typography>
-                            {alert.from_user && alert.from_user.profile 
-                            ? `From ${alert.from_user.profile.username}`
-                            
-                            : 'From Unidentified Member'
-                            }
-                            </Link>
-                            { alert.work_experience 
-                            ? 
-                            <div>
-                                <Typography style={{}}>
-                                    {alert.work_experience.job_title}
-                                    <IconButton  size="small" onClick={showMessage} >
-                                        <HelpOutlineIcon className={classes.icon}/>
-                                    </IconButton>
-                                    {openMessage 
-                                    ?  <EmploymentDetails buttonExist={true} jobDetails={alert.work_experience} anchorEl={anchorEl} openMessage={openMessage} handleCloseMessage={handleCloseMessage}/>
-                                    : ""
-                                    }
-                                    {/* {alert.work_experience
-                                     ? <EmploymentDetails jobDetails={alert.work_experience} />
-                                     : ""
-                                    } */}
-                                </Typography>
-                            </div>
-                            : ""
-                            }
                             <Typography>
-                                {calculateDaysAgo(alert.created_datetime)}
+                                {alert.from_user && alert.from_user.profile 
+                                ? `From ${alert.from_user.profile.username}`
+                                
+                                : 'From Unidentified Member'
+                                }
                             </Typography>
+                        </div>
+                    
+                        { alert.work_experience 
+                        ? 
+                        <div>
+                            <Typography style={{}}>
+                                {alert.work_experience.job_title}
+                                <IconButton  size="small" onClick={showMessage} >
+                                    <HelpOutlineIcon className={classes.icon}/>
+                                </IconButton>
+                                {openMessage 
+                                ?  <EmploymentDetails buttonExist={true} jobDetails={alert.work_experience} anchorEl={anchorEl} openMessage={openMessage} handleCloseEmploymentDetails={handleCloseEmploymentDetails}/>
+                                : ""
+                                }
+                            </Typography>
+                        </div>
+                        : ""
+                        }
+                        <Typography>
+                            {calculateDaysAgo(alert.created_datetime)}
+                        </Typography>
                     </Grid>
-                    <Grid item xs={2} style={{textAlign:'end', alignSelf: "flex-start"}}>
-                        <Tooltip title="Mark as Seen" placement="bottom-start">
-                            <IconButton size="small" onClick={()=> handleSeen(alert)}>
-                                <ClearIcon/>
-                            </IconButton>
-                        </Tooltip>
+                    <Grid item xs={1} container direction="column" justify="space-between" alignItems="center" style={{textAlign:'end', alignSelf: "flex-start", height:'13vh'}}>
+                        <Grid item style={{}}>
+                            <Tooltip title="Mark as Seen" placement="bottom-start">
+                                <IconButton size="small" onClick={()=> handleSeen()} >
+                                    <ClearIcon/>
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                        <Grid item  style={{}}>
+                            { alert.alert_type === "WRITE_RECOMMENDATION" || alert.alert_type === "CHANGE_MEETUP_DATE" 
+                            ?
+                                <IconButton size="small" style={{padding:0}} onClick={openActions} onMouseEnter={handleActionHover} onMouseLeave={handleNoActionHover}>
+                                    {actionHover? <InfoIcon/> : <InfoOutlinedIcon/>}
+                                    
+                                </IconButton>
+                            : alert.alert_type === "ACCEPT_INVITE" || alert.alert_type === "CANCEL_MEETUP" 
+                            ? ''
+                            :
+                                <IconButton size="small" style={{padding:0}} onClick={openActions}>
+                                    <MoreHorizIcon/> 
+                                </IconButton>
+                            }
+                            
+                            { openAction
+                            ?
+                            alert.alert_type === "MEETUP_INVITE"
+                            ? <InvitationResponse alert={alert} handleCloseActions={handleCloseActions} openAction={openAction} anchorEl={anchorEl} handleSeen={handleSeen} enableRedirect={enableRedirect} /> : 
+                            alert.alert_type === "COMPLETE_MEETUP" 
+                            ? <MeetupCompleteResponse alert={alert} handleCloseActions={handleCloseActions} openAction={openAction} anchorEl={anchorEl} handleSeen={handleSeen} enableRedirect={enableRedirect} /> : 
+                            alert.alert_type === "RECOMMENDATION_REQUEST" 
+                            ? <WriteRecommendation alert={alert} handleCloseActions={handleCloseActions} openAction={openAction} anchorEl={anchorEl} handleSeen={handleSeen} enableRedirect={enableRedirect}/> :
+                            alert.alert_type === "WRITE_RECOMMENDATION" || alert.alert_type === "CHANGE_MEETUP_DATE"
+                            ? <ViewDetails alert={alert} handleCloseActions={handleCloseActions} openAction={openAction} anchorEl={anchorEl} handleSeen={handleSeen} enableRedirect={enableRedirect}/> : ''
+                            : "" 
+                            }
+                        </Grid>
                     </Grid>
                     
                 </Grid>
             </ListItemText>
         </ListItem>
         <Divider className={classes.divider} />
+        {redirect
+        ? 
+        handleRedirect(alert ? alert.alert_type : "")
+        :""
+        }
         </div>
     )
 }

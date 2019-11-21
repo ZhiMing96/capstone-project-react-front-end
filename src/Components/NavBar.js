@@ -84,9 +84,10 @@ class NavTabs extends React.Component {
         }
       })
     }
-    this.retrieveAlerts()
+    setTimeout(this.retrieveAlerts,1000);
     
-    setInterval(this.retrieveAlerts, 20000);
+    
+    setInterval(this.retrieveAlerts, 30000);
   }
 
 
@@ -113,7 +114,7 @@ class NavTabs extends React.Component {
                 console.log(this.state.alerts[currentLength-1].alert_id)
                 console.log(res.data.alerts[incomingLength-1].alert_id)
 
-                if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
+                if (this.state.alerts[0].alert_id !== res.data.alerts[0].alert_id || currentLength !== incomingLength){
                   if(window.localStorage.getItem('viewAlert') === null){
                     console.log("ENTEREDDDDDDD")
                     window.localStorage.removeItem('viewAlert');

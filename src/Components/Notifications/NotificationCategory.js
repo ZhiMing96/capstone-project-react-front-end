@@ -27,13 +27,15 @@ const useStyles = makeStyles(theme => ({
     },
     title:{
         textAlign:'Left',
-        fontWeight:100, 
+        fontWeight:550, 
         letterSpacing:1,
         overflow: 'hidden', 
         textOverflow: 'ellipsis',
         display:'-webkit-box', 
         WebkitLineClamp:1,
-        WebkitBoxOrient:'vertical'
+        WebkitBoxOrient:'vertical',
+        fontSize: 15,
+        color:'grey'
     }
 
 }));
@@ -57,7 +59,7 @@ export default function NotificationCategory(props) {
 
     return (
         <div>
-            <ListItem button onClick={handleClick} className={classes.root}>
+            <ListItem button onClick={handleClick} className={classes.root} disabled={alerts.length !== 0 ? false : true} >
                 
                     <Typography className={classes.title} style={{ }}>
                         {alertType ? alertType : "Section Header" } 

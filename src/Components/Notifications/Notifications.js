@@ -109,7 +109,7 @@ export default function Notifications(props) {
             alerts: [], 
         },
         {
-            type: "WRITE_RECOMMENDATION", title: "Write a Recommendation",
+            type: "WRITE_RECOMMENDATION", title: "New Recommendations",
             alerts: [], 
         },
     ])
@@ -178,7 +178,7 @@ export default function Notifications(props) {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} style={{}}>
-                    <List style={{ padding:0, }} >
+                    <List style={{ padding:0, marginBottom:'5%', marginTop:'5%' }} >
                         { loadingNotifications 
                         ? <NotificationsListSkeleton/>
                         : sorttedAlerts

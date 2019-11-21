@@ -71,9 +71,10 @@ const useStyles = makeStyles(theme => ({
     },
     
     listAvatarImg : {
-        objectFit:'contain',
-        width: "inherit",
+        width: 'inherit',
         border: 0,
+        height: 'fit-content',
+        objectFit : 'contain' ,
         '&:hover': {
             opacity: 0.55,
         }

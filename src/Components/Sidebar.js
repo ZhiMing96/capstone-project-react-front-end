@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
     objectFit:'contain',
     width: "inherit",
     border: 0,
+    height:'100%',
     '&:hover': {
         opacity: 0.55,
     }

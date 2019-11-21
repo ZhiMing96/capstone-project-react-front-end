@@ -270,7 +270,7 @@ function Invitations(props) {
                     console.log(invitesReceived);
                     setPendingInvitations(invitesReceived);
                     setInvitationsLoading(false);
-                    props.updatePendingInvitations(invitesReceived)
+                    // props.updatePendingInvitations(invitesReceived)
                 // }, 3000)
             } 
         }).catch(err => console.log(err))
@@ -294,7 +294,7 @@ function Invitations(props) {
                     var combined = invitesSent.concat(invitesReceived)
                     console.log('****** Combined Invitations *****')
                     console.log(combined);
-                    props.updateUpcomingMeetups(combined)
+                    // props.updateUpcomingMeetups(combined)
 
                     var tempWithDate = [];
                     var tempWithoutDate = [];
@@ -327,13 +327,23 @@ function Invitations(props) {
     
     useEffect(()=>{
         console.log("Getting Upcoming Meetups");
-        getUpcomingMeetups()
+        setTimeout(() => {getUpcomingMeetups() } , 1000);
+        // getUpcomingMeetups();
         
         console.log("Getting Pending Invitations");
        
         setInvitationsLoading(true);
-        setTimeout(() => {getPendingInvitation() } , 1000);
+        setTimeout(() => {getPendingInvitation() } , 5000);
+        // getPendingInvitation()
+        console.log(props)
     },[]) 
+
+    // useEffect(()=>{
+    //     getUpcomingMeetups();
+    // },[upcomingMeetups])
+    // useEffect(()=>{
+    //     getPendingInvitation();
+    // },[pendingInvitations])
 
     const handleAcceptInvitation = (requestId) => {
         console.log(requestId)
@@ -594,14 +604,16 @@ function Invitations(props) {
     )
 }
 
-const mapStateToProps = state => {
-    return { 
-      pendingInvitations: state.socialInteraction.pendingInvitations,
-      upcomingMeetups: state.socialInteraction.upcomingMeetups
-     }
-  };
+// const mapStateToProps = state => {
+//     return { 
+//       pendingInvitations: state.socialInteraction.pendingInvitations,
+//       upcomingMeetups: state.socialInteraction.upcomingMeetups
+//      }
+//   };
   
-export default connect(
-mapStateToProps,
-{ updateUpcomingMeetups, updatePendingInvitations }
-) (Invitations); 
+// export default connect(
+// mapStateToProps,
+// { updateUpcomingMeetups, updatePendingInvitations }
+// ) (Invitations); 
+
+export default Invitations;
