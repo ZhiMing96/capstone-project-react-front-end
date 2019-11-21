@@ -16,6 +16,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import NotificationsListItem from './NotificationsListItem'
 import NotificationCategory from './NotificationCategory';
 import SearchIcon from '@material-ui/icons/Search';
+import { ContactSupport } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -125,19 +126,21 @@ export default function Notifications(props) {
         }
     }
 
-    useEffect(()=>{
-        console.log("ENTERED Use Effect for Notifications")
+    const sortArray = (array) => {
+        console.log("$$$$ Entered Sort Array Method")
+        console.log(array)
         resetAlerts();
-        console.log("**** NEW PROPS DETECTED ****")
-        const alerts = props.alerts
-        if(alerts) {
-            for(let i=0; i < alerts.length ; i++ ) {
-                console.log("Start of I FOR Loop Number " + i)
+
+        if(array && array.length!==0) {
+            for(let i=0; i < array.length ; i++ ) {
+                // console.log("Start of I FOR Loop Number " + i)
                 for(let a=0; a<sorttedAlerts.length ; a++){
-                    console.log("Start of A FOR Loop Number " + a)
-                    if(alerts[i].alert_type === sorttedAlerts[a].type){
+                    // console.log("Start of A FOR Loop Number " + a)
+                    if(array[i].alert_type === sorttedAlerts[a].type){
                         var temp = [...sorttedAlerts]
-                        temp[a].alerts.push(alerts[i]);
+                        if(!temp[a].alerts.includes(array[i])){
+                            temp[a].alerts.push(array[i]);
+                        }
                         setSorttedAlerts(temp);
                         break;
                     }
@@ -145,19 +148,103 @@ export default function Notifications(props) {
                 
             }   
         }
-        // setAlerts(props.alerts)
+    }
+
+    useEffect(()=>{
+        console.log("ENTERED Use Effect for Notifications")
+        const tempAlerts = props.alerts
+        setAlerts(tempAlerts);
+        console.log(tempAlerts)
+        resetAlerts();
+        // console.log("**** Sorrting Array ****")
+        console.log("KEYWORD = " + keyword)
+        if(keyword) {
+            // console.log("ENTERED SEARCH")
+            handleSearch(keyword);
+        } else {
+            // console.log("ENTERED SORT")
+            sortArray(tempAlerts);
+        }
+
+
         setLoadingNotifications(false);
     }, [props])
 
     const handleChange = event => {
+        console.log("Entered Handle Change")
         event.preventDefault();
-        console.log(event.target.value)
-        setKeyword(event.target.value);
+        const valueInSearchBar = event.target.value !== '' ? event.target.value.toLowerCase()  : event.target.value
+        console.log(valueInSearchBar);
+        handleSearch(valueInSearchBar)
+        setKeyword(valueInSearchBar);
     }
-    
 
-    console.log("PRINTING ALERTS");
-    console.log(sorttedAlerts);
+    const handleSearch = (valueInSearchBar)  => {
+
+        console.log("Entered Handle Search")
+
+        // Variable to hold the original version of the list
+        let currentList = [];
+        // Variable to hold the filtered list before putting into state
+        let newList = [];
+        // If the search bar isn't empty
+        if (valueInSearchBar !== "") {
+            const filter = valueInSearchBar.toLowerCase();
+            
+            // Assign the original list to currentList
+            currentList = alerts;
+            console.log('Printing CURRENT LIST: ')
+            console.log(currentList)
+            // Use .filter() to determine which items should be displayed
+            // based on the search terms
+            newList = currentList.filter(item => {
+                
+                const usernameKeywords = item.from_user.profile.username.toLowerCase();
+                const firstNameKeywords = item.from_user.profile.first_name.toLowerCase();
+                const lastNamekeywords = item.from_user.profile.last_name.toLowerCase();
+                const jobTitleKeywords = item.work_experience.job_title.toLowerCase();
+                const companyKeywords = item.work_experience.company_name.toLowerCase();
+                const monthKeyword = item.meetup_invite ? getDate(item.meetup_invite.suggested_datetime) : item.recommendation_request ? getDate(item.recommendation_request.create_datetime) : ""
+                console.log("+++++ LOGGING DATE")
+                console.log(monthKeyword)
+                
+                console.log("Search Term = " + filter )
+
+                const userNameMatch = usernameKeywords.includes(filter);
+                const firstNameMatch = firstNameKeywords.includes(filter);
+                const lastNameMatch = lastNamekeywords.includes(filter);
+                const jobTitleMatch = jobTitleKeywords.includes(filter);
+                const companyMatch = companyKeywords.includes(filter);
+                const monthMatch = monthKeyword.includes(filter);
+
+                console.log("Value of userNameMatch = " + userNameMatch)
+                console.log("Value of firstNameMatch = " + firstNameMatch)
+                console.log("Value of lastNameMatch = " + lastNameMatch)
+                console.log("Value of jobTitleMatch = " + jobTitleMatch)
+                console.log("Value of companyMatch = " + companyMatch)
+                console.log("Value of monthMatch = " + monthMatch)
+
+                
+                return (userNameMatch || firstNameMatch || lastNameMatch || jobTitleMatch || companyMatch || monthMatch);
+            });
+
+            // console.log('Printing NEW LIST: ')
+            // console.log(newList)
+        } else {
+            newList = alerts; // If the search bar is empty, set newList to original task list
+        }
+        sortArray(newList); // Set the filtered state based on what our rules added to newList
+    }
+
+
+    const getDate = (stringDate) => {
+        const date = new Date(stringDate)
+        
+        var month = date.toLocaleString('en-GB', { month: 'short' });
+
+        // return(date.getDate() + " " +  month + " " + date.getFullYear())
+        return( month.toLowerCase() );
+   }
 
     return (
         <Paper className={classes.root} elevation={5}>
@@ -172,7 +259,7 @@ export default function Notifications(props) {
                         className={classes.input}
                         placeholder="Type your keyword(s)..."
                         required
-                        value={keyword}
+                        // value={keyword}
                         onChange={handleChange}
                         />
                     </Paper>

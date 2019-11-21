@@ -171,7 +171,7 @@ export default function NotificationsListItem(props) {
 
 
     const handleRedirect = (alertType) => {
-
+        handleSeen();
         if(alertType==="MEETUP_INVITE" || alertType==="ACCEPT_INVITE" || alertType==="CANCEL_MEETUP" || alertType==="CHANGE_MEETUP_DATE"  ) {
             return (
                 <Redirect
