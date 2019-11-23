@@ -67,6 +67,12 @@ const useStyles = makeStyles(theme => ({
         height: 'fit-content',
         objectFit : 'contain' ,
     },
+    closeIcon : {
+        color:'grey',
+        '&:hover': {
+            color:'black',
+        }
+    }
 
   }));
 
@@ -246,8 +252,8 @@ export default function NotificationsListItem(props) {
                     <Grid item xs={1} container direction="column" justify="space-between" alignItems="center" style={{textAlign:'end', alignSelf: "flex-start", height:'13vh'}}>
                         <Grid item style={{}}>
                             <Tooltip title="Mark as Seen" placement="bottom-start">
-                                <IconButton size="small" onClick={()=> handleSeen()} >
-                                    <ClearIcon/>
+                                <IconButton size="small" onClick={()=> handleSeen()}  style={{ backgroundColor:'transparent' }}>
+                                    <ClearIcon className={classes.closeIcon}/>
                                 </IconButton>
                             </Tooltip>
                         </Grid>
@@ -261,8 +267,8 @@ export default function NotificationsListItem(props) {
                             : alert.alert_type === "ACCEPT_INVITE" || alert.alert_type === "CANCEL_MEETUP" 
                             ? ''
                             :
-                                <IconButton size="small" style={{padding:0}} onClick={openActions}>
-                                    <MoreHorizIcon/> 
+                                <IconButton size="small" style={{ padding:0,backgroundColor:'transparent' }} onClick={openActions}>
+                                    <MoreHorizIcon className={classes.closeIcon} /> 
                                 </IconButton>
                             }
                             

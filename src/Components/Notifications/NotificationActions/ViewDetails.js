@@ -11,7 +11,7 @@ import ClearIcon from '@material-ui/icons/Clear'
 const useStyles = makeStyles(theme => ({
     paper: {
         padding: theme.spacing(1.5),
-        // width: '30%',
+        width: '30%',
         maxWidth: 350,
         overflowWrap: 'break-word',
         width:'100%', 
@@ -51,15 +51,21 @@ export default function ViewDetails(props) {
 
 
     const formatDate = (stringDate, length) => {
+        console.log(stringDate)
         const date = new Date(stringDate)
         if(length === "short") {
            var month = date.toLocaleString('en-GB', { month: 'short' });
         } else {
            var month = date.toLocaleString('en-GB', { month: 'long' });
         }
+
+        const day = date.getDate();
+        const year = date.getFullYear()
+
+
         
 
-        return(date.getDate() + " " +  month + " " + date.getFullYear())
+        return( day + " " +  month + " " + year )
    }
 
     return (

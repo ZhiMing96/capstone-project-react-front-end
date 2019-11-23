@@ -135,7 +135,7 @@ const useStyles = makeStyles(theme => ({
   // },
   descriptionArea: {
     position: 'sticky',
-    // paddingRight:20,
+    top:'15%',
     maxHeight: 700,
     [theme.breakpoints.down('sm')]: {
       paddingLeft: 20,
@@ -521,7 +521,7 @@ function Events() {
             </Typography>
             { recommendedEvents 
             ?
-            <div style={{ maxHeight: 300, overflowY: 'auto', }}>
+            <div style={{ maxHeight: '30%', overflowY: 'auto', }}>
             {recommendedEvents.map((recommendedEvent, index) => (
               <div key={index}>
                 <EventListingComponent key={index} event={recommendedEvent} handleSelectedEvent={handleSelectedEvent} handleHrefClick={handleHrefClick} recommended={true}/> 
@@ -531,7 +531,7 @@ function Events() {
             : 
             <div>
               <Typography variant='h6' style={{margin:'5%'}}>
-                  No Recommended Articles 
+                  No Recommended Events 
               </Typography>
             </div>
             }
@@ -540,7 +540,7 @@ function Events() {
           <Typography variant='h4' gutterBottom color='secondary' style={{ textAlign: 'left', fontWeight: 550, paddingLeft: 20, marginTop: '7%', marginBottom: '2%' }}>
             Latest
             </Typography>
-          <div style={{ maxHeight: 500, overflowY: 'auto', }}>
+          <div style={{ maxHeight: '11%', overflowY: 'auto', }}>
             {allEvents 
             ? 
             allEvents.map((list, index) => (

@@ -565,7 +565,6 @@ function Jobs (props) {
         tempString += state.keyword !== "" ? ('keyword=' + state.keyword) :'';
         tempString += state.employmentType !== ""  ? ('&employment_type=' + state.employmentType ) :'';
         tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
-        tempString += state.categories !== "" ? ('&categories=' + state.categories) :'';
         tempString += (`&limit=${searchLimit}`)
 
         console.log("Query String = " + tempString);

@@ -1,6 +1,6 @@
 
 import React, { Fragment, useState, useEffect, useRef } from 'react'
-import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, IconButton, Snackbar, Hidden} from '@material-ui/core'
+import { Grid, Typography, Box, Button, CssBaseline, Paper, ButtonBase, Slide, IconButton, Snackbar, Hidden, Tooltip} from '@material-ui/core'
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -446,17 +446,19 @@ function addBookmark(job){
                                     <Hidden smDown>
                                         <Grid item>
                                             <Box display="flex" justifyContent="flex-end" display={{ xs: 'none', sm: 'block' }}>
-                                                <Button
-                                                    className={classes.button} 
-                                                    size="small"
-                                                    onClick={ () => handleClick(list)}
-                                                    color='secondary'
-                                                    variant="outlined"
-                                                    disabled = {token? false: true}
-                                                    >
-                                                    Bookmark
-                                                    <BookmarkIcon className={classes.rightIcon} />
-                                                </Button>
+                                                <Tooltip title={token ? "Save to Bookmarks" : "Sign Up to Unlock Feature!" }>
+                                                    <Button
+                                                        className={classes.button} 
+                                                        size="small"
+                                                        onClick={ () => handleClick(list)}
+                                                        color='secondary'
+                                                        variant="outlined"
+                                                        disabled = {token? false: true}
+                                                        >
+                                                        Bookmark
+                                                        <BookmarkIcon className={classes.rightIcon} />
+                                                    </Button>
+                                                </Tooltip>
                                             </Box>
                                             
                                         </Grid>

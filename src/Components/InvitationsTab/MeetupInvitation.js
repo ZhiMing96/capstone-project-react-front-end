@@ -222,7 +222,7 @@ export default function MeetupInvitation(props) {
                             <EmploymentDetails jobDetails={invitation.from_user.work_experience} username={invitation.from_user && invitation.from_user.profile
                             ? invitation.from_user.profile.username 
                             : 'User'
-                        }/>
+                            }/>
                         </div>
                         : "Unknown Occupation"
                         }

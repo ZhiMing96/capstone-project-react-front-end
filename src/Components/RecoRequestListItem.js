@@ -52,7 +52,8 @@ const useStyles = makeStyles(theme => ({
         display: 'inline'
     },
     button: {
-        margin: theme.spacing(1)
+        margin: theme.spacing(1),
+        marginRight:0
     },
     dialogAvatar : {
         width:95,
@@ -73,6 +74,12 @@ const useStyles = makeStyles(theme => ({
     },
     headers : {
         fontWeight:'bold'
+    },
+    closeIcon : {
+        color:'grey',
+        '&:hover': {
+            color:'black',
+        }
     }
     
 }));
@@ -144,8 +151,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
          } else {
             var month = date.toLocaleString('en-GB', { month: 'long' });
          }
-         
-
+        
          return(date.getDate() + " " +  month + " " + date.getFullYear())
     }
 
@@ -182,7 +188,11 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                         ?
                                         <Typography>
                                             {meetup.other_user.work_experience.job_title}
-                                            <EmploymentDetails jobDetails={meetup.other_user.work_experience}/>
+                                            <EmploymentDetails jobDetails={meetup.other_user.work_experience}
+                                            username={meetup.other_user && meetup.other_user.profile
+                                                ? meetup.other_user.profile.username 
+                                                : 'User'
+                                                }/>
                                         </Typography> 
                                         
                                         : ""}
@@ -210,12 +220,12 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                         <Grid item style={{textAlign:'end'}}>
                         <Tooltip title={`Remove If Recommendation From ${meetup.other_user && meetup.other_user.profile? meetup.other_user.profile.username:'User'} Is Not Needed`}  
                         placement="top-start">
-                            <IconButton style={{padding:0}} onClick={()=> handleProcessRequestFromCompletedMeetup(meetup)} size="small">
-                                <CloseIcon style={{color:'#992E24'}} />
+                            <IconButton style={{ padding:0, backgroundColor:'transparent' }} onClick={()=> handleProcessRequestFromCompletedMeetup(meetup)} size="small">
+                                <CloseIcon className={classes.closeIcon}/>
                             </IconButton>
                         </Tooltip>
                         </Grid>
-                        <Grid item>
+                        <Grid item style={{ textAlign:'end' }}>
                             <Button color="primary" edge="end" variant="outlined" className={classes.button}
                             onClick={() => handleOpenDialog()}>
                                 Request
@@ -239,7 +249,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                         <Grid item container xs={12}>
                             <Grid item xs={12} sm={3} className={classes.avatarGrid}>
                                 <Avatar
-                                src=''
+                                src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                                 alt='list'
                                 className={classes.dialogAvatar}/>
                             </Grid>
@@ -248,7 +258,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                     <Grid item xs={4} className={classes.headers}>
                                         Name:
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={8} style={{ paddingLeft:'3%' }}>
                                         <Typography gutterBottom>
                                             {meetup.other_user && meetup.other_user.profile
                                             ? meetup.other_user.profile.username.toUpperCase()
@@ -262,14 +272,19 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                     <Grid item xs={4} className={classes.headers}>
                                         JobTitle
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={8} style={{ paddingLeft:'3%' }} >
                                         <Typography gutterBottom>
-                                            NUS Lecturer
+                                            {meetup && meetup.other_user ? meetup.other_user.work_experience.job_title : "Unknown Occupation"}
+                                            <EmploymentDetails jobDetails={ meetup && meetup.other_user ? meetup.other_user.work_experience : null }
+                                            username={meetup && meetup.other_user && meetup.other_user.profile
+                                                ? meetup.other_user.profile.username 
+                                                : 'User'
+                                                }/>
                                         </Typography>
                                     </Grid>
 
                                 </Grid>
-                                <Grid item container xs={12} >
+                                {/* <Grid item container xs={12} >
                                     <Grid item xs={4} className={classes.headers}>
                                         Company
                                     </Grid>
@@ -277,12 +292,12 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                         National University of Singapore
                                     </Grid>
 
-                                </Grid>
+                                </Grid> */}
                                 <Grid item container xs={12} className={classes.headers}>
                                     <Grid item xs={4}>
                                         Meetup Date
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={8} style={{ paddingLeft:'3%' }} >
                                         <Typography gutterBottom>
                                             {formatDate(meetup.suggested_datetime,'long')}
                                         </Typography>
