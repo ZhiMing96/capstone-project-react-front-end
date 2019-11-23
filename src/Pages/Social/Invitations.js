@@ -523,7 +523,7 @@ function Invitations(props) {
                         {pendingInvitations.map((invitation, index) => (
                             <div key={index}>
                             <Page>
-                                <MeetupInvitation invitation={invitation} handleAcceptInvitation={handleAcceptInvitation} handleDeclineInvitation={handleDeclineInvitation} />
+                                <MeetupInvitation invitation={invitation} handleAcceptInvitation={handleAcceptInvitation} handleDeclineInvitation={handleDeclineInvitation} redirectProfile={props.redirectProfile} />
                             </Page>
                             
                             </div>
@@ -552,7 +552,7 @@ function Invitations(props) {
                             if(meetup.suggested_datetime !== null){
                                 return(
                                     <div style={{width:'90%'}}>
-                                        <UpcomingMeetup meetup={meetup} handleDateChange={handleDateChange} handleSelectedMeetup={handleSelectedMeetup} handleMeetupCancellation={handleMeetupCancellation}  handleMeetupConfirmation={handleMeetupConfirmation} handleTelegramRedirect={handleTelegramRedirect}/>
+                                        <UpcomingMeetup meetup={meetup} handleDateChange={handleDateChange} handleSelectedMeetup={handleSelectedMeetup} handleMeetupCancellation={handleMeetupCancellation}  handleMeetupConfirmation={handleMeetupConfirmation} handleTelegramRedirect={handleTelegramRedirect} redirectProfile={props.redirectProfile}/>
                                     </div>
                                 )
                             }

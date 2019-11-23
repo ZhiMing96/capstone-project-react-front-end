@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Box, Snackbar, Tabs, Tab, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Reco from './Recommendations'
@@ -51,6 +51,10 @@ export default function Social(props) {
         })
     }
 
+    useEffect(() => {
+        setTabState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 0)
+    }, [props.location.state])
+
     const handleChangeIndex = (event, index) => {
         setTabState(index)
     };
@@ -92,10 +96,10 @@ export default function Social(props) {
 
                     </TabPanel>
                     <TabPanel tabState={tabState} index={1}>
-                        <Invitations/>
+                        <Invitations redirectProfile={redirectProfile}/>
                     </TabPanel>
                     <TabPanel tabState={tabState} index={2}>
-                        <Reco/>
+                        <Reco redirectProfile={redirectProfile}/>
                     </TabPanel>
                 </Grid>
             

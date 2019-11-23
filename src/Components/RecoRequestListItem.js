@@ -89,8 +89,9 @@ const useStyles = makeStyles(theme => ({
 
 const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
-export default function AlignItemsList({ meetup, handleProcessRequestFromCompletedMeetup, getCompletedMeetups }) {
+export default function AlignItemsList(props) {
 
+    const { meetup, handleProcessRequestFromCompletedMeetup, getCompletedMeetups } = props 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     const [requestMessage, setRequestMessage] = useState()
@@ -174,7 +175,9 @@ export default function AlignItemsList({ meetup, handleProcessRequestFromComplet
                 <ListItemAvatar className={classes.root}>
                     <Avatar src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                     className={classes.avatar} 
-                    imgProps={{className: classes.avatarImg}}/>
+                    imgProps={{className: classes.avatarImg}}
+                    onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
+                    />
                 </ListItemAvatar>
                 <Grid container alignItems="center" justify="space-between">
                     <Grid item xs={8}>

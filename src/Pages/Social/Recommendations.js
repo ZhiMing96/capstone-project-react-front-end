@@ -407,7 +407,7 @@ export default function Reco(props) {
                                     <List>
                                         {completedMeetups.map((meetup, index) => (
                                             <RecoRequestListItem meetup={meetup}
-                                            getCompletedMeetups={getCompletedMeetups} handleProcessRequestFromCompletedMeetup={handleProcessRequestFromCompletedMeetup}/>
+                                            getCompletedMeetups={getCompletedMeetups} handleProcessRequestFromCompletedMeetup={handleProcessRequestFromCompletedMeetup} redirectProfile={props.redirectProfile} />
                                         ))}
                                     </List>
                                 </Grid>

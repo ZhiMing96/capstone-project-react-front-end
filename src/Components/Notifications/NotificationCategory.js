@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function NotificationCategory(props) {
     const classes = useStyles();
-    const { alertType, alerts, retrieveAlerts } = props;
+    const { alertType, alerts, retrieveAlerts, handleClosePopover } = props;
     const [ openSection, setOpenSection ] = useState(false);
     const horizontal = 'right';
     const vertical = 'center';
@@ -87,7 +87,7 @@ export default function NotificationCategory(props) {
                     {alerts
                         ? alerts.map((alert, index) => (
                             <div >
-                            <NotificationsListItem alert={alert} retrieveAlerts={retrieveAlerts} />
+                            <NotificationsListItem alert={alert} retrieveAlerts={retrieveAlerts} handleClosePopover={ handleClosePopover }/>
                             </div>
                         ))
                         : 

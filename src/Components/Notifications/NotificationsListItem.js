@@ -177,8 +177,10 @@ export default function NotificationsListItem(props) {
 
 
     const handleRedirect = (alertType) => {
-        handleSeen();
+        // handleSeen();
+        props.handleClosePopover();
         if(alertType==="MEETUP_INVITE" || alertType==="ACCEPT_INVITE" || alertType==="CANCEL_MEETUP" || alertType==="CHANGE_MEETUP_DATE"  ) {
+            
             return (
                 <Redirect
                   to={{
@@ -186,10 +188,11 @@ export default function NotificationsListItem(props) {
                       state: {tabIndex: 1}
                   }}
                 />
-                )
+            )
         } else if (alertType === ""){
             return;
         } else {
+            
             return (
                 <Redirect
                   to={{
@@ -201,6 +204,10 @@ export default function NotificationsListItem(props) {
         }
 
     }
+
+    // const closePopover = () => {
+    //     handleClosePopover();
+    // }
 
     console.log("RENDERING Notification LIST ITEM")
     console.log(alert)

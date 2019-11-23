@@ -161,8 +161,10 @@ export default function MeetupInvitation(props) {
     }
 
     const formatDate = (dateString) => {
+        console.log("Entered FormatDate in MeetupInvitation")
         const date = new Date(dateString)
-        var day = date.getMonth();
+        var day = date.getDate();
+        console.log(day)
         var year = date.getFullYear();
         var month = date.toLocaleString('en-GB', { month: 'short' });
 
@@ -183,30 +185,19 @@ export default function MeetupInvitation(props) {
                     </IconButton>
                 </Tooltip>
                 </div>
-                
-                <Link 
-                to={{
-                    pathname: "/profile",
-                    state: { user: 
-                        invitation.from_user && invitation.from_user.profile
-                        ? invitation.from_user.profile.user_id 
-                        : null
-                    }
-                    }} 
-                style={{textDecoration:'none'}}
-                >
-                        <div>
-                        <Avatar
-                        src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
-                        defaultImg
-                        } 
-                        className={classes.carouselAvatar} 
-                        // imgProps={{style:{objectFit:'contain',border:0}}}
-                        imgProps={{className: classes.carouselAvatarImg }}
-                        // onClick={()=> handleHrefClick(listing)}
-                        />
-                        </div>
-                </Link>
+            
+                <div>
+                    <Avatar
+                    src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
+                    defaultImg
+                    } 
+                    className={classes.carouselAvatar} 
+                    // imgProps={{style:{objectFit:'contain',border:0}}}
+                    imgProps={{className: classes.carouselAvatarImg }}
+                    onClick={()=> props.redirectProfile(invitation.from_user && invitation.from_user.profile
+                        ? invitation.from_user.profile.user_id : null)}
+                    />
+                </div>
                 <Grid container  justify='space-between' style={{height:'15vh'}}>
                     <Grid item xs={12}>
                     <Typography gutterBottom className={classes.carouselUsername} style={{}}>

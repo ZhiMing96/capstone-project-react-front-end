@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Notifications(props) {
     const classes = useStyles();
-    const [alerts, setAlerts] = useState();
+    const [ alerts, setAlerts ] = useState();
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
     const [ keyword, setKeyword ] = useState(null);
 
@@ -168,7 +168,7 @@ export default function Notifications(props) {
 
 
         setLoadingNotifications(false);
-    }, [props])
+    }, [props.alerts])
 
     const handleChange = event => {
         console.log("Entered Handle Change")
@@ -188,7 +188,7 @@ export default function Notifications(props) {
         // Variable to hold the filtered list before putting into state
         let newList = [];
         // If the search bar isn't empty
-        if (valueInSearchBar !== "") {
+        if (valueInSearchBar !== "" && alerts ) {
             const filter = valueInSearchBar.toLowerCase();
             
             // Assign the original list to currentList
@@ -197,6 +197,7 @@ export default function Notifications(props) {
             console.log(currentList)
             // Use .filter() to determine which items should be displayed
             // based on the search terms
+            
             newList = currentList.filter(item => {
                 
                 const usernameKeywords = item.from_user.profile.username.toLowerCase();
@@ -273,7 +274,7 @@ export default function Notifications(props) {
                         ?
                         sorttedAlerts.map((category, index) => (
                             <NotificationCategory alerts={category.alerts} alertType={category.title}
-                            retrieveAlerts={props.retrieveAlerts}/>
+                            retrieveAlerts={props.retrieveAlerts} handleClosePopover={props.handleClosePopover} />
                         ))
                         :
                         <div style={{padding:'5%'}}>

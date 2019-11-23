@@ -20,7 +20,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu'
 import Logout from './Logout';
-import { Hidden, Box, Snackbar } from '@material-ui/core';
+import { Hidden, Box, Snackbar, Popover } from '@material-ui/core';
 import LoginIcon from '@material-ui/icons/Input';
 import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
 import Backdrop from '../Components/MobileSideBar/Backdrop';
@@ -67,8 +67,8 @@ class NavTabs extends React.Component {
         events: 'light',
         articles: 'light',
       },
-      alerts : null,
-      openSnackBar: false,
+      alerts : [],
+      open: false,
       messageInfo: "You have a new Notification!",
       notificationLoading: true, 
       fillAlertIcon:false,
@@ -97,8 +97,6 @@ class NavTabs extends React.Component {
   updateAlerts = () =>{
     // this.setState({notificationLoading: true})
     console.log("Entered UPDATE ALERTS")
-
-    
 
     api.alerts.retrieve({"alert_type": ""})
     .then(res => {
@@ -150,7 +148,20 @@ class NavTabs extends React.Component {
         if (res.data.response_code === 200){
             console.log(res.data.alerts)
             if(res.data.alerts.length !== 0 || !res.data.alerts){
-              if(!this.state.alerts) {
+              if(this.state.alerts.length === 0) {
+                const action = key => (
+                  <Fragment>
+                      <IconButton onClick={() => { this.props.closeSnackbar(key) }}>
+                          <ClearIcon/>
+                      </IconButton>
+                  </Fragment>
+                );
+
+                this.props.enqueueSnackbar("New Notification!", {
+                  variant: 'info',
+                  autoHideDuration: 5000,
+                  action,
+                });
                 this.setState({alerts: res.data.alerts })
               } else {
                 const currentLength = this.state.alerts ? this.state.alerts.length : 0
@@ -160,11 +171,7 @@ class NavTabs extends React.Component {
                 console.log(this.state.alerts[currentLength-1].alert_id)
                 console.log(res.data.alerts[incomingLength-1].alert_id)
                 if (this.state.alerts[0].alert_id !== res.data.alerts[0].alert_id || currentLength !== incomingLength){ //NEW ALERTS ARRAY DETECTED
-                  if(window.localStorage.getItem('viewAlert') === null){
-                    console.log("ENTEREDDDDDDD")
-                    window.localStorage.removeItem('viewAlert');
-                  } 
-                  window.localStorage.setItem('viewAlert', true);
+                  console.log("NEW ALERTS DETECTED")
 
                   const action = key => (
                     <Fragment>
@@ -174,7 +181,7 @@ class NavTabs extends React.Component {
                     </Fragment>
                   );
 
-                  this.props.enqueueSnackbar("New Notifications!", {
+                  this.props.enqueueSnackbar("New Notification!", {
                     variant: 'info',
                     autoHideDuration: 5000,
                     action,
@@ -185,7 +192,7 @@ class NavTabs extends React.Component {
                 }
             }
           } else {
-            this.setState({alerts: null })
+            this.setState({alerts: [] })
           }
         } else {
           const action = key => (
@@ -264,7 +271,8 @@ class NavTabs extends React.Component {
     window.localStorage.setItem('viewAlert', false);
     console.log(event.currentTarget)
 
-    this.setState({anchorEl : this.state.anchorEl ? null : event.currentTarget });
+    this.setState({ anchorEl :  event.currentTarget });
+    this.setState({ open : !this.state.open });
   
   };
 
@@ -274,6 +282,12 @@ class NavTabs extends React.Component {
   resetAlertIcon = () => {
     this.setState({ fillAlertIcon : false })
   }
+
+  handleClose = () => {
+    console.log("====== ENTERED handleClose")
+    // this.setState({ anchorEl: null })
+    this.setState({ open : false })
+  };
 
 
 
@@ -287,9 +301,9 @@ class NavTabs extends React.Component {
     console.log("showBadge = " + showBadge)
 
     var isHomePage=false
-    const open = Boolean(this.state.anchorEl);
-    console.log(open)
-    const id = open ? 'transitions-popper' : undefined;
+    // const open = Boolean(this.state.anchorEl);
+    // console.log(open)
+    // const id = open ? 'transitions-popper' : undefined;
 
 
     if(this.props.location.pathname === '/'){
@@ -326,9 +340,7 @@ class NavTabs extends React.Component {
       break;
       
     }
-
-    // console.log("STATE OF SNACKBAR = ") 
-    // console.log(this.state.openSnackBar)
+    const id = this.state.open ? 'simple-popover' : undefined;
     return (
       <div>
         <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler}/>
@@ -427,7 +439,7 @@ class NavTabs extends React.Component {
                 <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
                    <NotificationsNoneIcon onClick={this.handleClick} style={{ }} />
                 </Badge>
-                <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
+                {/* <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
                   className="popper_class"
                   placement="left-start"
                   disablePortal={false}
@@ -438,9 +450,29 @@ class NavTabs extends React.Component {
                     arrow: {
                       enabled: true,
                     },
-                }}>
-                  <Notifications alerts={this.state.alerts} retrieveAlerts={this.updateAlerts} loading={this.state.notificationLoading}/>
-                </Popper>
+                }}> */}
+                {this.state.open 
+                ? 
+                <Popover
+                id={id}
+                open={this.state.open}
+                anchorEl={this.state.anchorEl}
+                onClose={() => this.handleClose() }
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                >
+                  <Notifications alerts={this.state.alerts} retrieveAlerts={this.updateAlerts} loading={this.state.notificationLoading} handleClosePopover={this.handleClose}/>
+                </Popover>
+                : ""
+                }
+                 
+                {/* </Popper> */}
                 
                 <Logout handleLogout={this.handleLogout}/>
                 </div>

@@ -183,24 +183,13 @@ export default function UpcomingMeetup(props) {
             <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
                 <Grid container item xs={12}>
                     <Grid item xs={3}> 
-                    <Link 
-                    to={{
-                        pathname: "/profile",
-                        state: { user: 
-                            meetup.other_user && meetup.other_user.profile
-                            ? meetup.other_user.profile.user_id 
-                            : null
-                        }
-                    }} 
-                    style={{textDecoration:'none'}}
-                    >
+                    
                         <Avatar
                             src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
                             imgProps={{className: classes.listAvatarImg}}
-                            // onClick={()=> handleViewProfile()}
+                            onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
                         />
-                    </Link>
                     </Grid>
                     <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
                         <Typography>
