@@ -4,6 +4,7 @@ import { IconButton, Popover, Typography, Tooltip, Button, CardActions, Card, Ca
 import Popper from '@material-ui/core/Popper';
 import { makeStyles } from '@material-ui/core/styles';
 import api from '../../../api';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 import ClearIcon from '@material-ui/icons/Clear'
 
@@ -32,6 +33,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ViewDetails(props) {
+
+    const { enqueueSnackbar } = useSnackbar();
     const classes = useStyles();
     const { alert } = props
     const [ openAction, setOpenAction ] = useState(false);

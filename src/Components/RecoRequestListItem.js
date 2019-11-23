@@ -1,4 +1,4 @@
-import React , { useState, useEffect } from 'react';
+import React , { useState, useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -20,8 +20,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
+import ClearIcon from '@material-ui/icons/Clear'
 import EmploymentDetails from './EmploymentDetails'
 import viewProfileBG from '../images/viewProfileBG.jpg'
+import { useSnackbar } from 'notistack';
+
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -86,7 +89,9 @@ const useStyles = makeStyles(theme => ({
 
 const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
-export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProcessRequestFromCompletedMeetup}) {
+export default function AlignItemsList({ meetup, handleProcessRequestFromCompletedMeetup, getCompletedMeetups }) {
+
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     const [requestMessage, setRequestMessage] = useState()
     const [openDialog, setOpenDialog] = useState(false);
@@ -96,8 +101,13 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
     const successMsg = "Requst Sent! "
     const [ hoverOnPic, setHoverOnPic ] = useState(false);
 
-    // console.log('<< Meetup Item >> ')
-    // console.log(meetup)
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const handleChange = event => {
         //console.log(event.target.value);
@@ -133,13 +143,15 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
             console.log(res.data)
             if(res.data.response_code === 200){
                 console.log('**** Successfully Send Recommendation Request ****')
-                handleOpenSnackBar("Success");
+                enqueueSnackbar('Recommendation Request Sent Successfully',  { variant: "success", action } );
+                getCompletedMeetups();
             } else {
-                handleOpenSnackBar("Error");
+                enqueueSnackbar('Unable to Send Recommendation Request',  { variant: "error", action } );
             }
             
         }).catch(err=>{
             console.log(err)
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             setOpenDialog(false);
         })
     }

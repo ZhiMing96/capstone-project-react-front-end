@@ -18,6 +18,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import EmploymentDetails from '../EmploymentDetails'
 import FaceIcon from '@material-ui/icons/Face';
 import viewProfileBG from '../../images/viewProfileBG.jpg'
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles(theme => ({
     root:{

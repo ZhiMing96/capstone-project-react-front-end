@@ -247,6 +247,7 @@ export default function Notifications(props) {
    }
 
     return (
+        <div style={{ width:'100%', height:'100%' }}>
         <Paper className={classes.root} elevation={5}>
             <Grid container >
                 <Grid item xs={12} className={classes.headerBar}>
@@ -286,8 +287,9 @@ export default function Notifications(props) {
                 
                 </Grid>
             </Grid>
-            
-           
         </Paper>
+       
+        </div>
+        
     )
 }

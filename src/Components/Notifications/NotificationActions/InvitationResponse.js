@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { IconButton, Popover, Typography, Tooltip, Card, Button, CardActions, CardContent } from '@material-ui/core';
 import Popper from '@material-ui/core/Popper';
@@ -8,6 +8,8 @@ import ClearIcon from '@material-ui/icons/Clear'
 import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import { useSnackbar } from 'notistack';
+
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -28,12 +30,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function InvitationResponse(props) {
+
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes=useStyles();
     const [ openAction, setOpenAction ] = useState(false);
     const [ showConfirmation, setShowConfirmation ] = useState(false);
     const [ anchorEl, setAnchorEl ] = useState(null);
     const { alert } = props
     const [ redirect, setRedirect ] = useState(false);
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     useEffect(()=>{
         if(props.openAction) {
@@ -62,10 +74,12 @@ export default function InvitationResponse(props) {
         .then(res=>{
             if(res.data.response_code === 200){
                 console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
+                enqueueSnackbar('Invitation Accepted',  { variant: "success", action } );
                 props.handleSeen();
                 props.enableRedirect();
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
+                enqueueSnackbar('Unable to Accept Invitation', { variant: "error", action  });
                 console.log(res.data.response_code + res.data.response_message);
             }
             
@@ -73,7 +87,7 @@ export default function InvitationResponse(props) {
             
         }).catch(err => {
             console.log(err);
-
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
         })
         
     }
@@ -84,17 +98,21 @@ export default function InvitationResponse(props) {
         .then(res => {
             if(res.data.response_code === 200){
                 console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
+                enqueueSnackbar('Invitation Cancelled Successfully',  { variant: "success", action } );
                 props.handleSeen();
                 // props.enableRedirect();
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****");
+                enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
+
                 console.log(res.data.response_code + res.data.response_message);
             }
+
             props.handleCloseActions ? props.handleCloseActions() : closeAction()
             
         }).catch(err => {
             console.log(err);
-
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
         })
     }
 

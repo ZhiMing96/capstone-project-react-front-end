@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect,useRef, Fragment } from 'react';
 import { Grid, Typography, Box, List, Badge, Fab,IconButton,Snackbar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import RecoRequestCard from '../../Components/RecommendationRequestCard'
@@ -17,6 +17,8 @@ import CircularLoading from '../../Components/LoadingBars/CircularLoading'
 import RecommendationRequestSkeletonLoading from '../../Components/SkeletonLoading/RecommendationRequestSkeletonLoading'
 import './Recommendations.css'
 import CloseIcon from '@material-ui/icons/Close';
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -165,14 +167,12 @@ width:97%
 `;
 
 export default function Reco(props) {
+
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     const [recoRequests, setRecoRequests] = useState([])
     const [completedMeetups, setCompletedMeetups] = useState();
     const [loadingCompletedMeetups, setLoadingCompletedMeetups] = useState(false);
-    const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
-    const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-    const requestErrorMsg = "An Error Has Occured! Request was Unsucessful"
-    const requestSuccessMsg = "Requst Sent Successfully! "
     const [recommendations, setRecommendations] = useState([])
     const demoArray = [1, 2, 3];
 
@@ -180,6 +180,14 @@ export default function Reco(props) {
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState(undefined);
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
 
     const getCompletedMeetups = () => {
@@ -211,10 +219,14 @@ export default function Reco(props) {
                 } else {
                     console.log('**** ERROR: Unable to Retrieve Completed Meetups  ***')
                     console.log(res.data.response_message)
+                    enqueueSnackbar('Unable to Retrieve Completed Meetups',  { variant: "error", action } );
                 }
 
                 setLoadingCompletedMeetups(false)
-            }).catch(err => console.error(err));
+            }).catch(err => {
+                console.log(err);
+                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            })
     }
 
     const getRecoRequests = () => {
@@ -251,24 +263,6 @@ export default function Reco(props) {
         getRecoRequests()
         getRecommendations()
     }, [props])
-
-    const resetSnackBars = (reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenErrorSnackbar(false);
-        setOpenSuccessSnackbar(false);
-    }
-
-    const handleOpenSnackBar = (type) => {
-        console.log(" $$$$ ENTERED OPEN SNACKBAR ")
-
-        if (type === "Error") {
-            setOpenErrorSnackbar(true);
-        } else if (type == "Success") {
-            setOpenSuccessSnackbar(true);
-        }
-    }
 
     const removeRecoRequest=(request_id)=>{
         console.log("received request_id" +request_id)
@@ -328,9 +322,15 @@ export default function Reco(props) {
         .then(res=>{
             console.log(res.data);
             if(res.data.response_code===200){
+                enqueueSnackbar('Requstion Option Removed',  { variant: "success", action } );
                 console.log("Meetup Record Processed SUCCESSFULLY - OPEN SNACK BAR TO INFORM")
                 getCompletedMeetups();
+            } else {
+                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
+        }).catch(err=>{
+            console.log(err);
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
         })
     }
 
@@ -407,7 +407,7 @@ export default function Reco(props) {
                                     <List>
                                         {completedMeetups.map((meetup, index) => (
                                             <RecoRequestListItem meetup={meetup}
-                                                handleOpenSnackBar={handleOpenSnackBar} handleProcessRequestFromCompletedMeetup={handleProcessRequestFromCompletedMeetup}/>
+                                            getCompletedMeetups={getCompletedMeetups} handleProcessRequestFromCompletedMeetup={handleProcessRequestFromCompletedMeetup}/>
                                         ))}
                                     </List>
                                 </Grid>
@@ -418,24 +418,6 @@ export default function Reco(props) {
                 {
 
                 }
-                <Snackbar
-                    open={openErrorSnackbar}
-                    handleClose={resetSnackBars}
-                    variant="error"
-                    message={requestErrorMsg}
-                />
-                <Snackbar
-                    open={openSuccessSnackbar}
-                    handleClose={resetSnackBars}
-                    variant="success"
-                    message={requestSuccessMsg}
-                />
-                {/* <Snackbar
-            open={ openSuccessSnackbar || openErrorSnackbar ? true : false }
-            handleClose={resetSnackBars}
-            variant={openSuccessSnackbar ? "success" : openErrorSnackbar ? "error" : "success"}
-            message={openSuccessSnackbar ? requestSuccessMsg : openErrorSnackbar ? requestErrorMsg : ""}
-        /> */}
 
                 <Grid item container style={{ width: '100%' }}>
                     <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>

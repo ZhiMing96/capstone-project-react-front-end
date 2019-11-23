@@ -25,6 +25,8 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import viewProfileBG from '../../images/viewProfileBG.jpg'
 import EmploymentDetails from '../EmploymentDetails';
+import { useSnackbar } from 'notistack';
+
 
 
 const theme = createMuiTheme({
@@ -124,6 +126,8 @@ const useStyles = makeStyles(theme => ({
 
 const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 export default function UpcomingMeetup(props) {
+
+    
     const classes=useStyles();
     console.log(props);
     const { meetup, handleDateChange, handleSelectedMeetup, handleMeetupCancellation, handleMeetupConfirmation, handleTelegramRedirect } = props;

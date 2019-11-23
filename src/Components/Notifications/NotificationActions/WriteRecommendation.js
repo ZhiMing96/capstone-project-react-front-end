@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, Fragment } from 'react'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { IconButton, Popover, Typography, Tooltip, Button, CardActions, Card, CardContent, TextField } from '@material-ui/core';
 import Popper from '@material-ui/core/Popper';
@@ -8,6 +8,7 @@ import api from '../../../api';
 import ClearIcon from '@material-ui/icons/Clear'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -33,7 +34,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
+
+
 export default function MeetupCompleteResponse(props) {
+
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes=useStyles();
     const [ openAction, setOpenAction ] = useState(false);
     const [ anchorEl, setAnchorEl ] = useState(null);
@@ -41,6 +46,14 @@ export default function MeetupCompleteResponse(props) {
     const [ showConfirmation , setShowConfirmation ] = useState(false);
     const [ recoMessage, setRecoMessage ] = useState();
     const { alert } = props
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
     
     useEffect(()=>{
         if(props.openAction) {
@@ -93,11 +106,11 @@ export default function MeetupCompleteResponse(props) {
             console.log(res.data)
             if(res.data.response_code === 200){
                 console.log('**** Successfully Submitted the Recommendation ****')
+                enqueueSnackbar('Recommendation Sent Successfully',  { variant: "success", action } );
                 props.handleSeen();
                 // props.enableRedirect();
-                // handleOpenSnackBar("Success");
             } else {
-                // handleOpenSnackBar("Error");
+                enqueueSnackbar('Unable to Send Recommendation', { variant: "error", action  } );
             }
             props.handleCloseActions ? props.handleCloseActions() : closeAction()
         }).catch(err=>{
@@ -114,8 +127,11 @@ export default function MeetupCompleteResponse(props) {
         ).then(res=>{
             if(res.data.response_code===200){
                 console.log('**** Successfully Rejected the Recommendation ****')
+                enqueueSnackbar('Recommendation Rejected Successfully', { variant: "success", action } );
                 props.handleSeen();
                 // props.enableRedirect();
+            } else {
+                enqueueSnackbar('Unable to Reject Recommendation',  { variant: "error", action  } );
             }
         }).catch(err=>{
             console.log(err)
