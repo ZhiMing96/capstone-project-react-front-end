@@ -51,12 +51,6 @@ const styles = theme => ({
   },
 })
 
-const anchorPoint = (
-  <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">  
-    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"></path>
-  </svg>
-)
-
 class NavTabs extends React.Component {
 
   constructor (props) {
@@ -81,7 +75,6 @@ class NavTabs extends React.Component {
     };
     console.log(this.props)
     console.log(this.props.location.pathname)
-
     this.notificationIcon = React.createRef();
     this.handleSnackbarClick = this.handleSnackbarClick.bind(this);
   }
@@ -94,12 +87,29 @@ class NavTabs extends React.Component {
           let userId = response.data.profile.user_id
           this.props.doLogin(userId) //HYDRATE
         }
+      }).catch(err => {
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        const action = key => (
+          <Fragment>
+              <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                  <ClearIcon/>
+              </IconButton>
+          </Fragment>
+        );
+        this.props.enqueueSnackbar(`Error ${status}: ${statusText}`, {
+          variant: 'error',
+          autoHideDuration: 5000,
+          action,
+        });
       })
     }
-    setTimeout(this.retrieveAlerts,1000);
     
+      setTimeout(this.retrieveAlerts,1000);
+      setInterval(this.retrieveAlerts, 20000);
     
-    setInterval(this.retrieveAlerts, 20000);
   }
 
   
@@ -107,139 +117,150 @@ class NavTabs extends React.Component {
     // this.setState({notificationLoading: true})
     console.log("Entered UPDATE ALERTS")
 
-    api.alerts.retrieve({"alert_type": ""})
-    .then(res => {
-        console.log(res.data)
-        if (res.data.response_code === 200){
-            console.log(res.data.alerts)
-            if(res.data.alerts.length !== 0 || !res.data.alerts){
-                this.setState({alerts: res.data.alerts })
+    if(window.localStorage.getItem('authToken') !== null){
+      api.alerts.retrieve({"alert_type": ""})
+      .then(res => {
+          console.log(res.data)
+          if (res.data.response_code === 200){
+              console.log(res.data.alerts)
+              if(res.data.alerts.length !== 0 || !res.data.alerts){
+                  this.setState({alerts: res.data.alerts })
+            } else {
+              this.setState({alerts: null })
+            }
           } else {
-            this.setState({alerts: null })
+            const action = key => (
+              <Fragment>
+                  <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                      <ClearIcon/>
+                  </IconButton>
+              </Fragment>
+            );
+            this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
+              variant: 'error',
+              autoHideDuration: 5000,
+              action,
+            });
           }
-        } else {
-          const action = key => (
-            <Fragment>
-                <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
-                    <ClearIcon/>
-                </IconButton>
-            </Fragment>
-          );
-          this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
-            variant: 'error',
-            autoHideDuration: 5000,
-            action,
-          });
-        }
-    }).catch(err => {
-      console.log(err)
-      const action = key => (
-        <Fragment>
-            <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
-                <ClearIcon/>
-            </IconButton>
-        </Fragment>
-      );
-      this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
-        variant: 'error',
-        autoHideDuration: 5000,
-        action,
-      });
-    })
+      }).catch(err => {
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        const action = key => (
+          <Fragment>
+              <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                  <ClearIcon/>
+              </IconButton>
+          </Fragment>
+        );
+        this.props.enqueueSnackbar(`Error ${status}: ${statusText}`, {
+          variant: 'error',
+          autoHideDuration: 5000,
+          action,
+        });
+      })
+    }
+
   }
 
   retrieveAlerts = () =>{
     // this.setState({notificationLoading: true})
     console.log("Entered RETRIEVE ALERTS")
-
-    api.alerts.retrieve({"alert_type": ""})
-    .then(res => {
-        console.log(res.data)
-        if (res.data.response_code === 200){
-            console.log(res.data.alerts)
-            if(res.data.alerts.length !== 0 || !res.data.alerts){
-              if(this.state.alerts.length === 0) {
-                const action = key => (
-                  <Fragment>
-                      <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
-                          View All
-                      </Button>
-                      <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white'}}>
-                          <ClearIcon/>
-                      </IconButton>
-                  </Fragment>
-                );
-
-                this.props.enqueueSnackbar("New Notification!", {
-                  variant: 'info',
-                  autoHideDuration: 5000,
-                  action,
-                });
-                this.setState({alerts: res.data.alerts })
-              } else {
-                const currentLength = this.state.alerts ? this.state.alerts.length : 0
-                const incomingLength = res.data.alerts.length
-                console.log('currentLength = ' + currentLength)
-                console.log('incomingLength = ' + incomingLength)
-                console.log(this.state.alerts[currentLength-1].alert_id)
-                console.log(res.data.alerts[incomingLength-1].alert_id)
-                if (this.state.alerts[0].alert_id !== res.data.alerts[0].alert_id || currentLength !== incomingLength){ //NEW ALERTS ARRAY DETECTED
-                  console.log("NEW ALERTS DETECTED")
-
+    if(window.localStorage.getItem('authToken') !== null){
+      api.alerts.retrieve({"alert_type": ""})
+      .then(res => {
+          console.log(res.data)
+          if (res.data.response_code === 200){
+              console.log(res.data.alerts)
+              if(res.data.alerts.length !== 0 || !res.data.alerts){
+                if(this.state.alerts.length === 0) {
                   const action = key => (
                     <Fragment>
-                      <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
-                          View All
-                      </Button>
-                      <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
-                          <ClearIcon/>
-                      </IconButton>
+                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
+                            View All
+                        </Button>
+                        <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white'}}>
+                            <ClearIcon/>
+                        </IconButton>
                     </Fragment>
                   );
-
+  
                   this.props.enqueueSnackbar("New Notification!", {
                     variant: 'info',
                     autoHideDuration: 5000,
                     action,
                   });
-
                   this.setState({alerts: res.data.alerts })
-                  this.setState({notificationLoading: false})
-                }
+                } else {
+                  const currentLength = this.state.alerts ? this.state.alerts.length : 0
+                  const incomingLength = res.data.alerts.length
+                  console.log('currentLength = ' + currentLength)
+                  console.log('incomingLength = ' + incomingLength)
+                  console.log(this.state.alerts[currentLength-1].alert_id)
+                  console.log(res.data.alerts[incomingLength-1].alert_id)
+                  if (this.state.alerts[0].alert_id !== res.data.alerts[0].alert_id || currentLength !== incomingLength){ //NEW ALERTS ARRAY DETECTED
+                    console.log("NEW ALERTS DETECTED")
+  
+                    const action = key => (
+                      <Fragment>
+                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
+                            View All
+                        </Button>
+                        <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                            <ClearIcon/>
+                        </IconButton>
+                      </Fragment>
+                    );
+  
+                    this.props.enqueueSnackbar("New Notification!", {
+                      variant: 'info',
+                      autoHideDuration: 5000,
+                      action,
+                    });
+  
+                    this.setState({alerts: res.data.alerts })
+                    this.setState({notificationLoading: false})
+                  }
+              }
+            } else {
+              this.setState({alerts: [] })
             }
           } else {
-            this.setState({alerts: [] })
+            const action = key => (
+              <Fragment>
+                  <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                      <ClearIcon/>
+                  </IconButton>
+              </Fragment>
+            );
+            this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
+              variant: 'error',
+              autoHideDuration: 5000,
+              action,
+            });
           }
-        } else {
-          const action = key => (
-            <Fragment>
-                <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
-                    <ClearIcon/>
-                </IconButton>
-            </Fragment>
-          );
-          this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
-            variant: 'error',
-            autoHideDuration: 5000,
-            action,
-          });
-        }
-        
-    }).catch(err => {
-      console.log(err)
-      const action = key => (
-        <Fragment>
-            <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
-                <ClearIcon/>
-            </IconButton>
-        </Fragment>
-      );
-      this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
-        variant: 'error',
-        autoHideDuration: 5000,
-        action,
-      });
-    })
+          
+      }).catch(err => {
+        console.log(err)
+        const action = key => (
+          <Fragment>
+              <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                  <ClearIcon/>
+              </IconButton>
+          </Fragment>
+        );
+        this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
+          variant: 'error',
+          autoHideDuration: 5000,
+          action,
+        });
+      })
+    }
+
+    
+  
+  
   }
 
   componentShouldUpdate(nextProps, nextState){

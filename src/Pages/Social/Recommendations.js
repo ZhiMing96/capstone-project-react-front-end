@@ -262,9 +262,11 @@ export default function Reco(props) {
         console.log("Getting getCompletedMeetups");
         // setLoadingCompletedMeetups(true);
         // setTimeout({getCompletedMeetups}, 1500);
-        getCompletedMeetups();
-        getRecoRequests()
-        getRecommendations()
+        if(window.localStorage.getItem('authToken') !== null){
+            getCompletedMeetups();
+            getRecoRequests()
+            getRecommendations()
+        }
     }, [props])
 
     const removeRecoRequest=(request_id)=>{

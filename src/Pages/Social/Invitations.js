@@ -234,84 +234,90 @@ function Invitations(props) {
 
     const getPendingInvitation = () => {
         console.log("ENTERED PEDNING INVITATION ")
-        setInvitationsLoading(true);
-        api.invitations.getPending()
-        .then(res=>{
-            console.log(res.data)
-            if(res.data.response_code === 200) {
-                // setTimeout(() => {
-                    const invitesSent = res.data.invites_sent
-                    const invitesReceived = res.data.invites_received
-                    console.log('****** Invitations Sent *****')
-                    console.log(invitesSent);
-
-                    console.log('****** Invitations Received *****')
-                    console.log(invitesReceived);
-                    setPendingInvitations(invitesReceived);
-                    setInvitationsLoading(false);
-                    // props.updatePendingInvitations(invitesReceived)
-                // }, 3000)
-            } else {
+        if(window.localStorage.getItem('authToken') !== null){
+            setInvitationsLoading(true);
+            api.invitations.getPending()
+            .then(res=>{
+                console.log(res.data)
+                if(res.data.response_code === 200) {
+                    // setTimeout(() => {
+                        const invitesSent = res.data.invites_sent
+                        const invitesReceived = res.data.invites_received
+                        console.log('****** Invitations Sent *****')
+                        console.log(invitesSent);
+    
+                        console.log('****** Invitations Received *****')
+                        console.log(invitesReceived);
+                        setPendingInvitations(invitesReceived);
+                        setInvitationsLoading(false);
+                        // props.updatePendingInvitations(invitesReceived)
+                    // }, 3000)
+                } else {
+                    enqueueSnackbar('Unable to Retrieve Invitations',  { variant: "error", action } );
+                }
+            }).catch(err => {
+                console.log(err);
                 enqueueSnackbar('Unable to Retrieve Invitations',  { variant: "error", action } );
-            }
-        }).catch(err => {
-            console.log(err);
-            enqueueSnackbar('Unable to Retrieve Invitations',  { variant: "error", action } );
-        })
+            })
+        }
+        
     }
 
     const getUpcomingMeetups = () => {
         console.log("ENTERED UPCOMING MEETUPS ")
-        setMeetupsLoading(true);
-        api.invitations.getCurrent()
-        .then(res=> {
-            console.log(res.data)
-            if(res.data.response_code === 200) {
-                
-                // setTimeout(() => {
-                    var invitesSent = res.data.invites_sent
-                    var invitesReceived = res.data.invites_received
-                    console.log('****** Invitations Sent *****')
-                    console.log(invitesSent);
-                    console.log('****** Invitations Received *****')
-                    console.log(invitesReceived);
-                    var combined = invitesSent.concat(invitesReceived)
-                    console.log('****** Combined Invitations *****')
-                    console.log(combined);
-                    // props.updateUpcomingMeetups(combined)
-
-                    var tempWithDate = [];
-                    var tempWithoutDate = [];
-    
-                    for(let i=0; i<combined.length;i++){
-                        const invitation = combined[i]
-                        console.log(invitation)
-                        if(invitation.accepted === 1 && invitation.is_completed === null){
-                            console.log(invitation.suggested_datetime)
-                            if(invitation.suggested_datetime !== null){
-                                tempWithDate.push(invitation)
-                            } else {
-                                tempWithoutDate.push(invitation)
-                            }
-                            
-                        }
-                    }
-                    setMeetupsLoading(false);
-                    setUpcomingMeetups(tempWithDate)
-                    setPendingMeetupDate(tempWithoutDate)
+        if(window.localStorage.getItem('authToken') !== null){
+            setMeetupsLoading(true);
+            api.invitations.getCurrent()
+            .then(res=> {
+                console.log(res.data)
+                if(res.data.response_code === 200) {
                     
-            } else {
-                enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
-            }
-        }).catch(err => {
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-            // enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
-            setMeetupsLoading(false);
-        })
+                    // setTimeout(() => {
+                        var invitesSent = res.data.invites_sent
+                        var invitesReceived = res.data.invites_received
+                        console.log('****** Invitations Sent *****')
+                        console.log(invitesSent);
+                        console.log('****** Invitations Received *****')
+                        console.log(invitesReceived);
+                        var combined = invitesSent.concat(invitesReceived)
+                        console.log('****** Combined Invitations *****')
+                        console.log(combined);
+                        // props.updateUpcomingMeetups(combined)
+    
+                        var tempWithDate = [];
+                        var tempWithoutDate = [];
+        
+                        for(let i=0; i<combined.length;i++){
+                            const invitation = combined[i]
+                            console.log(invitation)
+                            if(invitation.accepted === 1 && invitation.is_completed === null){
+                                console.log(invitation.suggested_datetime)
+                                if(invitation.suggested_datetime !== null){
+                                    tempWithDate.push(invitation)
+                                } else {
+                                    tempWithoutDate.push(invitation)
+                                }
+                                
+                            }
+                        }
+                        setMeetupsLoading(false);
+                        setUpcomingMeetups(tempWithDate)
+                        setPendingMeetupDate(tempWithoutDate)
+                        
+                } else {
+                    enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
+                }
+            }).catch(err => {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                // enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
+                setMeetupsLoading(false);
+            })
+        }
+       
     }
 
     
