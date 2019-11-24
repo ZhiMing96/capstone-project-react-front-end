@@ -78,14 +78,6 @@ function Main(props) {
   // }
   console.log(props.userId)
   if (window.localStorage.getItem('authToken') === null) {
-    // if(props.match.params && props.match.params.index) {
-    //   return(
-    //     <Redirect to={{
-    //       pathname: '/auth/signin',
-    //       state: { socialIndex:props.match.params.index }
-    //     }} />
-    //   )
-    // } else {
       return (
         <Redirect to={{
           pathname: '/auth/signin',
