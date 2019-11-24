@@ -128,6 +128,7 @@ function Main(props) {
             <Route exact path="/profile" component={Profile} />
             <Route path="/profile/bookmarks" component={Bookmarks} />
             <Route path="/profile/skills" component={Skills} />
+            <Route path="/profile/social/:index" component={Social} />
             <Route path="/profile/social" component={Social} />
             <Route path="/profile/public" component={PublicProfile} />
           </Switch>

@@ -470,14 +470,16 @@ function Jobs (props) {
             enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         });
 
-
+        console.log("Printing URL PARAMS")
+        console.log(urlParams);
         console.log("Printing Pathname from javascript")
         console.log( window.location.pathname);
 
         if(window.location.pathname !== "/jobs") {
             if(searchResults.length !== 0) {
 
-            } else if (urlParams !== '') {
+            } else if (urlParams !== undefined && urlParams !== '') {
+
                 const params = urlParams.split('&')
                 const keywordString = params[0].split('=')
                 const keywordUrl = keywordString[1];
