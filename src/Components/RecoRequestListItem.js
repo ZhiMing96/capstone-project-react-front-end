@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             color:'black',
         }
-    }
+    },
     
 }));
 
@@ -104,7 +104,7 @@ export default function AlignItemsList(props) {
 
     const action = key => (
         <Fragment>
-            <IconButton onClick={() => { closeSnackbar(key) }}>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
                 <ClearIcon/>
             </IconButton>
         </Fragment>
@@ -146,6 +146,7 @@ export default function AlignItemsList(props) {
                 console.log('**** Successfully Send Recommendation Request ****')
                 enqueueSnackbar('Recommendation Request Sent Successfully',  { variant: "success", action } );
                 getCompletedMeetups();
+                
             } else {
                 enqueueSnackbar('Unable to Send Recommendation Request',  { variant: "error", action } );
             }

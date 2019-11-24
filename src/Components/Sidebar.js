@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import { Grid, makeStyles, Typography, Avatar, Box, Button, IconButton, Dialog, DialogActions, DialogContent, TextField, DialogContentText } from '@material-ui/core'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
 import api from '../api'
@@ -12,6 +12,9 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import UploadPhoto from '../images/UploadPhoto.jpg'
+import { useSnackbar } from 'notistack';
+
+import ClearIcon from '@material-ui/icons/Clear'
 
 
 //INCOMPLETE
@@ -93,6 +96,15 @@ function Sidebar(props) {
   const [profileImageLink, setProfileImageLink] = React.useState('')
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const action = key => (
+    <Fragment>
+        <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+            <ClearIcon/>
+        </IconButton>
+    </Fragment>
+);
 
   const getSidebarProfile = () => {
     api.profile.get().then(
@@ -100,7 +112,13 @@ function Sidebar(props) {
         setName(res.data.profile ? res.data.profile.first_name : 'User')
         setProfileImageLink(res.data.social ? res.data.social.profile_image_link : null)
       }
-    ).catch({})
+    ).catch(err=>{
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+    })
   }
 
   
@@ -166,7 +184,21 @@ function Sidebar(props) {
         if(res.data.response_code === 200) {
           console.log(res.data.image_link)
           setProfileImageLink(res.data.image_link);
-          changeSideBarProfilePicture()
+          changeSideBarProfilePicture();
+          enqueueSnackbar('Profile Picture Updated',  { variant: "", action } );
+        } else {
+          console.log(res.data.response_message)
+          enqueueSnackbar('Invalid File Type/File Size Too Large',  { variant: "error", action } );
+        }
+      }).catch(err=> {
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        if(status  === 413){
+          enqueueSnackbar('File Size Too Large',  { variant: "error", action } );
+        } else {
+          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         }
       })
   }

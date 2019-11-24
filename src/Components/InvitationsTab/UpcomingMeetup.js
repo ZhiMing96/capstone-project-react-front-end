@@ -305,7 +305,7 @@ export default function UpcomingMeetup(props) {
                                     </IconButton>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Button 
+                                    <Button disableFocusRipple disableRipple
                                     style={{ fontWeight:'bold', fontSize:18, backgroundColor:'transparent' }}
                                     >
                                         Cancelled
@@ -326,6 +326,7 @@ export default function UpcomingMeetup(props) {
                                 <Grid item xs={12}>
                                     <Button 
                                     style={{ fontWeight:'bold', fontSize:18, backgroundColor:'transparent' }}
+                                    disableFocusRipple disableRipple
                                     >
                                         Completed
                                     </Button>

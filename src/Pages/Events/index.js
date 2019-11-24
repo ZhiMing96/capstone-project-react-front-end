@@ -6,24 +6,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Map from './Mapbox'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import LaunchIcon from '@material-ui/icons/Launch';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
-import { ThemeProvider } from '@material-ui/styles';
 import MapGL, { GeolocateControl, Marker } from 'react-map-gl';
 import api from '../../api';
 import EventListingComponent from '../../Components/EventsComponent/EventListingComponent';
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const theme = createMuiTheme({
   overrides: {
@@ -120,19 +109,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  // firstTab: {
-  //   maxWidth: '100%', 
-  //   flex:'wrap',  
-  //   overflow:"auto",
-  //   position:'sticky', 
-  //   zIndex:10,
-  //   [theme.breakpoints.down('sm')]: {
-  //     top:'57px',
-  //   },
-  //   [theme.breakpoints.up('md')]: {
-  //     top:'64px',
-  //   },
-  // },
   descriptionArea: {
     position: 'sticky',
     top:'15%',
@@ -231,62 +207,17 @@ function Events() {
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = React.useState(false);
   const token = window.localStorage.getItem('authToken');
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const action = key => (
+      <Fragment>
+          <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+              <ClearIcon/>
+          </IconButton>
+      </Fragment>
+  );
 
  
-
-  const handleRecommendedClickOpen = (event, index) => {
-    setselectedIndex(null);
-    setSelectedRecommendedIndex(index);
-    console.log('*** LOCATION IS: ***')
-
-    const venueArray = event.venue ? event.venue.split('·') : null
-    console.log(venueArray)
-
-    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    console.log(formattedVenue)
-
-    setMarkerAddress(formattedVenue);
-
-    setOpen(true);
-
-    setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
-    setSelectedEvent(event)
-
-  }
-
-  const handleClickOpen = (event, index) => {
-    setSelectedRecommendedIndex(null);
-    setselectedIndex(index);
-
-    const venueArray = event.venue ? event.venue.split('·') : null
-    console.log(venueArray)
-
-    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    console.log(formattedVenue)
-    
-    setMarkerAddress(formattedVenue);
-
-    setOpen(true);
-    setSelectedEventLocation(event.venue);
-    setSelectedEvent(event)
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleExpandRecommendedClick = (index) => {
-    console.log(index);
-    setselectedIndex(null);
-    setSelectedRecommendedIndex(index);
-    setExpanded(!expanded);
-  };
-  const handleExpandClick = (index) => {
-    console.log(index);
-    setSelectedRecommendedIndex(null);
-    setselectedIndex(index);
-    setExpanded(!expanded);
-  };
 
   useEffect(() => {
     console.log('*** MARKER ADDRESS ***')
@@ -299,166 +230,55 @@ function Events() {
       if(results.response_code === 200){
         setAllEvents(results.events)
       } else {
-
+        enqueueSnackbar("Unable to Retrieve All Events!",  { variant: "error", action } );
       }
     }).catch(err=>{
-      console.error(err);
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
     })
 
     if(token){
       api.dailyDigest.get()
       .then(res=>{
         const results = res.data;
-        console.log('**** RESULTS FROM DAILY DIGEST W TOKEN  *****')
-        console.log(results);
-        setRecommendedEvents(results.events);
+        if(results.response_code === 200){
+          console.log('**** RESULTS FROM DAILY DIGEST W TOKEN  *****')
+          console.log(results);
+          setRecommendedEvents(results.events);
+        } else {
+          enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
+        }
+        
       }).catch(err=>{
-        console.error(err);
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
       })
     } else {
       api.dailyDigest.getPublic()
       .then(res=>{
         const results = res.data;
-        console.log('**** RESULTS FROM DAILY DIGEST W/O TOKEN  *****')
-        console.log(results);
-        setRecommendedEvents(results.events);
+        if(results.response_code === 200){
+          console.log('**** RESULTS FROM DAILY DIGEST W/O TOKEN  *****')
+          console.log(results);
+          setRecommendedEvents(results.events);
+        } else {
+          enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
+        }
       }).catch(err=>{
-        console.error(err);
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
       })
     }
   }, []);
-
-  const handleChange = (event, newValue) => {
-    console.log(newValue)
-    switch (newValue) {
-      case 0:
-        setFontWeight({
-          recommended: '600',
-          topPicks: '300',
-          latest: '300'
-        })
-        break;
-      case 1:
-        setFontWeight({
-          recommended: '300',
-          topPicks: '600',
-          latest: '300'
-        })
-        break;
-      case 2:
-        setFontWeight({
-          recommended: '300',
-          topPicks: '300',
-          latest: '600'
-        })
-        break;
-
-    }setValue(newValue);
-  };
-
-  const getDate =(dateString) => {
-    var date = new Date(dateString);
-    //console.log(date)
-
-    var time = date.getHours();
-    //console.log(time)
-    if (time <= 12) {
-      time = `${time}am`
-      //console.log(time);
-    } else {
-      time = `${time - 12}pm`
-      //console.log(time);
-    }
-
-    var month = date.toLocaleString('en-GB', { month: 'short' });
-    //console.log(month)
-
-    var day = date.getDate();
-    //console.log(day)
-
-    var year = date.getFullYear();
-    return(`${day} ${month} ${year}: ${time}`);
-  }
-
-  const formatVenue = (building, venue, streetName, postalCode) => {
-    //Lifelong Learning Center: Training Room 2-1, Eunos Road 9 S123456
-    console.log('ENTERED FORMAT VENUE')
-    var venueString = '';
-    if (building !== '0' && building !== '-') {
-      venueString += building + ': ';
-    }
-    if (venue !== 'NIL')
-      venueString += venue + ', ';
-    if (streetName !== '-' && streetName !== '0') {
-      venueString += streetName + ', ';
-    }
-    if (postalCode !== '000000') {
-      venueString += 'S' + postalCode;
-    }
-
-    console.log(venueString)
-    if (venueString === '') {
-      return ('Location Unavailable')
-    } else {
-      return venueString
-    }
-  }
-
-  const viewRecommended = (event, index) => {
-    console.log('Recommended Article Selected')
-    setselectedIndex(null);
-    setSelectedRecommendedIndex(index);
-
-    console.log(event)
-
-    console.log('*** LOCATION IS: ***')
-    
-
-    const venueArray = event.venue ? event.venue.split('·') : null
-    console.log(venueArray)
-
-    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    console.log(formattedVenue)
-
-    setMarkerAddress(formattedVenue);
-
-    setSelectedUrl(event.url);
-
-    setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
-    setSelectedEvent(event)
-    
-  }
-
-
-  const viewDetails = (event, index) => {
-    console.log('ENTERED VIEW DETAILS METHOD for Others Section')
-    setSelectedRecommendedIndex(null);
-    setselectedIndex(index);
-    console.log(index);
-    console.log(event);
-
-    // const venue = doGeocoding(event.longitude, event.latitude)
-    // console.log(venue)
-
-    console.log('*** LOCATION IS: ***')
-    
-
-    const venueArray = event.venue ? event.venue.split('·') : null
-    console.log(venueArray)
-
-    const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    console.log(formattedVenue)
-
-    setMarkerAddress(formattedVenue);
-
-    setSelectedUrl(event.url);
-
-    
-    setSelectedEventLocation(event.venue ? event.venue : 'Singapore');
-    setSelectedEvent(event)
-    console.log('Exiting view Event Details')
-    // window.scrollTo(0,document.body.scrollHeight);
-  }
 
   //get current page lisitngs
   // const indexOfLastPost = currentPage * postsPerPage;
@@ -472,8 +292,6 @@ function Events() {
   const handleHrefClick = url => {
     window.open(url, '_blank');
   }
-
-
 
   const handleSelectedEvent = (event) => {
     const venueArray = event.venue ? event.venue.split('·') : null

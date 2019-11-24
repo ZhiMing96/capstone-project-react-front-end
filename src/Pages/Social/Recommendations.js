@@ -183,7 +183,7 @@ export default function Reco(props) {
 
     const action = key => (
         <Fragment>
-            <IconButton onClick={() => { closeSnackbar(key) }}>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
                 <ClearIcon/>
             </IconButton>
         </Fragment>
@@ -224,8 +224,11 @@ export default function Reco(props) {
 
                 setLoadingCompletedMeetups(false)
             }).catch(err => {
-                console.log(err);
-                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
             })
     }
 
@@ -329,8 +332,11 @@ export default function Reco(props) {
                 enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
         }).catch(err=>{
-            console.log(err);
-            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
     }
 

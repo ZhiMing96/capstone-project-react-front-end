@@ -89,7 +89,15 @@ export default function NotificationsListItem(props) {
     const [ actionHover, setActionHover ] = useState(false);
 
     const alertTypes = ["MEETUP_INVITE", "ACCEPT_INVITE", "CANCEL_MEETUP", "CHANGE_MEETUP_DATE", "COMPLETE_MEETUP", "RECOMMENDATION_REQUEST", "WRITE_RECOMMENDATION"]
-    const alertHeaders = ["New Meetup Invitation", "Invitation Accepted", "Meetup Was Cancelled", "Meetup Date Changed", "Write a Recommendation", "Recommendation Requested", "New Recommendation", ]
+    const alertHeaders = [
+        { title: "New Meetup Invitation", verb:'From' } , 
+        { title:"Invitation Accepted", verb:'With'  }, 
+        { title:"Meetup Was Cancelled", verb:'With' }, 
+        { title:"Meetup Date Changed", verb:'By' }, 
+        { title:"Request a Recommendation", verb:'From'}, 
+        { title:"Recommendation Request", verb:'From' }, 
+        { title:"New Recommendation", verb:'From'},
+    ]
 
 
 
@@ -225,11 +233,11 @@ export default function NotificationsListItem(props) {
                     <Grid item xs={11} style={{maxWidth:'inherit'}}>
                         <div onClick={() => enableRedirect() } >
                             <Typography style={{fontSize:17, fontWeight:'bold'}} >
-                                {alertHeaders[alertTypes.indexOf(alert.alert_type)]}
+                                { alertHeaders[alertTypes.indexOf(alert.alert_type)].title }
                             </Typography>
                             <Typography>
                                 {alert.from_user && alert.from_user.profile 
-                                ? `From ${alert.from_user.profile.username}`
+                                ? `${ alertHeaders[alertTypes.indexOf(alert.alert_type)].verb } ${alert.from_user.profile.username}`
                                 
                                 : 'From Unidentified Member'
                                 }

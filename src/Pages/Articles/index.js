@@ -3,19 +3,12 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, StaticRouter, Redirect } from 'react-router-dom';
 import ArticlesBG from '../../images/articlesBG.jpg'
 import { Grid, Paper, Typography, ButtonBase, makeStyles, CssBaseline, Box, Tabs, Tab, Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, CardActions, Collapse, Divider, CardActionArea, List, ListItem, ListItemAvatar, ListItemText, Fab, Button } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import clsx from 'clsx';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
-import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos'
-import { typography } from '@material-ui/system';
-import { setSeconds } from 'date-fns/esm';
 import api from '../../api';
 import AddIcon from '@material-ui/icons/Add';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
@@ -23,6 +16,8 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 import './index.css'
 import StarIcon from '@material-ui/icons/Star'
 import CircularLoading from  '../../Components/LoadingBars/CircularLoading';
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const Wrapper = styled.div`
     width:100%
@@ -302,6 +297,16 @@ function Articles()
   const [loading, setLoading] = useState(false);
   const defaultImgUrl = 'https://content.mycareersfuture.sg/wp-content/uploads/2019/10/balls-casual-color-3051598-e1571283186479-390x183.jpg';
 
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
+
 
   const handleRecommendedExpandClick = (index) => {
     console.log(index);
@@ -314,34 +319,6 @@ function Articles()
     setselectedIndex(index);
     setSelectedRecommendedIndex(null);
     setExpanded(!expanded);
-  };
-
-  const handleChange = (event,newValue) => {
-    console.log(newValue) 
-    switch(newValue) {
-      case 0:
-        setFontWeight({
-          featured: '600',
-          recommended: '300',
-          latest:'300'
-        })
-        break;
-      case 1:
-        setFontWeight({
-          featured: '300',
-          recommended: '600',
-          latest:'300'
-        })
-      break;
-      case 2:
-          setFontWeight({
-            featured: '300',
-          recommended: '300',
-          latest:'600'
-          })
-      break;
-      
-    }setValue(newValue);
   };
   
   useEffect(() => {
@@ -357,9 +334,14 @@ function Articles()
         setArticles(results.articles);
       } else {
         console.log('RESPONSE CODE' + results.response_code);
+        enqueueSnackbar("Unable to Retrieve Articles!",  { variant: "error", action } );
       }
     }).catch(err => {
-      console.log(err);
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
     });
 
     if(token){
@@ -371,11 +353,17 @@ function Articles()
           console.log('RECOMMENDED ARTICLES ARE')
           console.log(results.articles)
           setRecommendedArticles(results.articles);
-        } 
+        } else {
+          enqueueSnackbar("Unable to Retrieve Recommended Articles!",  { variant: "error", action } );
+        }
         setLoading(false)
       })
       .catch(err => {
-        console.error(err)
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
       })
     } else {
       api.dailyDigest.getPublic()
@@ -386,9 +374,17 @@ function Articles()
           console.log('RECOMMENDED ARTICLES ARE')
           console.log(results.articles)
           setRecommendedArticles(results.articles);
-        } 
+        } else {
+          enqueueSnackbar("Unable to Retrieve Recommended Articles!",  { variant: "error", action } );
+        }
         setLoading(false);
-      }).catch(err => console.error(err))
+      }).catch(err => {
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+      })
     }
   }, []);
 

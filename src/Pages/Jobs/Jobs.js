@@ -30,7 +30,8 @@ import './index.css';
 import JobFilterSideBar from './JobFilterSideBar';
 import JobsCarouselSkeletonLoading from '../../Components/SkeletonLoading/JobsCarouselSkeletonLoading';
 import JobListingsSkeletonLoading from '../../Components/SkeletonLoading/JobListingsSkeletonLoading';
-
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const employmentTypes = [
     {
@@ -56,24 +57,7 @@ const employmentTypes = [
     {
       value: 'Temporary',
       label: 'Temporary'
-    }
-    
-  ]
-
-  const carouselImgs = [
-      {
-        name: "Career Guidance",
-        imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/Bear_Website.jpg",
-        link: "https://www.wsg.gov.sg/adapt-and-grow/jobseekers.html?_ga=2.95037916.1789263985.1570243866-1439352794.1565188425"
-      },
-      {
-        name: "Career Matching",
-        imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/CareersConnectBannerBLUE2.png",
-        link: "https://www.wsg.gov.sg/career-services.html?_ga=2.95037916.1789263985.1570243866-1439352794.1565188425"
-      }
-  ]
-
-  
+    }]
 
   const useStyles = makeStyles(theme => ({
     root: {
@@ -419,7 +403,15 @@ function Jobs (props) {
     const [skillsJobs, setSkillsJobs] = useState([]);
     const [jobTitles, setJobTitles] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [sideBarQuery, setSideBarQuery ] = useState("");
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const handlePopoverOpen = event => {
         setAnchorEl(event.currentTarget);
@@ -442,8 +434,16 @@ function Jobs (props) {
                     console.log(results);
                     setSkillsJobs(results.recommended_jobs_skills);
                     setSearchHistoryJobs(results.recommended_jobs_search);
+                } else {
+
                 }
-            }).catch(err=>console.log(err));
+            }).catch( err  => {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            });
         }
         console.log('*** Getting Public Daily Digest NOW')
         api.dailyDigest.getPublic()
@@ -453,7 +453,13 @@ function Jobs (props) {
             console.log('>> Displaying Popular Jobs From DAILY DIGEST getPublic() Method')
             setPopularJobs(results.recommended_jobs);
             setLoadingHome(false);
-        }).catch(err=>console.log(err));
+        }).catch(err => {
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+        });
 
         if(urlParams === ''){
             setBypass(false)
@@ -497,7 +503,8 @@ function Jobs (props) {
                 if(result!== undefined && result.length===0){ //empty  results 
                     console.log('Entered Zero Length Method');
                     setSearchResults(result);
-                    openSnackbar();
+                    enqueueSnackbar("No Listings Available!",  { variant: "", action } );
+                    // openSnackbar();
                 } else if (result !==undefined && result.length!==0){ //Good to go 
                     // const sortedResults = result.sort(compareValues('skills_match', 'desc')) //DEFAULT SORTING
                     // setSearchResults(sortedResults);
@@ -511,7 +518,11 @@ function Jobs (props) {
                 
             })
             .catch(err=>{
-                console.error(err);  
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
                 setLoadingResults(false);
             })
         } else {
@@ -525,15 +536,19 @@ function Jobs (props) {
                 if(result!== undefined && result.length===0){ //empty  results 
                     console.log('Entered Zero Length Method');
                     setSearchResults(result);
-                    openSnackbar();
+                    enqueueSnackbar("No Listings Available!",  { variant: "", action } );
+                    // openSnackbar();
                 } else if (result !==undefined && result.length!==0){ //Good to go 
                     const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
                     setSearchResults(sortedResults);
                 }
                 setLoadingResults(false);
-            })
-            .catch(err=>{
-                console.error(err);  
+            }).catch(err=>{
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
                 setLoadingResults(false);
             })
         }
@@ -580,41 +595,7 @@ function Jobs (props) {
     }
 
     searchResults ? console.log('searchResults.length = ' + searchResults.length) : console.log("No Results")
-
-    const processQueue = () => {
-        if (queueRef.current.length > 0) {
-            setMessageInfo(queueRef.current.shift());
-           setOpen(true);
-        }
-    };
-
-    const openSnackbar = () => {
-        console.log("Entered Open SnackBar")
-
-        const message = "No Listings Available!"
-        queueRef.current.push({
-            message,
-            key: new Date().getTime(),  
-        }); 
-        if (open) {
-            // immediately begin dismissing current message
-            // to start showing new one
-            setOpen(false);
-        } else {
-            processQueue();
-        }
-    };
-
-    const closeSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
-
-    const handleExited = () => {
-        processQueue();
-    };
+   
 
     //get current page lisitngs
     const indexOfLastPost = currentPage * postsPerPage;
@@ -1276,7 +1257,53 @@ function Jobs (props) {
         </Grid>
         :''
         }
-        <Snackbar
+        </div>
+        }
+    </div>
+    
+  )
+}
+
+export default Jobs;
+
+
+ /*
+    const processQueue = () => {
+        if (queueRef.current.length > 0) {
+            setMessageInfo(queueRef.current.shift());
+           setOpen(true);
+        }
+    };
+
+    const openSnackbar = () => {
+        console.log("Entered Open SnackBar")
+
+        const message = "No Listings Available!"
+        queueRef.current.push({
+            message,
+            key: new Date().getTime(),  
+        }); 
+        if (open) {
+            // immediately begin dismissing current message
+            // to start showing new one
+            setOpen(false);
+        } else {
+            processQueue();
+        }
+    };
+
+    const closeSnackbarOld = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const handleExited = () => {
+        processQueue();
+    }; */
+
+    {/* <Snackbar
             key={messageInfo ? messageInfo.key : undefined}
             anchorOrigin={{
             vertical: 'bottom',
@@ -1285,7 +1312,7 @@ function Jobs (props) {
             style={{boxShadow: "none"}}
             open={open}
             autoHideDuration={5000}
-            onClose={closeSnackbar}
+            onClose={closeSnackbarOld}
             onExited={handleExited}
             ContentProps={{
             'aria-describedby': 'message-id',
@@ -1297,18 +1324,9 @@ function Jobs (props) {
                 aria-label="close"
                 color="inherit"
                 className={classes.close}
-                onClick={closeSnackbar}
+                onClick={closeSnackbarOld}
             >
                 <CloseIcon />
             </IconButton>
             ]}
-        /> 
-    
-        </div>
-        }
-    </div>
-    
-  )
-}
-
-export default Jobs;
+        />  */}

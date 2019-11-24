@@ -96,9 +96,9 @@ export default function Social(props) {
 
                     </TabPanel>
                     <TabPanel tabState={tabState} index={1}>
-                        <Invitations redirectProfile={redirectProfile}/>
+                        <Invitations redirectProfile={redirectProfile} tabState={tabState} />
                     </TabPanel>
-                    <TabPanel tabState={tabState} index={2}>
+                    <TabPanel tabState={tabState} index={2} tabState={tabState}>
                         <Reco redirectProfile={redirectProfile}/>
                     </TabPanel>
                 </Grid>

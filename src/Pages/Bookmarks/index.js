@@ -14,6 +14,8 @@ import { ThemeProvider } from '@material-ui/styles';
 import Pagination from '../Jobs/Pagination';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading'
 import api from '../../api';
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
 
@@ -101,7 +103,17 @@ function Bookmarks() {
     })
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [bookmarkRemovable, setBookmarkRemovable] = useState(false);
     const [postsPerPage] = useState(7);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     function getBookmarks() {
         setLoading(true);
@@ -116,22 +128,27 @@ function Bookmarks() {
             setLoading(false);
             console.log(response);
             const data = response.data
-            
-            console.log(data.bookmark_list)
-            const list = data.bookmark_list
-            if(list.length!==0){
-                setBookmarksAvailable(true);
-                setBookmarks(list);
-            } else {
-                setBookmarksAvailable(false);
-            }
-            
+            if(data.response_code===200){
+                console.log(data.bookmark_list)
+                const list = data.bookmark_list
+                if(list.length!==0){
+                    setBookmarksAvailable(true);
+                    setBookmarks(list);
+                } else {
+                    setBookmarksAvailable(false);
+                }
+            }  else {
+                enqueueSnackbar("Unable to Retrieve Bookmarks! ",  { variant: "error", action } );
+            } 
         })
         .catch(err=>{
-            console.error(err)
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
     }
-    
     
 
     useEffect(() => {
@@ -169,19 +186,12 @@ function Bookmarks() {
         }
     }
 
-    const lackingSkills = [
-        'Account Management', 
-        'Business Development', 
-        'Customer Service'
-    ]
-
-
-    const processQueue = () => {
-        if (queueRef.current.length > 0) {
-            setMessageInfo(queueRef.current.shift());
-            setOpenSnackbar(true);
-        }
-    };
+    // const processQueue = () => {
+    //     if (queueRef.current.length > 0) {
+    //         setMessageInfo(queueRef.current.shift());
+    //         setOpenSnackbar(true);
+    //     }
+    // };
 
     const handleClick = () => {
         console.log("Entered SnackBar open")
@@ -192,18 +202,18 @@ function Bookmarks() {
         console.log("id= "+state.id +" and index= "+ state.index);
         deleteBookmark();
 
-        const message = `${state.job_data.title} Deleted from bookmarks!`
-        queueRef.current.push({
-            message,
-            key: new Date().getTime(),  
-        });
-        if (openSnackbar) {
-            // immediately begin dismissing current message
-            // to start showing new one
-            setOpenSnackbar(false);
-        } else {
-            processQueue();
-        }
+        // const message = `${state.job_data.title} Deleted from bookmarks!`
+        // queueRef.current.push({
+        //     message,
+        //     key: new Date().getTime(),  
+        // });
+        // if (openSnackbar) {
+        //     // immediately begin dismissing current message
+        //     // to start showing new one
+        //     setOpenSnackbar(false);
+        // } else {
+        //     processQueue();
+        // }
     };
 
     function deleteBookmark(){
@@ -232,13 +242,21 @@ function Bookmarks() {
         api.bookmarks.remove({ "bookmark_id": state.id })
         .then(response => {
             console.log(response)
-            if(response.data.response_code == '200'){
+            if(response.data.response_code === 200){
                 setBookmarks(updatedList);
                 console.log('bookmark deleted successfully')
+                enqueueSnackbar(`${state.job_data.title} Deleted from bookmarks!`,  { variant: "", action } );
+                
+            } else {
+                enqueueSnackbar(`Unable to delete ${state.job_data.title}! `,  { variant: "error", action } );
             }
         })
         .catch(err => {
-            console.error(err)
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
     }
 
@@ -246,12 +264,12 @@ function Bookmarks() {
         if (reason === 'clickaway') {
             return;
         }
-        setOpenSnackbar(false);
+        // setOpenSnackbar(false);
     };
 
     const handleExited = () => {
-        processQueue();
-    };
+        // processQueue();
+    }; 
     
     const handleClickOpen = (bookmark,bookmark_id, position) =>{
         setState({...state,
@@ -561,32 +579,6 @@ function Bookmarks() {
     
                 <Pagination postsPerPage={postsPerPage} totalPosts={bookmarks.length} paginate={paginate} />
             
-            <Snackbar
-                key={messageInfo ? messageInfo.key : undefined}
-                anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-                }}
-                open={openSnackbar}
-                autoHideDuration={5000}
-                onClose={handleClose}
-                onExited={handleExited}
-                ContentProps={{
-                'aria-describedby': 'message-id',
-                }}
-                message={<span id="message-id">{messageInfo ? messageInfo.message : undefined}</span>}
-                action={[
-                    <IconButton
-                        key="close"
-                        aria-label="close"
-                        color="inherit"
-                        className={classes.close}
-                        onClick={handleClose}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                ]}
-                />
             </span>
             }
         </div>

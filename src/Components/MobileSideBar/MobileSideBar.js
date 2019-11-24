@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import './MobileSideBar.css'
 import { Grid, makeStyles, Typography, Avatar, Box, Button, Paper, IconButton } from '@material-ui/core'
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
@@ -13,6 +13,8 @@ import FaceIcon from '@material-ui/icons/Face';
 import  { updateSocialProfile } from '../../redux/actions/socialProfile'
 import { connect } from "react-redux";
 import UploadPhoto from '../../images/UploadPhoto.jpg'
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,6 +76,15 @@ function MobileSideBar(props){
   const [base64, setBase64] = useState();
   const [ profile, setProfile ] = useState();
   const [profileImageLink, setProfileImageLink] = React.useState();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const action = key => (
+    <Fragment>
+        <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+            <ClearIcon/>
+        </IconButton>
+    </Fragment>
+);
 
   const handleChange = (event, newValue) => {
     event.preventDefault()
@@ -92,7 +103,13 @@ function MobileSideBar(props){
           setProfile(res.data.social);
         }
       } 
-    ).catch({})
+    ).catch(err => {
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+    })
   }
 
   useEffect (()=>{
@@ -152,6 +169,20 @@ function MobileSideBar(props){
           setProfileImageLink(res.data.image_link);
           // getProfile();
           changeSideBarProfilePicture(res.data.image_link);
+          enqueueSnackbar('Profile Picture Updated',  { variant: "", action } );
+        } else {
+          console.log(res.data.response_message)
+          enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+        }
+      }).catch(err=> {
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        if(status  === 413){
+          enqueueSnackbar('File Size Too Large',  { variant: "error", action } );
+        } else {
+          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         }
       })
   }

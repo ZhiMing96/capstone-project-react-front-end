@@ -10,35 +10,13 @@ import "slick-carousel/slick/slick-theme.css";
 import Popover from '@material-ui/core/Popover';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import CompleteMeetupIcon from  '../../images/completeMeetup.svg';
-import RemoveMeetupIcon from '../../images/removeMeetup.svg';
-import TelegramIcon from '../../images/telegram.svg';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Recommendations from './Recommendations';
 import './index.css';
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
-import Badge from '@material-ui/core/Badge';
-import CircularLoading from '../../Components/LoadingBars/CircularLoading';
 import Skeleton from '@material-ui/lab/Skeleton';
 import InvitationRequestSkeleton from '../../Components/SkeletonLoading/InvitationRequestSkeleton'
 import  UpcomingMeetupsSkeletonLoading from '../../Components/SkeletonLoading/UpcomingMeetupsSkeletonLoading';
-// import Snackbar from '../../Components/Snackbar';
-import axios from 'axios'
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CloseIcon from '@material-ui/icons/Close';
 import MeetupInvitation from '../../Components/InvitationsTab/MeetupInvitation'
 import UpcomingMeetup from '../../Components/InvitationsTab/UpcomingMeetup'
 import { useSnackbar } from 'notistack';
@@ -248,7 +226,7 @@ function Invitations(props) {
 
     const action = key => (
         <Fragment>
-            <IconButton onClick={() => { closeSnackbar(key) }}>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
                 <ClearIcon/>
             </IconButton>
         </Fragment>
@@ -326,8 +304,12 @@ function Invitations(props) {
                 enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
             }
         }).catch(err => {
-            enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
-            console.log(err);
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            // enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
             setMeetupsLoading(false);
         })
     }
@@ -344,7 +326,7 @@ function Invitations(props) {
         setTimeout(() => {getPendingInvitation() } , 5000);
         // getPendingInvitation()
         console.log(props)
-    },[]) 
+    },[props.tabState]) 
 
     const handleAcceptInvitation = (requestId) => {
         console.log(requestId)
@@ -366,8 +348,11 @@ function Invitations(props) {
                 enqueueSnackbar('Unable to Accept Invitation',  { variant: "error", action } );
             }
         }).catch(err=> {
-            console.log(err);
-            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
         // handleCloseDialog();
     } 
@@ -388,8 +373,11 @@ function Invitations(props) {
                 enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
             }
         }).catch(err=> {
-            console.log(err);
-            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
     }
 
@@ -427,8 +415,11 @@ function Invitations(props) {
             }
            
         }).catch(err=> {
-            console.log(err);
-            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
     }; 
 
@@ -444,7 +435,6 @@ function Invitations(props) {
             console.log(res.data)
             if(res.data.response_code===200){
                 enqueueSnackbar('Meetup Completed',  { variant: "success", action } );
-
                 getUpcomingMeetups()
                 // setReloadMeetup(!reloadMeetup);
                 // setOpenMeetupDialog(false);
@@ -455,8 +445,11 @@ function Invitations(props) {
             }
             // handleCloseDialog();
         }).catch(err=> {
-            console.log(err)
-            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
             // handleCloseDialog();
         });
     }
@@ -479,8 +472,11 @@ function Invitations(props) {
             }
             // handleCloseDialog()
         }).catch(err=> {
-            console.log(err)
-            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
             // handleCloseDialog();
         });
     }
@@ -498,8 +494,11 @@ function Invitations(props) {
                     enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
                 }
             }).catch(err => {
-                console.log(err);
-                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
             })
         }
     }

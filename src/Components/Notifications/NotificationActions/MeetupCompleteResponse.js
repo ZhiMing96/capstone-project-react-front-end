@@ -44,7 +44,7 @@ export default function MeetupCompleteResponse(props) {
 
     const action = key => (
         <Fragment>
-            <IconButton onClick={() => { closeSnackbar(key) }}>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
                 <ClearIcon/>
             </IconButton>
         </Fragment>

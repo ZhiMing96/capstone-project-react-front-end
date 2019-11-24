@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import { createMuiTheme, MuiThemeProvider, IconButton } from '@material-ui/core';
+import { createMuiTheme, MuiThemeProvider, IconButton, Button } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear';
 
@@ -15,7 +15,6 @@ const theme = createMuiTheme({
     palette: {
         primary: {
             main: '#0091ea'
-
         },
         secondary: {
             main: '#024966'
@@ -26,14 +25,17 @@ const theme = createMuiTheme({
     }
 });
 
+
 ReactDOM.render(
-    <SnackbarProvider maxSnack={2}>
-        <Provider store={store}>
-            <MuiThemeProvider theme={theme}>
+    
+    <Provider store={store}>
+        <MuiThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={2}>
                 <App />
-            </MuiThemeProvider>
-        </Provider>
-    </SnackbarProvider>, 
+            </SnackbarProvider>
+        </MuiThemeProvider>
+    </Provider>
+    , 
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

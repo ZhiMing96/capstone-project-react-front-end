@@ -51,6 +51,12 @@ const styles = theme => ({
   },
 })
 
+const anchorPoint = (
+  <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">  
+    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"></path>
+  </svg>
+)
+
 class NavTabs extends React.Component {
 
   constructor (props) {
@@ -75,6 +81,9 @@ class NavTabs extends React.Component {
     };
     console.log(this.props)
     console.log(this.props.location.pathname)
+
+    this.notificationIcon = React.createRef();
+    this.handleSnackbarClick = this.handleSnackbarClick.bind(this);
   }
 
   componentDidMount(){
@@ -111,7 +120,7 @@ class NavTabs extends React.Component {
         } else {
           const action = key => (
             <Fragment>
-                <IconButton onClick={() => { this.props.closeSnackbar(key) }}>
+                <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
                     <ClearIcon/>
                 </IconButton>
             </Fragment>
@@ -126,7 +135,7 @@ class NavTabs extends React.Component {
       console.log(err)
       const action = key => (
         <Fragment>
-            <IconButton onClick={() => { this.props.closeSnackbar(key) }}>
+            <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
                 <ClearIcon/>
             </IconButton>
         </Fragment>
@@ -138,6 +147,7 @@ class NavTabs extends React.Component {
       });
     })
   }
+
   retrieveAlerts = () =>{
     // this.setState({notificationLoading: true})
     console.log("Entered RETRIEVE ALERTS")
@@ -151,7 +161,10 @@ class NavTabs extends React.Component {
               if(this.state.alerts.length === 0) {
                 const action = key => (
                   <Fragment>
-                      <IconButton onClick={() => { this.props.closeSnackbar(key) }}>
+                      <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
+                          View All
+                      </Button>
+                      <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white'}}>
                           <ClearIcon/>
                       </IconButton>
                   </Fragment>
@@ -175,9 +188,12 @@ class NavTabs extends React.Component {
 
                   const action = key => (
                     <Fragment>
-                        <IconButton onClick={() => { this.props.closeSnackbar(key) }}>
-                            <ClearIcon/>
-                        </IconButton>
+                      <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
+                          View All
+                      </Button>
+                      <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                          <ClearIcon/>
+                      </IconButton>
                     </Fragment>
                   );
 
@@ -197,7 +213,7 @@ class NavTabs extends React.Component {
         } else {
           const action = key => (
             <Fragment>
-                <IconButton onClick={() => { this.props.closeSnackbar(key) }}>
+                <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
                     <ClearIcon/>
                 </IconButton>
             </Fragment>
@@ -213,7 +229,7 @@ class NavTabs extends React.Component {
       console.log(err)
       const action = key => (
         <Fragment>
-            <IconButton onClick={() => { this.props.closeSnackbar(key) }}>
+            <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
                 <ClearIcon/>
             </IconButton>
         </Fragment>
@@ -269,12 +285,20 @@ class NavTabs extends React.Component {
   handleClick = event => {
     console.log("***** ENTERED HANDLE CLICK ****")
     window.localStorage.setItem('viewAlert', false);
+    console.log(event)
     console.log(event.currentTarget)
 
     this.setState({ anchorEl :  event.currentTarget });
     this.setState({ open : !this.state.open });
   
   };
+
+  handleSnackbarClick = () => {
+    console.log(this.notificationIcon.current)
+    
+    this.setState({ anchorEl : this.notificationIcon.current })
+    this.setState({ open : true });
+  }
 
   setAlertIcon = () => {
     this.setState({ fillAlertIcon : true })
@@ -292,6 +316,7 @@ class NavTabs extends React.Component {
 
 
   render() {
+    console.log(this.state.anchorEl)
     const token = window.localStorage.getItem('authToken');
     console.log(token)
     var showBadge = window.localStorage.getItem('viewAlert') !== null ? window.localStorage.getItem('viewAlert') : true
@@ -437,7 +462,7 @@ class NavTabs extends React.Component {
                   <PersonIcon />
                 </IconButton>
                 <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
-                   <NotificationsNoneIcon onClick={this.handleClick} style={{ }} />
+                   <NotificationsNoneIcon onClick={this.handleClick} ref={this.notificationIcon} />
                 </Badge>
                 {/* <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
                   className="popper_class"
