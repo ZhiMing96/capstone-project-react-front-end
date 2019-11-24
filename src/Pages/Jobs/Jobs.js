@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
@@ -76,11 +76,15 @@ const employmentTypes = [
         height: 28,
         margin: 4,
     },
+    dialogTitle: {
+        marginTop: '5%',
+        marginLeft: '8%',
+        fontWeight: 600,
+    },
     textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 500,
-      minWidth:40,
+        marginLeft:'10%',
+        marginRight:'10%',
+        width:'100%'
     },
     dense: {
       marginTop: theme.spacing(2),
@@ -360,6 +364,11 @@ const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets
 
 function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT"); 
+    // let location = useLocation();
+    //     console.log("PRINTING FROM USELOCATION METHOD")
+    //     console.log(location)
+
+    console.log(props)
     var urlParams=''
     if(props.match !== undefined){
         console.log(props.match.params.queryString);
@@ -461,20 +470,28 @@ function Jobs (props) {
             enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         });
 
-        if(urlParams === ''){
+
+        console.log("Printing Pathname from javascript")
+        console.log( window.location.pathname);
+
+        if(window.location.pathname !== "/jobs") {
+            if(searchResults.length !== 0) {
+
+            } else if (urlParams !== '') {
+                const params = urlParams.split('&')
+                const keywordString = params[0].split('=')
+                const keywordUrl = keywordString[1];
+                console.log('keyword = ' + keywordUrl)
+                setKeyword(keywordUrl); 
+                // setState({ ...state, keyword: 'Facebook'});
+                setBypass(true)
+                setState({ ...state, queryString: urlParams});
+                getSearchResults(urlParams);
+            }
+            
+        }  else { //(window.location.pathname === "/jobs")
             setBypass(false)
-            setSearchResults(props.searchResults)
-        } else {
-            const params = urlParams.split('&')
-            const keywordString = params[0].split('=')
-            const keywordUrl = keywordString[1];
-            console.log('keyword = ' + keywordUrl)
-            setKeyword(keywordUrl); 
-            // setState({ ...state, keyword: 'Facebook'});
-            setBypass(true)
-            setState({ ...state, queryString: urlParams});
-            getSearchResults(urlParams);
-        
+            setSearchResults([])
         }
     },[props])
 
@@ -485,7 +502,7 @@ function Jobs (props) {
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
         const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
-    })
+    },[])
 
 
     function getSearchResults(queryString){
@@ -589,8 +606,8 @@ function Jobs (props) {
         getSearchResults(tempString)
         
         //const query=url+tempString
-        //console.log(query);
-        
+        // //console.log(query);
+        // handleRedirect();
         
     }
 
@@ -685,6 +702,10 @@ function Jobs (props) {
         setState({ ...state, queryString: newQuery });
     }
 
+    const handleRedirect =() =>{
+        props.history.push({pathname : `/jobs/listings/${state.queryString}`})
+    }
+
     //console.log('Keyword Before Render = ');
     console.log('State Before Render =')
     console.log(state)
@@ -739,12 +760,16 @@ function Jobs (props) {
                     fullWidth
                     maxWidth="sm"
                 >
-                    <DialogTitle>{"Refine Your Search!"}</DialogTitle>
+                    {/* <DialogTitle  disableTypography  > */}
+                        <Typography variant={"h5"} className={classes.dialogTitle}>
+                            Refine Your Search
+                        </Typography>
+                    {/* </DialogTitle> */}
                     <DialogContent >
                         <form className={classes.container} noValidate autoComplete="off">
                             <TextField
                                 id="standard-number"
-                                style={{width: 'fit-content'}}
+                                
                                 label="Enter Min Salary"
                                 value={state.minSalary}
                                 onChange={handleChange('minSalary')}
@@ -798,7 +823,7 @@ function Jobs (props) {
                 </Grid>
                 <Grid item xs={9}>
                     <Router>
-                        <Redirect to={`/jobs/listings/${state.queryString}`}/>
+                        <Redirect push to={`/jobs/listings/${state.queryString}`}/>
                         
                         <Route 
                         path="/jobs/listings" 
@@ -1258,7 +1283,6 @@ function Jobs (props) {
         :''
         }
         </div>
-        }
     </div>
     
   )

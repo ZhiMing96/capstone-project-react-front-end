@@ -321,7 +321,9 @@ class NavTabs extends React.Component {
     console.log(token)
     var showBadge = window.localStorage.getItem('viewAlert') !== null ? window.localStorage.getItem('viewAlert') : true
 
-
+    
+    console.log("PRINTING FROM NAV BAR PROPS")
+    console.log(this.props)
 
     console.log("showBadge = " + showBadge)
 
@@ -514,7 +516,7 @@ class NavTabs extends React.Component {
       
       <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/jobs" render={()=> (<Jobs searchResults={[]}/> )}/>
+          <Route exact path="/jobs" component={Jobs} />
           <Route path="/events" component={Events} />
           <Route path="/articles" component={Articles} />
           <Route exact path="/dailydigest" component={DailyDigest} />
