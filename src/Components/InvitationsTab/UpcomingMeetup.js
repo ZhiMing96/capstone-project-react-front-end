@@ -10,7 +10,9 @@ import {
 } from '@material-ui/pickers';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import CompleteMeetupIcon from  '../../images/completeMeetup.svg';
+import CompleteMeetupOutlineIcon from  '../../images/completeMeetupOutlined.svg';
 import RemoveMeetupIcon from '../../images/removeMeetup.svg';
+import RemoveMeetupOutlineIcon from '../../images/removeMeetupOutlined.svg';
 import TelegramIcon from '../../images/telegram.svg';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -22,6 +24,9 @@ import ClearIcon from '@material-ui/icons/Clear'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import viewProfileBG from '../../images/viewProfileBG.jpg'
+import EmploymentDetails from '../EmploymentDetails';
+import { useSnackbar } from 'notistack';
+
 
 
 const theme = createMuiTheme({
@@ -55,6 +60,12 @@ const useStyles = makeStyles(theme => ({
         marginTop:10,
         marginLeft:'5%'
     },
+    dialogAvatar: {
+        margin:'5%',
+        width:60, 
+        height:60, 
+        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2)',
+    },
     listAvatar: {
         margin:'5%',
         width:60, 
@@ -63,10 +74,12 @@ const useStyles = makeStyles(theme => ({
         backgroundImage: `url(${viewProfileBG})` ,
         backgroundSize: 'cover'
     },
+    
     listAvatarImg : {
-        objectFit:'contain',
-        width: "inherit",
+        width: 'inherit',
         border: 0,
+        height: 'fit-content',
+        objectFit : 'contain' ,
         '&:hover': {
             opacity: 0.55,
         }
@@ -92,6 +105,7 @@ const useStyles = makeStyles(theme => ({
     controlButtons :{
         width: 30,
         height: 30,
+        backgroundColour:'black'
     },
     calandar : {
         color: "red"
@@ -112,12 +126,23 @@ const useStyles = makeStyles(theme => ({
 
 const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 export default function UpcomingMeetup(props) {
+
+    
     const classes=useStyles();
     console.log(props);
     const { meetup, handleDateChange, handleSelectedMeetup, handleMeetupCancellation, handleMeetupConfirmation, handleTelegramRedirect } = props;
     const [ daysLeft, setDaysLeft ] = useState();
     const [ openMeeetupDialog, setOpenMeeetupDialog ] = useState(false);
+    const [ hoveringCancelled, setHoveringCancelled ] = useState(false);
+    const [ hoveringCompleted, setHoveringCompleted ] = useState(false);
 
+
+    const handleHoverCancelled = () => {
+        setHoveringCancelled(!hoveringCancelled);
+    }
+    const handleHoverConfirmed = () => {
+        setHoveringCompleted(!hoveringCompleted);
+    }
 
     const handleCloseDialog = () => {
         setOpenMeeetupDialog(false);
@@ -158,24 +183,13 @@ export default function UpcomingMeetup(props) {
             <Card style={{width:'100%', height:'fit-content', padding:'5%',marginBottom:'4%'}}>
                 <Grid container item xs={12}>
                     <Grid item xs={3}> 
-                    <Link 
-                    to={{
-                        pathname: "/profile",
-                        state: { user: 
-                            meetup.other_user && meetup.other_user.profile
-                            ? meetup.other_user.profile.user_id 
-                            : null
-                        }
-                    }} 
-                    style={{textDecoration:'none'}}
-                    >
+                    
                         <Avatar
                             src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
                             imgProps={{className: classes.listAvatarImg}}
-                            // onClick={()=> handleViewProfile()}
+                            onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
                         />
-                    </Link>
                     </Grid>
                     <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
                         <Typography>
@@ -185,10 +199,14 @@ export default function UpcomingMeetup(props) {
                         }
                         </Typography>
                         <Typography>
-                        {meetup.from_user && meetup.from_user.work_experience
-                        ? meetup.from_user.work_experience.job_title
+                        {meetup.other_user && meetup.other_user.work_experience
+                        ? meetup.other_user.work_experience.job_title
                         : "Unknown Occupation"
                         }
+                        <EmploymentDetails jobDetails={meetup && meetup.other_user ? meetup.other_user.work_experience  : null} username={meetup.other_user && meetup.other_user.profile
+                            ? meetup.other_user.profile.username 
+                            : 'User'
+                        }/>
                         </Typography>
                         
                         <ThemeProvider theme={meetup.suggested_datetime ? null : theme}>
@@ -230,6 +248,7 @@ export default function UpcomingMeetup(props) {
                                     : null
                                 )}
                                 src={TelegramIcon}
+                                imgProps={{className: classes.listAvatarImg }}
                                 />
                             </Grid>
                             <Grid item xs={6} style={{textAlign:'-webkit-center', alignSelf:'center'}}>
@@ -260,6 +279,7 @@ export default function UpcomingMeetup(props) {
                             <IconButton
                             onClick={handleCloseDialog}
                             style={{margin:'1%'}}
+                            size='small'
                             >
                                 <ClearIcon style={{width:45, height:45}}/>
                             </IconButton>
@@ -273,33 +293,44 @@ export default function UpcomingMeetup(props) {
                             </Typography>
                         </Grid>
                         <Grid item container spacing={7} style={{ paddingRight:'7%'}}>
-                            <Grid item xs={6} style={{textAlign:'-webkit-right'}}>
-                                <Avatar alt="List"
-                                    src={RemoveMeetupIcon} 
-                                    className={classes.listAvatar} 
-                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                    style={{marginRight:'16%'}}
-                                />
-                                <Button 
-                                style={{fontWeight:'bold', fontSize:18}}
-                                onClick={()=> handleCancelled()}
-                                >
-                                    Cancelled
-                                </Button>
+                            <Grid item xs={6} container style={{textAlign:'-webkit-right'}}>
+                                <Grid item xs={12}>
+                                    <IconButton style={{ backgroundColor:'transparent'}} onMouseEnter={()=>handleHoverCancelled()} onMouseLeave={()=>handleHoverCancelled()} onClick={()=>handleCancelled()}>
+                                        <Avatar alt="List"
+                                            src={hoveringCancelled ? RemoveMeetupIcon : RemoveMeetupOutlineIcon} 
+                                            className={classes.dialogAvatar} 
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                            style={{marginRight:'16%'}}
+                                        />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button disableFocusRipple disableRipple
+                                    style={{ fontWeight:'bold', fontSize:18, backgroundColor:'transparent' }}
+                                    >
+                                        Cancelled
+                                    </Button>
+                                </Grid>
                             </Grid>
                             <Grid item xs={6} style={{textAlign:'-webkit-left'}}>
-                                <Avatar alt="List"
-                                    src={CompleteMeetupIcon} 
-                                    className={classes.listAvatar} 
-                                    imgProps={{style:{objectFit:'contain',border:0}}}
-                                    style={{marginLeft:'16%'}}
-                                />
-                                <Button 
-                                style={{fontWeight:'bold', fontSize:18}}
-                                onClick={()=> handleConfirmed()} 
-                                >
-                                    Completed
-                                </Button>
+                                <Grid item xs={12}>
+                                    <IconButton style={{ backgroundColor:'transparent'}} onMouseEnter={()=>handleHoverConfirmed()} onMouseLeave={()=>handleHoverConfirmed()} onClick={()=>handleConfirmed()}>
+                                        <Avatar alt="List"
+                                            src={ hoveringCompleted ? CompleteMeetupIcon : CompleteMeetupOutlineIcon} 
+                                            className={classes.dialogAvatar} 
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                            style={{marginLeft:'16%'}}
+                                        />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button 
+                                    style={{ fontWeight:'bold', fontSize:18, backgroundColor:'transparent' }}
+                                    disableFocusRipple disableRipple
+                                    >
+                                        Completed
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>

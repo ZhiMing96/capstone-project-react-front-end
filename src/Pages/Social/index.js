@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Box, Snackbar, Tabs, Tab, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Reco from './Recommendations'
@@ -42,15 +42,50 @@ export default function Social(props) {
     console.log("**** PROPS FOR SOCIAL INDEX ******")
     console.log(props)
     const classes = useStyles();
-    const [tabState, setTabState] = React.useState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 1)
+    const [tabState, setTabState] = React.useState(0)
+    const [ redirect, setRedirect ] = useState(false);
+    
 
     const redirectProfile=(user_id)=>{
-        props.history.push("/profile/"+ user_id);
+        props.history.push({
+            pathname: "/profile/public",
+            state: { user_id: user_id }
+        })
     }
+
+
+    useEffect(() => {
+        setTabState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 0)
+    }, [props.location.state])
+
+
+    if(props.match.params && props.match.params.index ){
+        if(props.match.params.index === `0`){
+            props.history.push({
+                pathname: "/profile/social",
+                state: { tabIndex : 0 }
+            })
+        } else if(props.match.params.index === `1`){
+            props.history.push({
+                pathname: "/profile/social",
+                state: { tabIndex : 1 }
+            })
+        } else if(props.match.params.index === `2`){
+            props.history.push({
+                pathname: "/profile/social",
+                state: { tabIndex : 2 }
+            })
+        }
+        
+    }
+
 
     const handleChangeIndex = (event, index) => {
         setTabState(index)
     };
+    console.log("Printing TAB STATE")
+    console.log(tabState)
+
     return (
         <div>
             <Typography component="div">
@@ -84,15 +119,15 @@ export default function Social(props) {
                     </Tabs>
                 </Grid>
                 <Grid container fullWidth>
-                    <TabPanel  tabState={tabState} index={0}>
+                    <TabPanel tabState={tabState} index={0}>
                         <Search redirectProfile={redirectProfile}/>
 
                     </TabPanel>
                     <TabPanel tabState={tabState} index={1}>
-                        <Invitations/>
+                        <Invitations redirectProfile={redirectProfile} tabState={tabState} />
                     </TabPanel>
-                    <TabPanel tabState={tabState} index={2}>
-                        <Reco/>
+                    <TabPanel tabState={tabState} index={2} >
+                        <Reco redirectProfile={redirectProfile}/>
                     </TabPanel>
                 </Grid>
             

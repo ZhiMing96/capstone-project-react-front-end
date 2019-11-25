@@ -1,4 +1,4 @@
-import React , { useState, useEffect } from 'react';
+import React , { useState, useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -20,8 +20,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
+import ClearIcon from '@material-ui/icons/Clear'
 import EmploymentDetails from './EmploymentDetails'
 import viewProfileBG from '../images/viewProfileBG.jpg'
+import { useSnackbar } from 'notistack';
+
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -39,9 +42,10 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: 'cover'
     },
     avatarImg:{
-        objectFit:'contain',
-        width: "inherit",
+        width: 'inherit',
         border: 0,
+        height: 'fit-content',
+        objectFit : 'contain' ,
         '&:hover': {
             opacity: 0.55,
         }
@@ -51,7 +55,8 @@ const useStyles = makeStyles(theme => ({
         display: 'inline'
     },
     button: {
-        margin: theme.spacing(1)
+        margin: theme.spacing(1),
+        marginRight:0
     },
     dialogAvatar : {
         width:95,
@@ -72,13 +77,22 @@ const useStyles = makeStyles(theme => ({
     },
     headers : {
         fontWeight:'bold'
-    }
+    },
+    closeIcon : {
+        color:'grey',
+        '&:hover': {
+            color:'black',
+        }
+    },
     
 }));
 
 const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
-export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProcessRequestFromCompletedMeetup}) {
+export default function AlignItemsList(props) {
+
+    const { meetup, handleProcessRequestFromCompletedMeetup, getCompletedMeetups } = props 
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     const [requestMessage, setRequestMessage] = useState()
     const [openDialog, setOpenDialog] = useState(false);
@@ -88,13 +102,18 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
     const successMsg = "Requst Sent! "
     const [ hoverOnPic, setHoverOnPic ] = useState(false);
 
-    // console.log('<< Meetup Item >> ')
-    // console.log(meetup)
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const handleChange = event => {
         //console.log(event.target.value);
         setRequestMessage(event.target.value);
-      };
+    };
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -103,7 +122,8 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
         setOpenDialog(false)
     }
     
-    const handleSendRequest = () => {
+    const handleSendRequest = event => {
+        event.preventDefault();
         console.log('**** Entered handleSendRequest ****')
         console.log(meetup)
         console.log(requestMessage)
@@ -124,25 +144,19 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
             console.log(res.data)
             if(res.data.response_code === 200){
                 console.log('**** Successfully Send Recommendation Request ****')
-                handleOpenSnackBar("Success");
+                enqueueSnackbar('Recommendation Request Sent Successfully',  { variant: "success", action } );
+                getCompletedMeetups();
+                
             } else {
-                handleOpenSnackBar("Error");
+                enqueueSnackbar('Unable to Send Recommendation Request',  { variant: "error", action } );
             }
             
         }).catch(err=>{
             console.log(err)
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             setOpenDialog(false);
         })
     }
-
-    
-    const handleEnterPic = () => {
-        setHoverOnPic(true) 
-    }
-    const handleExitPic = () => {
-        setHoverOnPic(false)
-    }
-    
 
     const formatDate = (stringDate, length) => {
          const date = new Date(stringDate)
@@ -151,8 +165,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
          } else {
             var month = date.toLocaleString('en-GB', { month: 'long' });
          }
-         
-
+        
          return(date.getDate() + " " +  month + " " + date.getFullYear())
     }
 
@@ -163,7 +176,9 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                 <ListItemAvatar className={classes.root}>
                     <Avatar src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                     className={classes.avatar} 
-                    imgProps={{className: classes.avatarImg}}/>
+                    imgProps={{className: classes.avatarImg}}
+                    onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
+                    />
                 </ListItemAvatar>
                 <Grid container alignItems="center" justify="space-between">
                     <Grid item xs={8}>
@@ -189,7 +204,11 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                         ?
                                         <Typography>
                                             {meetup.other_user.work_experience.job_title}
-                                            <EmploymentDetails jobDetails={meetup.other_user.work_experience}/>
+                                            <EmploymentDetails jobDetails={meetup.other_user.work_experience}
+                                            username={meetup.other_user && meetup.other_user.profile
+                                                ? meetup.other_user.profile.username 
+                                                : 'User'
+                                                }/>
                                         </Typography> 
                                         
                                         : ""}
@@ -217,12 +236,12 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                         <Grid item style={{textAlign:'end'}}>
                         <Tooltip title={`Remove If Recommendation From ${meetup.other_user && meetup.other_user.profile? meetup.other_user.profile.username:'User'} Is Not Needed`}  
                         placement="top-start">
-                            <IconButton style={{padding:0}} onClick={()=> handleProcessRequestFromCompletedMeetup(meetup)} size="small">
-                                <CloseIcon style={{color:'#992E24'}} />
+                            <IconButton style={{ padding:0, backgroundColor:'transparent' }} onClick={()=> handleProcessRequestFromCompletedMeetup(meetup)} size="small">
+                                <CloseIcon className={classes.closeIcon}/>
                             </IconButton>
                         </Tooltip>
                         </Grid>
-                        <Grid item>
+                        <Grid item style={{ textAlign:'end' }}>
                             <Button color="primary" edge="end" variant="outlined" className={classes.button}
                             onClick={() => handleOpenDialog()}>
                                 Request
@@ -240,12 +259,13 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                 aria-describedby="alert-dialog-description"
                 fullWidth
             >
+                <form onSubmit={handleSendRequest}>
                 <DialogContent style={{padding:'10%', paddingBottom:'1%'}}>
                     <Grid container>
                         <Grid item container xs={12}>
                             <Grid item xs={12} sm={3} className={classes.avatarGrid}>
                                 <Avatar
-                                src=''
+                                src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                                 alt='list'
                                 className={classes.dialogAvatar}/>
                             </Grid>
@@ -254,7 +274,7 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                     <Grid item xs={4} className={classes.headers}>
                                         Name:
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={8} style={{ paddingLeft:'3%' }}>
                                         <Typography gutterBottom>
                                             {meetup.other_user && meetup.other_user.profile
                                             ? meetup.other_user.profile.username.toUpperCase()
@@ -268,14 +288,19 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                     <Grid item xs={4} className={classes.headers}>
                                         JobTitle
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={8} style={{ paddingLeft:'3%' }} >
                                         <Typography gutterBottom>
-                                            NUS Lecturer
+                                            {meetup && meetup.other_user ? meetup.other_user.work_experience.job_title : "Unknown Occupation"}
+                                            <EmploymentDetails jobDetails={ meetup && meetup.other_user ? meetup.other_user.work_experience : null }
+                                            username={meetup && meetup.other_user && meetup.other_user.profile
+                                                ? meetup.other_user.profile.username 
+                                                : 'User'
+                                                }/>
                                         </Typography>
                                     </Grid>
 
                                 </Grid>
-                                <Grid item container xs={12} >
+                                {/* <Grid item container xs={12} >
                                     <Grid item xs={4} className={classes.headers}>
                                         Company
                                     </Grid>
@@ -283,12 +308,12 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                                         National University of Singapore
                                     </Grid>
 
-                                </Grid>
+                                </Grid> */}
                                 <Grid item container xs={12} className={classes.headers}>
                                     <Grid item xs={4}>
                                         Meetup Date
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={8} style={{ paddingLeft:'3%' }} >
                                         <Typography gutterBottom>
                                             {formatDate(meetup.suggested_datetime,'long')}
                                         </Typography>
@@ -297,31 +322,34 @@ export default function AlignItemsList({ meetup, handleOpenSnackBar,  handleProc
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid container style={{marginTop:'2%',}}>
-                        <Grid item xs={12} style={{textAlign:'center'}}>
-                            <TextField
-                                id="standard-multiline-static"
-                                multiline
-                                rows="5"
-                                className={classes.textField}
-                                margin="normal"
-                                variant="outlined"
-                                onChange={handleChange}
-                                label="Type a Message"
-                                required
-                                inputProps={{ maxLength: 200 }}
-                            />
+                    
+                        <Grid container style={{marginTop:'2%',}}>
+                            <Grid item xs={12} style={{textAlign:'center'}}>
+                                <TextField
+                                    id="standard-multiline-static"
+                                    multiline
+                                    rows="5"
+                                    className={classes.textField}
+                                    margin="normal"
+                                    variant="outlined"
+                                    onChange={handleChange}
+                                    label="Type a Message"
+                                    required
+                                    inputProps={{ maxLength: 200 }}
+                                />
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={handleCloseDialog} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={handleSendRequest} color="primary" autoFocus>
+                <Button type='submit' color="primary" autoFocus>
                     Submit
                 </Button>
                 </DialogActions>
+                </form>
             </Dialog>
 
             <Divider variant="inset" component="li" />

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import './MobileSideBar.css'
 import { Grid, makeStyles, Typography, Avatar, Box, Button, Paper, IconButton } from '@material-ui/core'
-import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import EventsIcon from '@material-ui/icons/InsertInvitation';
@@ -12,6 +12,13 @@ import TelegramIcon from '@material-ui/icons/Telegram';
 import FaceIcon from '@material-ui/icons/Face';
 import  { updateSocialProfile } from '../../redux/actions/socialProfile'
 import { connect } from "react-redux";
+import UploadPhoto from '../../images/UploadPhoto.jpg'
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
+
+import Jobs from '../../Pages/Jobs/Jobs'
+import Events from '../../Pages/Events'
+import Articles from '../../Pages/Articles'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,7 +29,18 @@ const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin: 30,
     width: 90,
-    height: 90,
+    height: 90,backgroundImage: `url(${UploadPhoto})` ,
+    backgroundSize: 'cover',
+  },
+  imgProps: {
+    objectFit:'contain',
+    width: "inherit",
+    border: 0,
+    // height:'100%',
+    height:'fit-content',
+    '&:hover': {
+        opacity: 0.55,
+    }
   },
   button: {
     margin: theme.spacing(2),
@@ -63,6 +81,15 @@ function MobileSideBar(props){
   const [base64, setBase64] = useState();
   const [ profile, setProfile ] = useState();
   const [profileImageLink, setProfileImageLink] = React.useState();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const action = key => (
+    <Fragment>
+        <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+            <ClearIcon/>
+        </IconButton>
+    </Fragment>
+);
 
   const handleChange = (event, newValue) => {
     event.preventDefault()
@@ -81,7 +108,15 @@ function MobileSideBar(props){
           setProfile(res.data.social);
         }
       } 
-    ).catch({})
+    ).catch(err => {
+        if(err.response) {
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+        }
+    })
   }
 
   useEffect (()=>{
@@ -110,6 +145,8 @@ function MobileSideBar(props){
   }
 
   const handleImageChange = e => {
+    console.log("Entered Handle Change");
+    console.log(e.target.files[0]);
     e.preventDefault();
     let file = e.target.files[0];
     console.log(file)
@@ -126,7 +163,7 @@ function MobileSideBar(props){
       };
 
     }
-    
+    e.target.value = null
   }
   const handleSubmitNewImg = (base64String) => {
     console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
@@ -141,6 +178,22 @@ function MobileSideBar(props){
           setProfileImageLink(res.data.image_link);
           // getProfile();
           changeSideBarProfilePicture(res.data.image_link);
+          enqueueSnackbar('Profile Picture Updated',  { variant: "", action } );
+        } else {
+          console.log(res.data.response_message)
+          enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+        }
+      }).catch(err=> {
+        if(err.response) {
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          if(status  === 413){
+            enqueueSnackbar('File Size Too Large',  { variant: "error", action } );
+          } else {
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+          }
         }
       })
   }
@@ -153,7 +206,7 @@ function MobileSideBar(props){
       <Paper square className={classes.root} elevation={3}>
         <Tabs
           value={value}
-          onChange={handleChange}
+          onChange={props.handleChange}
           variant="fullWidth"
           indicatorColor="primary"
           textColor="primary"
@@ -168,8 +221,8 @@ function MobileSideBar(props){
         <label for='image_upload' style={{width:'100%', textAlign:'-webkit-center',}}>
           <div title={'Change profile picture'} style={{}}>
             { profile && profile.profile_image_link 
-            ? <Avatar src={ profile.profile_image_link } className={classes.bigAvatar}/>
-            :<Avatar src={ defaultImg } className={classes.bigAvatar}/>
+            ? <Avatar src={ profile.profile_image_link } className={classes.bigAvatar} imgProps={{className: classes.imgProps}}/>
+            :<Avatar src={ defaultImg } className={classes.bigAvatar} imgProps={{className: classes.imgProps}}/>
             }
           </div>
         </label>
@@ -206,6 +259,7 @@ function MobileSideBar(props){
           ))}
         </Grid>
       </Grid>
+      
     </nav>
   )
 }

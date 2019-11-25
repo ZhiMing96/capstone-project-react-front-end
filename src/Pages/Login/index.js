@@ -20,17 +20,28 @@ class Login extends React.Component {
         password:'',
         errorMessage: '',
         registerSnackbar: this.props.location.state && this.props.location.state.registerSnackbar,
-        errorSnackbar: false
+        errorSnackbar: false,
+        redirectUrl: this.props.location.state && this.props.location.state.from ? this.props.location.state.from.pathname : null
     }
     const locationProps = this.props.location.state
+    
+
     console.log(this.state)
     console.log(this.props.location.state);
     if(locationProps !== undefined){
-      console.log('Can Signup status: '+ this.props.location.state.canSignUp) 
+      if(this.props.location.state.canSignUp) {
+        console.log('Can Signup status: '+ this.props.location.state.canSignUp) }
+      // } else if (this.props.location.state.from){
+      //   const url = this.props.location.state.from.pathname
+      //   console.log("Printing Redirect URL in Constructor ")
+      //   console.log(url)
+      //   // this.setState({ redirectUrl : url })
+      // }
     } else {
-      console.log('SIGN UP FAIL PROPS IS NOT HERE')
+      console.log('SIGN UP FAIL/FROM PROPS IS NOT HERE')
     }
-    
+    console.log("PRINTING PROPS FROM SIGN UP")
+    console.log(this.props)
   }
 
   handleChange (e) {
@@ -44,9 +55,13 @@ class Login extends React.Component {
     .then(response => {
       let userId = response.data.profile.user_id
       this.props.doLogin(userId) //link to store action to hydrate store, connect
-      if(response.data.social.description === null){ //first time logging in 
+      console.log("Printing Redirect URL After Login ")
+      console.log(this.state.redirectUrl)
+      if(this.state.redirectUrl){
+        this.props.history.push(this.state.redirectUrl);
+      } else if(response.data.social.description === null){ //first time logging in 
         this.props.history.push("/profile",{setup:true});
-      }  else{
+      }  else  {
         this.props.history.push("/profile"); 
       }   
              

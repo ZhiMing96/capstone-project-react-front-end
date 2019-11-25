@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab, FormControl, Fade, Collapse } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab, FormControl, Fade, Collapse, TextField, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -14,13 +14,69 @@ const useStyles = makeStyles(theme => ({
     formControl: {
       margin: theme.spacing(3),
     },
+    jobCategoryArea : {
+        paddingLeft:'7%',
+        paddingRight:'7%'
+    },
+    textField: {
+        width: '100%',
+    },
+    menu: {
+        width: 200,
+    },
   }));
   
 
-function JobFilterSideBar({ handleSidebarSubmit }) {
+function JobFilterSideBar(props) {
     const classes = useStyles();
     const [expandedArea, setExpandedArea] = useState(false);
     const [selectedAreaIndex, setSelectedAreaIndex] = useState(null);
+    const [ fullScreen, setFullScreen ] = useState(false);
+    const { handleSidebarSubmit } = props
+
+    const jobCategories = [
+        { value:'Accounting%20%2F%20Auditing%20%2F%20Taxation' , label:'Accounting / Auditing / Taxation' },
+        { value:'Admin%20%2F%20Secretarial' , label:'Admin / Secretarial' },
+        { value:'Advertising%20%2F%20Media' , label:'Advertising / Media' },
+        { value:'Architecture%20%2F%20Interior Design' , label:'Architecture / Interior Design' },
+        { value:'Banking and Finance' , label:'Banking and Finance' },
+        { value:'Building and Construction' , label:'Building and Construction' },
+        { value:'Consulting' , label:'Consulting' },
+        { value:'Customer Service' , label:'Customer Service' },
+        { value:'Design' , label:'Design' },
+        { value:'Education and Training' , label:'Education and Training' },
+        { value:'Engineering' , label:'Engineering' },
+        { value:'Entertainment' , label:'Entertainment' },
+        { value:'Environment%20%2F%20Health' , label:'Environment / Health' },
+        { value:'Events%20%2F%20Promotions' , label:'Events / Promotions' },
+        { value:'F%26B' , label:'F&B' },
+        { value:'General%20Management' , label:'General Management' },
+        { value:'General%20Work' , label:'General Work' },
+        { value:'Healthcare%20%2F%20Pharmaceutical' , label:'Healthcare / Pharmaceutical' },
+        { value:'Hospitality' , label:'Hospitality' },
+        { value:'Human%20Resources' , label:'Human Resources' },
+        { value:'Information Technology' , label:'Information Technology' },
+        { value:'Insurance' , label:'Insurance' },
+        { value:'Legal' , label:'Legal' },
+        { value:'Logistics%20%2F%20Supply Chain' , label:'Logistics / Supply Chain' },
+        { value:'Manufacturing' , label:'Manufacturing' },
+        { value:'Marketing%20%2F%20Public Relations' , label:'Marketing / Public Relations' },
+        { value:'Medical%20%2F%20Therapy Services' , label:'Medical / Therapy Services' },
+        { value:'Personal%20Care%20%2F%20Beauty' , label:'Personal Care / Beauty' },
+        { value:'Professional%20Services' , label:'Professional Services' },
+        { value:'Public%20%2F%20Civil%20Service' , label:'Public / Civil Service' },
+        { value:'Purchasing%20%2F%20Merchandising' , label:'Purchasing / Merchandising' },
+        { value:'Real Estate%20%2F%20Property%20Management' , label:'Real Estate / Property Management' },
+        { value:'Repair and Maintenance' , label:'Repair and Maintenance' },
+        { value:'Risk Management' , label:'Risk Management' },
+        { value:'Sales%20%2F%20Retail' , label:'Sales / Retail' },
+        { value:'Sciences%20%2F%20Laboratory%20%2F%20R%26D' , label:'Sciences / Laboratory / R&D' },
+        { value:'Security and Investigation' , label:'Security and Investigation' },
+        { value:'Social Services' , label:'Social Services' },
+        { value:'Telecommunications' , label:'Telecommunications' },
+        { value:'Travel%20%2F%20Tourism' , label:'Travel / Tourism' },
+        { value:'Others' , label:'Others' },
+    ];
     const [governmentSchemes, setGovernmentSchemes] = useState([
         {   name: "For individuals between jobs", value: false, index:4 },
         {   name: "For mid-career switchers", value: false, index:2 },
@@ -111,6 +167,8 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
         },
     ]);
 
+    const [ selectedJobCategory, setSelectedJobCategory ] = useState('')
+
     const handleSchemeChange = index => event => {
         console.log('*** ENTERED HANDLE SCHEME CHANGE METHOD  ***')
         console.log(index)
@@ -163,7 +221,7 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
         formQuery();
     }
 
-    const formQuery = () => {
+    const formQuery = (category) => {
 
         console.log("!!! ENTERED FORM QUERY METHOD ")
 
@@ -198,16 +256,65 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
                 }
             }
         }
+        if(category !== "" && category){
+            query = query + `&categories=${category}`
+        }
+        
 
+        console.log("<<< Query Formed in JobFilter Sidebar = ")
         console.log(query)
         handleSidebarSubmit(query)
     }
 
-     
+     const handleChange = e => {
+         console.log(e.target.value)
+         const value = e.target.value
+         setSelectedJobCategory(value)
+         formQuery(value);
+        //  formQuery();
+     }
 
+    //  const translateCategory = (categoryName) => {
+    //     var categories = categoryName.split("")
+    //     for(let i=0; i <categories.length ; i++) {
+    //         if(categories[i] === '/'){
+
+    //         }
+    //     }
+        
+    //  }
+
+
+     
 
     return (
         <Grid container style={{width:'100%', backgroundColor:'white', textAlign:'left'}}>
+            <Grid item xs={12} className={classes.jobCategoryArea}>
+                <TextField
+                id="filled-select-currency"
+                select
+                label="Select a Job Cagtegory"
+                className={classes.textField}
+                value={selectedJobCategory}
+                onChange={handleChange}
+                SelectProps={{
+                    MenuProps: {
+                    className: classes.menu,
+                    },
+                }}
+                margin="normal"
+                variant="filled"
+                >
+                    <MenuItem disabled value="">
+                        <em>Select a Job Cagtegory</em>
+                    </MenuItem>
+                {jobCategories.map((category, index) => (
+                    <MenuItem key={index} value={category.value}>
+                    {category.label}
+                    </MenuItem>
+                ))}
+                </TextField>
+            </Grid>
             <Grid item xs={12}>
                 <FormControl component="fieldset" className={classes.formControl}>
                     <FormLabel component="legend"> Select Government Scheme</FormLabel>

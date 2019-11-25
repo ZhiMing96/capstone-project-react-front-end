@@ -1,4 +1,4 @@
-import React, { useEffect, useState, } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import api from '../../api';
 import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Snackbar } from '@material-ui/core';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
@@ -10,37 +10,16 @@ import "slick-carousel/slick/slick-theme.css";
 import Popover from '@material-ui/core/Popover';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import CompleteMeetupIcon from  '../../images/completeMeetup.svg';
-import RemoveMeetupIcon from '../../images/removeMeetup.svg';
-import TelegramIcon from '../../images/telegram.svg';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Recommendations from './Recommendations';
 import './index.css';
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ClearIcon from '@material-ui/icons/Clear'
-import Badge from '@material-ui/core/Badge';
-import CircularLoading from '../../Components/LoadingBars/CircularLoading';
 import Skeleton from '@material-ui/lab/Skeleton';
 import InvitationRequestSkeleton from '../../Components/SkeletonLoading/InvitationRequestSkeleton'
 import  UpcomingMeetupsSkeletonLoading from '../../Components/SkeletonLoading/UpcomingMeetupsSkeletonLoading';
-// import Snackbar from '../../Components/Snackbar';
-import axios from 'axios'
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CloseIcon from '@material-ui/icons/Close';
 import MeetupInvitation from '../../Components/InvitationsTab/MeetupInvitation'
 import UpcomingMeetup from '../../Components/InvitationsTab/UpcomingMeetup'
+import { useSnackbar } from 'notistack';
 
 //redux
 import { updatePendingInvitations, updateUpcomingMeetups} from '../../redux/actions/socialInteraction' ; 
@@ -235,105 +214,133 @@ const carouselSettings = {
 function Invitations(props) {
 
     const classes=useStyles();
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedInvitationIndex, setSelectedInvitationIndex] = useState()
-    const [openInvitation, setOpenInvitation] = useState(false);
-    const [selectedMeetupIndexWithDate, setSelectedMeetupIndexWithDate] = useState()
-    const [selectedMeetupIndexWithoutDate, setSelectedMeetupIndexWithoutDate] = useState()
-    const [OpenMeetupDialog, setOpenMeetupDialog] = useState(false); 
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [ selectedMeetup, setSelectedMeetup] = useState();
-    const [ openMeetupCancellation, setOpenMeetupCancellation ] = useState(false);
     const [ pendingInvitations, setPendingInvitations ] = useState();
     const [ upcomingMeetups, setUpcomingMeetups ] = useState();
     const [ pendingMeetupDate, setPendingMeetupDate ] = useState();
     const [ invitationsLoading, setInvitationsLoading ] = useState(false);
     const [ meetupsloading, setMeetupsLoading ] = useState(false);
-    const [ openSnackBarError, setOpenSnackBarError ] = useState(false);
-    const [ openSnackBarSuccess, setOpenSnackBarSuccess ] = useState(false);
     const [ reloadInvitation, setReloadInvitation ] = useState(false);
     const [ reloadMeetup, setReloadMeetup ] = useState(false);
 
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
+
     const getPendingInvitation = () => {
         console.log("ENTERED PEDNING INVITATION ")
-        setInvitationsLoading(true);
-        api.invitations.getPending()
-        .then(res=>{
-            console.log(res.data)
-            if(res.data.response_code === 200) {
-                // setTimeout(() => {
-                    const invitesSent = res.data.invites_sent
-                    const invitesReceived = res.data.invites_received
-                    console.log('****** Invitations Sent *****')
-                    console.log(invitesSent);
-
-                    console.log('****** Invitations Received *****')
-                    console.log(invitesReceived);
-                    setPendingInvitations(invitesReceived);
-                    setInvitationsLoading(false);
-                    props.updatePendingInvitations(invitesReceived)
-                // }, 3000)
-            } 
-        }).catch(err => console.log(err))
+        if(window.localStorage.getItem('authToken') !== null){
+            setInvitationsLoading(true);
+            api.invitations.getPending()
+            .then(res=>{
+                console.log(res.data)
+                if(res.data.response_code === 200) {
+                    // setTimeout(() => {
+                        const invitesSent = res.data.invites_sent
+                        const invitesReceived = res.data.invites_received
+                        console.log('****** Invitations Sent *****')
+                        console.log(invitesSent);
+    
+                        console.log('****** Invitations Received *****')
+                        console.log(invitesReceived);
+                        setPendingInvitations(invitesReceived);
+                        setInvitationsLoading(false);
+                        // props.updatePendingInvitations(invitesReceived)
+                    // }, 3000)
+                } else {
+                    enqueueSnackbar('Unable to Retrieve Invitations',  { variant: "error", action } );
+                }
+            }).catch(err => {
+                console.log(err);
+                if(err.response) {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
+            })
+        }
+        
     }
 
     const getUpcomingMeetups = () => {
         console.log("ENTERED UPCOMING MEETUPS ")
-        setMeetupsLoading(true);
-        api.invitations.getCurrent()
-        .then(res=> {
-            console.log(res.data)
-            if(res.data.response_code === 200) {
-                
-                // setTimeout(() => {
-                    var invitesSent = res.data.invites_sent
-                    var invitesReceived = res.data.invites_received
-                    console.log('****** Invitations Sent *****')
-                    console.log(invitesSent);
-                    console.log('****** Invitations Received *****')
-                    console.log(invitesReceived);
-                    var combined = invitesSent.concat(invitesReceived)
-                    console.log('****** Combined Invitations *****')
-                    console.log(combined);
-                    props.updateUpcomingMeetups(combined)
-
-                    var tempWithDate = [];
-                    var tempWithoutDate = [];
-    
-                    for(let i=0; i<combined.length;i++){
-                        const invitation = combined[i]
-                        console.log(invitation)
-                        if(invitation.accepted === 1 && invitation.is_completed === null){
-                            console.log(invitation.suggested_datetime)
-                            if(invitation.suggested_datetime !== null){
-                                tempWithDate.push(invitation)
-                            } else {
-                                tempWithoutDate.push(invitation)
-                            }
-                            
-                        }
-                    }
-                    setMeetupsLoading(false);
-                    setUpcomingMeetups(tempWithDate)
-                    setPendingMeetupDate(tempWithoutDate)
+        if(window.localStorage.getItem('authToken') !== null){
+            setMeetupsLoading(true);
+            api.invitations.getCurrent()
+            .then(res=> {
+                console.log(res.data)
+                if(res.data.response_code === 200) {
                     
+                    // setTimeout(() => {
+                        var invitesSent = res.data.invites_sent
+                        var invitesReceived = res.data.invites_received
+                        console.log('****** Invitations Sent *****')
+                        console.log(invitesSent);
+                        console.log('****** Invitations Received *****')
+                        console.log(invitesReceived);
+                        var combined = invitesSent.concat(invitesReceived)
+                        console.log('****** Combined Invitations *****')
+                        console.log(combined);
+                        // props.updateUpcomingMeetups(combined)
+    
+                        var tempWithDate = [];
+                        var tempWithoutDate = [];
+        
+                        for(let i=0; i<combined.length;i++){
+                            const invitation = combined[i]
+                            console.log(invitation)
+                            if(invitation.accepted === 1 && invitation.is_completed === null){
+                                console.log(invitation.suggested_datetime)
+                                if(invitation.suggested_datetime !== null){
+                                    tempWithDate.push(invitation)
+                                } else {
+                                    tempWithoutDate.push(invitation)
+                                }
+                                
+                            }
+                        }
+                        setMeetupsLoading(false);
+                        setUpcomingMeetups(tempWithDate)
+                        setPendingMeetupDate(tempWithoutDate)
+                        
+                } else {
+                    enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
                 }
-                // , 3000)} 
-        }).catch(err => {
-            console.log(err);
-            setMeetupsLoading(false);
-        })
+            }).catch(err => {
+                if(err.response) {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
+                // enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
+                setMeetupsLoading(false);
+            })
+        }
+       
     }
 
     
     useEffect(()=>{
         console.log("Getting Upcoming Meetups");
-        getUpcomingMeetups()
+        setTimeout(() => {getUpcomingMeetups() } , 1000);
+        // getUpcomingMeetups();
         
         console.log("Getting Pending Invitations");
        
         setInvitationsLoading(true);
-        setTimeout(() => {getPendingInvitation() } , 1000);
-    },[]) 
+        setTimeout(() => {getPendingInvitation() } , 5000);
+        // getPendingInvitation()
+        console.log(props)
+    },[props.tabState]) 
 
     const handleAcceptInvitation = (requestId) => {
         console.log(requestId)
@@ -341,6 +348,7 @@ function Invitations(props) {
         .then(res=>{
             if(res.data.response_code === 200){
                 console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
+                enqueueSnackbar('Invitation Accepted',  { variant: "success", action } );
                 
                 console.log("Getting Pending Invitations");
                 getPendingInvitation();
@@ -350,10 +358,17 @@ function Invitations(props) {
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
-                setOpenSnackBarError(true);
+
+                enqueueSnackbar('Unable to Accept Invitation',  { variant: "error", action } );
             }
+        }).catch(err=> {
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
-        handleCloseDialog();
+        // handleCloseDialog();
     } 
 
     const handleDeclineInvitation = invitation =>{
@@ -363,13 +378,20 @@ function Invitations(props) {
         .then(res => {
             if(res.data.response_code === 200){
                 console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
+                enqueueSnackbar('Invitation Cancelled Successfully',  { variant: "success", action } );
                 getPendingInvitation();
                 // setReloadInvitation(true);
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****")
                 console.log(res.data.response_code + res.data.response_message)
-                setOpenSnackBarError(true);
+                enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
             }
+        }).catch(err=> {
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
     }
 
@@ -395,27 +417,27 @@ function Invitations(props) {
         .then(res=>{
             console.log(res.data);
             if(res.data.response_code === 200){
-                //open snackbar?
+
                 console.log('***** DATE CHANGE RECORDED SUCESSFULLY ****');
+                enqueueSnackbar('Meetup Date Changed',  { variant: "success", action } );
                 setSelectedMeetup(null);
                 getUpcomingMeetups()
-                // setReloadMeetup(!reloadMeetup)
+
             } else {
                 console.log('***** DATE CHANGE NOT RECORDED ****')
+                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
            
+        }).catch(err=> {
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
         })
     }; 
 
 
-    const handleCloseDialog = () => {
-        // if(type === 'invitation'){
-            setOpenInvitation(false);
-        // } else if (type === 'meetup') {
-            setOpenMeetupDialog(false);
-            setOpenMeetupCancellation(false);
-        // }
-    };
     
     
 
@@ -426,18 +448,23 @@ function Invitations(props) {
         .then(res => {
             console.log(res.data)
             if(res.data.response_code===200){
+                enqueueSnackbar('Meetup Completed',  { variant: "success", action } );
                 getUpcomingMeetups()
                 // setReloadMeetup(!reloadMeetup);
-                setOpenMeetupDialog(false);
+                // setOpenMeetupDialog(false);
             } else {
                 console.log('**** ERROR IN CONFIRMING MEETUP ***');
-                setOpenSnackBarError(true);
+
+                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
-            handleCloseDialog();
+            // handleCloseDialog();
         }).catch(err=> {
-            console.log(err)
-            handleCloseDialog();
-            setOpenSnackBarError(true);
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            // handleCloseDialog();
         });
     }
     const handleMeetupCancellation = (meetup) => {
@@ -447,17 +474,24 @@ function Invitations(props) {
         .then(res => {
             console.log(res.data)
             if(res.data.response_code===200){
+                enqueueSnackbar('Meetup Cancelled',  { variant: "success", action } );
+
                 getUpcomingMeetups()
                 // setReloadMeetup(!reloadMeetup)
-                setOpenMeetupDialog(false);
-                setOpenMeetupCancellation(true);
+                // setOpenMeetupDialog(false);
+                // setOpenMeetupCancellation(true);
             } else {
                 console.log('**** ERROR IN CANCELLING MEETUP ***');
+                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
-            handleCloseDialog()
+            // handleCloseDialog()
         }).catch(err=> {
-            console.log(err)
-            handleCloseDialog();
+            const status = err.response.status
+            const statusText = err.response.statusText
+            console.log(status);
+            console.log(statusText);
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            // handleCloseDialog();
         });
     }
     const handleTelegramRedirect = ( telegramId ) => {
@@ -470,45 +504,20 @@ function Invitations(props) {
                     if(teleLink){
                         window.open(teleLink,'_blank');
                     }
+                } else {
+                    enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
                 }
+            }).catch(err => {
+                if(err.response) {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
             })
         }
     }
-
-    // const resetSnackBars = (reason) => {
-    //     if (reason === 'clickaway') {
-    //         return;
-    //     }
-    //     setOpenSnackBarError(false);
-    //     setOpenSnackBarSuccess(false);
-    // }
-
-    // const handleOpenSnackBar = (type) => {
-    //     console.log(" $$$$ ENTERED OPEN SNACKBAR ")
-
-    //     if (type === "Error") {
-    //         setOpenErrorSnackbar(true);
-    //     } else if (type == "Success") {
-    //         setOpenSuccessSnackbar(true);
-    //     }
-    // }
-
-    // const processQueue = () => {
-    //     if (queueRef.current.length > 0) {
-    //       setMessageInfo(queueRef.current.shift());
-    //       setOpen(true);
-    //     }
-    // };
-
-    // const handleClose = (event, reason) => {
-    //     if (reason === 'clickaway') {
-    //         return;
-    //     }
-    //     setOpen(false);
-    // };
-    // const handleExited = () => {
-    //     processQueue();
-    // };
 
     return (
         <div>
@@ -529,7 +538,7 @@ function Invitations(props) {
                         {pendingInvitations.map((invitation, index) => (
                             <div key={index}>
                             <Page>
-                                <MeetupInvitation invitation={invitation} handleAcceptInvitation={handleAcceptInvitation} handleDeclineInvitation={handleDeclineInvitation} />
+                                <MeetupInvitation invitation={invitation} handleAcceptInvitation={handleAcceptInvitation} handleDeclineInvitation={handleDeclineInvitation} redirectProfile={props.redirectProfile} />
                             </Page>
                             
                             </div>
@@ -558,7 +567,7 @@ function Invitations(props) {
                             if(meetup.suggested_datetime !== null){
                                 return(
                                     <div style={{width:'90%'}}>
-                                        <UpcomingMeetup meetup={meetup} handleDateChange={handleDateChange} handleSelectedMeetup={handleSelectedMeetup} handleMeetupCancellation={handleMeetupCancellation}  handleMeetupConfirmation={handleMeetupConfirmation} handleTelegramRedirect={handleTelegramRedirect}/>
+                                        <UpcomingMeetup meetup={meetup} handleDateChange={handleDateChange} handleSelectedMeetup={handleSelectedMeetup} handleMeetupCancellation={handleMeetupCancellation}  handleMeetupConfirmation={handleMeetupConfirmation} handleTelegramRedirect={handleTelegramRedirect} redirectProfile={props.redirectProfile}/>
                                     </div>
                                 )
                             }
@@ -594,14 +603,16 @@ function Invitations(props) {
     )
 }
 
-const mapStateToProps = state => {
-    return { 
-      pendingInvitations: state.socialInteraction.pendingInvitations,
-      upcomingMeetups: state.socialInteraction.upcomingMeetups
-     }
-  };
+// const mapStateToProps = state => {
+//     return { 
+//       pendingInvitations: state.socialInteraction.pendingInvitations,
+//       upcomingMeetups: state.socialInteraction.upcomingMeetups
+//      }
+//   };
   
-export default connect(
-mapStateToProps,
-{ updateUpcomingMeetups, updatePendingInvitations }
-) (Invitations); 
+// export default connect(
+// mapStateToProps,
+// { updateUpcomingMeetups, updatePendingInvitations }
+// ) (Invitations); 
+
+export default Invitations;

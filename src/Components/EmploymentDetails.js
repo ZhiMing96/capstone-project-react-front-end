@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function EmploymentDetails(props) {
     const classes=useStyles();
-    const { jobDetails } = props;
+    const { jobDetails, username } = props;
     const [openMessage, setOpenMessage ] = useState(false);
     const [ anchorEl, setAnchorEl ] = useState(null);
     const inputEl = useRef(null)
@@ -55,6 +55,7 @@ export default function EmploymentDetails(props) {
     console.log("PRINTING FKIN ANCHOR EL")
     console.log(anchorEl)
     console.log(props.anchorEl)
+    console.log(jobDetails)
     return (
         <span>
             {!props.buttonExist
@@ -70,7 +71,7 @@ export default function EmploymentDetails(props) {
                     paper: classes.paper,
                 }}
                 open={openMessage}
-                onClose={props.handleCloseMessage ? props.handleCloseMessage : closeMessage}
+                onClose={props.handleCloseEmploymentDetails ? props.handleCloseEmploymentDetails : closeMessage}
                 anchorEl={props.anchorEl ? props.anchorEl : anchorEl }
                 anchorReference= {"anchorOrigin"}
                 anchorReference= { "anchorOrigin"}
@@ -87,7 +88,7 @@ export default function EmploymentDetails(props) {
             >
             
                 <Typography style={{fontSize:20, fontWeight:'bolder', paddingBottom:'2%'}}>
-                    Latest Employment Details For User {jobDetails.user_id}
+                    Latest Employment Details For {username}
                 </Typography>
                 <Typography style={{fontSize:15, fontWeight:400, paddingBottom:'0%'}} >
                     {jobDetails ? jobDetails.job_title :""} 

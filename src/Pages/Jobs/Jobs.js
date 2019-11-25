@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab, Hidden, Slide, AppBar, Toolbar } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
 import Pagination from './Pagination';
 import LinearLoading from  '../../Components/LoadingBars/LinearLoading';
@@ -30,7 +30,9 @@ import './index.css';
 import JobFilterSideBar from './JobFilterSideBar';
 import JobsCarouselSkeletonLoading from '../../Components/SkeletonLoading/JobsCarouselSkeletonLoading';
 import JobListingsSkeletonLoading from '../../Components/SkeletonLoading/JobListingsSkeletonLoading';
-
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
+import SortIcon from '@material-ui/icons/Sort';
 
 const employmentTypes = [
     {
@@ -56,24 +58,7 @@ const employmentTypes = [
     {
       value: 'Temporary',
       label: 'Temporary'
-    }
-    
-  ]
-
-  const carouselImgs = [
-      {
-        name: "Career Guidance",
-        imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/Bear_Website.jpg",
-        link: "https://www.wsg.gov.sg/adapt-and-grow/jobseekers.html?_ga=2.95037916.1789263985.1570243866-1439352794.1565188425"
-      },
-      {
-        name: "Career Matching",
-        imgUrl: "https://www.wsg.gov.sg/content/dam/ssg-wsg/ssgwsg/carousel/CareersConnectBannerBLUE2.png",
-        link: "https://www.wsg.gov.sg/career-services.html?_ga=2.95037916.1789263985.1570243866-1439352794.1565188425"
-      }
-  ]
-
-  
+    }]
 
   const useStyles = makeStyles(theme => ({
     root: {
@@ -92,11 +77,15 @@ const employmentTypes = [
         height: 28,
         margin: 4,
     },
+    dialogTitle: {
+        marginTop: '5%',
+        marginLeft: '8%',
+        fontWeight: 600,
+    },
     textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 500,
-      minWidth:40,
+        marginLeft:'10%',
+        marginRight:'10%',
+        width:'100%'
     },
     dense: {
       marginTop: theme.spacing(2),
@@ -196,6 +185,10 @@ const employmentTypes = [
     segmentArea : {
         marginBottom:'-5%'
     },
+    margin : {
+        textAlign:'center',
+        marginTop: '37%',
+    }
   }));
 
     const Wrapper = styled.div`
@@ -374,8 +367,20 @@ function compareValues(key, order='asc') {
 const jobUrlDefault ='https://www.mycareersfuture.sg/job/'
 const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";
 
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
+
 function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT"); 
+    // let location = useLocation();
+    //     console.log("PRINTING FROM USELOCATION METHOD")
+    //     console.log(location)
+
+    console.log(props)
     var urlParams=''
     if(props.match !== undefined){
         console.log(props.match.params.queryString);
@@ -390,6 +395,7 @@ function Jobs (props) {
     const classes=useStyles();
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);   // for snackbar
+    const [openFilter, setOpenFilter] = useState(false); 
     const [searchResults,setSearchResults] = useState([]);
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [state, setState] = useState({
@@ -419,7 +425,15 @@ function Jobs (props) {
     const [skillsJobs, setSkillsJobs] = useState([]);
     const [jobTitles, setJobTitles] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [sideBarQuery, setSideBarQuery ] = useState("");
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const handlePopoverOpen = event => {
         setAnchorEl(event.currentTarget);
@@ -442,8 +456,16 @@ function Jobs (props) {
                     console.log(results);
                     setSkillsJobs(results.recommended_jobs_skills);
                     setSearchHistoryJobs(results.recommended_jobs_search);
+                } else {
+
                 }
-            }).catch(err=>console.log(err));
+            }).catch( err  => {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            });
         }
         console.log('*** Getting Public Daily Digest NOW')
         api.dailyDigest.getPublic()
@@ -453,22 +475,40 @@ function Jobs (props) {
             console.log('>> Displaying Popular Jobs From DAILY DIGEST getPublic() Method')
             setPopularJobs(results.recommended_jobs);
             setLoadingHome(false);
-        }).catch(err=>console.log(err));
+        }).catch(err => {
+            if(err.response) {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+              }
+        });
 
-        if(urlParams === ''){
+        console.log("Printing URL PARAMS")
+        console.log(urlParams);
+        console.log("Printing Pathname from javascript")
+        console.log( window.location.pathname);
+
+        if(window.location.pathname !== "/jobs") {
+            if(searchResults.length !== 0) {
+
+            } else if (urlParams !== undefined && urlParams !== '') {
+
+                const params = urlParams.split('&')
+                const keywordString = params[0].split('=')
+                const keywordUrl = keywordString[1];
+                console.log('keyword = ' + keywordUrl)
+                setKeyword(keywordUrl); 
+                // setState({ ...state, keyword: 'Facebook'});
+                setBypass(true)
+                setState({ ...state, queryString: urlParams});
+                getSearchResults(urlParams);
+            }
+            
+        }  else { //(window.location.pathname === "/jobs")
             setBypass(false)
-            setSearchResults(props.searchResults)
-        } else {
-            const params = urlParams.split('&')
-            const keywordString = params[0].split('=')
-            const keywordUrl = keywordString[1];
-            console.log('keyword = ' + keywordUrl)
-            setKeyword(keywordUrl); 
-            // setState({ ...state, keyword: 'Facebook'});
-            setBypass(true)
-            setState({ ...state, queryString: urlParams});
-            getSearchResults(urlParams);
-        
+            setSearchResults([])
         }
     },[props])
 
@@ -479,7 +519,7 @@ function Jobs (props) {
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
         const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
-    })
+    },[])
 
 
     function getSearchResults(queryString){
@@ -497,7 +537,8 @@ function Jobs (props) {
                 if(result!== undefined && result.length===0){ //empty  results 
                     console.log('Entered Zero Length Method');
                     setSearchResults(result);
-                    openSnackbar();
+                    enqueueSnackbar("No Listings Available!",  { variant: "", action } );
+                    // openSnackbar();
                 } else if (result !==undefined && result.length!==0){ //Good to go 
                     // const sortedResults = result.sort(compareValues('skills_match', 'desc')) //DEFAULT SORTING
                     // setSearchResults(sortedResults);
@@ -511,7 +552,11 @@ function Jobs (props) {
                 
             })
             .catch(err=>{
-                console.error(err);  
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
                 setLoadingResults(false);
             })
         } else {
@@ -525,15 +570,19 @@ function Jobs (props) {
                 if(result!== undefined && result.length===0){ //empty  results 
                     console.log('Entered Zero Length Method');
                     setSearchResults(result);
-                    openSnackbar();
+                    enqueueSnackbar("No Listings Available!",  { variant: "", action } );
+                    // openSnackbar();
                 } else if (result !==undefined && result.length!==0){ //Good to go 
                     const sortedResults = result.sort(compareValues('minimum', 'desc')) //DEFAULT SORTING
                     setSearchResults(sortedResults);
                 }
                 setLoadingResults(false);
-            })
-            .catch(err=>{
-                console.error(err);  
+            }).catch(err=>{
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
                 setLoadingResults(false);
             })
         }
@@ -565,7 +614,6 @@ function Jobs (props) {
         tempString += state.keyword !== "" ? ('keyword=' + state.keyword) :'';
         tempString += state.employmentType !== ""  ? ('&employment_type=' + state.employmentType ) :'';
         tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
-        tempString += state.categories !== "" ? ('&categories=' + state.categories) :'';
         tempString += (`&limit=${searchLimit}`)
 
         console.log("Query String = " + tempString);
@@ -575,47 +623,13 @@ function Jobs (props) {
         getSearchResults(tempString)
         
         //const query=url+tempString
-        //console.log(query);
-        
+        // //console.log(query);
+        // handleRedirect();
         
     }
 
     searchResults ? console.log('searchResults.length = ' + searchResults.length) : console.log("No Results")
-
-    const processQueue = () => {
-        if (queueRef.current.length > 0) {
-            setMessageInfo(queueRef.current.shift());
-           setOpen(true);
-        }
-    };
-
-    const openSnackbar = () => {
-        console.log("Entered Open SnackBar")
-
-        const message = "No Listings Available!"
-        queueRef.current.push({
-            message,
-            key: new Date().getTime(),  
-        }); 
-        if (open) {
-            // immediately begin dismissing current message
-            // to start showing new one
-            setOpen(false);
-        } else {
-            processQueue();
-        }
-    };
-
-    const closeSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
-
-    const handleExited = () => {
-        processQueue();
-    };
+   
 
     //get current page lisitngs
     const indexOfLastPost = currentPage * postsPerPage;
@@ -682,6 +696,15 @@ function Jobs (props) {
         setSearchResults(popularJobs);
     }
 
+    const handleOpenFullScreenFilter = () => {
+        setOpenFilter(true);
+    }
+    
+      const handleCloseFullScreenFilter = () => {
+        setOpenFilter(false);
+      };
+    
+
     const handleSidebarSubmit = (queryString) => {
         
         console.log("*** ENTERED HANDLE SIDEBAR SUBMIT IN JOBS COMPONENT")
@@ -703,6 +726,10 @@ function Jobs (props) {
         console.log("<<< newQuery = " + newQuery)
         getSearchResults(newQuery)
         setState({ ...state, queryString: newQuery });
+    }
+
+    const handleRedirect =() =>{
+        props.history.push({pathname : `/jobs/listings/${state.queryString}`})
     }
 
     //console.log('Keyword Before Render = ');
@@ -759,12 +786,16 @@ function Jobs (props) {
                     fullWidth
                     maxWidth="sm"
                 >
-                    <DialogTitle>{"Refine Your Search!"}</DialogTitle>
+                    {/* <DialogTitle  disableTypography  > */}
+                        <Typography variant={"h5"} className={classes.dialogTitle}>
+                            Refine Your Search
+                        </Typography>
+                    {/* </DialogTitle> */}
                     <DialogContent >
                         <form className={classes.container} noValidate autoComplete="off">
                             <TextField
                                 id="standard-number"
-                                style={{width: 'fit-content'}}
+                                
                                 label="Enter Min Salary"
                                 value={state.minSalary}
                                 onChange={handleChange('minSalary')}
@@ -804,7 +835,21 @@ function Jobs (props) {
                 </form>   
                 </Grid>
             </Grid>
-           
+            <Hidden smUp>
+                <Grid item xs={12} >
+                    <Fab
+                    variant="extended"
+                    size="small"
+                    color="white"
+                    aria-label="add"
+                    className={classes.margin}
+                    onClick={()=> handleOpenFullScreenFilter()}
+                    >
+                        <SortIcon className={classes.extendedIcon} />
+                        More Filters
+                    </Fab>
+                </Grid>
+            </Hidden>
         </Grid>
         
         
@@ -813,12 +858,39 @@ function Jobs (props) {
         ? 
         <div>
             <Grid container>
-                <Grid item xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
-                    <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
-                </Grid>
-                <Grid item xs={9}>
+                <Hidden xsDown>
+                    <Grid item xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
+                        <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Router>
+                            <Redirect push to={`/jobs/listings/${state.queryString}`}/>
+                            
+                            <Route 
+                            path="/jobs/listings" 
+                            render={()=> (
+                                <div>
+                                    {  loadingResults 
+                                        ? 
+                                        <JobListingsSkeletonLoading/>
+                                        : 
+                                        <div>
+                                            <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit}/>
+
+                                            <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
+                                        </div>
+                                    }
+                                </div> 
+                            )}
+                            /> 
+                            
+                        </Router>
+                    </Grid>
+                </Hidden>
+                <Hidden smUp> {/* Show in xs and Hide from Sm onwards */}
+                <Grid item xs={12}>
                     <Router>
-                        <Redirect to={`/jobs/listings/${state.queryString}`}/>
+                        <Redirect push to={`/jobs/listings/${state.queryString}`}/>
                         
                         <Route 
                         path="/jobs/listings" 
@@ -834,12 +906,25 @@ function Jobs (props) {
                                         <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                                     </div>
                                 }
+                                
                             </div> 
                         )}
                         /> 
-                        
                     </Router>
+                    <Dialog fullScreen open={openFilter} onClose={handleCloseFullScreenFilter} TransitionComponent={Transition}>
+                        <AppBar className={classes.appBar}>
+                            <Toolbar>
+                                <IconButton edge="start" color="inherit" onClick={()=> handleCloseFullScreenFilter()} aria-label="close">
+                                    <CloseIcon />
+                                </IconButton>
+                            </Toolbar>
+                        </AppBar>
+                        <div style={{height:'fit-content', position:'fixed', top:'10%', overflowY:'auto', maxHeight:'90%'}}>
+                            <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
+                        </div>
+                    </Dialog>
                 </Grid>
+                </Hidden>
             </Grid>
             
         </div>
@@ -1277,7 +1362,52 @@ function Jobs (props) {
         </Grid>
         :''
         }
-        <Snackbar
+        </div>
+    </div>
+    
+  )
+}
+
+export default Jobs;
+
+
+ /*
+    const processQueue = () => {
+        if (queueRef.current.length > 0) {
+            setMessageInfo(queueRef.current.shift());
+           setOpen(true);
+        }
+    };
+
+    const openSnackbar = () => {
+        console.log("Entered Open SnackBar")
+
+        const message = "No Listings Available!"
+        queueRef.current.push({
+            message,
+            key: new Date().getTime(),  
+        }); 
+        if (open) {
+            // immediately begin dismissing current message
+            // to start showing new one
+            setOpen(false);
+        } else {
+            processQueue();
+        }
+    };
+
+    const closeSnackbarOld = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const handleExited = () => {
+        processQueue();
+    }; */
+
+    {/* <Snackbar
             key={messageInfo ? messageInfo.key : undefined}
             anchorOrigin={{
             vertical: 'bottom',
@@ -1286,7 +1416,7 @@ function Jobs (props) {
             style={{boxShadow: "none"}}
             open={open}
             autoHideDuration={5000}
-            onClose={closeSnackbar}
+            onClose={closeSnackbarOld}
             onExited={handleExited}
             ContentProps={{
             'aria-describedby': 'message-id',
@@ -1298,18 +1428,9 @@ function Jobs (props) {
                 aria-label="close"
                 color="inherit"
                 className={classes.close}
-                onClick={closeSnackbar}
+                onClick={closeSnackbarOld}
             >
                 <CloseIcon />
             </IconButton>
             ]}
-        /> 
-    
-        </div>
-        }
-    </div>
-    
-  )
-}
-
-export default Jobs;
+        />  */}

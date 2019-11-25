@@ -18,6 +18,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import EmploymentDetails from '../EmploymentDetails'
 import FaceIcon from '@material-ui/icons/Face';
 import viewProfileBG from '../../images/viewProfileBG.jpg'
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -57,9 +58,10 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: 'cover'
     },
     carouselAvatarImg : {
-        objectFit:'contain',
-        width: "inherit",
+        width: 'inherit',
         border: 0,
+        height: 'fit-content',
+        objectFit : 'contain' ,
         '&:hover': {
             opacity: 0.55,
         }
@@ -159,8 +161,10 @@ export default function MeetupInvitation(props) {
     }
 
     const formatDate = (dateString) => {
+        console.log("Entered FormatDate in MeetupInvitation")
         const date = new Date(dateString)
-        var day = date.getMonth();
+        var day = date.getDate();
+        console.log(day)
         var year = date.getFullYear();
         var month = date.toLocaleString('en-GB', { month: 'short' });
 
@@ -181,30 +185,19 @@ export default function MeetupInvitation(props) {
                     </IconButton>
                 </Tooltip>
                 </div>
-                
-                <Link 
-                to={{
-                    pathname: "/profile",
-                    state: { user: 
-                        invitation.from_user && invitation.from_user.profile
-                        ? invitation.from_user.profile.user_id 
-                        : null
-                    }
-                    }} 
-                style={{textDecoration:'none'}}
-                >
-                        <div>
-                        <Avatar
-                        src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
-                        defaultImg
-                        } 
-                        className={classes.carouselAvatar} 
-                        // imgProps={{style:{objectFit:'contain',border:0}}}
-                        imgProps={{className: classes.carouselAvatarImg }}
-                        // onClick={()=> handleHrefClick(listing)}
-                        />
-                        </div>
-                </Link>
+            
+                <div>
+                    <Avatar
+                    src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
+                    defaultImg
+                    } 
+                    className={classes.carouselAvatar} 
+                    // imgProps={{style:{objectFit:'contain',border:0}}}
+                    imgProps={{className: classes.carouselAvatarImg }}
+                    onClick={()=> props.redirectProfile(invitation.from_user && invitation.from_user.profile
+                        ? invitation.from_user.profile.user_id : null)}
+                    />
+                </div>
                 <Grid container  justify='space-between' style={{height:'15vh'}}>
                     <Grid item xs={12}>
                     <Typography gutterBottom className={classes.carouselUsername} style={{}}>
@@ -218,7 +211,10 @@ export default function MeetupInvitation(props) {
                         ? 
                         <div>
                             {invitation.from_user.work_experience.job_title} 
-                            <EmploymentDetails jobDetails={invitation.from_user.work_experience}/>
+                            <EmploymentDetails jobDetails={invitation.from_user.work_experience} username={invitation.from_user && invitation.from_user.profile
+                            ? invitation.from_user.profile.username 
+                            : 'User'
+                            }/>
                         </div>
                         : "Unknown Occupation"
                         }
@@ -278,7 +274,7 @@ export default function MeetupInvitation(props) {
                 ? 
                 <Tooltip title="You Can Change it Later!" placement="right-start">
                     <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                        Suggested Date: <u>{formatDate(invitation.suggested_datetime)}</u>
+                        Suggested Date: <u><b>{formatDate(invitation.suggested_datetime)}</b></u>
                     </Typography>
                 </Tooltip>
                 :

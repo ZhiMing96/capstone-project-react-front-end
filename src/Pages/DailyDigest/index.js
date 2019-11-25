@@ -1,5 +1,5 @@
-import React, { useState, useEffect} from 'react'
-import { CssBaseline, Box, Grid, Card, CardMedia, CardContent, Button, Paper, Avatar, Typography, createMuiTheme, Slide, Divider} from '@material-ui/core'
+import React, { useState, useEffect, Fragment } from 'react'
+import { CssBaseline, Box, Grid, Card, CardMedia, CardContent, Button, Paper, Avatar, Typography, createMuiTheme, IconButton, Divider} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import styled from 'styled-components';
@@ -11,6 +11,10 @@ import axios from 'axios';
 import { connect } from "react-redux";
 import {doLogin} from  '../../redux/actions/auth'
 import CircularLoading from '../../Components/LoadingBars/CircularLoading';
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
+
+
 const defaultJobIcon ='https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png'
 
 const Wrapper = styled.div`
@@ -238,6 +242,15 @@ function DailyDigest(props) {
     const [loading, setLoading] = useState(false);
     const [name, setName]  = useState('');
     const [popularJobs, setPopularJobs] = useState();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
     
 
     useEffect(()=>{
@@ -270,9 +283,18 @@ function DailyDigest(props) {
                     
                   } else {
                     props.history.push("/",{tokenInvalid:true})
+                    enqueueSnackbar("Invalid Token",  { variant: "error", action } );
                   }
                 } 
-              ).catch(err=> console.error(err))
+              ).catch(err => {
+                if(err.response) {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
+              })
         }
         
     },[])
@@ -302,10 +324,15 @@ function DailyDigest(props) {
                         // setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
+                        enqueueSnackbar("Unable To Retrieve Daily Digest!",  { variant: "error", action } );
                         props.history.push("/",{tokenInvalid:true})
                     }
                 }).catch(err=> {
-                    console.error("CAUGHT ERROR");
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
                     props.history.push("/",{tokenInvalid:true})
                 });
 
@@ -324,9 +351,17 @@ function DailyDigest(props) {
                         //  setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
+                        enqueueSnackbar("Unable To Retrieve Daily Digest!",  { variant: "error", action } );
                         props.history.push("/",{tokenInvalid:true})
                     }
-                }).catch(err=> {console.error(err)});
+                }).catch(err=> {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                    props.history.push("/",{tokenInvalid:true})
+                });
             }
         } else {
             api.dailyDigest.getFromUrl(urlToken)
@@ -341,6 +376,7 @@ function DailyDigest(props) {
                     setRecommendedEvents(results.events);
                     setLoading(false);
                 } else {
+                    enqueueSnackbar("Unable To Retrieve Daily Digest!",  { variant: "error", action } );
                     props.history.push("/",{tokenInvalid:true})
                 }
                 window.localStorage.setItem('authToken', urlToken);
@@ -348,29 +384,27 @@ function DailyDigest(props) {
                 .then(response => {
                     let userId = response.data.profile.user_id
                     props.doLogin(userId) //link to store action to hydrate store, connect
+                }).catch(err => {
+                    if(err.response) {
+                        const status = err.response.status
+                        const statusText = err.response.statusText
+                        console.log(status);
+                        console.log(statusText);
+                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                      }
                 })
-                
-            }).catch(err=> {console.error(err)});
+            }).catch(err=> {
+                if(err.response) {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
+                props.history.push("/",{tokenInvalid:true})
+            });
         }
     }, [] )
-
-    const getDate =(dateString) => {
-        var date = new Date(dateString);
-        var time = date.getHours();
-        if (time <= 12) {
-          time = `${time}am`
-          //console.log(time);
-        } else {
-          time = `${time - 12}pm`
-          //console.log(time);
-        }
-    
-        var month = date.toLocaleString('en-GB', { month: 'short' });
-        var day = date.getMonth();
-        var year = date.getFullYear();
-        return(`${day} ${month} ${year}: ${time}`);
-      }
-    
 
     const handleHrefClick = list => {
         console.log('***** HREF CLICK *****')
@@ -399,13 +433,32 @@ function DailyDigest(props) {
         
     }
 
+    const getDate =(dateString) => {
+        var date = new Date(dateString);
+        var time = date.getHours();
+        if (time <= 12) {
+          time = `${time}am`
+          //console.log(time);
+        } else {
+          time = `${time - 12}pm`
+          //console.log(time);
+        }
     
-    console.log('Recommended Articles:')
-    console.log(recommendedArticles);
-    console.log('Recommended Jobs:')
-    console.log(searchHistoryJobs)
-    console.log(skillsJobs)
-    console.log('Recommended Events:')
+        var month = date.toLocaleString('en-GB', { month: 'short' });
+        var day = date.getMonth();
+        var year = date.getFullYear();
+        return(`${day} ${month} ${year}: ${time}`);
+    }
+    
+
+
+    
+    // console.log('Recommended Articles:')
+    // console.log(recommendedArticles);
+    // console.log('Recommended Jobs:')
+    // console.log(searchHistoryJobs)
+    // console.log(skillsJobs)
+    // console.log('Recommended Events:')
     // console.log(recommendedEvents)
     // console.log('NAME = ' + name)
 
@@ -747,7 +800,7 @@ function DailyDigest(props) {
                     </Button>
                 </div>
             </div>
-            {/* <div className={classes.sectionArea}>
+            <div className={classes.sectionArea}>
             { recommendedEvents
             ?
                 <div>
@@ -816,7 +869,6 @@ function DailyDigest(props) {
             </div>
             
         </div>
-         */}
         </div>
         }
         </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -20,7 +20,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu'
 import Logout from './Logout';
-import { Hidden, Box, Snackbar } from '@material-ui/core';
+import { Hidden, Box, Snackbar, Popover } from '@material-ui/core';
 import LoginIcon from '@material-ui/icons/Input';
 import MobileSideBar from '../Components/MobileSideBar/MobileSideBar';
 import Backdrop from '../Components/MobileSideBar/Backdrop';
@@ -40,13 +40,22 @@ import Popper from '@material-ui/core/Popper';
 import Badge from '@material-ui/core/Badge';
 import CloseIcon from '@material-ui/icons/Close';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import ClearIcon from '@material-ui/icons/Clear'
+import { withSnackbar } from 'notistack';
 
-const styles = theme => ({
-  root: {
-    //position:'relative',
-    //zIndex: 1400
+const useStyles = theme => ({
+  notificationIcon: {
+    '&:hover': {
+      color: ''
+    },
   },
-})
+  notificationPopover: {
+    width:'500px',
+    [theme.breakpoints.down('sm')]: {
+      width:'350px'
+    },
+  },
+});
 
 class NavTabs extends React.Component {
 
@@ -64,14 +73,16 @@ class NavTabs extends React.Component {
         events: 'light',
         articles: 'light',
       },
-      alerts : null,
-      openSnackBar: false,
+      alerts : [],
+      open: false,
       messageInfo: "You have a new Notification!",
       notificationLoading: true, 
       fillAlertIcon:false,
     };
     console.log(this.props)
     console.log(this.props.location.pathname)
+    this.notificationIcon = React.createRef();
+    this.handleSnackbarClick = this.handleSnackbarClick.bind(this);
   }
 
   componentDidMount(){
@@ -82,55 +93,186 @@ class NavTabs extends React.Component {
           let userId = response.data.profile.user_id
           this.props.doLogin(userId) //HYDRATE
         }
+      }).catch(err => {
+        if(err.response) {
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          const action = key => (
+            <Fragment>
+                <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                    <ClearIcon/>
+                </IconButton>
+            </Fragment>
+          );
+          this.props.enqueueSnackbar(`Error ${status}: ${statusText}`, {
+            variant: 'error',
+            autoHideDuration: 5000,
+            action,
+          });
+        }
       })
     }
-    this.retrieveAlerts()
-    setInterval(this.retrieveAlerts, 20000);
+    
+      setTimeout(this.retrieveAlerts,1000);
+      setInterval(this.retrieveAlerts, 20000);
+    
   }
 
+  
+  updateAlerts = () =>{
+    // this.setState({notificationLoading: true})
+    console.log("Entered UPDATE ALERTS")
+
+    if(window.localStorage.getItem('authToken') !== null){
+      api.alerts.retrieve({"alert_type": ""})
+      .then(res => {
+          console.log(res.data)
+          if (res.data.response_code === 200){
+              console.log(res.data.alerts)
+              if(res.data.alerts.length !== 0 || !res.data.alerts){
+                  this.setState({alerts: res.data.alerts })
+            } else {
+              this.setState({alerts: null })
+            }
+          } else {
+            const action = key => (
+              <Fragment>
+                  <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                      <ClearIcon/>
+                  </IconButton>
+              </Fragment>
+            );
+            this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
+              variant: 'error',
+              autoHideDuration: 5000,
+              action,
+            });
+          }
+      }).catch(err => {
+        if(err.response) {
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          const action = key => (
+            <Fragment>
+                <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                    <ClearIcon/>
+                </IconButton>
+            </Fragment>
+          );
+          this.props.enqueueSnackbar(`Error ${status}: ${statusText}`, {
+            variant: 'error',
+            autoHideDuration: 5000,
+            action,
+          });
+        }
+      })
+    }
+
+  }
 
   retrieveAlerts = () =>{
     // this.setState({notificationLoading: true})
     console.log("Entered RETRIEVE ALERTS")
-    api.alerts.retrieve({"alert_type": ""})
-    .then(res => {
-        console.log(res.data)
-        if (res.data.response_code === 200){
-            console.log(res.data.alerts)
-            if(res.data.alerts.length !== 0 || !res.data.alerts){
-
-              if(!this.state.alerts) {
-                this.setState({alerts: res.data.alerts })
-
-              } else {
-                const currentLength = this.state.alerts ? this.state.alerts.length : 0
-                const incomingLength = res.data.alerts.length
-      
-                  
-                console.log('currentLength = ' + currentLength)
-                console.log('incomingLength = ' + incomingLength)
-                console.log(this.state.alerts[currentLength-1].alert_id)
-                console.log(res.data.alerts[incomingLength-1].alert_id)
-
-                if (this.state.alerts[currentLength-1].alert_id !== res.data.alerts[incomingLength-1].alert_id || currentLength !== incomingLength){
-                  if(window.localStorage.getItem('viewAlert') === null){
-                    console.log("ENTEREDDDDDDD")
-                    window.localStorage.removeItem('viewAlert');
-                  } 
-
-                  window.localStorage.setItem('viewAlert', true);
-
+    if(window.localStorage.getItem('authToken') !== null){
+      api.alerts.retrieve({"alert_type": ""})
+      .then(res => {
+          console.log(res.data)
+          if (res.data.response_code === 200){
+              console.log(res.data.alerts)
+              if(res.data.alerts.length !== 0 || !res.data.alerts){
+                if(this.state.alerts.length === 0) {
+                  const action = key => (
+                    <Fragment>
+                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'#57DFFF',  fontWeight:'bold', fontSize:12, }}>
+                            View All
+                        </Button>
+                        <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white'}}>
+                            <ClearIcon/>
+                        </IconButton>
+                    </Fragment>
+                  );
+  
+                  this.props.enqueueSnackbar("New Notification!", {
+                    variant: '',
+                    autoHideDuration: 5000,
+                    action,
+                  });
                   this.setState({alerts: res.data.alerts })
-                  this.setState({notificationLoading: false})
-                  
-                }
+                } else {
+                  const currentLength = this.state.alerts ? this.state.alerts.length : 0
+                  const incomingLength = res.data.alerts.length
+                  console.log('currentLength = ' + currentLength)
+                  console.log('incomingLength = ' + incomingLength)
+                  console.log(this.state.alerts[currentLength-1].alert_id)
+                  console.log(res.data.alerts[incomingLength-1].alert_id)
+                  if (this.state.alerts[0].alert_id !== res.data.alerts[0].alert_id || currentLength !== incomingLength){ //NEW ALERTS ARRAY DETECTED
+                    console.log("NEW ALERTS DETECTED")
+  
+                    const action = key => (
+                      <Fragment>
+                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'#57DFFF',  fontWeight:'bold', fontSize:12, }}>
+                            View All
+                        </Button>
+                        <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                            <ClearIcon/>
+                        </IconButton>
+                      </Fragment>
+                    );
+  
+                    this.props.enqueueSnackbar("New Notification!", {
+                      variant: '',
+                      autoHideDuration: 5000,
+                      action,
+                    });
+  
+                    this.setState({alerts: res.data.alerts })
+                    this.setState({notificationLoading: false})
+                  }
+              }
+            } else {
+              this.setState({alerts: [] })
             }
           } else {
-            this.setState({alerts: null })
+            const action = key => (
+              <Fragment>
+                  <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
+                      <ClearIcon/>
+                  </IconButton>
+              </Fragment>
+            );
+            this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
+              variant: 'error',
+              autoHideDuration: 5000,
+              action,
+            });
           }
+          
+      }).catch(err => {
+        console.log(err)
+        if(err.response) {
+          const action = key => (
+            <Fragment>
+                <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                    <ClearIcon/>
+                </IconButton>
+            </Fragment>
+          );
+          this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
+            variant: 'error',
+            autoHideDuration: 5000,
+            action,
+          });
         }
-        
-    }).catch(err => console.log(err))
+      })
+    }
+
+    
+  
+  
   }
 
   componentShouldUpdate(nextProps, nextState){
@@ -176,11 +318,20 @@ class NavTabs extends React.Component {
   handleClick = event => {
     console.log("***** ENTERED HANDLE CLICK ****")
     window.localStorage.setItem('viewAlert', false);
+    console.log(event)
     console.log(event.currentTarget)
 
-    this.setState({anchorEl : this.state.anchorEl ? null : event.currentTarget });
+    this.setState({ anchorEl :  event.currentTarget });
+    this.setState({ open : !this.state.open });
   
   };
+
+  handleSnackbarClick = () => {
+    console.log(this.notificationIcon.current)
+    
+    this.setState({ anchorEl : this.notificationIcon.current })
+    this.setState({ open : true });
+  }
 
   setAlertIcon = () => {
     this.setState({ fillAlertIcon : true })
@@ -189,23 +340,32 @@ class NavTabs extends React.Component {
     this.setState({ fillAlertIcon : false })
   }
 
-
+  handleClose = () => {
+    console.log("====== ENTERED handleClose")
+    // this.setState({ anchorEl: null })
+    this.setState({ open : false })
+  };
 
 
 
   render() {
+    const { classes } = this.props;
+
+    console.log(this.state.anchorEl)
     const token = window.localStorage.getItem('authToken');
     console.log(token)
     var showBadge = window.localStorage.getItem('viewAlert') !== null ? window.localStorage.getItem('viewAlert') : true
 
-
+    
+    console.log("PRINTING FROM NAV BAR PROPS")
+    console.log(this.props)
 
     console.log("showBadge = " + showBadge)
 
     var isHomePage=false
-    const open = Boolean(this.state.anchorEl);
-    console.log(open)
-    const id = open ? 'transitions-popper' : undefined;
+    // const open = Boolean(this.state.anchorEl);
+    // console.log(open)
+    // const id = open ? 'transitions-popper' : undefined;
 
 
     if(this.props.location.pathname === '/'){
@@ -242,12 +402,16 @@ class NavTabs extends React.Component {
       break;
       
     }
+    const id = this.state.open ? 'simple-popover' : undefined;
 
-    console.log("STATE OF SNACKBAR = ") 
-    console.log(this.state.openSnackBar)
+    console.log("this.state.open = " + this.state.open )
+    console.log("this.state.anchorEl  = " )
+    console.log(this.state.anchorEl )
+
+
     return (
       <div>
-        <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler}/>
+        <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler} handleChange={this.handleChange}/>
         {backdrop}
 
         <AppBar position="sticky" color="#FFFFFF" style={{zIndex:50}}>
@@ -311,6 +475,9 @@ class NavTabs extends React.Component {
               </Grid>
               : 
               <Grid item onClick = {()=> this.setState({value: false})} container xs={8} justify="flex-end" > 
+                <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12, height:'fit-content', alignSelf:'center'}}>
+                   <NotificationsNoneIcon onClick={this.handleClick} ref={this.notificationIcon} className={classes.notificationIcon}/>
+                </Badge>
                 <Logout handleLogout={this.handleLogout}/>
               </Grid>
             }
@@ -340,23 +507,9 @@ class NavTabs extends React.Component {
                 }}>
                   <PersonIcon />
                 </IconButton>
-                <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12}}>
-                   <NotificationsNoneIcon onClick={this.handleClick} style={{ }} />
+                <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12, height:'fit-content', alignSelf:'center'}}>
+                   <NotificationsNoneIcon onClick={this.handleClick} ref={this.notificationIcon} className={classes.notificationIcon} />
                 </Badge>
-                <Popper open={open} anchorEl={this.state.anchorEl} style={{zIndex: 100,}} 
-                  className="popper_class"
-                  placement="left-start"
-                  disablePortal={false}
-                  modifiers={{
-                    flip: {
-                      enabled: false,
-                    },
-                    arrow: {
-                      enabled: true,
-                    },
-                }}>
-                  <Notifications alerts={this.state.alerts} retrieveAlerts={this.retrieveAlerts} loading={this.state.notificationLoading}/>
-                </Popper>
                 
                 <Logout handleLogout={this.handleLogout}/>
                 </div>
@@ -364,14 +517,37 @@ class NavTabs extends React.Component {
               </Grid>
             </Grid>
           </Hidden>
-          
+          {this.state.open 
+          ? 
+          // <div style={{ maxWidth:333 }}>
+          <Popover
+          id={id}
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          onClose={() => this.handleClose() }
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          // className = {classes.notificationPopover}
+          // style={{ width:'100%' }}
+          >
+            <Notifications alerts={this.state.alerts} retrieveAlerts={this.updateAlerts} loading={this.state.notificationLoading} handleClosePopover={this.handleClose}/>
+          </Popover>
+          // </div>
+          : ""
+          }
         </Grid>
       </Toolbar>
       </AppBar>
       
       <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/jobs" render={()=> (<Jobs searchResults={[]}/> )}/>
+          <Route exact path="/jobs" component={Jobs} />
           <Route path="/events" component={Events} />
           <Route path="/articles" component={Articles} />
           <Route exact path="/dailydigest" component={DailyDigest} />
@@ -394,6 +570,7 @@ class NavTabs extends React.Component {
           {/* <Route path="/profile" render={props => <Profile {...props} openSideBar={this.props.openSideBar} />} /> */}
           
       </Switch>
+
     </div>
       
     );
@@ -408,20 +585,4 @@ const mapStateToProps = state => {
 };
 
 //export default (NavTabs);
-export default connect(mapStateToProps, { doLogin })(withStyles(styles, { withTheme: true}) (NavTabs));
-
-
-
-/*
-handleClose = (event, reason) => {
-  console.log("***** ENTERED handleClose ****")
-  if (reason === 'clickaway') {
-      return;
-  }
-  this.setState({openSnackBar : false})
-};
-
-  handleExited = () => {
-    this.setState({openSnackBar : false})
-  }
-*/
+export default connect(mapStateToProps, { doLogin })(withSnackbar(withStyles(useStyles, { withTheme: true}) (NavTabs)));
