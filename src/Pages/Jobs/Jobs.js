@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab, Hidden } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
 import Pagination from './Pagination';
 import LinearLoading from  '../../Components/LoadingBars/LinearLoading';
@@ -822,10 +822,37 @@ function Jobs (props) {
         ? 
         <div>
             <Grid container>
-                <Grid item xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
-                    <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
-                </Grid>
-                <Grid item xs={9}>
+                <Hidden xsDown>
+                    <Grid item xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
+                        <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Router>
+                            <Redirect push to={`/jobs/listings/${state.queryString}`}/>
+                            
+                            <Route 
+                            path="/jobs/listings" 
+                            render={()=> (
+                                <div>
+                                    {  loadingResults 
+                                        ? 
+                                        <JobListingsSkeletonLoading/>
+                                        : 
+                                        <div>
+                                            <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit}/>
+
+                                            <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
+                                        </div>
+                                    }
+                                </div> 
+                            )}
+                            /> 
+                            
+                        </Router>
+                    </Grid>
+                </Hidden>
+                <Hidden smUp> {/* Show in xs and Hide from Sm onwards */}
+                <Grid item xs={12}>
                     <Router>
                         <Redirect push to={`/jobs/listings/${state.queryString}`}/>
                         
@@ -849,6 +876,7 @@ function Jobs (props) {
                         
                     </Router>
                 </Grid>
+                </Hidden>
             </Grid>
             
         </div>

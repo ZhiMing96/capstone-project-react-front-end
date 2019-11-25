@@ -25,7 +25,7 @@ function App(props) {
 
   return (
     <div className="App"> 
-    <SnackbarProvider maxSnack={2} preventDuplicate
+    <SnackbarProvider maxSnack={1} preventDuplicate
         classes={{
           anchorOriginBottomLeft: classes.root
         }}

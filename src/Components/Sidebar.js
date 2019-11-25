@@ -172,7 +172,7 @@ function Sidebar(props) {
       };
 
     }
-    
+    e.target.value = null
   }
   const handleSubmitNewSidebarImg = () => {
     console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
