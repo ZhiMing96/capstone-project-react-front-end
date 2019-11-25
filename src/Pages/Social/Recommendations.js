@@ -224,11 +224,13 @@ export default function Reco(props) {
 
                 setLoadingCompletedMeetups(false)
             }).catch(err => {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                if(err.response) {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
             })
     }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import './MobileSideBar.css'
 import { Grid, makeStyles, Typography, Avatar, Box, Button, Paper, IconButton } from '@material-ui/core'
-import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import EventsIcon from '@material-ui/icons/InsertInvitation';
@@ -15,6 +15,10 @@ import { connect } from "react-redux";
 import UploadPhoto from '../../images/UploadPhoto.jpg'
 import { useSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
+
+import Jobs from '../../Pages/Jobs/Jobs'
+import Events from '../../Pages/Events'
+import Articles from '../../Pages/Articles'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -104,11 +108,13 @@ function MobileSideBar(props){
         }
       } 
     ).catch(err => {
-        const status = err.response.status
-        const statusText = err.response.statusText
-        console.log(status);
-        console.log(statusText);
-        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+        if(err.response) {
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+        }
     })
   }
 
@@ -175,14 +181,16 @@ function MobileSideBar(props){
           enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
         }
       }).catch(err=> {
-        const status = err.response.status
-        const statusText = err.response.statusText
-        console.log(status);
-        console.log(statusText);
-        if(status  === 413){
-          enqueueSnackbar('File Size Too Large',  { variant: "error", action } );
-        } else {
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+        if(err.response) {
+          const status = err.response.status
+          const statusText = err.response.statusText
+          console.log(status);
+          console.log(statusText);
+          if(status  === 413){
+            enqueueSnackbar('File Size Too Large',  { variant: "error", action } );
+          } else {
+            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+          }
         }
       })
   }
@@ -195,7 +203,7 @@ function MobileSideBar(props){
       <Paper square className={classes.root} elevation={3}>
         <Tabs
           value={value}
-          onChange={handleChange}
+          onChange={props.handleChange}
           variant="fullWidth"
           indicatorColor="primary"
           textColor="primary"
@@ -248,6 +256,7 @@ function MobileSideBar(props){
           ))}
         </Grid>
       </Grid>
+      
     </nav>
   )
 }

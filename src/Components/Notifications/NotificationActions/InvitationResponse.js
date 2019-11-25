@@ -15,13 +15,15 @@ const useStyles = makeStyles(theme => ({
     paper: {
         padding: theme.spacing(1.5),
         // width: '30%',
-        maxWidth: 350,
         overflowWrap: 'break-word',
         width:'100%', 
         minWidth:'180px',
         maxWidth: 350,
         maxHeight: 230,
         overflowY : 'auto',
+        [theme.breakpoints.down('sm')]: {
+            maxWidth: 333,
+        },
     },
     icon : {
         width: 20,
@@ -87,7 +89,16 @@ export default function InvitationResponse(props) {
             
         }).catch(err => {
             console.log(err);
+
+            if(err.response) {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            } else  {
             enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            }
         })
         
     }
@@ -112,7 +123,16 @@ export default function InvitationResponse(props) {
             
         }).catch(err => {
             console.log(err);
-            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            if(err.response) {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            } else {
+                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+            }
+            
         })
     }
 

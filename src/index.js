@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import { createMuiTheme, MuiThemeProvider, IconButton, Button } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
-import ClearIcon from '@material-ui/icons/Clear';
+import { makeStyles } from '@material-ui/core/styles';
 
 window.store = store;
 
@@ -30,9 +30,9 @@ ReactDOM.render(
     
     <Provider store={store}>
         <MuiThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={2}>
+            
                 <App />
-            </SnackbarProvider>
+            {/* </SnackbarProvider> */}
         </MuiThemeProvider>
     </Provider>
     , 

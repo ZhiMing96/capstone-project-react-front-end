@@ -17,9 +17,12 @@ const useStyles = makeStyles(theme => ({
         overflowWrap: 'break-word',
         width:'100%', 
         minWidth:'180px',
-        maxWidth: 350,
+        // maxWidth: 350,
         maxHeight: 175,
         overflowY : 'auto',
+        [theme.breakpoints.down('sm')]: {
+            maxWidth: 333,
+        },
     },
     icon : {
         width: 20,

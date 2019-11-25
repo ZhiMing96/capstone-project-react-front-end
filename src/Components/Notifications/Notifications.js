@@ -20,7 +20,11 @@ import { ContactSupport } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        width:400, 
+        // width:'100%', 
+        width:'400px', 
+        [theme.breakpoints.down('sm')]: {
+        width:'350px'
+        },
         height:"fit-content",
         backgroundColor:'white',
         maxHeight: 500, 

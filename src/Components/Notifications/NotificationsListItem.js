@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, ListItem, ListItemAvatar, List, ListItemText, Avatar, Grid, Divider, Button, IconButton, Tooltip } from '@material-ui/core';
 import { Link, Route, BrowserRouter, Switch, Redirect } from 'react-router-dom';
@@ -13,6 +13,7 @@ import InvitationResponse from './NotificationActions/InvitationResponse' ;
 import MeetupCompleteResponse from './NotificationActions/MeetupCompleteResponse' ; 
 import WriteRecommendation from './NotificationActions/WriteRecommendation' ; 
 import ViewDetails from './NotificationActions/ViewDetails';
+import { useSnackbar } from 'notistack';
 
 
 
@@ -99,6 +100,16 @@ export default function NotificationsListItem(props) {
         { title:"New Recommendation", verb:'From'},
     ]
 
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
+
 
 
     const calculateDaysAgo = (dateString) => {
@@ -130,11 +141,19 @@ export default function NotificationsListItem(props) {
             if(res.data.response_code === 200){
                 console.log("** SUCCESSFULLY MARKED AS SEEN **")
                 console.log("Loading Status = " + loadingNotifications)
+                enqueueSnackbar("Marked as Seen",  { variant: "", action } );
                 props.retrieveAlerts();
             }
         
         }).catch (err => {
             console.log(err)
+            if(err.response) {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+              }
         })
     }
 

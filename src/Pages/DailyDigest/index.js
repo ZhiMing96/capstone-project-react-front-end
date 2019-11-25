@@ -287,11 +287,13 @@ function DailyDigest(props) {
                   }
                 } 
               ).catch(err => {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                if(err.response) {
+                    const status = err.response.status
+                    const statusText = err.response.statusText
+                    console.log(status);
+                    console.log(statusText);
+                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
               })
         }
         
@@ -383,18 +385,22 @@ function DailyDigest(props) {
                     let userId = response.data.profile.user_id
                     props.doLogin(userId) //link to store action to hydrate store, connect
                 }).catch(err => {
+                    if(err.response) {
+                        const status = err.response.status
+                        const statusText = err.response.statusText
+                        console.log(status);
+                        console.log(statusText);
+                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                      }
+                })
+            }).catch(err=> {
+                if(err.response) {
                     const status = err.response.status
                     const statusText = err.response.statusText
                     console.log(status);
                     console.log(statusText);
                     enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                })
-            }).catch(err=> {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                  }
                 props.history.push("/",{tokenInvalid:true})
             });
         }
