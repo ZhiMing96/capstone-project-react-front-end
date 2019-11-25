@@ -114,11 +114,13 @@ function Sidebar(props) {
         setProfileImageLink(res.data.social ? res.data.social.profile_image_link : null)
       }
     ).catch(err=>{
+      /*
         const status = err.response.status
         const statusText = err.response.statusText
         console.log(status);
         console.log(statusText);
         enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+        */
     })
   }
 
@@ -192,6 +194,7 @@ function Sidebar(props) {
           enqueueSnackbar('Invalid File Type/File Size Too Large',  { variant: "error", action } );
         }
       }).catch(err=> {
+        /*
         const status = err.response.status
         const statusText = err.response.statusText
         console.log(status);
@@ -200,7 +203,7 @@ function Sidebar(props) {
           enqueueSnackbar('File Size Too Large',  { variant: "error", action } );
         } else {
           enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-        }
+        }*/
       })
   }
 

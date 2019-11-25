@@ -104,7 +104,7 @@ function MobileSideBar(props){
         if(res.data.profile){
           console.log(res.data.profile.first_name)
           const firstName = res.data.profile.first_name
-          // setName(firstName);
+          setName(firstName);
           setProfile(res.data.social);
         }
       } 
@@ -235,7 +235,7 @@ function MobileSideBar(props){
               fontSize={20}
             >
               {/* {name ? name.toUpperCase() : 'USER'} */}
-              {profile && profile.first_name ? profile.first_name.toUpperCase() : 'USER'}
+              {name.toUpperCase()}
               <br/>
               <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
               <TelegramIcon />

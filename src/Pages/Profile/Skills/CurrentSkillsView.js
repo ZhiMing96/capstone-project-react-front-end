@@ -1,5 +1,5 @@
-import React from 'react';
-import { Grid, Typography, Box, Button } from '@material-ui/core'
+import React,{Fragment} from 'react';
+import { Grid, Typography, Box, Button,IconButton } from '@material-ui/core'
 import api from '../../../api.js'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import AddSkills from './AddSkills'
@@ -10,6 +10,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import { withSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const styles = theme => ({
   '@global': {
@@ -27,14 +29,12 @@ const styles = theme => ({
 })
 
 
-
 class CurrentSkillsView extends React.Component {
   constructor(props) {
     super(props);
     this.handleRemove = this.handleRemove.bind(this);
     this.remove = this.remove.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.setSnackbar = this.setSnackbar.bind(this);
     this.state = { 
       openDialog: false,
       message: '',
@@ -59,10 +59,6 @@ class CurrentSkillsView extends React.Component {
     this.setState({openDialog:false})
   };
 
-  setSnackbar (message) {
-    this.props.setSnackbar(message)
-  };
-
   setOpen(skillName){
     const message = 'Confirm removing '+ skillName + ' from skills?'
     this.setState({openDialog:true, message: message})
@@ -80,14 +76,21 @@ class CurrentSkillsView extends React.Component {
 
   async remove(){ 
     this.handleClose()
+    const action = key => (
+      <Fragment>
+          <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+              <ClearIcon/>
+          </IconButton>
+      </Fragment>
+    );
     const skill = this.state.skill
     const skillName = skill.skill
-    await api.skills.remove({ "skill_remove": skillName })
+    api.skills.remove({ "skill_remove": skillName })
       .then((response) => {
         console.log(response.data.response_code)
 
         if (response.data.response_code === 200) {
-          this.props.setSnackbar(skillName + ' removed from your skills.')
+          this.props.enqueueSnackbar(skillName + ' removed from your skills', { variant: "success", action })
           this.props.removeSkill(skill) //redux
           api.skills.get().then(res=>{
             if (res.data.response_code===200){
@@ -111,18 +114,17 @@ class CurrentSkillsView extends React.Component {
           
 
         } else if (response.data.response_code === 400) {
-          this.props.setSnackbar(response.data.response_message )
+          this.props.enqueueSnackbar(response.data.response_message, { variant: "error", action })
 
         } else {
-          this.props.setSnackbar('Error in removing skill.')
+          this.props.enqueueSnackbar('Error in removing skill', { variant: "error", action })
 
         }
 
       })
       .catch(error => {
-        this.setState({ variant: 'error' })
-        this.setState({ message: 'Error in removing skill.' })
-
+        console.log(error)
+        this.props.enqueueSnackbar('System error', { variant: "error", action })
       })
 
   };
@@ -152,7 +154,7 @@ class CurrentSkillsView extends React.Component {
             </Grid>
 
             <Grid item style={{ width: '100%', paddingLeft: '2.5%', paddingRight: '2.5%', marginTop: '24px' }}>
-              <AddSkills setSnackbar ={this.setSnackbar}/>
+              <AddSkills />
             </Grid>
 
           </Grid>
@@ -204,4 +206,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { addSkill, removeSkill, updateSkill, updateSuggestedSkills }
-) (withStyles(styles, { withTheme: true}) (CurrentSkillsView));
+)(withSnackbar (withStyles(styles, { withTheme: true}) (CurrentSkillsView)));

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Box, Checkbox, Select, FormControlLabel, InputLabel, MenuItem, FormControl,Input, ListSubheader } from '@material-ui/core'
+import { Grid, Typography, Box, Checkbox, Select, FormControlLabel, InputLabel, MenuItem, FormControl,Input, ListSubheader, IconButton } from '@material-ui/core'
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -13,6 +13,8 @@ import { updateSocialProfile } from '../../../redux/actions/socialProfile'
 import SnackBar from '../../../Components/Snackbar'
 import api from '../../../api'
 import locationData from '../../../data/locations'
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 import './SocialProfileEdit.css'
 
 const useStyles = makeStyles(theme => ({
@@ -76,6 +78,7 @@ function SocialProfileEdit(props) {
         job_search_stage: '',
         preferred_locations: []
     })
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     //initialise
     useEffect(() => {
@@ -110,7 +113,16 @@ function SocialProfileEdit(props) {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        api.profile.updateSocial(profileState)
+        var message = profileState.description
+        var i = 0
+        while( i < message.length) {
+            if (message.charAt(i) == "'") {
+              message =   message.slice(0, i) + "'" + message.slice(i)
+              i++
+            }
+            i++
+        }
+        api.profile.updateSocial({ ...profileState, description: message })
             .then(res => {
                 if (res.data.response_code === 200) {
                     console.log('success')
@@ -118,17 +130,25 @@ function SocialProfileEdit(props) {
                         preferred_locations: profileState.preferred_locations
                     }).then(res=>{
                         if (res.data.response_code === 200) {
-                            props.setSnackbar('Details saved successfully.')
+                            enqueueSnackbar('Details saved successfully',  { variant: "success", action } );
                             props.updateSocialProfile(profileState) //update store
                             props.changeState()
                         }
                     }).catch(console.log('error'))
                 } else {
                     console.log('error')
-                    props.setSnackbar(res.data.response_message)
+                    enqueueSnackbar(res.data.response_message,  { variant: "error", action } );
                 }
             }).catch(console.log('error'))
     }
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const handleChange = name => (event) => {
 

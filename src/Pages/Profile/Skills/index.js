@@ -24,6 +24,7 @@ function Skills() {
     }
   };
 
+  /* 
   const setSnackbar = (message, undoButton = false) => {
     queueRef.current.push({
       message,
@@ -38,6 +39,7 @@ function Skills() {
       processQueue();
     }
   }
+  */
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -62,7 +64,7 @@ function Skills() {
           </Box>
       </Typography>
 
-      <CurrentSkillsView setSnackbar={setSnackbar}/>
+      <CurrentSkillsView/>
       <Snackbar
         key={messageInfo ? messageInfo.key : undefined}
         anchorOrigin={{
@@ -90,7 +92,7 @@ function Skills() {
           </IconButton>
         }
       />
-      <SuggestedSkillsView setSnackbar={setSnackbar}/>
+      <SuggestedSkillsView/>
     </div>
 
   );

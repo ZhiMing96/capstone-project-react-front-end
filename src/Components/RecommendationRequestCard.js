@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment} from 'react';
 import { Grid, Typography, Box, Card, CardActions, CardContent, CardHeader, Avatar, IconButton, Collapse, Button, Paper,TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
@@ -10,6 +10,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
+
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -54,8 +57,16 @@ export default function RecoRequestCard(props) {
     const [openDialog, setOpenDialog] = useState(false);
     const [openMessage, setOpenMessage] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     console.log(props.request)
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const showMessage = (event) => {
         setAnchorEl(event.currentTarget);
@@ -87,10 +98,12 @@ export default function RecoRequestCard(props) {
             .then(res => {
                 if (res.data.response_code === 200) {
                     setRecoMessage('')
-                    props.setSnackbar('Recommendation sucessfully submitted!')
+                    enqueueSnackbar('Recommendation sucessfully submitted!',  { variant: "success", action } );
+
                 } else {
                     console.log("error submitting reco")
-                    props.setSnackbar('Error submitting recommendation.')
+                    enqueueSnackbar('Error submitting recommendation',  { variant: "error", action } );
+
                 }
             })
             .catch(err=>{

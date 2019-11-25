@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Box } from '@material-ui/core'
+import { Grid, Typography, Box, IconButton } from '@material-ui/core'
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -12,6 +12,8 @@ import { connect } from "react-redux";
 import { updateProfile } from '../../../redux/actions/profile'
 import SnackBar from '../../../Components/Snackbar'
 import api from '../../../api'
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -81,6 +83,14 @@ function UserDetailsView(props) {
   console.log(profileState)
   const [submitState, setSubmit] = React.useState(false)
   const [emailValid, setEmailValid] = React.useState(true)
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const action = key => (
+    <Fragment>
+        <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+            <ClearIcon/>
+        </IconButton>
+    </Fragment>
+);
 
   const handleSubmit = (event) => {
     setSubmit(true) //render email validation error if present
@@ -90,12 +100,12 @@ function UserDetailsView(props) {
         .then(res => {
           if (res.data.response_code === 200) {
             console.log('success')
-            props.setSnackbar('Details saved successfully.')
+            enqueueSnackbar('Details saved successfully.',  { variant: "success", action } );
             props.updateProfile(profileState) //update store
             props.changeState()
           } else { 
             console.log('error')
-            props.setSnackbar(res.data.response_message)
+            enqueueSnackbar(res.data.response_message,  { variant: "error", action } );
           }
         }).catch(console.log('error'))
     }

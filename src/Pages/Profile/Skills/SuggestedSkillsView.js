@@ -1,11 +1,12 @@
-import React from 'react';
-import { Grid, Typography, Box, Button } from '@material-ui/core'
+import React,{Fragment}  from 'react';
+import { Grid, Typography, Box, Button, IconButton } from '@material-ui/core'
 import api from '../../../api.js'
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import CustomisedSuggestedSkillsChip from '../../../Components/CustomisedSuggestedSkillsChip'
 import { connect } from "react-redux";
 import { addSkill, updateSuggestedSkills } from '../../../redux/actions/skill'
-
+import { withSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 
 const styles = theme => ({
@@ -58,11 +59,17 @@ class SuggestedSkillsView extends React.Component {
     const skillName = suggested.skill[0].skill
     const skillId = suggested.skill[0].id
     event.preventDefault()
-
+    const action = key => (
+      <Fragment>
+          <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+              <ClearIcon/>
+          </IconButton>
+      </Fragment>
+    );
 
     if (this.props.currentSkills.some(skill => skill.id === skillId)) {
       console.log(skillName + " is already in current skills");
-      this.props.setSnackbar(skillName + " is already in your current skills.")
+      this.props.enqueueSnackbar(skillName + " is already in your current skills.", { variant: "warning", action })
     } else {
       console.log(skillName + " is now added to skills");
       
@@ -71,7 +78,7 @@ class SuggestedSkillsView extends React.Component {
       }).then(response => {
         if (response.data.response_code ===200){
           this.props.addSkill({id: skillId, skill: skillName}); //store
-          this.props.setSnackbar(skillName + ' added to your skills.')
+          this.props.enqueueSnackbar(skillName + ' added to your skills.', { variant: "success", action })
           api.skills.suggested().then(res=>{
             if (res.data.response_code===200){
               console.log('200')
@@ -84,10 +91,10 @@ class SuggestedSkillsView extends React.Component {
             }
           }).catch()
         }else {
-          this.props.setSnackbar('Error adding skills.')
+          this.props.enqueueSnackbar('Error adding skills.', { variant: "error", action })
         }
       }).catch(error => {
-        this.props.setSnackbar('Error adding skills.')
+        this.props.enqueueSnackbar('Error adding skills.', { variant: "error", action })
       })
     }
   }
@@ -199,4 +206,5 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { addSkill, updateSuggestedSkills }
-)(withStyles(styles, { withTheme: true })(SuggestedSkillsView));
+)(withSnackbar
+(withStyles(styles, { withTheme: true }) (SuggestedSkillsView)));
