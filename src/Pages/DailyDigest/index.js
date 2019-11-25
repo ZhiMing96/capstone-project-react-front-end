@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import { CssBaseline, Box, Grid, Card, CardMedia, CardContent, Button, Paper, Avatar, Typography, createMuiTheme, IconButton, Divider} from '@material-ui/core'
+import { CssBaseline, Box, Grid, Card, CardMedia, CardContent, Button, Paper, Avatar, Typography, createMuiTheme, IconButton, Divider, Hidden} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import styled from 'styled-components';
@@ -129,7 +129,7 @@ const useStyles = makeStyles(theme => ({
         padding:'3%',
         // boxShadow:'0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12)',
         [theme.breakpoints.down('xs')]: {
-            width:'30%', 
+            width:'100%'
         },
         objectFit:'contain'
     },
@@ -181,7 +181,10 @@ const useStyles = makeStyles(theme => ({
         padding:'2%',
         '&:hover': {
             boxShadow:'0px 1px 8px 0px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 3px 3px -2px rgba(0,0,0,0.12)'
-         }
+         },
+         [theme.breakpoints.down('xs')]: {
+            display: 'inherit'
+        },
     },
     jobTitle : {
         marginTop:12,
@@ -213,6 +216,18 @@ const useStyles = makeStyles(theme => ({
     headingTypography : {
         [theme.breakpoints.down('xs')]: {
             fontSize:'30px'
+        },
+    },
+    eventCardContent : {
+        flex: '1 0 auto', 
+        height:'100%', 
+        textAlign:'left', 
+        width:'55%', 
+        paddingRight:'10%',
+        [theme.breakpoints.down('xs')]: {
+            width:'100%',
+            paddingRight:'4%',
+
         },
     }
   }));
@@ -831,7 +846,15 @@ function DailyDigest(props) {
                     <div>
                     <a href={event[0].url} target="_blank" style={{textDecoration:'none'}}>
                     <Card className={classes.eventListing}>
-                            <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left', width:'55%', paddingRight:'10%'}}>
+                        <Hidden smUp> {/* Only show in XS */}
+                            <CardMedia
+                                component="img"
+                                alt="Contemplative Reptile"
+                                className={classes.eventsImg}
+                                image={event[0].logo ? event[0].logo : defaultImg}
+                                />
+                        </Hidden>
+                            <CardContent className={classes.eventCardContent}>
                             <div style={{display: 'flex', flexDirection: 'column'}}>
                                 <Typography variant='h6' style={{fontWeight:'bold'}} >
                                 {event[0].event_title}
@@ -844,12 +867,15 @@ function DailyDigest(props) {
                                 </Typography>
                             </div>
                             </CardContent>
-                            <CardMedia
-                                component="img"
-                                alt="Contemplative Reptile"
-                                className={classes.eventsImg}
-                                image={event[0].logo ? event[0].logo : defaultImg}
+                            <Hidden xsDown>
+                                <CardMedia
+                                    component="img"
+                                    alt="Contemplative Reptile"
+                                    className={classes.eventsImg}
+                                    image={event[0].logo ? event[0].logo : defaultImg}
                                 />
+                            </Hidden>
+                            
                     </Card>
                     <Divider/>
                     </a>

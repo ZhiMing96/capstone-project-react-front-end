@@ -546,7 +546,11 @@ function Invitations(props) {
                     </Slider>
                 </Wrapper>
                 :
-                "NO INVITATIONS"
+                <div>
+                    <Typography variant='subtitle1' style={{color:'grey', fontStyle:'italic'}}>
+                        No Invitations at the Moment ..
+                    </Typography>
+                </div>
                 }
                 </Grid>
             </Grid>
@@ -572,7 +576,12 @@ function Invitations(props) {
                                 )
                             }
                         })
-                        : "NO UPCOMING MEETUPS"
+                        : 
+                        <div>
+                            <Typography variant='subtitle1' style={{color:'grey', fontStyle:'italic', marginTop:'5%'}}>
+                                No Upcoming Meetups at the Moment ..
+                            </Typography>
+                        </div>
                         }
                     </Grid>
                 
@@ -584,7 +593,7 @@ function Invitations(props) {
                         </Grid>
                         {meetupsloading
                         ? <UpcomingMeetupsSkeletonLoading/>
-                        : pendingMeetupDate
+                        : pendingMeetupDate && pendingMeetupDate.length !== 0
                         ?
                         pendingMeetupDate.map((meetup, index) => {
                             if(meetup.suggested_datetime === null){
@@ -595,7 +604,12 @@ function Invitations(props) {
                                 )
                             }
                         })
-                        : 'NO UPCOMING MEETUPS' 
+                        : 
+                        <div>
+                            <Typography variant='subtitle1' style={{color:'grey', fontStyle:'italic', marginTop:'5%'}}>
+                                No Upcoming Meetups at the Moment ..
+                            </Typography>
+                        </div>
                         }
                     </Grid>
             </Grid>

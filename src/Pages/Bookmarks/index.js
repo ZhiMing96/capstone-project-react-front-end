@@ -17,7 +17,7 @@ import api from '../../api';
 import { useSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
 
-const defaultIcon ="https://render.fineartamerica.com/images/rendered/default/print/7.875/8.000/break/images-medium-5/office-building-icon-vector-sign-and-symbol-isolated-on-white-background-office-building-logo-concept-urfan-dadashov.jpg";  
+const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";  
 
 const theme = createMuiTheme({
     overrides: {
@@ -54,13 +54,16 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: 'rgba(0,0,0,0.2)'
     },
     paper: {
-      padding: theme.spacing(1),
+      padding: '1%',
       textAlign: 'center',
       color: theme.palette.text.secondary,
       margin: 20,
-      display: 'flex',
-      flexDirection: 'column',
+      backgroundColor:'white',
       alignItems: 'center',
+      '&:hover':{
+        boxShadow:'0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)',
+        backgroundColor:'whitesmoke'
+      }
     },
     image: {
         width: 'auto',
@@ -68,10 +71,17 @@ const useStyles = makeStyles(theme => ({
         
       },
     img: {
+        // margin: 'auto',
+        // display: 'block',
+        // maxWidth: '100%',
+        // maxHeight: '100%',
         margin: 'auto',
         display: 'block',
+        width: 100,
+        height:100,
         maxWidth: '100%',
         maxHeight: '100%',
+        // blockSize:'auto'
     },
     close: {
         padding: theme.spacing(0.5),
@@ -339,7 +349,7 @@ function Bookmarks() {
                         {currentPosts
                         ? currentPosts.map((list,index) => (
                             <div key={index}>
-                                <Paper className={classes.paper} elevation={2}>
+                                <Paper className={classes.paper} elevation={0}>
                                     <Box display="flex" flexWrap="wrap">
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} sm={2}>

@@ -422,7 +422,12 @@ export default function Reco(props) {
                                         ))}
                                     </List>
                                 </Grid>
-                                : 'Complete A Meetup to Request for a Recommendation!'
+                                : 
+                                <div style={{}}>
+                                    <Typography variant='subtitle1' style={{color:'grey', fontStyle:'italic', marginTop:'5%', paddingRight:'17%'}}>
+                                        Complete a Meetup to Request for a Recommendation! 
+                                    </Typography>
+                                </div>
                         }
                     </Grid>
                 </Grid>
