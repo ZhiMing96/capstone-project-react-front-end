@@ -145,6 +145,8 @@ function MobileSideBar(props){
   }
 
   const handleImageChange = e => {
+    console.log("Entered Handle Change");
+    console.log(e.target.files[0]);
     e.preventDefault();
     let file = e.target.files[0];
     console.log(file)
@@ -161,7 +163,7 @@ function MobileSideBar(props){
       };
 
     }
-    
+    e.target.value = null
   }
   const handleSubmitNewImg = (base64String) => {
     console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')

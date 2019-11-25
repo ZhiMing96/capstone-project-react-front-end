@@ -187,7 +187,7 @@ class NavTabs extends React.Component {
                 if(this.state.alerts.length === 0) {
                   const action = key => (
                     <Fragment>
-                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
+                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'#57DFFF',  fontWeight:'bold', fontSize:12, }}>
                             View All
                         </Button>
                         <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white'}}>
@@ -197,7 +197,7 @@ class NavTabs extends React.Component {
                   );
   
                   this.props.enqueueSnackbar("New Notification!", {
-                    variant: 'info',
+                    variant: '',
                     autoHideDuration: 5000,
                     action,
                   });
@@ -214,7 +214,7 @@ class NavTabs extends React.Component {
   
                     const action = key => (
                       <Fragment>
-                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'white',  fontWeight:'bold', fontSize:12, }}>
+                        <Button size="small" onClick={()=> { this.handleSnackbarClick() }} style={{color:'#57DFFF',  fontWeight:'bold', fontSize:12, }}>
                             View All
                         </Button>
                         <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
@@ -224,7 +224,7 @@ class NavTabs extends React.Component {
                     );
   
                     this.props.enqueueSnackbar("New Notification!", {
-                      variant: 'info',
+                      variant: '',
                       autoHideDuration: 5000,
                       action,
                     });

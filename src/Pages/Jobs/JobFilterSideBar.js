@@ -27,10 +27,12 @@ const useStyles = makeStyles(theme => ({
   }));
   
 
-function JobFilterSideBar({ handleSidebarSubmit }) {
+function JobFilterSideBar(props) {
     const classes = useStyles();
     const [expandedArea, setExpandedArea] = useState(false);
     const [selectedAreaIndex, setSelectedAreaIndex] = useState(null);
+    const [ fullScreen, setFullScreen ] = useState(false);
+    const { handleSidebarSubmit } = props
 
     const jobCategories = [
         { value:'Accounting%20%2F%20Auditing%20%2F%20Taxation' , label:'Accounting / Auditing / Taxation' },
@@ -254,7 +256,7 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
                 }
             }
         }
-        if(category !== ""){
+        if(category !== "" && category){
             query = query + `&categories=${category}`
         }
         
@@ -282,6 +284,8 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
         
     //  }
 
+
+     
 
     return (
         <Grid container style={{width:'100%', backgroundColor:'white', textAlign:'left'}}>

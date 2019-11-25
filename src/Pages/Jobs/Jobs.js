@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Snackbar, SnackbarContent, Avatar, Fab, Hidden, Slide, AppBar, Toolbar } from '@material-ui/core';
 import { Search as SearchIcon, Directions as DirectionsIcon, FilterList as FilterListIcon, Class } from '@material-ui/icons';
 import Pagination from './Pagination';
 import LinearLoading from  '../../Components/LoadingBars/LinearLoading';
@@ -32,6 +32,7 @@ import JobsCarouselSkeletonLoading from '../../Components/SkeletonLoading/JobsCa
 import JobListingsSkeletonLoading from '../../Components/SkeletonLoading/JobListingsSkeletonLoading';
 import { useSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
+import SortIcon from '@material-ui/icons/Sort';
 
 const employmentTypes = [
     {
@@ -184,6 +185,10 @@ const employmentTypes = [
     segmentArea : {
         marginBottom:'-5%'
     },
+    margin : {
+        textAlign:'center',
+        marginTop: '37%',
+    }
   }));
 
     const Wrapper = styled.div`
@@ -362,6 +367,13 @@ function compareValues(key, order='asc') {
 const jobUrlDefault ='https://www.mycareersfuture.sg/job/'
 const defaultIcon ="https://cdn.cleverism.com/wp-content/themes/cleverism/assets/img/src/logo-placeholder.png";
 
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
+
 function Jobs (props) {
     console.log("ENTERED JOB SEARCH COMPONENT"); 
     // let location = useLocation();
@@ -383,6 +395,7 @@ function Jobs (props) {
     const classes=useStyles();
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);   // for snackbar
+    const [openFilter, setOpenFilter] = useState(false); 
     const [searchResults,setSearchResults] = useState([]);
     const [messageInfo, setMessageInfo] = useState(undefined);
     const [state, setState] = useState({
@@ -683,6 +696,15 @@ function Jobs (props) {
         setSearchResults(popularJobs);
     }
 
+    const handleOpenFullScreenFilter = () => {
+        setOpenFilter(true);
+    }
+    
+      const handleCloseFullScreenFilter = () => {
+        setOpenFilter(false);
+      };
+    
+
     const handleSidebarSubmit = (queryString) => {
         
         console.log("*** ENTERED HANDLE SIDEBAR SUBMIT IN JOBS COMPONENT")
@@ -813,7 +835,21 @@ function Jobs (props) {
                 </form>   
                 </Grid>
             </Grid>
-           
+            <Hidden smUp>
+                <Grid item xs={12} >
+                    <Fab
+                    variant="extended"
+                    size="small"
+                    color="white"
+                    aria-label="add"
+                    className={classes.margin}
+                    onClick={()=> handleOpenFullScreenFilter()}
+                    >
+                        <SortIcon className={classes.extendedIcon} />
+                        More Filters
+                    </Fab>
+                </Grid>
+            </Hidden>
         </Grid>
         
         
@@ -822,10 +858,37 @@ function Jobs (props) {
         ? 
         <div>
             <Grid container>
-                <Grid item xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
-                    <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
-                </Grid>
-                <Grid item xs={9}>
+                <Hidden xsDown>
+                    <Grid item xs={3} style={{height:'fit-content', position:'sticky', top:'10%', overflowY:'auto', maxHeight:'80vh'}}>
+                        <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Router>
+                            <Redirect push to={`/jobs/listings/${state.queryString}`}/>
+                            
+                            <Route 
+                            path="/jobs/listings" 
+                            render={()=> (
+                                <div>
+                                    {  loadingResults 
+                                        ? 
+                                        <JobListingsSkeletonLoading/>
+                                        : 
+                                        <div>
+                                            <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit}/>
+
+                                            <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
+                                        </div>
+                                    }
+                                </div> 
+                            )}
+                            /> 
+                            
+                        </Router>
+                    </Grid>
+                </Hidden>
+                <Hidden smUp> {/* Show in xs and Hide from Sm onwards */}
+                <Grid item xs={12}>
                     <Router>
                         <Redirect push to={`/jobs/listings/${state.queryString}`}/>
                         
@@ -843,12 +906,25 @@ function Jobs (props) {
                                         <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                                     </div>
                                 }
+                                
                             </div> 
                         )}
                         /> 
-                        
                     </Router>
+                    <Dialog fullScreen open={openFilter} onClose={handleCloseFullScreenFilter} TransitionComponent={Transition}>
+                        <AppBar className={classes.appBar}>
+                            <Toolbar>
+                                <IconButton edge="start" color="inherit" onClick={()=> handleCloseFullScreenFilter()} aria-label="close">
+                                    <CloseIcon />
+                                </IconButton>
+                            </Toolbar>
+                        </AppBar>
+                        <div style={{height:'fit-content', position:'fixed', top:'10%', overflowY:'auto', maxHeight:'90%'}}>
+                            <JobFilterSideBar handleSidebarSubmit={handleSidebarSubmit}/>
+                        </div>
+                    </Dialog>
                 </Grid>
+                </Hidden>
             </Grid>
             
         </div>
