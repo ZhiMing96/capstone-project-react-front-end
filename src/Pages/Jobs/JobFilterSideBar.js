@@ -289,7 +289,7 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
                 <TextField
                 id="filled-select-currency"
                 select
-                label="Select a Job Cagtegory"
+                label="Select a Job Category"
                 className={classes.textField}
                 value={selectedJobCategory}
                 onChange={handleChange}
@@ -302,7 +302,7 @@ function JobFilterSideBar({ handleSidebarSubmit }) {
                 variant="filled"
                 >
                     <MenuItem disabled value="">
-                        <em>Select a Job Cagtegory</em>
+                        <em>Select a Job Category</em>
                     </MenuItem>
                 {jobCategories.map((category, index) => (
                     <MenuItem key={index} value={category.value}>

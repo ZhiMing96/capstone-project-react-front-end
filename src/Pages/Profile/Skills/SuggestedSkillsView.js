@@ -5,7 +5,7 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import CustomisedSuggestedSkillsChip from '../../../Components/CustomisedSuggestedSkillsChip'
 import { connect } from "react-redux";
 import { addSkill, updateSuggestedSkills } from '../../../redux/actions/skill'
-import { useSnackbar } from 'notistack';
+import { withSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
 
 
@@ -206,4 +206,5 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { addSkill, updateSuggestedSkills }
-)(withStyles(styles, { withTheme: true })(SuggestedSkillsView));
+)(withSnackbar
+(withStyles(styles, { withTheme: true }) (SuggestedSkillsView)));

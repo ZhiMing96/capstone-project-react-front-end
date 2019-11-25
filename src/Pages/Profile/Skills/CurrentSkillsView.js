@@ -10,7 +10,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import { useSnackbar } from 'notistack';
+import { withSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
 
 const styles = theme => ({
@@ -85,12 +85,12 @@ class CurrentSkillsView extends React.Component {
     );
     const skill = this.state.skill
     const skillName = skill.skill
-    await api.skills.remove({ "skill_remove": skillName })
+    api.skills.remove({ "skill_remove": skillName })
       .then((response) => {
         console.log(response.data.response_code)
 
         if (response.data.response_code === 200) {
-          this.props.enqueueSnackbar(skillName + ' removed from your skills.', { variant: "success", action })
+          this.props.enqueueSnackbar(skillName + ' removed from your skills', { variant: "success", action })
           this.props.removeSkill(skill) //redux
           api.skills.get().then(res=>{
             if (res.data.response_code===200){
@@ -117,12 +117,14 @@ class CurrentSkillsView extends React.Component {
           this.props.enqueueSnackbar(response.data.response_message, { variant: "error", action })
 
         } else {
-          this.props.enqueueSnackbar('Error in removing skill.', { variant: "error", action })
+          this.props.enqueueSnackbar('Error in removing skill', { variant: "error", action })
 
         }
 
       })
       .catch(error => {
+        console.log(error)
+        this.props.enqueueSnackbar('System error', { variant: "error", action })
       })
 
   };
@@ -204,4 +206,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { addSkill, removeSkill, updateSkill, updateSuggestedSkills }
-) (withStyles(styles, { withTheme: true}) (CurrentSkillsView));
+)(withSnackbar (withStyles(styles, { withTheme: true}) (CurrentSkillsView)));
