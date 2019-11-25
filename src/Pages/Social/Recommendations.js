@@ -176,10 +176,11 @@ export default function Reco(props) {
     const [recommendations, setRecommendations] = useState([])
     const demoArray = [1, 2, 3];
 
-    //*****SNACKBAR BLACK VERSION W QUEUE AND PROPS
+    /*
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState(undefined);
+    */
 
     const action = key => (
         <Fragment>
@@ -282,14 +283,14 @@ export default function Reco(props) {
                 setRecoRequests(current.filter((value)=>(
                     value.request_id !== request_id
                 )))
-                setSnackbar("Request deleted.")
+                enqueueSnackbar("Request deleted.",  { variant: "success", action } );
             }
         }).catch(err=>{
             console.log(err)
         })
     }
 
-    //*****SNACKBAR BLACK VERSION W QUEUE AND PROPS
+    /*
     const processQueue = () => {
     if (queueRef.current.length > 0) {
       setMessageInfo(queueRef.current.shift());
@@ -320,7 +321,7 @@ export default function Reco(props) {
     const handleExited = () => {
         processQueue();
     };
-    //*****
+    */
 
     const handleProcessRequestFromCompletedMeetup = (meetup) => {
         console.log("Entered Handle Cancel Request Method")
@@ -373,7 +374,7 @@ export default function Reco(props) {
                                     {recoRequests.map((value, index) => {
                                         return (
                                             <Grid item xs={10}>
-                                                <RecoRequestCard request={value} setSnackbar={setSnackbar} removeCard={removeRecoRequest}/>
+                                                <RecoRequestCard request={value} removeCard={removeRecoRequest}/>
                                             </Grid>
                                         )
                                     })
@@ -458,7 +459,7 @@ export default function Reco(props) {
                     </Grid>
                 </Grid>
             </Grid>
-
+            {/*
             <Snackbar
                 key={messageInfo ? messageInfo.key : undefined}
                 anchorOrigin={{
@@ -486,6 +487,7 @@ export default function Reco(props) {
                     </IconButton>
                 }
             />
+            */}
         </div>
     )
 }

@@ -41,7 +41,7 @@ function Profile(props) {
             setOpen(true);
         }
     };
-
+    /*
     const setSnackbar = (message, undoButton=false) => {
         queueRef.current.push({
             message,
@@ -56,6 +56,7 @@ function Profile(props) {
             processQueue();
         }
     }
+    */
 
     const changeProfileState = () => {
         console.log("change")
@@ -91,12 +92,12 @@ function Profile(props) {
               </Box>
             </Typography>
             
-            {editProfileState ? <UserDetailsView changeState={changeProfileState} setSnackbar={setSnackbar} /> :
+            {editProfileState ? <UserDetailsView changeState={changeProfileState} /> :
                 <ReadOnlyView changeState={changeProfileState} />}
             <br />
-            {setupState || editSocialProfileState? <SocialProfileEdit changeState={changeSocialProfileState} setSnackbar={setSnackbar}/> : <SocialProfileRead changeState={changeSocialProfileState} user={user} />} 
+            {setupState || editSocialProfileState? <SocialProfileEdit changeState={changeSocialProfileState} /> : <SocialProfileRead changeState={changeSocialProfileState} user={user} />} 
                 <br />
-            <WorkWithDatepicker setSnackbar={setSnackbar}/>
+            <WorkWithDatepicker />
 
             <Snackbar
                 key={messageInfo ? messageInfo.key : undefined}

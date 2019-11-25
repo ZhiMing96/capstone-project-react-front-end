@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles'; import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -22,6 +22,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import CategoryInput from '../Pages/Profile/UserProfile/JobCategoryInput'
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
+
 
 import {
     DatePicker,
@@ -81,8 +84,7 @@ function CustomisedListItem(props) {
     const[checkedState, setCheckedState] = React.useState(false);
     const[openDialog, setOpenDialog] = React.useState(false);
     const[message, setMessage] = React.useState('');
-
-
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const [state, setState] = React.useState({
         record_id: '',
@@ -93,6 +95,13 @@ function CustomisedListItem(props) {
         description: '',
         categories:[]
     });
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     console.log(props.item)
     const handleChange = name => (event) => {
@@ -164,7 +173,7 @@ function CustomisedListItem(props) {
                 .then(res => {
                     if (res.data.response_code === 200) {
                         console.log('success')
-                        props.setSnackbar('Work experience updated successfully.')
+                        enqueueSnackbar('Work experience updated successfully',  { variant: "success", action } )
                         props.editWork(state) //update store
                         setEditState(false)
                         setState({
@@ -180,7 +189,7 @@ function CustomisedListItem(props) {
                         setCheckedState(false)
                     } else {
                         console.log('error')
-                        props.setSnackbar('Error updating work experience.')
+                        enqueueSnackbar('Error updating work experience',  { variant: "error", action } );
                     }
                 }).catch(console.log('error'))
         }
@@ -237,13 +246,13 @@ function CustomisedListItem(props) {
             .then(res => {
                 if (res.data.response_code === 200) {
                     console.log('success')
-                    props.setSnackbar('Work experience deleted successfully.', true)
+                    enqueueSnackbar('Work experience deleted successfully',  { variant: "success", action } );
                     props.removeWork(props.item.record_id) //update store
                     
                     return
                 } else {
                     console.log('error')
-                    props.setSnackbar('Error deleting work experience.')
+                    enqueueSnackbar('Error deleting work experience',  { variant: "error", action } );
                 }
             }).catch(console.log('error'))
     }

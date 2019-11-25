@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography, Box, Snackbar, IconButton } from '@material-ui/core'
 import Button from '@material-ui/core/Button';
@@ -16,6 +16,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import CategoryInput from './JobCategoryInput'
 import categoryDataSource from '../../../data/categories'
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -72,6 +74,7 @@ function WorkWithDatepicker(props) {
     const [submitState, setSubmit] = React.useState(false);
     const [dateValid, setDateValid] = React.useState(false);
     const [checkedState, setCheckedState] = React.useState(false);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     //initialise
     useEffect(() => {
@@ -86,10 +89,11 @@ function WorkWithDatepicker(props) {
 
     }, []);
 
-
+    /*
     const setSnackbar = (message, undoButton = false) => {
         props.setSnackbar(message, undoButton)
     }
+    */
 
 
     const handleClickAdd = () => {
@@ -109,6 +113,13 @@ function WorkWithDatepicker(props) {
         setAddState(!currentState)
 
     }
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const handleChange = name => (event) => {
         if (name === 'checkbox') {
@@ -197,7 +208,7 @@ function WorkWithDatepicker(props) {
                 .then(res => {
                     if (res.data.response_code === 200) {
                         console.log('success')
-                        setSnackbar('Work experience added successfully.')
+                        enqueueSnackbar('Work experience added successfully',  { variant: "success", action } );
                         api.work.get().then(res => {
                             props.updateWork(res.data.work_experience) //array of obj
                         })
@@ -220,7 +231,7 @@ function WorkWithDatepicker(props) {
                         setSubmit(false)
                     } else {
                         console.log('error')
-                        setSnackbar('Error adding work experience.')
+                        enqueueSnackbar('Error adding work experience',  { variant: "error", action } );
                     }
                 }).catch(console.log('error'))
         }
@@ -387,7 +398,7 @@ function WorkWithDatepicker(props) {
                             <List className={classes.root}>
                                 {props.works.map((experience, index) => {
                                     return (
-                                        <CustomisedListItem item={experience} isLastItem={props.works.length - 1 === index} setSnackbar={setSnackbar} />
+                                        <CustomisedListItem item={experience} isLastItem={props.works.length - 1 === index} />
                                     )
                                 })}
                             </List> : null}
