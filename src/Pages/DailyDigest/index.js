@@ -125,9 +125,9 @@ const useStyles = makeStyles(theme => ({
         marginBottom:'2%'
     },
     eventsImg:{
-        width:'20%', 
+        width:'35%', 
         padding:'3%',
-        boxShadow:'0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12)',
+        // boxShadow:'0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12)',
         [theme.breakpoints.down('xs')]: {
             width:'30%', 
         },
@@ -210,6 +210,11 @@ const useStyles = makeStyles(theme => ({
         fontWeight:'bold',
         zIndex:100,
     },
+    headingTypography : {
+        [theme.breakpoints.down('xs')]: {
+            fontSize:'30px'
+        },
+    }
   }));
 
   const jobUrlDefault ='https://www.mycareersfuture.sg/job/'
@@ -321,7 +326,7 @@ function DailyDigest(props) {
 
                         console.log('***** EVENTS RESULTS *******')
                         console.log(results.events)
-                        // setRecommendedEvents(results.events);
+                        setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
                         enqueueSnackbar("Unable To Retrieve Daily Digest!",  { variant: "error", action } );
@@ -348,7 +353,7 @@ function DailyDigest(props) {
                         setPopularJobs(results.recommended_jobs);
                         console.log('***** EVENTS RESULTS *******')
                         console.log(results.events)
-                        //  setRecommendedEvents(results.events);
+                         setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
                         enqueueSnackbar("Unable To Retrieve Daily Digest!",  { variant: "error", action } );
@@ -418,18 +423,18 @@ function DailyDigest(props) {
                 console.log(response);
                 if(response.data.response_code===200){
                     console.log("Click Stored SUCCESSFULLY ");
-                    const url = jobUrlDefault + list.job_uuid
-                    window.open(url,'_blank');
                 }
             })
             .catch(error =>{
                 console.log(error);
             })
+            
         } else {
-            console.log('NOT TRACKING CLICK')
-            const url = jobUrlDefault + list.job_uuid
-            window.open(url,'_blank');
+            console.log('NOT TRACKING CLICK') 
         }
+        
+        const url = jobUrlDefault + list.job_uuid
+        window.open(url,'_blank');
         
     }
 
@@ -471,7 +476,7 @@ function DailyDigest(props) {
                 <Typography variant='subtitle1' gutterBottom>
                     {date}
                 </Typography>
-                <Typography gutterBottom variant='h3'>
+                <Typography gutterBottom variant='h3' className={classes.headingTypography}>
                     <span style={{fontWeight:550}}>JOPIFY DAILY</span> <span style={{fontWeight:'lighter'}}>DIGEST</span>
                 </Typography>
                 { name
@@ -509,13 +514,15 @@ function DailyDigest(props) {
                 <Grid container spacing={4} style={{marginTop:8}}>
                     {recommendedArticles.slice(0,2).map((article,index)=>(
                     <Grid item xs={12} sm={6} key={index}>
-                        <Card style={{boxShadow:'none'}}>
-                            <CardMedia
-                            component="img"
-                            alt="Contemplative Reptile"
-                            height="250"
-                            image={article[0].imagelink}
-                            title={article[0].title}/>
+                        <Card style={{boxShadow:'none'}} >
+                            <a href={article[0].link} target="_blank">
+                                <CardMedia
+                                component="img"
+                                alt="Contemplative Reptile"
+                                height="250"
+                                image={article[0].imagelink}
+                                title={article[0].title}/>
+                            </a>
                             <CardContent style={{paddingBottom:5}}>
                                 <Typography className={classes.articleHeading} gutterBottom variant='h6'>
                                 {article[0].title}
@@ -559,7 +566,332 @@ function DailyDigest(props) {
             
             
             <div className={classes.sectionAreaAlternate}>
-                {searchHistoryJobs || skillsJobs || popularJobs
+                <div>
+                    <Typography className={classes.sectionHeading}>
+                        Apply Now <span style={{fontSize:15, fontWeight:'bold', color:'grey'}}>  Jobs that we recommend </span>
+                    </Typography>
+                </div>
+                <div>
+                {token
+                ? 
+                <div>
+                    {searchHistoryJobs && searchHistoryJobs.length !== 0 
+                    ? 
+                    <div style={{marginTop:'5%'}}>
+                        <div style={{textAlign:'right', marginBottom:'2%'}}>
+                            <Typography variant='caption' gutterBottom>
+                            Recommended By
+                            </Typography>
+                            <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
+                            Search History
+                            </Typography>
+                        </div>
+                        <Wrapper>
+                            <Slider {...carouselSettings}>
+                                {searchHistoryJobs.map((job,index)=> (
+                                <Page>
+                                    <Paper className={classes.jobsListingArea}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
+                                        <Avatar alt="List"
+                                            src={job.company_logo ? job.company_logo:defaultJobIcon}
+                                            className={classes.jobListingPhoto}
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                        />
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                        { job.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add Skills
+                                            </Typography>
+                                            : job.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : job.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
+                                        </Grid>
+                                    </Grid>
+                                        <Grid container  justify='space-between' style={{height:'14vh',paddingRight:10}}>
+                                        <Grid item xs={12}>
+                                            <Typography gutterBottom className={classes.jobTitle}>
+                                                {job.title}
+                                            </Typography>
+                                            <Typography gutterBottom className={classes.jobText}>
+                                                {job.postedCompany?job.postedCompany.name: job.hiringCompany? job.hiringCompany.name: 'Unknown Company'}
+                                            </Typography>
+                                            </Grid>
+                                            <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                                <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                                onClick={()=>handleHrefClick(job)}
+                                                >
+                                                    Details
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Paper>
+                                </Page>
+                                ))}
+                            </Slider>
+                        </Wrapper>
+                    </div>
+                    : ''
+                    }
+                    {skillsJobs && skillsJobs.length !== 0
+                    ? 
+                    <div style={{marginTop:'5%'}}>
+                        <div style={{textAlign:'right', marginBottom:'2%'}}>
+                            <Typography variant='caption' gutterBottom>
+                            Recommended By
+                            </Typography>
+                            <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
+                            Your Skills
+                            </Typography>
+                        </div>
+                        <Wrapper>
+                            <Slider {...carouselSettings}>
+                                {skillsJobs.map((job,index)=>(
+                                <Page>
+                                    <Paper className={classes.jobsListingArea}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
+                                        <Avatar alt="List"
+                                            src={job.company_logo ? job.company_logo:defaultJobIcon}
+                                            className={classes.jobListingPhoto}
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                        />
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                        { job.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add Skills
+                                            </Typography>
+                                            : job.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : job.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container  justify='space-between' style={{height:'14vh', paddingRight:10}}>
+                                        <Grid item xs={12}>
+                                            <Typography gutterBottom className={classes.jobTitle} style={{}}>
+                                                {job.title}
+                                            </Typography>
+                                            <Typography gutterBottom className={classes.jobText}>
+                                                {job.postedCompany?job.postedCompany.name: job.hiringCompany? job.hiringCompany.name: 'Unknown Company'}
+                                            </Typography>
+                                            </Grid>
+                                            <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                                <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                                onClick={()=>handleHrefClick(job)}
+                                                >
+                                                    Details
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Paper>
+                                </Page>
+                                ))}
+                            </Slider>
+                        </Wrapper>
+                    </div>
+                    : skillsJobs && skillsJobs.length === 0 && searchHistoryJobs && searchHistoryJobs.length === 0
+                    ? 
+                    <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%', }}>
+                        <Typography className={classes.sectionHeading}>
+                            Oops...
+                        </Typography>
+                        <Typography style={{fontWeight:'bold'}}>
+                            No Job Recommendations Available.
+                        </Typography>
+                    </div>
+                    : '' 
+                    }
+                </div>
+                    
+                : popularJobs && popularJobs.length !== 0
+                ? 
+                <div style={{marginTop:'5%'}}>
+                        <Wrapper>
+                            <Slider {...carouselSettings}>
+                                {popularJobs.map((job,index)=>(
+                                <Page>
+                                    <Paper className={classes.jobsListingArea}>
+                                    <Grid container justify='space-between'>
+                                        <Grid item>
+                                        <Avatar alt="List"
+                                            src={job.company_logo ? job.company_logo:defaultJobIcon}
+                                            className={classes.jobListingPhoto}
+                                            imgProps={{style:{objectFit:'contain',border:0}}}
+                                        />
+                                        </Grid>
+                                        <Grid item style={{ }}>
+                                        { job.skills_match < 0.3
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.orange,}}>
+                                                Add Skills
+                                            </Typography>
+                                            : job.skills_match < 0.7
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.green,}}>
+                                                Recommended
+                                            </Typography>
+                                            : job.skills_match < 1
+                                            ?
+                                            <Typography className={classes.tagStyle} style={{backgroundColor:tagColor.blue,}}>
+                                                Apply Now
+                                            </Typography>
+                                            :''
+                                        }
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container  justify='space-between' style={{height:'14vh', paddingRight:10}}>
+                                        <Grid item xs={12}>
+                                            <Typography gutterBottom className={classes.jobTitle} style={{}}>
+                                                {job.title}
+                                            </Typography>
+                                            <Typography gutterBottom className={classes.jobText}>
+                                                {job.postedCompany?job.postedCompany.name: job.hiringCompany? job.hiringCompany.name: 'Unknown Company'}
+                                            </Typography>
+                                            </Grid>
+                                            <Grid item xs={12} style={{textAlign:'right', alignSelf:'flex-end'}}>
+                                                <Button color='primary' style={{fontSize:12,fontWeight:'bold'}} size='small'
+                                                onClick={()=>handleHrefClick(job)}
+                                                >
+                                                    Details
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Paper>
+                                </Page>
+                                ))}
+                            </Slider>
+                        </Wrapper>
+                </div>
+                : 
+                <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%', }}>
+                    <Typography className={classes.sectionHeading}>
+                        Oops...
+                    </Typography>
+                    <Typography style={{fontWeight:'bold'}}>
+                        No Job Recommendations Available.
+                    </Typography>
+                </div>
+                }
+                    <div style={{textAlign:'right', marginTop:10}}>
+                        <Button
+                        size="small"
+                        style={{color:'#30A0D8', fontWeight:'bold', fontSize:18}}
+                        href='/jobs'
+                        >
+                        Search a Job
+                        </Button>
+                    </div>
+                </div> 
+            </div>
+            
+
+            <div className={classes.sectionArea}>
+            { recommendedEvents
+            ?
+                <div>
+                <Typography className={classes.sectionHeading}>
+                From Events
+                </Typography>
+                {token
+                ?
+                <div style={{textAlign:'right', marginBottom:'1%'}}>
+                    <Typography variant='caption' gutterBottom>
+                    Recommended Topic
+                    </Typography>
+                    <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
+                    {recommendedEvents[0][0].job_phase==="GROW_CAREER" ? 'Grow Your Career' : recommendedEvents[0][0].job_phase==='SEARCH_JOB' ? 'Search For Job':'' } 
+                    </Typography>
+                </div>
+                :''
+                }
+                
+                {recommendedEvents.map((event, index) => (
+                    <div>
+                    <a href={event[0].url} target="_blank" style={{textDecoration:'none'}}>
+                    <Card className={classes.eventListing}>
+                            <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left', width:'55%', paddingRight:'10%'}}>
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <Typography variant='h6' style={{fontWeight:'bold'}} >
+                                {event[0].event_title}
+                                </Typography>
+                                <Typography variant='subtitle1' color='textSecondary' style={{overflow:'hidden',textOverflow:'ellipsis', display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',}}>
+                                {event[0].summary}
+                                </Typography>
+                                <Typography>
+                                    {getDate(event[0].date_time)}
+                                </Typography>
+                            </div>
+                            </CardContent>
+                            <CardMedia
+                                component="img"
+                                alt="Contemplative Reptile"
+                                className={classes.eventsImg}
+                                image={event[0].logo ? event[0].logo : defaultImg}
+                                />
+                    </Card>
+                    <Divider/>
+                    </a>
+                    </div>
+                 ))} 
+                
+            </div>
+            : 
+            <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',}}>
+                <Typography className={classes.sectionHeading}>
+                    Oops...
+                </Typography>
+                <Typography style={{fontWeight:'bold'}}>
+                    No Events Available.
+                </Typography>
+            </div>
+            }
+            <div style={{textAlign:'right', marginTop:15, marginbottom:'10%',}}>
+                <Button
+                size="small"
+                style={{color:'#30A0D8', fontWeight:'bold', fontSize:18, marginTop:10}}
+                href='/events'
+                >
+                View All Events
+                </Button>
+            </div>
+            
+        </div>
+        </div>
+        }
+        </div>
+    </div>
+   )
+}
+export default connect(null, { doLogin })(DailyDigest);
+
+
+
+
+{/* </div> */}
+{/* 
+                {searchHistoryJobs || skillsJobs || popularJobs 
                 ?
                 <div>
                     <Typography className={classes.sectionHeading}>
@@ -642,7 +974,7 @@ function DailyDigest(props) {
                 }
                 </div>
                 <div>
-                {skillsJobs && skillsJobs.length
+                {skillsJobs && skillsJobs.length !== 0
                     ?
                     <div style={{marginTop:'5%'}}>
                         {token
@@ -712,6 +1044,7 @@ function DailyDigest(props) {
                                 ))}
                             </Slider>
                         </Wrapper>
+                    
                     </div>
                     : ''
                     }
@@ -789,91 +1122,15 @@ function DailyDigest(props) {
                         No Job Recommendations Available.
                     </Typography>
                 </div>
-                }
-                <div style={{textAlign:'right', marginTop:10}}>
-                    <Button
-                    size="small"
-                    style={{color:'#30A0D8', fontWeight:'bold', fontSize:18}}
-                    href='/jobs'
-                    >
-                    Search a Job
-                    </Button>
-                </div>
-            </div>
-            <div className={classes.sectionArea}>
-            { recommendedEvents
-            ?
-                <div>
-                <Typography className={classes.sectionHeading}>
-                From Events
-                </Typography>
-                {token
-                ?
-                <div style={{textAlign:'right', marginBottom:'1%'}}>
-                    <Typography variant='caption' gutterBottom>
-                    Recommended Topic
-                    </Typography>
-                    <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedEvents[0][0].job_phase==='grow_career' ? 'Grow Your Career' : recommendedEvents[0][0].job_phase==='search_job' ? 'Search For Job':'' } 
-                    </Typography>
-                </div>
-                :''
-                }
-                
-                {recommendedEvents.map((event, index) => (
-                    <div>
-                    <Card className={classes.eventListing}>
-                            <CardContent style={{flex: '1 0 auto', height:'100%', textAlign:'left', width:'55%', paddingRight:'10%'}}>
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                                <Typography variant='h6' style={{fontWeight:'bold'}} >
-                                {event[0].event_title}
-                                </Typography>
-                                <Typography variant='subtitle1' color='textSecondary' style={{overflow:'hidden',textOverflow:'ellipsis', display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',}}>
-                                {event[0].summary}
-                                </Typography>
-                                <Typography>
-                                    {getDate(event[0].date_time)}
-                                </Typography>
-                            </div>
-                            </CardContent>
-                            <CardMedia
-                                component="img"
-                                alt="Contemplative Reptile"
-                                className={classes.eventsImg}
-                                image={event[0].logo ? event[0].logo : defaultImg}
-                                />
-                    </Card>
-                    <Divider/>
+                }*/}
+                    {/* <div style={{textAlign:'right', marginTop:10}}>
+                        <Button
+                        size="small"
+                        style={{color:'#30A0D8', fontWeight:'bold', fontSize:18}}
+                        href='/jobs'
+                        >
+                        Search a Job
+                        </Button>
                     </div>
-                 ))} 
-                
-            </div>
-            : 
-            <div style={{textAlign:'left', marginTop:'2%', paddingBottom:'7%',}}>
-                <Typography className={classes.sectionHeading}>
-                    Oops...
-                </Typography>
-                <Typography style={{fontWeight:'bold'}}>
-                    No Events Available.
-                </Typography>
-            </div>
-            }
-            <div style={{textAlign:'right', marginTop:15, marginbottom:'10%',}}>
-                <Button
-                size="small"
-                style={{color:'#30A0D8', fontWeight:'bold', fontSize:18, marginTop:10}}
-                href='/events'
-                >
-                View All Events
-                </Button>
-            </div>
-            
-        </div>
-        </div>
-        }
-        </div>
-    </div>
-   )
-}
-export default connect(null, { doLogin })(DailyDigest);
-
+                </div> 
+            </div> */}
