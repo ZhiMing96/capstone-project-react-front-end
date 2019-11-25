@@ -91,9 +91,18 @@ function MeetupCard(props) {
         setMessage(e.target.value)
     }
     const handleSendInvite = () => {
+        var newMessage = message
+        var i = 0
+        while( i < newMessage.length) {
+            if (newMessage.charAt(i) == "'") {
+                newMessage =   newMessage.slice(0, i) + "'" + newMessage.slice(i)
+              i++
+            }
+            i++
+        }
         api.meetups.invite({
             target_user: user.profile.user_id,
-            message: message
+            message: newMessage
         }).then(res => {
             if (res.data.response_code === 200) {
                 setMessageSent(true)

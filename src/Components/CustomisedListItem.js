@@ -150,8 +150,17 @@ function CustomisedListItem(props) {
     const handleSubmit = (event) => {
         setSubmit(true) //render email validation error if present
         event.preventDefault()
+        var message = state.description
+        var i = 0
+        while( i < message.length) {
+            if (message.charAt(i) == "'") {
+              message =   message.slice(0, i) + "'" + message.slice(i)
+              i++
+            }
+            i++
+        }
         if (dateValid) {
-            api.work.update(state)
+            api.work.update({ ...state, description: message })
                 .then(res => {
                     if (res.data.response_code === 200) {
                         console.log('success')

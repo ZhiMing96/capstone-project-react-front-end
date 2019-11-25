@@ -155,9 +155,17 @@ function WorkWithDatepicker(props) {
     }
 
     const matchCategory = () => {
-        console.log(newWork.description)
+        var message = newWork.description
+        var i = 0
+        while( i < message.length) {
+            if (message.charAt(i) == "'") {
+              message =   message.slice(0, i) + "'" + message.slice(i)
+              i++
+            }
+            i++
+        }
         api.work.matchCategory({
-            description: newWork.description
+            description: message
         }).then(res => {
             setNewWork({ ...newWork, categories: res.data.categories });
             console.log(res.data.categories)
@@ -175,8 +183,17 @@ function WorkWithDatepicker(props) {
     const handleSubmit = (event) => {
         setSubmit(true) //render email validation error if present
         event.preventDefault()
+        var message = newWork.description
+        var i = 0
+        while( i < message.length) {
+            if (message.charAt(i) == "'") {
+              message =   message.slice(0, i) + "'" + message.slice(i)
+              i++
+            }
+            i++
+        }
         if (dateValid) {
-            api.work.add(newWork)
+            api.work.add({ ...newWork, description: message })
                 .then(res => {
                     if (res.data.response_code === 200) {
                         console.log('success')
