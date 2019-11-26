@@ -49,6 +49,10 @@ export default function Social(props) {
     
 
     const redirectProfile=(user_id)=>{
+        props.history.replace({ 
+            pathname: '/profile/social', 
+            state: {tabIndex: tabState}
+        })
         props.history.push({
             pathname: "/profile/public",
             state: { user_id: user_id }

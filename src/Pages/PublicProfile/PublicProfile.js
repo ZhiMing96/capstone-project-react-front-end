@@ -54,6 +54,8 @@ export default function PublicProfile(props) {
                 user_id: user_id
             }).then(res => {
                 if (res.data.response_code === 200) {
+                    console.log('**************************')
+                    console.log(res.data.profile)
                     setProfile({
                         name: res.data.profile.first_name + " " + res.data.profile.last_name,
                         job_title: res.data.job_title,
@@ -121,7 +123,6 @@ export default function PublicProfile(props) {
                 <Typography component="div" style={{ textAlign: '-webkit-center' }}>
                     <Box
                         fontSize="h5.fontSize"
-                        m={3.5}
                         letterSpacing={3}
                         fontWeight="fontWeightBold"
                         color="text.primary"
@@ -138,7 +139,7 @@ export default function PublicProfile(props) {
                 <Typography
                     component="div"
                     variant="h6"
-                    color="textPrimary"
+                    color="primary"
                     gutterBottom
                     style={{ lineHeight: 'inherit', fontWeight: 'bold' }}
                 >
@@ -147,9 +148,9 @@ export default function PublicProfile(props) {
                 <Typography
                     component="div"
                     variant="subtitle1"
-                    color="textSecondary"
+                    color="textPrimary"
                     gutterBottom
-                    style={{ lineHeight: 'inherit', marginBottom: 50 }}
+                    style={{ lineHeight: 'inherit', marginBottom: 60 }}
                 >
                     {profile.job_title}
 
