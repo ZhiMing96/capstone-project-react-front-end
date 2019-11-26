@@ -212,7 +212,7 @@ export default function PublicProfile(props) {
                     <Grid item xs={11}>
                         <div style={{ textAlign: "justify" }} >
                             <Typography variant="subtitle1" >
-                                {work && work.length !== 0 ?
+                                {work && work.length > 0 ?
                                     <WorkExList list={work} /> :
                                     <Typography color='textSecondary' variant="subtitle1">
                                         User has no work experience listed yet.
