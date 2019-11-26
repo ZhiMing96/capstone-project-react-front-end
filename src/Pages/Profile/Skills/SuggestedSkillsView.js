@@ -1,4 +1,4 @@
-import React,{Fragment}  from 'react';
+import React, { Fragment } from 'react';
 import { Grid, Typography, Box, Button, IconButton } from '@material-ui/core'
 import api from '../../../api.js'
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { addSkill, updateSuggestedSkills } from '../../../redux/actions/skill'
 import { withSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
-
+import CircularLoading from '../../../Components/LoadingBars/CircularLoading'
 
 const styles = theme => ({
   '@global': {
@@ -33,6 +33,7 @@ class SuggestedSkillsView extends React.Component {
     this.state = {
       skill: {},
       description: [],
+      isLoaded: false
     };
     console.log("constructor" + this.props.suggestedSkills)
     this.handleAdd = this.handleAdd.bind(this)
@@ -41,18 +42,21 @@ class SuggestedSkillsView extends React.Component {
 
   componentDidMount() {
     console.log("mount")
-    api.skills.suggested().then(res=>{
-      if (res.data.response_code===200){
+    api.skills.suggested().then(res => {
+      if (res.data.response_code === 200) {
         console.log('200')
         console.log(res.data.suggested_skills)
-        res.data.suggested_skills.forEach(skill=>{
-          skill.skill.id=parseInt(skill.id)
-          
+        res.data.suggested_skills.forEach(skill => {
+          skill.skill.id = parseInt(skill.id)
+
         })
         this.props.updateSuggestedSkills(res.data.suggested_skills) //return array
-        
+        this.state.isLoaded = true
       }
-    }).catch()
+    }).catch(err => {
+      console.log(err)
+      this.state.isLoaded = true
+    })
   }
 
   handleAdd(suggested, event) {
@@ -61,9 +65,9 @@ class SuggestedSkillsView extends React.Component {
     event.preventDefault()
     const action = key => (
       <Fragment>
-          <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
-              <ClearIcon/>
-          </IconButton>
+        <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color: 'white' }}>
+          <ClearIcon />
+        </IconButton>
       </Fragment>
     );
 
@@ -72,25 +76,25 @@ class SuggestedSkillsView extends React.Component {
       this.props.enqueueSnackbar(skillName + " is already in your current skills.", { variant: "warning", action })
     } else {
       console.log(skillName + " is now added to skills");
-      
+
       api.skills.add({
         "skill_add": [skillName]
       }).then(response => {
-        if (response.data.response_code ===200){
-          this.props.addSkill({id: skillId, skill: skillName}); //store
+        if (response.data.response_code === 200) {
+          this.props.addSkill({ id: skillId, skill: skillName }); //store
           this.props.enqueueSnackbar(skillName + ' added to your skills.', { variant: "success", action })
-          api.skills.suggested().then(res=>{
-            if (res.data.response_code===200){
+          api.skills.suggested().then(res => {
+            if (res.data.response_code === 200) {
               console.log('200')
-              res.data.suggested_skills.forEach(skill=>{
-                skill.skill.id=parseInt(skill.id)
-                
+              res.data.suggested_skills.forEach(skill => {
+                skill.skill.id = parseInt(skill.id)
+
               })
               this.props.updateSuggestedSkills(res.data.suggested_skills) //return array
-              
+
             }
           }).catch()
-        }else {
+        } else {
           this.props.enqueueSnackbar('Error adding skills.', { variant: "error", action })
         }
       }).catch(error => {
@@ -109,7 +113,7 @@ class SuggestedSkillsView extends React.Component {
 
     return (
       <div className={classes.paper}>
-        <Grid container direction="row" style={{ width: '100%' }}> 
+        <Grid container direction="row" style={{ width: '100%' }}>
           <Grid item xs={12} md={12}>
             <Typography component="div">
               <Box
@@ -123,7 +127,7 @@ class SuggestedSkillsView extends React.Component {
 
                 SUGGESTED SKILLS
 
-                  <Typography variant='body2' color='textSecondary' align='left' style={{fontSize:'medium'}}>
+                  <Typography variant='body2' color='textSecondary' align='left' style={{ fontSize: 'medium' }}>
                   Based on your career interests, these are some skills that will get you further in your job hunt!
               </Typography>
               </Box>
@@ -133,60 +137,64 @@ class SuggestedSkillsView extends React.Component {
           </Grid>
 
         </Grid>
-      {this.props.suggestedSkills !== null && 
-        <Grid container style={{ padding: '1.5%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', }}>
-          {
-            this.props.suggestedSkills.length === 0 ?
-              <Typography >
-                <Box>
-                  Oops! You have not searched for jobs in the past one month...
-              </Box>
-              </Typography>
-              :
-              <div>
-                {this.props.suggestedSkills.map((skill, index) => { return <CustomisedSuggestedSkillsChip suggested={skill} handleAdd={this.handleAdd} showDescription={this.showDescription} /> })}
-                {this.state.description.length !==0 ?
-                <Box m={2} lineHeight='1'>
-                  
-                  <Typography variant='body2' color='textSecondary' display="inline">
-                    
-                    {"Because you searched for "}
-                   </Typography>
-                  
-                  {this.state.description.map((desc, index) => {
-                    return index !== this.state.description.length-1 ?  
-                      index === this.state.description.length-2 ?//no comma
-                      <span>
-                        <Typography style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
-                            {desc}
-                        </Typography>
-                        <Typography variant='body2' color='textSecondary' display="inline">
-                        {" and "}
-                        </Typography>
-                      </span>
-                        :
+        {this.props.suggestedSkills !== null ?
+          <Grid container style={{ padding: '1.5%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', }}>
+            {
+              this.props.suggestedSkills.length === 0 ?
+                <Typography >
+                  <Box>
+                    Oops! You have not searched for jobs in the past one month...
+                  </Box>
+                </Typography>
+                :
+                <div>
+                  {this.props.suggestedSkills.map((skill, index) => { return <CustomisedSuggestedSkillsChip suggested={skill} handleAdd={this.handleAdd} showDescription={this.showDescription} /> })}
+                  {this.state.description.length !== 0 ?
+                    <Box m={2} lineHeight='1'>
 
-                        <span>
-                        <Typography style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
-                            {desc}
-                        </Typography>
-                        <Typography variant='body2' color='textSecondary' display="inline">     
-                            {", "}
-                        </Typography>
-                        </span>
-                      :
-                        <Typography  style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
-                          {desc}
-                        </Typography>
-                  }) 
-                  }
+                      <Typography variant='body2' color='textSecondary' display="inline">
 
-                </Box>
-                : <Box > <br/> </Box>}
-                
-              </div>
-          }
-        </Grid>}
+                        {"Because you searched for "}
+                      </Typography>
+
+                      {this.state.description.map((desc, index) => {
+                        return index !== this.state.description.length - 1 ?
+                          index === this.state.description.length - 2 ?//no comma
+                            <span>
+                              <Typography style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
+                                {desc}
+                              </Typography>
+                              <Typography variant='body2' color='textSecondary' display="inline">
+                                {" and "}
+                              </Typography>
+                            </span>
+                            :
+
+                            <span>
+                              <Typography style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
+                                {desc}
+                              </Typography>
+                              <Typography variant='body2' color='textSecondary' display="inline">
+                                {", "}
+                              </Typography>
+                            </span>
+                          :
+                          <Typography style={{ fontWeight: 'bold' }} variant='body2' color='textSecondary' display="inline">
+                            {desc}
+                          </Typography>
+                      })
+                      }
+
+                    </Box>
+                    : <Box > <br /> </Box>}
+
+                </div>
+            }
+          </Grid>
+          :
+          <Grid container justify='center'>
+            <CircularLoading />
+          </Grid>}
 
       </div>
 
@@ -198,7 +206,7 @@ class SuggestedSkillsView extends React.Component {
 const mapStateToProps = state => {
   return {
     suggestedSkills: state.skill.suggestedSkills,
-    currentSkills:state.skill.skills
+    currentSkills: state.skill.skills
   }
 
 };
@@ -207,4 +215,4 @@ export default connect(
   mapStateToProps,
   { addSkill, updateSuggestedSkills }
 )(withSnackbar
-(withStyles(styles, { withTheme: true }) (SuggestedSkillsView)));
+  (withStyles(styles, { withTheme: true })(SuggestedSkillsView)));

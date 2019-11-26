@@ -287,8 +287,8 @@ export default function UpcomingMeetup(props) {
                         <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%',paddingRight:'7%'}}>
                             <Typography style={{fontSize:'150%', fontWeight:'lighter'}}>
                                 {meetup.other_user && meetup.other_user.profile 
-                                ? `How was your meetup with ${meetup.other_user.profile.username} !`
-                                : 'How was your meetup! '
+                                ? `How was your meetup with ${meetup.other_user.profile.username}?`
+                                : 'How was your meetup? '
                                 }
                             </Typography>
                         </Grid>

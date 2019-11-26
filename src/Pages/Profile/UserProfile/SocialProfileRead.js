@@ -9,6 +9,7 @@ import api from '../../../api'
 import EditIcon from '@material-ui/icons/Edit';
 import { connect } from "react-redux";
 import { updateSocialProfile } from '../../../redux/actions/socialProfile'
+import CircularLoading from '../../../Components/LoadingBars/CircularLoading'
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -56,15 +57,14 @@ function SocialProfileRead(props) {
         preferred_locations:[]
     })
     console.log(props)
+    const [isLoaded, setIsLoaded] = React.useState(false)
 
     var otherUserId = null;
     if(props.user){
         otherUserId = props.user;
     }
 
-    //initialise
-    useEffect(() => {
-        console.log(profileState)
+    const loadData=()=>{
         api.profile.get().then(res => {
             console.log(res.data.social)
             const { profile_image_link, description,  meetup_ind, job_search_stage, preferred_locations} = res.data.social
@@ -93,10 +93,18 @@ function SocialProfileRead(props) {
                 job_search_stage: job_search_stage,
                 preferred_locations: arr
             })
+            setIsLoaded(true)
             console.log(profileState)
         }).catch(err => {
             console.log(err)
+            setIsLoaded(true)
         })
+    }
+    //initialise
+    useEffect(() => {
+        console.log(profileState)
+        loadData()
+
     }, [])
 
     return (
@@ -128,7 +136,7 @@ function SocialProfileRead(props) {
                             </Box>
                         </Typography>
                     </Grid>
-
+                    {isLoaded?
                     <Grid item style={{width: "100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
 
                         <form className={classes.form} >
@@ -200,6 +208,11 @@ function SocialProfileRead(props) {
                             </Grid>
                         </form>
                     </Grid>
+                    :
+                    <Grid container justify='center'>
+                    <CircularLoading />     
+                    </Grid>         
+                    }
                 </Grid>
 
             </div>

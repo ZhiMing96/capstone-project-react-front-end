@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import SnackBar from '../../../Components/Snackbar'
 import api from '../../../api'
 import EditIcon from '@material-ui/icons/Edit';
+import CircularLoading from '../../../Components/LoadingBars/CircularLoading'
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -45,6 +46,7 @@ export default function ReadOnlyView(props) {
         username: '',
         email: ''
     })
+    const [isLoaded, setIsLoaded] = React.useState(false)
 
     //initialise
     useEffect(() => {
@@ -57,8 +59,10 @@ export default function ReadOnlyView(props) {
                 username: username,
                 email: email
             })
+            setIsLoaded(true)
         }).catch(err => {
             console.log('error initialising w user details')
+            setIsLoaded(true)
         })
     }, [])
 
@@ -93,7 +97,7 @@ export default function ReadOnlyView(props) {
                             </Box>
                         </Typography>
                     </Grid>
-
+                    {isLoaded?
                     <Grid item style={{width: "100%", paddingLeft: '2.5%', paddingRight: '2.5%' }} xs={12}>
 
                         <form className={classes.form} >
@@ -152,6 +156,11 @@ export default function ReadOnlyView(props) {
                             </Grid>
                         </form>
                     </Grid>
+                    :
+                    <Grid container justify='center'>
+                    <CircularLoading />     
+                    </Grid>        
+                    }
                 </Grid>
 
             </div>

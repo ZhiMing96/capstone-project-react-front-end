@@ -18,6 +18,7 @@ import CategoryInput from './JobCategoryInput'
 import categoryDataSource from '../../../data/categories'
 import { useSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
+import CircularLoading from '../../../Components/LoadingBars/CircularLoading'
 
 const useStyles = makeStyles(theme => ({
     '@global': {
@@ -75,6 +76,7 @@ function WorkWithDatepicker(props) {
     const [dateValid, setDateValid] = React.useState(false);
     const [checkedState, setCheckedState] = React.useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [isLoaded, setIsLoaded] = React.useState(false)
 
     //initialise
     useEffect(() => {
@@ -83,8 +85,10 @@ function WorkWithDatepicker(props) {
         console.log(newWork)
         api.work.get().then(res => {
             props.updateWork(res.data.work_experience) //array of obj
+            setIsLoaded(true)
         }).catch(err => {
             console.log('error initialising w user work experience')
+            setIsLoaded(true)
         })
 
     }, []);
@@ -393,15 +397,17 @@ function WorkWithDatepicker(props) {
                                 </Grid>
                             </form> : null}
 
-
-                        {props.works && props.works.length !== 0 ?
+                        {isLoaded? 
+                        [props.works && props.works.length !== 0 ?
                             <List className={classes.root}>
                                 {props.works.map((experience, index) => {
                                     return (
                                         <CustomisedListItem item={experience} isLastItem={props.works.length - 1 === index} />
                                     )
                                 })}
-                            </List> : null}
+                            </List> : null]
+                        :
+                        <CircularLoading/>}
                     </Grid>
                 </Grid>
             </div>
