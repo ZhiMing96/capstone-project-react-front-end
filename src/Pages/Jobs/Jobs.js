@@ -90,9 +90,6 @@ const employmentTypes = [
     dense: {
       marginTop: theme.spacing(2),
     },
-    margin: {
-        margin: theme.spacing(1),
-    },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -187,7 +184,17 @@ const employmentTypes = [
     },
     margin : {
         textAlign:'center',
-        marginTop: '37%',
+        // marginTop: '37%',
+        position: "absolute",
+        top: '46vh',
+        left: '28vw',
+        backgroundColor: '#112365' ,
+        color: 'white',
+        fontWeight: 600,
+        // width:'45%'
+    },
+    extendedIcon : {
+        marginRight:'2%'
     }
   }));
 
@@ -833,8 +840,10 @@ function Jobs (props) {
                 </form>   
                 </Grid>
             </Grid>
+            {searchResults && searchResults.length !== 0 ||  byPass=== true
+            ?
             <Hidden smUp>
-                <Grid item xs={12} >
+                <Grid item xs={12}>
                     <Fab
                     variant="extended"
                     size="small"
@@ -842,12 +851,15 @@ function Jobs (props) {
                     aria-label="add"
                     className={classes.margin}
                     onClick={()=> handleOpenFullScreenFilter()}
+                    style={{width:'45%'}}
                     >
                         <SortIcon className={classes.extendedIcon} />
                         More Filters
                     </Fab>
                 </Grid>
             </Hidden>
+            : ""
+            }
         </Grid>
         
         

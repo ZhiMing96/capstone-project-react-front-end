@@ -309,11 +309,13 @@ function DailyDigest(props) {
                 } 
               ).catch(err => {
                 if(err.response) {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                    if(err.response) {
+                        const status = err.response.status
+                        const statusText = err.response.statusText
+                        console.log(status);
+                        console.log(statusText);
+                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                    }
                   }
               })
         }
@@ -349,11 +351,13 @@ function DailyDigest(props) {
                         props.history.push("/",{tokenInvalid:true})
                     }
                 }).catch(err=> {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                    if(err.response){
+                        const status = err.response.status
+                        const statusText = err.response.statusText
+                        console.log(status);
+                        console.log(statusText);
+                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                    }
                     props.history.push("/",{tokenInvalid:true})
                 });
 
@@ -376,11 +380,13 @@ function DailyDigest(props) {
                         props.history.push("/",{tokenInvalid:true})
                     }
                 }).catch(err=> {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                    if(err.response){
+                        const status = err.response.status
+                        const statusText = err.response.statusText
+                        console.log(status);
+                        console.log(statusText);
+                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                    }
                     props.history.push("/",{tokenInvalid:true})
                 });
             }
