@@ -62,7 +62,7 @@ class Login extends React.Component {
       } else if(response.data.social.description === null){ //first time logging in 
         this.props.history.push("/profile",{setup:true});
       }  else  {
-        this.props.history.push("/profile"); 
+        this.props.history.push("/"); 
       }   
              
     }).catch(error => {

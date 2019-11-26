@@ -92,7 +92,7 @@ export default function RecoRequestCard(props) {
 
     const handleRecommend = () => {
         api.recommendations.submitRecommendation({
-            target_user: props.request.from_user.user_id,
+            target_user: props.request.from_user.profile.user_id,
             message: recoMessage
         })
             .then(res => {
@@ -109,6 +109,7 @@ export default function RecoRequestCard(props) {
             .catch(err=>{
                 console.log(err)
             })
+        handleCloseDialog()
     }
     return (
         <div>
@@ -194,6 +195,7 @@ export default function RecoRequestCard(props) {
                         onChange={handleChange}
                         variant="outlined"
                         maxLength = {2000}
+                        required
                     />
                 </DialogContent>
                 <DialogActions>
