@@ -172,7 +172,7 @@ function Search(props) {
                                 placeholder={"Software engineer"}
                                 value={newSearch.keyword}
                                 onChange={handleChange('keyword')}
-
+                                maxLength = {200}
                                 endAdornment={<InputAdornment position="end">
                                     <IconButton onClick={handleDialogOpen}>
                                         <FilterListIcon />

@@ -122,12 +122,24 @@ function SocialProfileEdit(props) {
             }
             i++
         }
-        api.profile.updateSocial({ ...profileState, description: message })
+        var temp = profileState.preferred_locations
+        for (var j = 0; j< temp.length;j++ ){
+            var i = 0
+            while( i < temp[j].length) {
+                if (temp[j].charAt(i) == "'") {
+                    temp[j] =   temp[j].slice(0, i) + "'" + temp[j].slice(i)
+                  i++
+                }
+                i++
+            }
+        }
+        
+        api.profile.updateSocial({ ...profileState, description: message})
             .then(res => {
                 if (res.data.response_code === 200) {
                     console.log('success')
                     api.profile.updateLocations({
-                        preferred_locations: profileState.preferred_locations
+                        preferred_locations: temp
                     }).then(res=>{
                         if (res.data.response_code === 200) {
                             enqueueSnackbar('Details saved successfully',  { variant: "success", action } );
@@ -280,7 +292,7 @@ function SocialProfileEdit(props) {
                                         rows={4}
                                         margin="normal"
                                         onChange={handleChange('description')}
-
+                                        maxLength={2000}
                                     />
                                 </Grid>
                             </Grid>

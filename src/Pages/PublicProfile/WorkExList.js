@@ -23,6 +23,17 @@ export default function WorkExList(props) {
     return (
         <List >
             {props.list.map((experience, index) => {
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const startArr = experience.start_date.split("-")
+                const startDate = months[startArr[1] - 1] + " " + startArr[0]
+                var endArr
+                var endDate
+                if(experience.end_date){ //not null, not current job
+                    endArr = experience.end_date.split("-")
+                    endDate = months[endArr[1] - 1] + " " + endArr[0]
+                } else{
+                    endDate = 'Present'
+                }
                 return (
                     <div>
                         <ListItem alignItems="flex-start" key={experience.record_id} className={classes.item} >
@@ -51,7 +62,7 @@ export default function WorkExList(props) {
                                             gutterBottom
                                             style={{ lineHeight: 'inherit' }}
                                         >
-                                            {experience.company_name} | {experience.startDate} to {experience.endDate}
+                                            {experience.company_name} | {startDate} to {endDate}
                                         </Typography>
                                         <Grid container wrap="nowrap">
                                             <Typography

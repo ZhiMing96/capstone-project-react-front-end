@@ -32,6 +32,7 @@ export default function CircularLoading() {
         variant="determinate"
         value={progress}
         color='primary'
+        size = {30}
       />
     </div>
   );

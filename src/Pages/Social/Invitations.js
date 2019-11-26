@@ -547,7 +547,7 @@ function Invitations(props) {
                 </Wrapper>
                 :
                 <div>
-                    <Typography variant='subtitle1' style={{color:'grey', fontStyle:'italic'}}>
+                    <Typography variant='subtitle1' style={{color:'grey'}}>
                         No Invitations at the Moment ..
                     </Typography>
                 </div>
@@ -578,7 +578,7 @@ function Invitations(props) {
                         })
                         : 
                         <div>
-                            <Typography variant='subtitle1' style={{color:'grey', fontStyle:'italic', marginTop:'5%'}}>
+                            <Typography variant='subtitle1' style={{color:'grey', marginTop:'5%'}}>
                                 No Upcoming Meetups at the Moment ..
                             </Typography>
                         </div>

@@ -3,6 +3,7 @@ import { Typography, Grid, Box } from '@material-ui/core';
 import MeetupCard from '../../Components/MeetupCard'
 import api from '../../api'
 import { makeStyles } from '@material-ui/core/styles';
+import CircularLoading from '../../Components/LoadingBars/CircularLoading'
 
 const result = [
     {
@@ -90,34 +91,32 @@ export default function MeetupSuggestions(props) {
     console.log('******CHECK PROPS')
     console.log(props)
 
+    const fetchData=() =>{
+        api.meetups.by_location()
+            .then(res => {
+                if (res.data.response_code === 200) {
+                    setLocationSuggestions(res.data.results)
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        api.meetups.by_stage()
+            .then(res => {
+                if (res.data.response_code === 200) {
+                    setStageSuggestions(res.data.results)
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+    }
     useEffect(() => {
         //for testing- pre load of fake data
         
-        setLocationSuggestions(result)
-        setStageSuggestions(result)
-        setIsLoaded(true)
+        //setLocationSuggestions(result)
+        //setStageSuggestions(result)
+        //setIsLoaded(true)
         //api
-        /*
-        const fetchData=() =>{
-            api.meetups.by_location()
-                .then(res => {
-                    if (res.data.response_code === 200) {
-                        setLocationSuggestions(res.data.results)
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
-            api.meetups.by_stage()
-                .then(res => {
-                    if (res.data.response_code === 200) {
-                        setStageSuggestions(res.data.results)
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
-        }
         fetchData();
-        */
     },[])
     
     useEffect(()=>{
@@ -139,6 +138,7 @@ export default function MeetupSuggestions(props) {
             return (
                 <div style={{ width: "-webkit-fill-available", marginTop: 20 }}>
                     <Grid container justify="space-around">
+                        {locationSuggestions.length > 0 ?
                         <Grid item xs={12} sm={6} className={classes.col}>
                             <Typography component="div">
                                 <Box
@@ -152,14 +152,15 @@ export default function MeetupSuggestions(props) {
                                     YOU MIGHT BE INTERESTED IN
                             </Box>
                             </Typography>
-                            {locationSuggestions.length > 0 ?
-                                [locationSuggestions.map(item => (
+                            
+                                {locationSuggestions.map(item => (
                                     <MeetupCard item={item} redirectProfile={props.redirectProfile} />
-                                ))]
-                                :
-                                null
-                            }
+                                ))}
+                            
                         </Grid>
+                        :
+                        null}
+                        {stageSuggestions.length > 0 ?
                         <Grid item xs={12} sm={6} className={classes.col}>
                             <Typography component="div" >
                                 <Box
@@ -173,14 +174,13 @@ export default function MeetupSuggestions(props) {
                                     NEAR YOUR PREFERRED LOCATIONS
                             </Box>
                             </Typography>
-                            {stageSuggestions.length > 0 ?
-                                [stageSuggestions.map(item => (
+                            
+                                {stageSuggestions.map(item => (
                                     <MeetupCard item={item} redirectProfile={props.redirectProfile} />
-                                ))]
-                                :
-                                null
-                            }
+                                ))}
                         </Grid>
+                        :
+                        null}
                     </Grid>
                 </div>
             )
@@ -191,6 +191,10 @@ export default function MeetupSuggestions(props) {
           </Typography>)
         }
     } else {
-        return null
+        return (
+            <Grid container justify='center'>
+            <CircularLoading />
+          </Grid>
+        )
     }
 }
