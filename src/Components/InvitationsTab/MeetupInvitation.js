@@ -211,12 +211,12 @@ export default function MeetupInvitation(props) {
                         ? 
                         <div>
                             {invitation.from_user.work_experience.job_title} 
-                            <EmploymentDetails jobDetails={invitation.from_user.work_experience} username={invitation.from_user && invitation.from_user.profile
+                            {/* <EmploymentDetails jobDetails={invitation.from_user.work_experience} username={invitation.from_user && invitation.from_user.profile
                             ? invitation.from_user.profile.username 
                             : 'User'
-                            }/>
+                            }/> */}
                         </div>
-                        : "Unknown Occupation"
+                        : ""
                         }
                     </Typography>
                     </Grid>

@@ -599,7 +599,7 @@ function Invitations(props) {
                             if(meetup.suggested_datetime === null){
                                 return(
                                     <div style={{width:'90%'}}>
-                                        <UpcomingMeetup meetup={meetup} handleDateChange={handleDateChange} handleSelectedMeetup={handleSelectedMeetup} handleMeetupCancellation={handleMeetupCancellation}  handleMeetupConfirmation={handleMeetupConfirmation} handleTelegramRedirect={handleTelegramRedirect}/>
+                                        <UpcomingMeetup meetup={meetup} handleDateChange={handleDateChange} handleSelectedMeetup={handleSelectedMeetup} handleMeetupCancellation={handleMeetupCancellation}  handleMeetupConfirmation={handleMeetupConfirmation} handleTelegramRedirect={handleTelegramRedirect} redirectProfile={props.redirectProfile}/>
                                     </div>
                                 )
                             }

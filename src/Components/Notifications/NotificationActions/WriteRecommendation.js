@@ -101,9 +101,19 @@ export default function MeetupCompleteResponse(props) {
 
         console.log(targetUser)
 
+        const message = recoMessage
+        let i;
+        while(i < message.length) {
+        if (message.charAt(i) == "'") {
+            message =   message.slice(0, i) + "'" + message.slice(i)
+            i++
+        }
+        i++
+        }
+
         api.recommendations.submitRecommendation({
             target_user: targetUser,
-            message: recoMessage
+            message: message
         })
         .then(res => {
             console.log(res.data)
@@ -247,7 +257,7 @@ export default function MeetupCompleteResponse(props) {
                                     onChange={handleChange}
                                     label={`Recommendation for ${alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User" }`}
                                     required
-                                    inputProps={{ maxLength: 200 }}
+                                    inputProps={{ maxLength: 2000 }}
                                 />
                             </CardContent>
                             <CardActions style={{ justifyContent : 'flex-end', display:'flex', padding:0, paddingTop:5 }}>

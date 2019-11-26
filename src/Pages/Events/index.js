@@ -234,11 +234,14 @@ function Events() {
         enqueueSnackbar("Unable to Retrieve All Events!",  { variant: "error", action } );
       }
     }).catch(err=>{
+      if(err.response){
         const status = err.response.status
         const statusText = err.response.statusText
         console.log(status);
         console.log(statusText);
         enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+      }
+        
     })
 
     if(token){

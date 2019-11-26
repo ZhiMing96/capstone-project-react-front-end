@@ -83,11 +83,21 @@ export default function MeetupCompleteResponse(props) {
         ? alert.from_user.profile.user_id
         : null ;
 
+        const message = requestMessage
+        let i;
+        while(i < message.length) {
+        if (message.charAt(i) == "'") {
+            message =   message.slice(0, i) + "'" + message.slice(i)
+            i++
+        }
+        i++
+        }
+
         console.log(targetUser)
 
         api.recommendations.request({
             target_user: targetUser,
-            message: requestMessage
+            message: message
         })
         .then(res => {
             console.log(res.data)
@@ -207,7 +217,7 @@ export default function MeetupCompleteResponse(props) {
                                     onChange={handleChange}
                                     label={`Request message for ${alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User" }`}
                                     required
-                                    // inputProps={{ maxLength: 200 }}
+                                    inputProps={{ maxLength: 2000 }}
                                 />
                             </CardContent>
                             <CardActions style={{ justifyContent : 'flex-end', display:'flex', padding:0, paddingTop:5 }}>
