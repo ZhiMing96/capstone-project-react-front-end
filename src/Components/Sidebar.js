@@ -114,7 +114,8 @@ function Sidebar(props) {
         console.log(res.data.profile)
         props.updateProfile(res.data.profile)
         console.log(props.profile)
-        setProfileImageLink(res.data.social ? res.data.social.profile_image_link : null)
+        props.updateSocialProfile(res.data.social)
+        //setProfileImageLink(res.data.social ? res.data.social.profile_image_link : null)
       }
     ).catch(err=>{
       /*
@@ -131,25 +132,27 @@ function Sidebar(props) {
   
   useEffect(() => {
     getSidebarProfile();
-    if (props.profile_image_link !== null) {
-      setProfileImageLink(props.profile_image_link)
+    if (props.socialProfile.profile_image_link !== null) {
+      setProfileImageLink(props.socialProfile.profile_image_link)
     }
     if(props.profile.first_name !== ''){
       setName(props.profile.first_name)
     }
     console.log(props)
-  }, [props.profile_image_link, props.profile.first_name])
+  }, [props.socialProfile.profile_image_link, props.profile.first_name])
 
+  
   const changeSideBarProfilePicture = () => {
-    handleClose()
+    //handleClose()
     props.updateSocialProfile({
       profile_image_link: profileImageLink,
-      description: props.description,
-      meetup_ind: props.meetup_ind,
-      job_search_stage: props.job_search_stage
+      description: props.socialProfile.description,
+      meetup_ind: props.socialProfile.meetup_ind,
+      job_search_stage: props.socialProfile.job_search_stage
     })
 
   }
+  /*
   const openDialog = () => {
     setDialog(true)
   }
@@ -157,11 +160,11 @@ function Sidebar(props) {
   const handleClose = () => {
     setDialog(false)
   };
-
+  
   const handleChange = event => {
     setProfileImageLink(event.target.value);
   };
-
+  */
   const handleSidebarImageChange = e => {
     console.log('ENTERED IMAGE CHANGE TO BASE 64 METHOD ')
     e.preventDefault();
@@ -272,6 +275,8 @@ function Sidebar(props) {
         </Grid>
 
       </Grid>
+
+      {/*
       <Dialog
         open={dialog}
         onClose={handleClose}
@@ -306,6 +311,7 @@ function Sidebar(props) {
         </Button>
         </DialogActions>
       </Dialog>
+      */}
     </div>
 
   )
