@@ -116,8 +116,7 @@ function MeetupCard(props) {
             message: newMessage
         }).then(res => {
             if (res.data.response_code === 200) {
-                //setMessageSent(true)
-                handleCloseDialog()
+                //setMessageSent(true)               
                 enqueueSnackbar('Invitation sent!',  { variant: "success", action } )
                 setMessage('')
             }else{
@@ -127,6 +126,7 @@ function MeetupCard(props) {
             console.log(err)
             enqueueSnackbar('Error sending invitation',  { variant: "error", action } )
         })
+        handleCloseDialog()
     }
     return (
         <div>
