@@ -5,6 +5,7 @@ import api from '../api'
 import TelegramIcon from '@material-ui/icons/Telegram';
 import { connect } from "react-redux";
 import { updateSocialProfile } from '../redux/actions/socialProfile'
+import { updateProfile } from '../redux/actions/profile'
 import FaceIcon from '@material-ui/icons/Face';
 import Tooltip from '@material-ui/core/Tooltip';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
@@ -110,7 +111,9 @@ function Sidebar(props) {
   const getSidebarProfile = () => {
     api.profile.get().then(
       res => {
-        setName(res.data.profile ? res.data.profile.first_name : 'User')
+        console.log(res.data.profile)
+        props.updateProfile(res.data.profile)
+        console.log(props.profile)
         setProfileImageLink(res.data.social ? res.data.social.profile_image_link : null)
       }
     ).catch(err=>{
@@ -131,9 +134,11 @@ function Sidebar(props) {
     if (props.profile_image_link !== null) {
       setProfileImageLink(props.profile_image_link)
     }
-
+    if(props.profile.first_name !== ''){
+      setName(props.profile.first_name)
+    }
     console.log(props)
-  }, [props.profile_image_link])
+  }, [props.profile_image_link, props.profile.first_name])
 
   const changeSideBarProfilePicture = () => {
     handleClose()
@@ -307,8 +312,9 @@ function Sidebar(props) {
 }
 const mapStateToProps = (state) => {
   return {
-    ...state.socialProfile
+    socialProfile: {...state.socialProfile},
+    profile: {...state.profile}
   }
 }
 
-export default connect(mapStateToProps, { updateSocialProfile })(Sidebar);
+export default connect(mapStateToProps, { updateSocialProfile, updateProfile })(Sidebar);
