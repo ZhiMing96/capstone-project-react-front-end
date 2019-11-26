@@ -59,10 +59,13 @@ class Login extends React.Component {
       console.log(this.state.redirectUrl)
       if(this.state.redirectUrl){
         this.props.history.push(this.state.redirectUrl);
+        //window.location.reload();
       } else if(response.data.social.description === null){ //first time logging in 
         this.props.history.push("/profile",{setup:true});
+        //window.location.reload();
       }  else  {
         this.props.history.push("/"); 
+        //window.location.reload();
       }   
              
     }).catch(error => {
@@ -85,7 +88,6 @@ class Login extends React.Component {
           let auth_token= response.data.user.token
           window.localStorage.setItem('authToken', auth_token);
           this.setUserDetails(auth_token)
-         
         } else {
           this.setState({errorMessage: 'Email address/username and password does not match.'})
           this.setState({errorSnackbar: true})

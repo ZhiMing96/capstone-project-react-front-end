@@ -267,7 +267,7 @@ export default function PublicProfile(props) {
         )
     } else {
         return (
-            <Grid container justify='center'>
+            <Grid container justify='center' style={{marginTop: 40}}>
             <CircularLoading />
           </Grid>
         )

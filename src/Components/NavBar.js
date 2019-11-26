@@ -126,8 +126,7 @@ class NavTabs extends React.Component {
     }else{
       this.state.value= false;
     }
-      setTimeout(this.retrieveAlerts,5000);
-      setInterval(this.retrieveAlerts, 16000);
+    console.log("***********COMPONENT DID MOUNT")
     
   }
 
@@ -280,10 +279,21 @@ class NavTabs extends React.Component {
         }
       })
     }
+  }
 
-    
-  
-  
+  componentDidUpdate(prevProps) {
+    console.log("***********COMPONENT DID UPDATE")
+    if (prevProps && this.props.userId !== prevProps.userId ) { //logged out or logged in
+      console.log("***********logged in or logged out")
+      if(window.localStorage.getItem('authToken') === null){ //logged out
+        this.setState({alerts: [] })
+        console.log("***********set alerts empty")
+      } else { //logged in
+        console.log("***********logged in --> supposed to retrieve alerts")
+        this.retrieveAlerts();
+        setInterval(this.retrieveAlerts, 16000);
+      }     
+    }
   }
 
   componentShouldUpdate(nextProps, nextState){

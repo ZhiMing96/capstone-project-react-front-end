@@ -201,7 +201,7 @@ function MeetupCard(props) {
                 {props.item.allow_meetup === 0 ?
                     <DialogContent style={{ overflowY: 'hidden', margin:40}}>
                         <Grid container justify="center" xs={12}>
-                            <ErrorIcon color='error'/>
+                            <ErrorIcon color='error' style={{fontSize:"3rem"}}/>
                         </Grid>
                         <DialogContentText>
                 <Box m={3} textAlign="center"> You have sent an invitation request to {user.profile.first_name} before. </Box>

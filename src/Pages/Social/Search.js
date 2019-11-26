@@ -178,7 +178,7 @@ function Search(props) {
                                         <FilterListIcon />
                                     </IconButton>
                                 </InputAdornment>}
-
+                                required
                                 labelWidth={90}
                             />
                         </FormControl>
@@ -192,6 +192,7 @@ function Search(props) {
                                 value={newSearch.objective}
                                 onChange={handleChange('objective')}
                                 labelWidth={80}
+                                required
                             >
                                 <MenuItem value={"MENTOR"}>Mentor</MenuItem>
                                 <MenuItem value={"NETWORK"}>Network</MenuItem>
