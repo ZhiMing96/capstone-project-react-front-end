@@ -42,6 +42,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import ClearIcon from '@material-ui/icons/Clear'
 import { withSnackbar } from 'notistack';
+import PublicSidebar from './MobileSideBar/PublicSidebar';
 
 const useStyles = theme => ({
   notificationIcon: {
@@ -428,18 +429,21 @@ class NavTabs extends React.Component {
         {/* <Toolbar style = {window.screen.width < 445 ? {marginBottom: 15} : {}}> */}
         <Toolbar>
         <Grid container direction="row" alignItems="center" justify="flex-start" >
-          {
-            token 
-            ?
-            <Hidden smUp>
+          <Hidden smUp>
+            {
+              token 
+              ?
               <Grid item sm={1}>
                 <IconButton onClick={this.drawerTogglerClickHandler}>
                   <MenuIcon/>
                 </IconButton>
               </Grid>
+              : 
+              <Grid item sm={1}>
+                <PublicSidebar/>
+              </Grid>
+            }
             </Hidden>
-            : <div></div>
-          }
           <Grid item xs={2} sm={3}>
             <Typography>
               <Box fontWeight={600} fontSize={20}>
@@ -478,7 +482,7 @@ class NavTabs extends React.Component {
             {/* <Grid item onClick = {()=> this.setState({value: false})} container xs={8} justify="flex-end" >  */}
             {this.props.userId ==='' 
               ? 
-              <Grid item onClick = {()=> this.setState({value: false})} container xs={10} justify="flex-end" > 
+              <Grid item onClick = {()=> this.setState({value: false})} container xs={8} justify="flex-end" > 
                 <IconButton variant="contained" color="primary" component={Link} to="/auth/signin">
                     <LoginIcon/>
                 </IconButton>

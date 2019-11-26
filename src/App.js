@@ -10,8 +10,8 @@ import { useTheme } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root : {
     [theme.breakpoints.down('sm')]: {
-      maxWidth:'80%',
-      marginLeft: '10px'
+      maxWidth:'90%',
+      marginLeft: '5%'
     //   position: 'fixed',
     //   zIndex:'10px',
     //   // top: '16%',

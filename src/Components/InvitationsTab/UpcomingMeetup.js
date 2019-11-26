@@ -228,7 +228,7 @@ export default function UpcomingMeetup(props) {
                         </ThemeProvider>
                     </Grid>
                     <Grid container item xs={3} direction="row" justify="space-between"> 
-                        <Grid item  xs={12} style={ daysLeft < 5 ? {color:"maroon"} : daysLeft <20 ? {color:"green" } : {color:'blue'}}>
+                        <Grid item  xs={12} style={ daysLeft < 5 ? {color:"maroon"} : daysLeft <20 ? {color:"green" } : {color:'grey'}}>
                             <Typography style={{fontWeight:'bold'}}>
                                 {meetup.suggested_datetime
                                 ?

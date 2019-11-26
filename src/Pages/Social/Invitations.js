@@ -337,10 +337,11 @@ function Invitations(props) {
         console.log("Getting Pending Invitations");
        
         setInvitationsLoading(true);
-        setTimeout(() => {getPendingInvitation() } , 5000);
+        setTimeout(() => {getPendingInvitation() } , 3000);
         // getPendingInvitation()
+        console.log("INVITATION PROPS")
         console.log(props)
-    },[props.tabState]) 
+    },[props]) 
 
     const handleAcceptInvitation = (requestId) => {
         console.log(requestId)
