@@ -168,6 +168,7 @@ width:97%
 
 export default function Reco(props) {
 
+    console.log(props)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     const [recoRequests, setRecoRequests] = useState([])
@@ -270,7 +271,17 @@ export default function Reco(props) {
             getRecoRequests()
             getRecommendations()
         }
-    }, [props])
+    }, [props.tabChange])
+    useEffect(() => {
+        console.log("Getting getCompletedMeetups");
+        // setLoadingCompletedMeetups(true);
+        // setTimeout({getCompletedMeetups}, 1500);
+        if (window.localStorage.getItem('authToken') !== null) {
+            getCompletedMeetups();
+            getRecoRequests()
+            getRecommendations()
+        }
+    }, [props.refresh])
 
     const removeRecoRequest = (request_id) => {
         console.log("received request_id" + request_id)

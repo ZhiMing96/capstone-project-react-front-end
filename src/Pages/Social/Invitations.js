@@ -341,7 +341,21 @@ function Invitations(props) {
         getPendingInvitation()
         console.log("INVITATION PROPS")
         console.log(props)
-    },[props]) 
+    },[props.tabChange]) 
+
+    useEffect(()=>{
+        console.log("Getting Upcoming Meetups");
+        // setTimeout(() => {getUpcomingMeetups() } , 1000);
+        getUpcomingMeetups();
+        
+        console.log("Getting Pending Invitations");
+       
+        // setInvitationsLoading(true);
+        // setTimeout(() => {getPendingInvitation() } , 3000);
+        getPendingInvitation()
+        console.log("INVITATION PROPS")
+        console.log(props)
+    },[props.refresh]) 
 
     const handleAcceptInvitation = (requestId) => {
         console.log(requestId)
