@@ -331,14 +331,14 @@ function Invitations(props) {
     
     useEffect(()=>{
         console.log("Getting Upcoming Meetups");
-        setTimeout(() => {getUpcomingMeetups() } , 1000);
-        // getUpcomingMeetups();
+        // setTimeout(() => {getUpcomingMeetups() } , 1000);
+        getUpcomingMeetups();
         
         console.log("Getting Pending Invitations");
        
-        setInvitationsLoading(true);
-        setTimeout(() => {getPendingInvitation() } , 3000);
-        // getPendingInvitation()
+        // setInvitationsLoading(true);
+        // setTimeout(() => {getPendingInvitation() } , 3000);
+        getPendingInvitation()
         console.log("INVITATION PROPS")
         console.log(props)
     },[props]) 
