@@ -247,6 +247,8 @@ function MeetupCard(props) {
                                         fullWidth
                                         onChange={handleChange}
                                         variant="outlined"
+                                        placeholder= "Hello! I came across your profile and am interested to meet you! Would you be available for lunch on this Wednesday?"
+                                        maxLength={200}
                                     />
                                 </Grid>
                             </Grid>

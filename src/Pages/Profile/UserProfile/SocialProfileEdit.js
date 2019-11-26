@@ -292,7 +292,7 @@ function SocialProfileEdit(props) {
                                         rows={4}
                                         margin="normal"
                                         onChange={handleChange('description')}
-
+                                        maxLength={2000}
                                     />
                                 </Grid>
                             </Grid>

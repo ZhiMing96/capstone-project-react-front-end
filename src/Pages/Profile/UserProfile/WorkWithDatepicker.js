@@ -294,13 +294,12 @@ function WorkWithDatepicker(props) {
                                             <TextField
                                                 variant="outlined"
                                                 required
-
                                                 label="Job Title"
                                                 className={classes.textField}
                                                 margin="normal"
                                                 autoFocus
                                                 onChange={handleChange('job_title')}
-
+                                                maxLength = {200}
                                             />
                                         </Grid>
                                         <Grid item xs={12} md={5} >
@@ -311,7 +310,7 @@ function WorkWithDatepicker(props) {
                                                 className={classes.textField}
                                                 margin="normal"
                                                 onChange={handleChange('company_name')}
-
+                                                maxLength = {200}
                                             />
 
                                         </Grid>
@@ -368,6 +367,7 @@ function WorkWithDatepicker(props) {
                                             margin="normal"
                                             onChange={handleChange('description')}
                                             onBlur={matchCategory}
+                                            maxLength = {200}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>

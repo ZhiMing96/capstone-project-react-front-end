@@ -162,7 +162,7 @@ function UserDetailsView(props) {
                     margin="normal"
                     autoFocus
                     onChange={handleChange('first_name')}
-
+                    maxLength = {200}
                   />
                 </Grid>
                 <Grid item xs={12} md={5} >
@@ -176,6 +176,7 @@ function UserDetailsView(props) {
                     value={profileState.last_name}
                     name="lastName"
                     onChange={handleChange('last_name')}
+                    maxLength = {200}
                   />
                 </Grid>
                 </Grid>
@@ -193,6 +194,7 @@ function UserDetailsView(props) {
                     className={classes.textField}
                     margin="normal"
                     onChange={handleChange('email')}
+                    maxLength = {100}
                   />
                   {submitState && !emailValid &&
                     <Typography variant="caption" style={{ color: "red" }} className={classes.error}>
@@ -213,6 +215,7 @@ function UserDetailsView(props) {
                     className={classes.textField}
                     margin="normal"
                     onChange={handleChange('username')}
+                    maxLength = {200}
                   />
                 </Grid>
                 </Grid>

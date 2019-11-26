@@ -193,6 +193,7 @@ export default function RecoRequestCard(props) {
                         fullWidth
                         onChange={handleChange}
                         variant="outlined"
+                        maxLength = {2000}
                     />
                 </DialogContent>
                 <DialogActions>
