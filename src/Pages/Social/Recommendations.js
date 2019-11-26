@@ -367,10 +367,10 @@ export default function Reco(props) {
                             </Typography>
                         </Grid>
 
+                        {recoRequests.length > 0 ?
+                            <Grid item container direction="row" justify="space-evenly" alignItems="stretch" spacing={3} style={{ marginTop: 20, marginBottom: 20 }}>
+                                <Wrapper>
 
-                        <Grid item container direction="row" justify="space-evenly" alignItems="stretch" spacing={3} style={{ marginTop: 20, marginBottom: 20 }}>
-                            <Wrapper>
-                                {recoRequests.length > 0 ?
                                     <Slider {...carouselSettings}>
                                         {recoRequests.map((value, index) => {
                                             return (
@@ -381,13 +381,17 @@ export default function Reco(props) {
                                         })
                                         }
                                     </Slider>
-                                    :
-                                    <Typography color='textSecondary' variant="subtitle1">
-                                        There are no requests for your recommendations.
-                                </Typography>
-                                }
-                            </Wrapper>
-                        </Grid>
+
+
+                                </Wrapper>
+                            </Grid>
+                            :
+                            <Grid item container>
+                                <Typography color='textSecondary' variant="subtitle1">
+                                    There are no requests for your recommendations.
+                            </Typography>
+                            </Grid>
+                        }
                     </Grid>
 
                     <Grid item container sm={12} md={5}>
@@ -429,12 +433,12 @@ export default function Reco(props) {
                                     </List>
                                 </Grid>
                                 :
-                                <div style={{}}>
-                                <Typography color='textSecondary' variant="subtitle1">
-                                    Complete A Meetup to Request for a Recommendation!
+                                <div style={{ textAlign:'left'}}>
+                                    <Typography color='textSecondary' variant="subtitle1">
+                                        Complete a meetup to request for a recommendation!
                                 </Typography>
                                 </div>
-                            }
+                        }
                     </Grid>
                 </Grid>
                 <div>
@@ -469,9 +473,11 @@ export default function Reco(props) {
                                 }
                             </List>
                             :
-                            <Typography color='textSecondary' variant="subtitle1">
-                                You do not have any recommendations yet.
-                        </Typography>
+                            <Grid style={{textAlign:"left"}}>
+                                <Typography color='textSecondary' variant="subtitle1">
+                                    You do not have any recommendations yet.
+                                </Typography>
+                            </Grid>
                         }
                     </Grid>
                 </Grid>
