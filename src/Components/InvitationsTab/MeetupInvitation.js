@@ -1,6 +1,8 @@
 import React, { useEffect, useState, } from 'react';
 import api from '../../api';
-import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, List, ListItemAvatar, ListItem, ListItemText, Slide, Popover, Tooltip } from '@material-ui/core';
+import { Grid, Button, CssBaseline, IconButton, Paper, Typography, Divider, 
+    Box, InputBase, Container, ButtonBase, Avatar, Fab, Card, CardContent, 
+    List, ListItemAvatar, ListItem, ListItemText, Slide, Popover, Tooltip, CardActions } from '@material-ui/core';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -84,7 +86,10 @@ const useStyles = makeStyles(theme => ({
         WebkitBoxOrient:'vertical',
     },
     card: {
-        display: 'flex',
+        height: '100%',
+        textAlign: 'center',
+        alignItems: 'center',
+        maxWidth:300
     }, 
     userDetails :{
         display: 'flex',
@@ -112,8 +117,22 @@ const useStyles = makeStyles(theme => ({
             color: 'black'
         } 
     },
-
-
+    close: {
+        float: "right",
+        margin: theme.spacing(1),
+    },
+    avatar: {
+        marginBottom: 20,
+        marginTop: -10,
+        width: 100,
+        height: 100,
+        backgroundImage: `url(${viewProfileBG})` ,
+        backgroundSize: 'cover'
+    },
+    button: {
+        margin: theme.spacing(1),
+        marginRight:theme.spacing(0.5),
+    },
   }))
 
   const Transition = React.forwardRef(function Transition(props, ref) {
@@ -177,76 +196,68 @@ export default function MeetupInvitation(props) {
 
     return (
         <div>
-             <Paper className={classes.carouselPaper} elevation={5}>
+             <Card className={classes.card}>
                 <div style={{textAlign:'end'}}>
                 <Tooltip title="Decline Invitation" placement="bottom-start">
-                    <IconButton style={{padding:0}} onClick={()=> handleOpenRejectDialog(invitation)}>
-                        <CloseIcon style={{color:'#992E24'}} />
+                    <IconButton aria-label="settings" className={classes.close} size='small'>
+                        <CloseIcon onClick={()=> handleOpenRejectDialog(invitation)} fontSize="inherit" className={classes.close} />
                     </IconButton>
                 </Tooltip>
                 </div>
-            
-                <div>
-                    <Avatar
-                    src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
+                
+                <CardContent>
+                    <Grid container justify="center" alignItems="center">
+                        <Avatar className={classes.avatar} src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
                     defaultImg
-                    } 
-                    className={classes.carouselAvatar} 
-                    // imgProps={{style:{objectFit:'contain',border:0}}}
+                    }  
                     imgProps={{className: classes.carouselAvatarImg }}
                     onClick={()=> props.redirectProfile(invitation.from_user && invitation.from_user.profile
                         ? invitation.from_user.profile.user_id : null)}
                     />
-                </div>
-                <Grid container  justify='space-between' style={{height:'15vh'}}>
-                    <Grid item xs={12}>
-                    <Typography gutterBottom className={classes.carouselUsername} style={{}}>
-                        {invitation.from_user && invitation.from_user.profile
+                    </Grid>
+                    <Grid container justify="center" alignItems="center">
+                        <Box alignContent='center'>
+                            <Typography
+                                component="div"
+                                variant="h6"
+                                style={{ fontWeight: 'bold', lineHeight: 'inherit' }}
+                                className={classes.inline}
+                                color="textPrimary"
+                            >
+                                {invitation.from_user && invitation.from_user.profile
                             ? invitation.from_user.profile.username 
                             : ''
                         }
-                    </Typography>
-                    <Typography style={{fontSize:13, color:'grey'}}>
-                        {invitation.from_user && invitation.from_user.work_experience
-                        ? 
-                        <div>
-                            {invitation.from_user.work_experience.job_title} 
-                            {/* <EmploymentDetails jobDetails={invitation.from_user.work_experience} username={invitation.from_user && invitation.from_user.profile
-                            ? invitation.from_user.profile.username 
-                            : 'User'
-                            }/> */}
-                        </div>
-                        : ""
-                        }
-                    </Typography>
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary" gutterBottom style={{ fontSize: 'medium' }}>
+                            {invitation.from_user.work_experience && invitation.from_user.work_experience.job_title}
+                            &nbsp;
+                            </Typography>
+                        </Box>
                     </Grid>
-                    <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
-                    <Grid container item xs={12} direction="row"
-                    justify="space-between"
-                    alignItems="flex-end"
-                    style={{height:'fit-content'}}
-                    >
-                        <Grid item xs={6} style={{textAlign:'end', paddingRight:20}}>
-                            <Tooltip title={invitation.from_user && invitation.from_user.profile
+                </CardContent>
+                <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
+                <CardActions disableSpacing >
+                    <Grid container justify="center" alignItems="center">
+                        <Grid item xs={9}>
+                        <Tooltip title="Accept Invitation!" placement="bottom">
+                            <Button color="primary" variant="outlined" className={classes.button} onClick={()=>handleOpenAcceptDialog(invitation.request_id)} size="small">
+                            Accept
+                            </Button>
+                            </Tooltip>
+                        </Grid>
+                        <Grid item xs={3}>
+                        <Tooltip title={invitation.from_user && invitation.from_user.profile
                             ? `Open ${invitation.from_user.profile.username}'s Message!`: "Open Message!"} placement="bottom-end">
-                                <IconButton className={classes.messageIcon} onClick={showMessage}>
-                                    <MessageIcon style={{width:35, height:35}}/>
-                                </IconButton>
+                            <IconButton onClick={showMessage} disabled={invitation.message !== null && invitation.message.length > 0 ? false : true}>
+                                <MessageIcon />
+                            </IconButton>
                             </Tooltip>
                         </Grid>
-                        <Grid item xs={6} style={{textAlign:'start', scrollPaddingLeft:10}}>
-                            <Tooltip title="Accept Invitation!" placement="bottom">
-                                <Button color='primary' style={{fontSize:17,fontWeight:'bold', color:'green'}} size='small'
-                                onClick={()=>handleOpenAcceptDialog(invitation.request_id)}
-                                >
-                                    Accept
-                                </Button>
-                            </Tooltip>
-                        </Grid>
-                        
+
                     </Grid>
-                </Grid>
-            </Paper>
+                </CardActions>
+            </Card>
             <Popover
                 classes={{
                     paper: classes.paper,
@@ -272,20 +283,18 @@ export default function MeetupInvitation(props) {
                 
                 {invitation.suggested_datetime 
                 ? 
-                <Tooltip title="You Can Change it Later!" placement="right-start">
+                <Tooltip title="You can change it later!" placement="right-start">
                     <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
                         Suggested Date: <u><b>{formatDate(invitation.suggested_datetime)}</b></u>
                     </Typography>
                 </Tooltip>
                 :
-                <Tooltip title="Please Inform us once a date has been selected!" placement="right-start">
+                <Tooltip title="Please inform us once a date has been selected!" placement="right-start">
                 <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
                         Suggested Date: <u>Unavailable</u>
                     </Typography>
                 </Tooltip>
-                }
-                        
-                   
+                }             
             </Popover>
             <Dialog
             open={ OpenAcceptInvitationDialog }
@@ -296,24 +305,26 @@ export default function MeetupInvitation(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
             >
-                <DialogContent style={{paddingBottom:'5%', paddingTop:'10%', textAlign:'center'}}>
-                    <Typography style={{fontSize:"150%", fontWeight:'lighter'}}>
-                        {invitation.from_user && invitation.from_user.profile 
-                        ? `Accept Invitation From ${invitation.from_user.profile.username} ?`
+                <DialogContent style={{ overflowY: 'hidden', margin:40}}>
+                <DialogContentText color="textPrimary" fontWeight="bold" >
+                <Box m={3} textAlign="center"> {invitation.from_user && invitation.from_user.profile 
+                        ? `Accept Invitation From ${invitation.from_user.profile.username}?`
                         : "Accept Invitation? "
                         }
-                    </Typography>
+                </Box>
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                 <Button 
-                    className={classes.dialogButtons}
+                    //className={classes.dialogButtons}
                     onClick={() => handleCloseDialog()} color="primary" 
                     style={{}}>
                         Cancel
                 </Button>
                 <Button 
                     onClick={() => handleAcceptInvitation(invitation.request_id)} color="primary"
-                    className={classes.dialogButtons}>
+                    //className={classes.dialogButtons}
+                >
                         Confirm
                 </Button>
                 </DialogActions>
@@ -327,23 +338,26 @@ export default function MeetupInvitation(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
             >
-                <DialogContent style={{paddingBottom:'5%', paddingTop:'10%', textAlign:'center'}}>
-                    <Typography style={{fontSize:"150%", fontWeight:'lighter'}}>
-                        {invitation.from_user && invitation.from_user.profile 
+                <DialogContent style={{ overflowY: 'hidden', margin:40}}>
+                <DialogContentText color="textPrimary" fontWeight="bold">
+                <Box m={3} textAlign="center"> {invitation.from_user && invitation.from_user.profile 
                         ? `Decline Invitation From ${invitation.from_user.profile.username} ?`
                         : "Decline Invitation? "
                         }
-                    </Typography>
+                </Box>
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button 
-                    onClick={() => handleCloseDialog()} color="primary" size='large'
-                    className={classes.dialogButtons}>
+                    onClick={() => handleCloseDialog()} color="primary"
+                    //className={classes.dialogButtons}
+                    >
                         Cancel
                     </Button>
                     <Button 
-                    onClick={() => handleDeclineInvitation(invitation)} color="primary" size='large'
-                    className={classes.dialogButtons}>
+                    onClick={() => handleDeclineInvitation(invitation)} color="primary"
+                    //className={classes.dialogButtons}
+                    >
                         Confirm
                     </Button>
                 </DialogActions>

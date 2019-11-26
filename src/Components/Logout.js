@@ -29,7 +29,6 @@ function Logout(props) {
         window.localStorage.clear(); //clear auth_token
         props.doLogout()
         props.handleLogout()
-        window.location.reload();
     }
   
     return (
