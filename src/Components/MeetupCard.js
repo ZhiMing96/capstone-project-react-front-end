@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{Fragment} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -24,6 +24,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import api from '../api'
 import TextField from '@material-ui/core/TextField';
 import { connect } from "react-redux";
+import { useSnackbar } from 'notistack';
+import ClearIcon from '@material-ui/icons/Clear'
+
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -73,8 +76,16 @@ function MeetupCard(props) {
     const user = props.item.user
     const [openDialog, setOpenDialog] = React.useState(false)//
     const [message, setMessage] = React.useState('')
-    const [messageSent, setMessageSent] = React.useState(false)//
-    console.log(props)
+    //const [messageSent, setMessageSent] = React.useState(false)//
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const action = key => (
+        <Fragment>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
+                <ClearIcon/>
+            </IconButton>
+        </Fragment>
+    );
 
     const redirectProfile = () => {
         props.redirectProfile(user.profile.user_id)
@@ -83,7 +94,7 @@ function MeetupCard(props) {
         setOpenDialog(true);
     }
     const handleCloseDialog = () => {
-        setMessageSent(false)
+        //setMessageSent(false)
         setMessage('')
         setOpenDialog(false)
     }
@@ -105,11 +116,16 @@ function MeetupCard(props) {
             message: newMessage
         }).then(res => {
             if (res.data.response_code === 200) {
-                setMessageSent(true)
+                //setMessageSent(true)
+                handleCloseDialog()
+                enqueueSnackbar('Invitation sent!',  { variant: "success", action } )
                 setMessage('')
+            }else{
+                enqueueSnackbar('Error sending invitation',  { variant: "error", action } )
             }
         }).catch(err => {
             console.log(err)
+            enqueueSnackbar('Error sending invitation',  { variant: "error", action } )
         })
     }
     return (
@@ -181,7 +197,7 @@ function MeetupCard(props) {
                 maxWidth='sm'
                 fullWidth
             >
-
+                {/*
                 {messageSent ?
                     <DialogContent style={{ overflowY: 'hidden', margin:40}}>
                         <Grid container justify="center" xs={12}>
@@ -203,6 +219,8 @@ function MeetupCard(props) {
                         </DialogContentText> 
                     </DialogContent>
                     :
+                    */}
+
                     <div>
                         <DialogContent style={{ overflowY: 'hidden' }}>
 
@@ -242,7 +260,7 @@ function MeetupCard(props) {
                 </Button>
                         </DialogActions>
                     </div>
-                }
+                
             </Dialog>
         </div>
     )

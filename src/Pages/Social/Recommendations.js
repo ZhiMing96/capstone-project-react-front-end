@@ -1,5 +1,5 @@
-import React, { useState, useEffect,useRef, Fragment } from 'react';
-import { Grid, Typography, Box, List, Badge, Fab,IconButton,Snackbar } from '@material-ui/core'
+import React, { useState, useEffect, useRef, Fragment } from 'react';
+import { Grid, Typography, Box, List, Badge, Fab, IconButton, Snackbar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import RecoRequestCard from '../../Components/RecommendationRequestCard'
 import RecoRequestListItem from '../../Components/RecoRequestListItem'
@@ -111,7 +111,7 @@ const carouselSettings = {
             }
         },
         {
-            breakpoint: 1480, 
+            breakpoint: 1480,
             settings: {
                 slidesToShow: 2,
                 slidesToScroll: 1,
@@ -135,7 +135,7 @@ const carouselSettings = {
             }
         },
         {
-            breakpoint: 800, 
+            breakpoint: 800,
             settings: {
                 slidesToShow: 2,
                 slidesToScroll: 1,
@@ -184,8 +184,8 @@ export default function Reco(props) {
 
     const action = key => (
         <Fragment>
-            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
-                <ClearIcon/>
+            <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color: 'white' }}>
+                <ClearIcon />
             </IconButton>
         </Fragment>
     );
@@ -220,19 +220,20 @@ export default function Reco(props) {
                 } else {
                     console.log('**** ERROR: Unable to Retrieve Completed Meetups  ***')
                     console.log(res.data.response_message)
-                    enqueueSnackbar('Unable to Retrieve Completed Meetups',  { variant: "error", action } );
+                    enqueueSnackbar('Unable to Retrieve Completed Meetups', { variant: "error", action });
                 }
 
                 setLoadingCompletedMeetups(false)
             }).catch(err => {
-                if(err.response) {
+                if (err.response) {
                     const status = err.response.status
                     const statusText = err.response.statusText
                     console.log(status);
                     console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                  }
+                    enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
+                }
             })
+            */
     }
 
     const getRecoRequests = () => {
@@ -265,27 +266,27 @@ export default function Reco(props) {
         console.log("Getting getCompletedMeetups");
         // setLoadingCompletedMeetups(true);
         // setTimeout({getCompletedMeetups}, 1500);
-        if(window.localStorage.getItem('authToken') !== null){
+        if (window.localStorage.getItem('authToken') !== null) {
             getCompletedMeetups();
             getRecoRequests()
             getRecommendations()
         }
     }, [props])
 
-    const removeRecoRequest=(request_id)=>{
-        console.log("received request_id" +request_id)
+    const removeRecoRequest = (request_id) => {
+        console.log("received request_id" + request_id)
         api.recommendations.reject({
             "request_id": request_id
-            }
-        ).then(res=>{
-            if(res.data.response_code===200){
+        }
+        ).then(res => {
+            if (res.data.response_code === 200) {
                 const current = recoRequests
-                setRecoRequests(current.filter((value)=>(
+                setRecoRequests(current.filter((value) => (
                     value.request_id !== request_id
                 )))
-                enqueueSnackbar("Request deleted.",  { variant: "success", action } );
+                enqueueSnackbar("Request deleted.", { variant: "success", action });
             }
-        }).catch(err=>{
+        }).catch(err => {
             console.log(err)
         })
     }
@@ -326,23 +327,23 @@ export default function Reco(props) {
     const handleProcessRequestFromCompletedMeetup = (meetup) => {
         console.log("Entered Handle Cancel Request Method")
         console.log(meetup)
-        api.recommendations.processRecord({ "request_id" : meetup.request_id })
-        .then(res=>{
-            console.log(res.data);
-            if(res.data.response_code===200){
-                enqueueSnackbar('Requstion Option Removed',  { variant: "success", action } );
-                console.log("Meetup Record Processed SUCCESSFULLY - OPEN SNACK BAR TO INFORM")
-                getCompletedMeetups();
-            } else {
-                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
-            }
-        }).catch(err=>{
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-        })
+        api.recommendations.processRecord({ "request_id": meetup.request_id })
+            .then(res => {
+                console.log(res.data);
+                if (res.data.response_code === 200) {
+                    enqueueSnackbar('Requstion Option Removed', { variant: "success", action });
+                    console.log("Meetup Record Processed SUCCESSFULLY - OPEN SNACK BAR TO INFORM")
+                    getCompletedMeetups();
+                } else {
+                    enqueueSnackbar('Unable to Perform Operation', { variant: "error", action });
+                }
+            }).catch(err => {
+                const status = err.response.status
+                const statusText = err.response.statusText
+                console.log(status);
+                console.log(statusText);
+                enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
+            })
     }
 
     return (
@@ -362,7 +363,7 @@ export default function Reco(props) {
                                 >
 
                                     WRITE A RECOMMENDATION
-    
+
                             </Box>
                             </Typography>
                         </Grid>
@@ -370,16 +371,22 @@ export default function Reco(props) {
 
                         <Grid item container direction="row" justify="space-evenly" alignItems="stretch" spacing={3} style={{ marginTop: 20, marginBottom: 20 }}>
                             <Wrapper>
-                                <Slider {...carouselSettings}>
-                                    {recoRequests.map((value, index) => {
-                                        return (
-                                            <Grid item xs={10}>
-                                                <RecoRequestCard request={value} removeCard={removeRecoRequest}/>
-                                            </Grid>
-                                        )
-                                    })
-                                    }
-                                </Slider>
+                                {recoRequests.length > 0 ?
+                                    <Slider {...carouselSettings}>
+                                        {recoRequests.map((value, index) => {
+                                            return (
+                                                <Grid item xs={10}>
+                                                    <RecoRequestCard request={value} removeCard={removeRecoRequest} />
+                                                </Grid>
+                                            )
+                                        })
+                                        }
+                                    </Slider>
+                                    :
+                                    <Typography color='textSecondary' variant="subtitle1">
+                                        There are no requests for your recommendations.
+                                </Typography>
+                                }
                             </Wrapper>
                         </Grid>
                     </Grid>
@@ -401,7 +408,7 @@ export default function Reco(props) {
                                     fontWeight="fontWeightBold"
                                 >
                                     RECOMMENDATION REQUEST
-    
+
                                 </Box>
                                 {/* </Badge> */}
                             </Typography>
@@ -418,17 +425,20 @@ export default function Reco(props) {
                                     <List>
                                         {completedMeetups.map((meetup, index) => (
                                             <RecoRequestListItem meetup={meetup}
-                                            getCompletedMeetups={getCompletedMeetups} handleProcessRequestFromCompletedMeetup={handleProcessRequestFromCompletedMeetup} redirectProfile={props.redirectProfile} />
+                                                getCompletedMeetups={getCompletedMeetups} handleProcessRequestFromCompletedMeetup={handleProcessRequestFromCompletedMeetup} redirectProfile={props.redirectProfile} />
                                         ))}
                                     </List>
                                 </Grid>
-                                : 'Complete A Meetup to Request for a Recommendation!'
+                                :
+                                <Typography color='textSecondary' variant="subtitle1">
+                                    Complete A Meetup to Request for a Recommendation!
+                                </Typography>
                         }
                     </Grid>
                 </Grid>
-                {
-
-                }
+                <div>
+                    &nbsp;
+                </div>
 
                 <Grid item container style={{ width: '100%' }}>
                     <Grid item container style={{ marginTop: 20, marginBottom: 20 }}>
@@ -443,19 +453,25 @@ export default function Reco(props) {
                             >
 
                                 YOUR RECOMMENDATIONS
-    
+
                         </Box>
                         </Typography>
                     </Grid>
                     <Grid item style={{ width: '100%' }}>
-                        <List>
-                            {recommendations.map((reco, index) => {
-                                return (
-                                    <RecoListItem reco={reco} />
-                                )
-                            })
-                            }
-                        </List>
+                        {recommendations.length > 0 ?
+                            <List>
+                                {recommendations.map((reco, index) => {
+                                    return (
+                                        <RecoListItem reco={reco} />
+                                    )
+                                })
+                                }
+                            </List>
+                            :
+                            <Typography color='textSecondary' variant="subtitle1">
+                                You do not have any recommendations yet.
+                        </Typography>
+                        }
                     </Grid>
                 </Grid>
             </Grid>

@@ -176,9 +176,15 @@ export default function PublicProfile(props) {
                     </Grid>
                     <Grid item xs={11}>
                         <div style={{ textAlign: "justify" }} >
+                        {profile.description !== null && profile.description !== ''?
                             <Typography variant="subtitle1" >
                                 {profile.description}
                             </Typography>
+                            :
+                            <Typography color='textSecondary' variant="subtitle1">
+                                User has not written a bio description.
+                            </Typography>
+                        }
                         </div>
                     </Grid>
                 </Grid>

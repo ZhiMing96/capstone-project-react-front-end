@@ -92,12 +92,12 @@ export default function MeetupSuggestions(props) {
 
     useEffect(() => {
         //for testing- pre load of fake data
-        /*
+        
         setLocationSuggestions(result)
         setStageSuggestions(result)
         setIsLoaded(true)
-        */
-
+        //api
+        /*
         const fetchData=() =>{
             api.meetups.by_location()
                 .then(res => {
@@ -117,8 +117,9 @@ export default function MeetupSuggestions(props) {
                 })
         }
         fetchData();
+        */
     },[])
-
+    
     useEffect(()=>{
         if(stageSuggestions!==null && locationSuggestions!== null){
             setIsLoaded(true)
