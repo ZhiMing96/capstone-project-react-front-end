@@ -455,19 +455,19 @@ function Articles()
                 <Wrapper style={{}}>
                   <Slider {...largeCarouselSettings}>
                     
-                  {recommendedArticles && recommendedArticles !== 0
+                  {recommendedArticles
                   ?
-                  recommendedArticles.map((list,index) => {
+                  recommendedArticles.map((list,index) => (
 
-                    if(list[0] !== undefined) {
-                      return (
-<Page>
+                    // if(list !== undefined) {
+                    //   return (
+                  <Page>
                     <Card className={classes.cardLarge} style={{boxShadow:'none'}}>
-                      <CardActionArea href={list[0].link} target='._blank'>
+                      <CardActionArea href={list.link} target='._blank'>
                         <CardMedia
                           className={classes.mediaLarge}
-                          image={list[0].imagelink !== '' ? list[0].imagelink : defaultImgUrl}
-                          title={list[0].title}
+                          image={list.imagelink !== '' ? list.imagelink : defaultImgUrl}
+                          title={list.title}
                         />
                       </CardActionArea>
                       <CardContent style={{height:'fit-content', paddingBottom:10}}>
@@ -475,22 +475,22 @@ function Articles()
                           <Grid item xs={12} container style={{}} direction='column' justify="space-between">
                             <Grid item>
                               <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
-                                  {list[0].jobtag}
+                                  {list.jobtag}
                               </Typography>
                               <Typography className={classes.articleHeading} gutterBottom variant="body1">
-                                {list[0].title}
+                                {list.title}
                               </Typography>
                             </Grid>
                           </Grid>
                           <Grid item xs={12} container style={{}} justify='space-between'>
                             <Grid item xs={7} style={{alignSelf:'center'}}>
                               <Typography style={{textAlign:'left', fontSize:11,}}>
-                                Posted on: {formatDate(list[0].article_date)}
+                                Posted on: {formatDate(list.article_date)}
                               </Typography>
                             </Grid>
                             <Grid item xs={4} style={{alignSelf:'center'}}>
                               <Typography style={{fontSize:11,textAlign:'right'}}>
-                                 {list[0].readtime} Min Read 
+                                 {list.readtime} Min Read 
                               </Typography>
                             </Grid>
                             <Grid item xs={1}>
@@ -512,21 +512,20 @@ function Articles()
                       <Collapse in={index===selectedRecommendedIndex ?expanded:false} timeout="auto" unmountOnExit>
                         <CardContent style={{paddingTop:5, paddingBottom:5}}>
                           <Typography className={classes.articleDescription} variant="body2" color="textSecondary" gutterBottom>
-                            {list[0].bestparagraph}
+                            {list.bestparagraph}
                           </Typography>
                           <Typography variant='overline' style={{textAlign:'right'}}>
-                            <span style={{paddingRight:'1%'}}>{list[0].tag1 ? `#${list[0].tag1}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag2 ? `#${list[0].tag2}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag3 ? `#${list[0].tag3}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag4 ? `#${list[0].tag4}` :''}</span><span style={{paddingRight:'1%'}}>{list[0].tag5 ? `#${list[0].tag5}` :''}</span> 
+                            <span style={{paddingRight:'1%'}}>{list.tag1 ? `#${list.tag1}` :''}</span><span style={{paddingRight:'1%'}}>{list.tag2 ? `#${list.tag2}` :''}</span><span style={{paddingRight:'1%'}}>{list.tag3 ? `#${list.tag3}` :''}</span><span style={{paddingRight:'1%'}}>{list.tag4 ? `#${list.tag4}` :''}</span><span style={{paddingRight:'1%'}}>{list.tag5 ? `#${list.tag5}` :''}</span> 
                           </Typography>
                         </CardContent>
                       </Collapse>
                     </Card>
                     </Page>
+                      // )}
                   
-                      )
-                    }   
-                })
+                    ))
                   : "No Recommended Articles Available"
-                              }
+                  }
                   </Slider>
                 </Wrapper>
                 </Grid>

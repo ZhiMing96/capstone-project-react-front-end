@@ -522,7 +522,7 @@ function DailyDigest(props) {
             : 
             <div>
             <div className={classes.sectionArea}>
-            {recommendedArticles && recommendedArticles.length !== 0
+            {recommendedArticles
             ?
             <div>
                 <Typography className={classes.sectionHeading}>
@@ -535,7 +535,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedArticles[0][0].jobtag}
+                    {recommendedArticles[0].jobtag}
                     </Typography>
                 </div>
                 :''
@@ -544,26 +544,26 @@ function DailyDigest(props) {
                     {recommendedArticles.slice(0,2).map((article,index)=>(
                     <Grid item xs={12} sm={6} key={index}>
                         <Card style={{boxShadow:'none'}} >
-                            <a href={article[0].link} target="_blank">
+                            <a href={article.link} target="_blank">
                                 <CardMedia
                                 component="img"
                                 alt="Contemplative Reptile"
                                 height="250"
-                                image={article[0].imagelink}
-                                title={article[0].title}/>
+                                image={article.imagelink}
+                                title={article.title}/>
                             </a>
                             <CardContent style={{paddingBottom:5}}>
                                 <Typography className={classes.articleHeading} gutterBottom variant='h6'>
-                                {article[0].title}
+                                {article.title}
                                 </Typography>
                                 <Typography className={classes.articleDescription}
                                 gutterBottom variant='subtitle2'>
-                                    {article[0].sentence1}
-                                    {article[0].sentence2}
-                                    {article[0].sentence3}
+                                    {article.sentence1}
+                                    {article.sentence2}
+                                    {article.sentence3}
                                 </Typography>
                                 <Typography variant='caption'>
-                                    {article[0].readtime} min read
+                                    {article.readtime} min read
                                 </Typography >
                             </CardContent>
                         </Card>
@@ -850,7 +850,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedEvents[0][0].job_phase==="GROW_CAREER" ? 'Grow Your Career' : recommendedEvents[0][0].job_phase==='SEARCH_JOB' ? 'Search For Job':'' } 
+                    {recommendedEvents[0] && recommendedEvents[0].job_phase==="GROW_CAREER" ? 'Grow Your Career' : recommendedEvents[0] && recommendedEvents[0].job_phase==='SEARCH_JOB' ? 'Search For Job':'' } 
                     </Typography>
                 </div>
                 :''
@@ -858,41 +858,45 @@ function DailyDigest(props) {
                 
                 {recommendedEvents.map((event, index) => (
                     <div>
-                    <a href={event[0].url} target="_blank" style={{textDecoration:'none'}}>
-                    <Card className={classes.eventListing}>
-                        <Hidden smUp> {/* Only show in XS */}
-                            <CardMedia
-                                component="img"
-                                alt="Contemplative Reptile"
-                                className={classes.eventsImg}
-                                image={event[0].logo ? event[0].logo : defaultImg}
-                                />
-                        </Hidden>
-                            <CardContent className={classes.eventCardContent}>
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                                <Typography variant='h6' style={{fontWeight:'bold'}} >
-                                {event[0].event_title}
-                                </Typography>
-                                <Typography variant='subtitle1' color='textSecondary' style={{overflow:'hidden',textOverflow:'ellipsis', display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',}}>
-                                {event[0].summary}
-                                </Typography>
-                                <Typography>
-                                    {getDate(event[0].date_time)}
-                                </Typography>
-                            </div>
-                            </CardContent>
-                            <Hidden xsDown>
+                        {event && event.length !== 0
+                        ?
+                        <a href={event.url} target="_blank" style={{textDecoration:'none'}}>
+                        <Card className={classes.eventListing}>
+                            <Hidden smUp> {/* Only show in XS */}
                                 <CardMedia
                                     component="img"
                                     alt="Contemplative Reptile"
                                     className={classes.eventsImg}
-                                    image={event[0].logo ? event[0].logo : defaultImg}
-                                />
+                                    image={event.logo ? event.logo : defaultImg}
+                                    />
                             </Hidden>
-                            
-                    </Card>
-                    <Divider/>
-                    </a>
+                                <CardContent className={classes.eventCardContent}>
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    <Typography variant='h6' style={{fontWeight:'bold'}} >
+                                    {event.event_title}
+                                    </Typography>
+                                    <Typography variant='subtitle1' color='textSecondary' style={{overflow:'hidden',textOverflow:'ellipsis', display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',}}>
+                                    {event.summary}
+                                    </Typography>
+                                    <Typography>
+                                        {getDate(event.date_time)}
+                                    </Typography>
+                                </div>
+                                </CardContent>
+                                <Hidden xsDown>
+                                    <CardMedia
+                                        component="img"
+                                        alt="Contemplative Reptile"
+                                        className={classes.eventsImg}
+                                        image={event.logo ? event.logo : defaultImg}
+                                    />
+                                </Hidden>
+                                
+                            </Card>
+                        <Divider/>
+                        </a>
+                        : ""
+                        }
                     </div>
                  ))} 
                 

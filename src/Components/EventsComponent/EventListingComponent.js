@@ -233,10 +233,10 @@ export default function EventListingComponent(props) {
 
   const handleFormatVenue = () => {
     const venueArray = event.venue ? event.venue.split('·') : null
-    console.log(venueArray)
+    // console.log(venueArray)
 
     const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    console.log(formattedVenue)
+    // console.log(formattedVenue)
     
     setMarkerAddress(formattedVenue);
   }
@@ -278,7 +278,7 @@ console.log(event)
                   <div style={{ display: 'inline-flex', width: '100%' }}>
                     <CardMedia
                       className={classes.cover}
-                      image = { event && recommended ? event[0].logo : event && !recommended ? event.logo : defaultImg }
+                      image = { event && recommended ? event.logo : event && !recommended ? event.logo : defaultImg }
                       title={event.event_title}
                     />
                     <CardContent style={{ paddingLeft: 20, width: '100%' }}>
@@ -287,18 +287,18 @@ console.log(event)
                         <Grid item xs={12} container style={{}} justify="space-between">
                           <Grid item xs={11}>
                             <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              { event && recommended ? event[0].job_phase : event && !recommended ?  event.job_phase : ""}
+                              { event && recommended ? event.job_phase : event && !recommended ?  event.job_phase : ""}
                             </Typography>
                             <Typography style={{ paddingTop: 1 }}>
                               <Box className={classes.eventTitle}>
-                                {event && recommended ? event[0].event_title : event && !recommended ? event.event_title : ""}
+                                {event && recommended ? event.event_title : event && !recommended ? event.event_title : ""}
                               </Box>
                               <Box textAlign="left" fontWeight={550} fontSize={13} style={{ color: '#607d8b' }}>
                                 
-                                {getDate(event && recommended ? event[0].date_time : event && !recommended ? event.date_time:null)}
+                                {getDate(event && recommended ? event.date_time : event && !recommended ? event.date_time:null)}
                               </Box>
                               <Box textAlign="left" fontWeight={510} fontSize={12}>
-                                {event && recommended ? event[0].venue : event && !recommended ? event.venue :""}
+                                {event && recommended ? event.venue : event && !recommended ? event.venue :""}
                               </Box>
                               <Grid
                                 container
@@ -308,7 +308,7 @@ console.log(event)
                               >
                                 <Grid item>
                                   <Box textAlign="left" fontWeight={530} fontSize={12} color='textSecondary'>
-                                    {event && recommended ? event[0].cost : event && !recommended ? event.cost : "Free"}
+                                    {event && recommended ? event.cost : event && !recommended ? event.cost : "Free"}
                                   </Box>
                                 </Grid>
                               </Grid>
@@ -352,7 +352,7 @@ console.log(event)
                           <Grid item xs={11}>
                             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                               <Typography className={classes.eventDescription} variant="subtitle1" noWrap={true} style={{}}>
-                                {event && recommended ? event[0].summary : event && !recommended ? event.summary : "No Description Available"}
+                                {event && recommended ? event.summary : event && !recommended ? event.summary : "No Description Available"}
                               </Typography>
                             </div>
                           </Grid>
@@ -366,15 +366,15 @@ console.log(event)
                     <DialogContent style={{ textAlign: 'center' }}>
                       <Map markerAddress={markerAddress} style={{ width: '98%', }} />
                       <Typography className={classes.descriptionTitles} variant="h5" gutterBottom >
-                        {event && recommended && event[0].event_title ? event[0].event_title  : event && !recommended && event.event_title ? event.event_title : "LOCATION"}
+                        {event && recommended && event.event_title ? event.event_title  : event && !recommended && event.event_title ? event.event_title : "LOCATION"}
                       </Typography>
                       <Typography style={{ fontWeight: "bold", textAlign: 'left', }} color='textSecondary'>
-                        {event && recommended && event[0].venue ? event[0].venue : event && !recommended && event.venue ? event.venue : 'Singapore'}
+                        {event && recommended && event.venue ? event.venue : event && !recommended && event.venue ? event.venue : 'Singapore'}
                       </Typography>
                       <Button
                         fullWidth
                         variant="contained"
-                        href={event && recommended ? event[0].url  : event && recommended ? event.url :"http://www.meetup.com"}
+                        href={event && recommended ? event.url  : event && recommended ? event.url :"http://www.meetup.com"}
                         target="_blank"
                         style={{ fontWeight: 'bold', fontSize: 17, marginTop: 10, marginBottom: 10, backgroundColor: '#0091ea', color: '#FFFFFF' }}
                       >
