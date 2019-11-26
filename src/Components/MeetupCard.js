@@ -1,4 +1,4 @@
-import React,{Fragment} from 'react';
+import React,{Fragment, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -26,7 +26,7 @@ import TextField from '@material-ui/core/TextField';
 import { connect } from "react-redux";
 import { useSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
-
+import ErrorIcon from '@material-ui/icons/Error';
 
 const useStyles = makeStyles(theme => ({
     inline: {
@@ -76,8 +76,8 @@ function MeetupCard(props) {
     const user = props.item.user
     const [openDialog, setOpenDialog] = React.useState(false)//
     const [message, setMessage] = React.useState('')
-    //const [messageSent, setMessageSent] = React.useState(false)//
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    console.log(props.item)
 
     const action = key => (
         <Fragment>
@@ -197,29 +197,17 @@ function MeetupCard(props) {
                 maxWidth='sm'
                 fullWidth
             >
-                {/*
-                {messageSent ?
+                
+                {props.item.allow_meetup === 0 ?
                     <DialogContent style={{ overflowY: 'hidden', margin:40}}>
                         <Grid container justify="center" xs={12}>
-                                {user.social.profile_image_link !== null && user.social.profile_image_link !== ''
-                                    ?
-                                    <Avatar src={user.social.profile_image_link} className={classes.confirmationAvatar} />
-                                    :
-                                    <FaceIcon fontSize="large" className={classes.confirmationAvatar} />
-                                }
-                                {props.profileImage !== null && props.profileImage !== ''
-                                    ?
-                                    <Avatar src={props.profileImage} className={classes.confirmationAvatar} />
-                                    :
-                                    <FaceIcon fontSize="large" className={classes.confirmationAvatar} />
-                                }
+                            <ErrorIcon color='error'/>
                         </Grid>
                         <DialogContentText>
-                            <Box m={3} textAlign="center">Invitation Sent!</Box>
+                <Box m={3} textAlign="center"> You have sent an invitation request to {user.profile.first_name} before. </Box>
                         </DialogContentText> 
                     </DialogContent>
                     :
-                    */}
 
                     <div>
                         <DialogContent style={{ overflowY: 'hidden' }}>
@@ -262,7 +250,7 @@ function MeetupCard(props) {
                 </Button>
                         </DialogActions>
                     </div>
-                
+}
             </Dialog>
         </div>
     )

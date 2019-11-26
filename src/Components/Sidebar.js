@@ -244,7 +244,7 @@ function Sidebar(props) {
           </div>  */}
           
         
-        <Grid container justify="center">
+        <Grid container justify="center" style={{marginTop:-15, marginBottom:20}}>
           <Grid item xs={12} >
             <Typography>
               <Box fontWeight="fontWeightBold" fontSize={20}>

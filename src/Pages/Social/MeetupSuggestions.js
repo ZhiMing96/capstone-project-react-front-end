@@ -138,7 +138,7 @@ export default function MeetupSuggestions(props) {
             return (
                 <div style={{ width: "-webkit-fill-available", marginTop: 20 }}>
                     <Grid container justify="space-around">
-                        {locationSuggestions.length > 0 ?
+                        {stageSuggestions.length > 0 ?
                         <Grid item xs={12} sm={6} className={classes.col}>
                             <Typography component="div">
                                 <Box
@@ -153,14 +153,14 @@ export default function MeetupSuggestions(props) {
                             </Box>
                             </Typography>
                             
-                                {locationSuggestions.map(item => (
+                                {stageSuggestions.map(item => (
                                     <MeetupCard item={item} redirectProfile={props.redirectProfile} />
                                 ))}
                             
                         </Grid>
                         :
                         null}
-                        {stageSuggestions.length > 0 ?
+                        {locationSuggestions.length > 0 ?
                         <Grid item xs={12} sm={6} className={classes.col}>
                             <Typography component="div" >
                                 <Box
@@ -175,7 +175,7 @@ export default function MeetupSuggestions(props) {
                             </Box>
                             </Typography>
                             
-                                {stageSuggestions.map(item => (
+                                {locationSuggestions.map(item => (
                                     <MeetupCard item={item} redirectProfile={props.redirectProfile} />
                                 ))}
                         </Grid>

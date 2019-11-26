@@ -8,6 +8,7 @@ import CustomisedListItem from '../../Components/CustomisedListItem';
 import RecoListItem from '../../Components/RecoListItem';
 import WorkExList from './WorkExList';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CircularLoading from '../../Components/LoadingBars/CircularLoading'
 
 const useStyles = makeStyles(theme => ({
     avatar: {
@@ -124,6 +125,7 @@ export default function PublicProfile(props) {
                     <Box
                         fontSize="h5.fontSize"
                         letterSpacing={3}
+                        m={3.5}
                         fontWeight="fontWeightBold"
                         color="text.primary"
                         style={{marginTop:0}}
@@ -264,6 +266,10 @@ export default function PublicProfile(props) {
             </div>
         )
     } else {
-        return null
+        return (
+            <Grid container justify='center'>
+            <CircularLoading />
+          </Grid>
+        )
     }
 }

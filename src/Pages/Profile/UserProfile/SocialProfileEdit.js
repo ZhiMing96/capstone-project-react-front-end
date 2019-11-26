@@ -123,8 +123,10 @@ function SocialProfileEdit(props) {
             i++
         }
         var temp = profileState.preferred_locations
+        console.log(temp)
         for (var j = 0; j< temp.length;j++ ){
             var i = 0
+            console.log(temp[j])
             while( i < temp[j].length) {
                 if (temp[j].charAt(i) == "'") {
                     temp[j] =   temp[j].slice(0, i) + "'" + temp[j].slice(i)
