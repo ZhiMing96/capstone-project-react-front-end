@@ -46,6 +46,8 @@ export default function Social(props) {
     const classes = useStyles();
     const [tabState, setTabState] = React.useState(0)
     const [ redirect, setRedirect ] = useState(false);
+    const [ refresh, setRefresh ] = useState(false);
+    const [ tabChange, setTabChange ] = useState(false);
     
 
     const redirectProfile=(user_id)=>{
@@ -61,6 +63,8 @@ export default function Social(props) {
 
 
     useEffect(() => {
+        setRefresh(!refresh);
+        setTabChange(!tabChange);
         setTabState(props.location.state && props.location.state.tabIndex ? props.location.state.tabIndex : 0)
     }, [props.location.state])
 
@@ -95,6 +99,7 @@ export default function Social(props) {
     }
 
     const handleChangeIndex = (event, index) => {
+        setTabChange(!tabChange)
         setTabState(index)
     };
     console.log("Printing TAB STATE")
@@ -138,10 +143,10 @@ export default function Social(props) {
 
                     </TabPanel>
                     <TabPanel tabState={tabState} index={1}>
-                        <Invitations redirectProfile={redirectProfile} tabState={tabState} />
+                        <Invitations redirectProfile={redirectProfile} refresh={refresh} tabChange={tabChange}/>
                     </TabPanel>
                     <TabPanel tabState={tabState} index={2} >
-                        <Reco redirectProfile={redirectProfile}/>
+                        <Reco redirectProfile={redirectProfile} refresh={refresh} tabChange={tabChange}/>
                     </TabPanel>
                 </Grid>
             

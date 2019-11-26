@@ -535,7 +535,8 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedArticles[0].jobtag}
+                    {/* {recommendedArticles[0].jobtag} */}
+                    {recommendedArticles[0] && recommendedArticles[0].jobtag === "GROW_CAREER" ? 'Grow Your Career' : 'Searching For Jobs'}
                     </Typography>
                 </div>
                 :''
@@ -850,7 +851,7 @@ function DailyDigest(props) {
                     Recommended Topic
                     </Typography>
                     <Typography variant='body1' style={{color:'#024966',fontWeight:'bold'}}>
-                    {recommendedEvents[0] && recommendedEvents[0].job_phase==="GROW_CAREER" ? 'Grow Your Career' : recommendedEvents[0] && recommendedEvents[0].job_phase==='SEARCH_JOB' ? 'Search For Job':'' } 
+                    {recommendedEvents[0] && recommendedEvents[0].job_phase==="GROW_CAREER" ? 'Grow Your Career' :'Searching For Jobs' } 
                     </Typography>
                 </div>
                 :''

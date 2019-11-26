@@ -300,12 +300,12 @@ export default function AlignItemsList(props) {
                                     </Grid>
                                     <Grid item xs={8} style={{ paddingLeft:'3%' }} >
                                         <Typography gutterBottom>
-                                            {meetup && meetup.other_user && meetup.other_user.work_experience? meetup.other_user.work_experience.job_title : "Unknown Occupation"}
-                                            <EmploymentDetails jobDetails={ meetup && meetup.other_user ? meetup.other_user.work_experience : null }
+                                            {meetup && meetup.other_user && meetup.other_user.work_experience? meetup.other_user.work_experience.job_title : ""}
+                                            {/* <EmploymentDetails jobDetails={ meetup && meetup.other_user ? meetup.other_user.work_experience : null }
                                             username={meetup && meetup.other_user && meetup.other_user.profile
                                                 ? meetup.other_user.profile.username 
                                                 : 'User'
-                                                }/>
+                                                }/> */}
                                         </Typography>
                                     </Grid>
 

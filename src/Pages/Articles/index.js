@@ -475,7 +475,8 @@ function Articles()
                           <Grid item xs={12} container style={{}} direction='column' justify="space-between">
                             <Grid item>
                               <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
-                                  {list.jobtag}
+                                  {/* {list.jobtag} */}
+                                  {list.jobtag === "GROW_CAREER" ? 'Grow Your Career' : 'Searching For Jobs'}
                               </Typography>
                               <Typography className={classes.articleHeading} gutterBottom variant="body1">
                                 {list.title}
@@ -544,7 +545,8 @@ function Articles()
                               <a href={article.link} target='._blank' style={{textDecoration:'none', color:'inherit'}}>
                                 <Typography>
                                   <Box fontWeight='fontWeightBold' fontSize={12}>
-                                    {article.jobtag}
+                                    {/* {article.jobtag} */}
+                                    {article.jobtag === "GROW_CAREER" ? 'Grow Your Career' : 'Searching For Jobs'}
                                   </Box>
                                 </Typography>
                                 <Typography className={classes.ListTitle} variant='h6' style={{}} gutterBottom>
@@ -620,7 +622,8 @@ function Articles()
                               <Grid container direction='column' justify="space-between" style={{height:'-webkit-fill-available'}}>
                                 <Grid item xs={12}>
                                   <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
-                                    {article.jobtag}
+                                    {/* {article.jobtag} */}
+                                    {article.jobtag === "GROW_CAREER" ? 'Grow Your Career' : 'Searching For Jobs'}
                                   </Typography>
                                   <Typography className={classes.articleHeading} gutterBottom variant="body1" >
                                     {article.title}
@@ -671,7 +674,8 @@ function Articles()
                               <Grid container direction='column' justify="space-between" style={{height:'-webkit-fill-available'}}>
                                 <Grid item xs={12}>
                                   <Typography style={{fontWeight:'bold', fontSize:12, textAlign:'left'}}>
-                                    {article.jobtag}
+                                    {/* {article.jobtag} */}
+                                    {article.jobtag === "GROW_CAREER" ? 'Grow Your Career' : 'Searching For Jobs'}
                                   </Typography>
                                   <Typography className={classes.articleHeading} gutterBottom variant="body1" >
                                     {article.title}
