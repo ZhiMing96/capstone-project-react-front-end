@@ -114,7 +114,17 @@ class NavTabs extends React.Component {
         }
       })
     }
-    
+    if(this.props.location.pathname==="/jobs"){
+      this.state.value= 0;
+    } else if(this.props.location.pathname==="/events"){
+      this.state.value= 1;
+    } else if(this.props.location.pathname==="/articles"){
+      this.state.value= 2;
+    }else if (this.props.location.pathname.indexOf("/profile")!== -1){
+      this.state.onProfilePage= true
+    }else{
+      this.state.value= false;
+    }
       setTimeout(this.retrieveAlerts,1000);
       setInterval(this.retrieveAlerts, 20000);
     
@@ -411,7 +421,7 @@ class NavTabs extends React.Component {
 
     return (
       <div>
-        <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler} handleChange={this.handleChange}/>
+        <MobileSideBar show={this.state.sideBarOpen} backdropClickHandler={this.backdropClickHandler} handleChange={this.handleChange} tabState={this.state.value}/>
         {backdrop}
 
         <AppBar position="sticky" color="#FFFFFF" style={{zIndex:50}}>

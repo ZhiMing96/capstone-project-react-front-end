@@ -10,7 +10,7 @@ import JobsIcon from '@material-ui/icons/BusinessCenter';
 import api from '../../api'
 import TelegramIcon from '@material-ui/icons/Telegram';
 import FaceIcon from '@material-ui/icons/Face';
-import  { updateSocialProfile } from '../../redux/actions/socialProfile'
+import { updateSocialProfile } from '../../redux/actions/socialProfile'
 import { connect } from "react-redux";
 import UploadPhoto from '../../images/UploadPhoto.jpg'
 import { useSnackbar } from 'notistack';
@@ -24,72 +24,72 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     maxWidth: 400,
-    height:55,
+    height: 55,
   },
   bigAvatar: {
     margin: 30,
     width: 90,
-    height: 90,backgroundImage: `url(${UploadPhoto})` ,
+    height: 90, backgroundImage: `url(${UploadPhoto})`,
     backgroundSize: 'cover',
   },
   imgProps: {
-    objectFit:'contain',
+    objectFit: 'contain',
     width: "inherit",
     border: 0,
     // height:'100%',
-    height:'fit-content',
+    height: 'fit-content',
     '&:hover': {
-        opacity: 0.55,
+      opacity: 0.55,
     }
   },
   button: {
     margin: theme.spacing(2),
-    width: 180 ,
+    width: 180,
     height: 50
   },
 }));
 
 const profileArray = [
   {
-  name: "PROFILE",
-  url: "/profile"
+    name: "PROFILE",
+    url: "/profile"
   },
   {
-  name: "BOOKMARKS",
-  url: "/profile/bookmarks"
+    name: "BOOKMARKS",
+    url: "/profile/bookmarks"
   },
   {
-  name: "SKILLS",
-  url: "/profile/skills"
+    name: "SKILLS",
+    url: "/profile/skills"
   },
   {
-  name: "SOCIAL ACTIVITY",
-  url: "/profile/social"
+    name: "SOCIAL ACTIVITY",
+    url: "/profile/social"
   },
 ]
 
 const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 
-function MobileSideBar(props){
+function MobileSideBar(props) {
   const classes = useStyles();
   console.log("Props for Mobile Side Bar = " + props.show);
-  let sideBarClasses='mobileSideBar';
-  
+  let sideBarClasses = 'mobileSideBar';
+
   const [value, setValue] = React.useState(0);
   const [name, setName] = React.useState("");
   const [file, setFile] = useState();
   const [base64, setBase64] = useState();
-  const [ profile, setProfile ] = useState();
+  const [profile, setProfile] = useState();
   const [profileImageLink, setProfileImageLink] = React.useState();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const action = key => (
     <Fragment>
-        <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
-            <ClearIcon/>
-        </IconButton>
+      <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color: 'white' }}>
+        <ClearIcon />
+      </IconButton>
     </Fragment>
-);
+  );
 
   const handleChange = (event, newValue) => {
     event.preventDefault()
@@ -99,32 +99,33 @@ function MobileSideBar(props){
   const getProfile = () => {
     console.log("ENTERED GET PROFILE IN  MOBILE SIDEBAR")
     api.profile.get().then(
-      res=>{
+      res => {
         console.log(res.data)
-        if(res.data.profile){
+        if (res.data.profile) {
           console.log(res.data.profile.first_name)
           const firstName = res.data.profile.first_name
           setName(firstName);
           setProfile(res.data.social);
         }
-      } 
+      }
     ).catch(err => {
-        if(err.response) {
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-        }
+      if (err.response) {
+        const status = err.response.status
+        const statusText = err.response.statusText
+        console.log(status);
+        console.log(statusText);
+        enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
+      }
     })
   }
 
-  useEffect (()=>{
+  useEffect(() => {
     getProfile();
     if (props.profile_image_link !== null) {
       setProfileImageLink(props.profile_image_link)
     }
-  },[props])
+    setValue(props.tabState)
+  }, [props])
 
   const changeSideBarProfilePicture = (imgLink) => {
     props.updateSocialProfile({
@@ -136,12 +137,12 @@ function MobileSideBar(props){
 
   }
 
-  
 
-  console.log('name = '+ name)
 
-  if(props.show){
-    sideBarClasses = 'mobileSideBar open' ;
+  console.log('name = ' + name)
+
+  if (props.show) {
+    sideBarClasses = 'mobileSideBar open';
   }
 
   const handleImageChange = e => {
@@ -150,7 +151,7 @@ function MobileSideBar(props){
     e.preventDefault();
     let file = e.target.files[0];
     console.log(file)
-    if(file){
+    if (file) {
       let reader = new FileReader();
       console.log(reader)
       reader.readAsDataURL(file);
@@ -167,32 +168,32 @@ function MobileSideBar(props){
   }
   const handleSubmitNewImg = (base64String) => {
     console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
-      console.log(base64String)
-      api.profile.uploadImage({ 
-        "image" : base64String
-      })
+    console.log(base64String)
+    api.profile.uploadImage({
+      "image": base64String
+    })
       .then(res => {
         console.log(res.data)
-        if(res.data.response_code === 200) {
+        if (res.data.response_code === 200) {
           console.log(res.data.image_link);
           setProfileImageLink(res.data.image_link);
           // getProfile();
           changeSideBarProfilePicture(res.data.image_link);
-          enqueueSnackbar('Profile Picture Updated',  { variant: "", action } );
+          enqueueSnackbar('Profile Picture Updated', { variant: "", action });
         } else {
           console.log(res.data.response_message)
-          enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
+          enqueueSnackbar('Unable to Perform Operation', { variant: "error", action });
         }
-      }).catch(err=> {
-        if(err.response) {
+      }).catch(err => {
+        if (err.response) {
           const status = err.response.status
           const statusText = err.response.statusText
           console.log(status);
           console.log(statusText);
-          if(status  === 413){
-            enqueueSnackbar('File Size Too Large',  { variant: "error", action } );
+          if (status === 413) {
+            enqueueSnackbar('File Size Too Large', { variant: "error", action });
           } else {
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
           }
         }
       })
@@ -201,8 +202,9 @@ function MobileSideBar(props){
   console.log("PRINTING PROPS.IMG LINK  IN MOBILE SIDEBARs")
   console.log(props.profile_image_link)
 
-  return(
-    <nav className={sideBarClasses}> 
+  return (
+    <div>
+    <nav className={sideBarClasses}>
       <Paper square className={classes.root} elevation={3}>
         <Tabs
           value={value}
@@ -212,45 +214,45 @@ function MobileSideBar(props){
           textColor="primary"
           aria-label="icon tabs example"
         >
-          <Tab icon={<JobsIcon/>} style={{minWidth:0}} component={Link} to="/jobs" onClick={props.backdropClickHandler} />
-          <Tab icon={<EventsIcon/>} style={{minWidth:0}} component={Link} to="/events" onClick={props.backdropClickHandler} />
-          <Tab icon={<ArticlesIcon/>} style={{minWidth:0}} component={Link} to="/articles" onClick={props.backdropClickHandler} />
+          <Tab icon={<JobsIcon />} style={{ minWidth: 0 }} component={Link} to="/jobs" onClick={props.backdropClickHandler}/>
+          <Tab icon={<EventsIcon />} style={{ minWidth: 0 }} component={Link} to="/events" onClick={props.backdropClickHandler} />
+          <Tab icon={<ArticlesIcon />} style={{ minWidth: 0 }} component={Link} to="/articles" onClick={props.backdropClickHandler} />
         </Tabs>
       </Paper>
       <Grid container alignItems="center" justify="center">
-        <label for='image_upload' style={{width:'100%', textAlign:'-webkit-center',}}>
+        <label for='image_upload' style={{ width: '100%', textAlign: '-webkit-center', }}>
           <div title={'Change profile picture'} style={{}}>
-            { profile && profile.profile_image_link 
-            ? <Avatar src={ profile.profile_image_link } className={classes.bigAvatar} imgProps={{className: classes.imgProps}}/>
-            :<Avatar src={ defaultImg } className={classes.bigAvatar} imgProps={{className: classes.imgProps}}/>
+            {profile && profile.profile_image_link
+              ? <Avatar src={profile.profile_image_link} className={classes.bigAvatar} imgProps={{ className: classes.imgProps }} />
+              : <Avatar src={defaultImg} className={classes.bigAvatar} imgProps={{ className: classes.imgProps }} />
             }
           </div>
         </label>
-        <input type='file' onChange={handleImageChange} id='image_upload' style={{opacity:0, zIndex:"5px"}}/>
+        <input type='file' onChange={handleImageChange} id='image_upload' style={{ opacity: 0, zIndex: "5px" }} />
 
         <Grid container justify="center">
           <Typography>
-            <Box 
+            <Box
               fontWeight="fontWeightBold"
               fontSize={20}
             >
               {/* {name ? name.toUpperCase() : 'USER'} */}
               {name.toUpperCase()}
-              <br/>
+              <br />
               <IconButton href={"https://telegram.me/testing20190820_bot"} target="_blank">
-              <TelegramIcon />
+                <TelegramIcon />
               </IconButton>
             </Box>
           </Typography>
         </Grid>
         <Grid container justify="center">
-          {profileArray.map((item,index)=>(
+          {profileArray.map((item, index) => (
             <div key={index}>
               <Button
-                variant="outlined" 
+                variant="outlined"
                 className={classes.button}
                 onClick={props.backdropClickHandler}
-                component={Link}  
+                component={Link}
                 to={item.url}
               >
                 {item.name}
@@ -259,8 +261,17 @@ function MobileSideBar(props){
           ))}
         </Grid>
       </Grid>
-      
+
     </nav>
+    {/*}
+    <Switch>
+      <Route exact path="/jobs" component={Jobs} />
+      <Route path="/events" component={Events} />
+      <Route path="/articles" component={Articles} /> 
+    </Switch>
+    */}
+    
+    </div>
   )
 }
 

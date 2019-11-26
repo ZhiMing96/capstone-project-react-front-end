@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Reco from './Recommendations'
 import Invitations from './Invitations';
 import Search from './Search';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 function TabPanel(props) {
     console.log(props);
@@ -39,6 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Social(props) {
+    
     console.log("**** PROPS FOR SOCIAL INDEX ******")
     console.log(props)
     const classes = useStyles();
@@ -79,6 +81,14 @@ export default function Social(props) {
         
     }
 
+    if (window.localStorage.getItem('authToken') === null) {
+        return (
+          <Redirect to={{
+            pathname: '/auth/signin',
+            state: { from: props.location }
+          }} />
+        )
+    }
 
     const handleChangeIndex = (event, index) => {
         setTabState(index)
