@@ -132,12 +132,22 @@ export default function AlignItemsList(props) {
         ? meetup.other_user.profile.user_id
         : null ;
 
+        const message = requestMessage
+        let i;
+        while(i < message.length) {
+        if (message.charAt(i) == "'") {
+            message =   message.slice(0, i) + "'" + message.slice(i)
+            i++
+        }
+        i++
+        }
+
         console.log(targetUser)
         setOpenDialog(false);
 
         api.recommendations.request({
             target_user: targetUser,
-            message: requestMessage
+            message: message
         })
         .then(res => {
             
