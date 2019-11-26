@@ -335,7 +335,7 @@ export default function AlignItemsList(props) {
                                     onChange={handleChange}
                                     label="Type a Message"
                                     required
-                                    inputProps={{ maxLength: 200 }}
+                                    inputProps={{ maxLength: 2000 }}
                                 />
                             </Grid>
                         </Grid>

@@ -204,11 +204,11 @@ export default function Notifications(props) {
             
             newList = currentList.filter(item => {
                 
-                const usernameKeywords = item.from_user.profile.username.toLowerCase();
-                const firstNameKeywords = item.from_user.profile.first_name.toLowerCase();
-                const lastNamekeywords = item.from_user.profile.last_name.toLowerCase();
-                const jobTitleKeywords = item.work_experience.job_title.toLowerCase();
-                const companyKeywords = item.work_experience.company_name.toLowerCase();
+                const usernameKeywords = item.from_user && item.from_user.profile ? item.from_user.profile.username.toLowerCase(): '';
+                const firstNameKeywords = item.from_user && item.from_user.profile ? item.from_user.profile.first_name.toLowerCase(): '';
+                const lastNamekeywords = item.from_user && item.from_user.profile ? item.from_user.profile.last_name.toLowerCase() : '';
+                const jobTitleKeywords = item.work_experience ? item.work_experience.job_title.toLowerCase() : '' ;
+                const companyKeywords = item.work_experience ? item.work_experience.company_name.toLowerCase(): '';
                 const monthKeyword = item.meetup_invite ? getDate(item.meetup_invite.suggested_datetime) : item.recommendation_request ? getDate(item.recommendation_request.create_datetime) : ""
                 console.log("+++++ LOGGING DATE")
                 console.log(monthKeyword)

@@ -188,7 +188,7 @@ export default function UpcomingMeetup(props) {
                             src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
                             imgProps={{className: classes.listAvatarImg}}
-                            onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
+                            onClick={()=> {props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}}
                         />
                     </Grid>
                     <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
@@ -201,12 +201,12 @@ export default function UpcomingMeetup(props) {
                         <Typography>
                         {meetup.other_user && meetup.other_user.work_experience
                         ? meetup.other_user.work_experience.job_title
-                        : "Unknown Occupation"
+                        : ""
                         }
-                        <EmploymentDetails jobDetails={meetup && meetup.other_user ? meetup.other_user.work_experience  : null} username={meetup.other_user && meetup.other_user.profile
+                        {/* <EmploymentDetails jobDetails={meetup && meetup.other_user ? meetup.other_user.work_experience  : null} username={meetup.other_user && meetup.other_user.profile
                             ? meetup.other_user.profile.username 
                             : 'User'
-                        }/>
+                        }/> */}
                         </Typography>
                         
                         <ThemeProvider theme={meetup.suggested_datetime ? null : theme}>

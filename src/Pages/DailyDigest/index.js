@@ -240,6 +240,7 @@ function DailyDigest(props) {
     var urlToken=''
     if(props.match !== undefined){
         urlToken = props.match.params.token;
+
         console.log('urlToken = ' + urlToken);
     } 
     console.log('PROPS FOR Daily Digest COMPONENT')
@@ -384,6 +385,8 @@ function DailyDigest(props) {
                 });
             }
         } else {
+            console.log('Entered Getting DAILY DIGEST From URL ')
+            console.log(urlToken)
             api.dailyDigest.getFromUrl(urlToken)
             .then(res => {
                 console.log(res.data)
@@ -401,9 +404,14 @@ function DailyDigest(props) {
                 }
                 window.localStorage.setItem('authToken', urlToken);
                 api.profile.get() 
-                .then(response => {
-                    let userId = response.data.profile.user_id
-                    props.doLogin(userId) //link to store action to hydrate store, connect
+                .then(res => {
+                    if(res.data.response_code === 200){
+                        let userId = res.data.profile.user_id
+                        props.doLogin(userId) //link to store action to hydrate store, connect
+                    } else {
+                        enqueueSnackbar("Unable To Login!",  { variant: "error", action } );
+                    }
+                    
                 }).catch(err => {
                     if(err.response) {
                         const status = err.response.status
