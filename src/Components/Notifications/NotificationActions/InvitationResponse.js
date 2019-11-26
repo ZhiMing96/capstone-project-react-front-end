@@ -135,6 +135,17 @@ export default function InvitationResponse(props) {
             
         })
     }
+    const formatDate = (dateString) => {
+        console.log("Entered FormatDate in MeetupInvitation")
+        const date = new Date(dateString)
+        var day = date.getDate();
+        console.log(day)
+        var year = date.getFullYear();
+        var month = date.toLocaleString('en-GB', { month: 'short' });
+
+        return day + " " + month + " " + year
+
+    }
 
     console.log("RENDERING INVITATION RESPONSE");
     console.log(alert)
@@ -184,6 +195,11 @@ export default function InvitationResponse(props) {
                             <Typography variant="subtitle2" style={{width:'85%'}} >
                                 {alert && alert.meetup_invite ? alert.meetup_invite.message : 'User did not write a message'}
                             </Typography> 
+                            <Tooltip title="You Can Change it Later!" placement="right-start">
+                                <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
+                                    Suggested Date: <u><b>{formatDate(alert.meetup_invite.suggested_datetime)}</b></u>
+                                </Typography>
+                            </Tooltip>
                         </CardContent>
                         <CardActions style={{ justifyContent : 'flex-end' }}>
                             <Tooltip title="Proceed">
