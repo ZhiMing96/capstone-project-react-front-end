@@ -118,6 +118,7 @@ const useStyles = makeStyles(theme => ({
       marginBottom: 20
     },
     eventListArea: {
+      maxHeight:'250vh',
       [theme.breakpoints.down('xs')]: {
         marginRight: 20,
       },
@@ -333,44 +334,45 @@ function Events() {
       <div>
       </div>
       <Grid container className={classes.eventsArea} style={{ marginTop: '3%' }}>
-        <Grid item lg={7} md={7} sm={6} xs={12} className={classes.eventListArea} >
-          <Typography variant='h4' gutterBottom color='secondary' style={{ textAlign: 'left', fontWeight: 550, paddingLeft: 20, marginBottom: '2%' }}>
-            Recommended
-            </Typography>
-            { recommendedEvents 
-            ?
-            <div style={{ maxHeight: '30%', overflowY: 'auto', }}>
-            {recommendedEvents.map((recommendedEvent, index) => (
-              <div key={index}>
-                <EventListingComponent key={index} event={recommendedEvent} handleSelectedEvent={handleSelectedEvent} handleHrefClick={handleHrefClick} recommended={true}/> 
-              </div>
-            ))}
-          </div>
-            : 
-            <div>
-              <Typography variant='h6' style={{margin:'5%'}}>
-                  No Recommended Events 
+        <Grid item container lg={7} md={7} sm={6} xs={12} className={classes.eventListArea} >
+          <Grid item xs={12}>
+            <Typography variant='h4' gutterBottom color='secondary' style={{ textAlign: 'left', fontWeight: 550, paddingLeft: 20, marginBottom: '2%' }}>
+              Recommended
               </Typography>
+              { recommendedEvents 
+              ?
+              <div style={{ maxHeight: '100%', overflowY: 'auto', }}>
+              {recommendedEvents.map((recommendedEvent, index) => (
+                <div key={index}>
+                  <EventListingComponent key={index} event={recommendedEvent} handleSelectedEvent={handleSelectedEvent} handleHrefClick={handleHrefClick} recommended={true}/> 
+                </div>
+              ))}
             </div>
+              : 
+              <div>
+                <Typography variant='h6' style={{margin:'5%'}}>
+                    No Recommended Events 
+                </Typography>
+              </div>
             }
-        
-
-          <Typography variant='h4' gutterBottom color='secondary' style={{ textAlign: 'left', fontWeight: 550, paddingLeft: 20, marginTop: '7%', marginBottom: '2%' }}>
-            Latest
-            </Typography>
-          <div style={{ maxHeight: '11%', overflowY: 'auto', }}>
-            {allEvents 
-            ? 
-            allEvents.map((list, index) => (
-              // <div key={index}>
-                <EventListingComponent key={index} event={list} handleSelectedEvent={handleSelectedEvent} handleHrefClick={handleHrefClick} />
-                
-              // </div>
-            ))
-            : ""
-          }
-          </div>
-
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant='h4' gutterBottom color='secondary' style={{ textAlign: 'left', fontWeight: 550, paddingLeft: 20, marginTop: '7%', marginBottom: '2%' }}>
+              Latest
+              </Typography>
+            <div style={{ maxHeight: '70vh', overflowY: 'auto', }}>
+              {allEvents 
+              ? 
+              allEvents.map((list, index) => (
+                // <div key={index}>
+                  <EventListingComponent key={index} event={list} handleSelectedEvent={handleSelectedEvent} handleHrefClick={handleHrefClick} />
+                  
+                // </div>
+              ))
+              : ""
+            }
+            </div>
+          </Grid>
         </Grid>
         <Hidden xsDown>
           <Grid item lg={5} md={5} sm={6} xs={12} className={classes.descriptionArea} style={{}}>

@@ -286,7 +286,7 @@ const employmentTypes = [
         breakpoint: 1000, //md
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 1,
+          slidesToScroll: 2,
           infinite: true,
         }
       },
@@ -665,21 +665,19 @@ function Jobs (props) {
             console.log('TRACKING CLICK')
             api.searchJobsAcct.click({ uuid: list.job_uuid })
             .then(response => {
-                console.log(response);
+                console.log(response.data);
                 if(response.data.response_code===200){
                     console.log("Click Stored SUCCESSFULLY ");
-                    const url = jobUrlDefault + list.job_uuid
-                    window.open(url,'_blank');
                 }
             })
             .catch(error =>{
-                console.log(error);
+                console.log(error.response);
             })
         } else {
             console.log('NOT TRACKING CLICK')
-            const url = jobUrlDefault + list.job_uuid
-            window.open(url,'_blank');
         }
+        const url = jobUrlDefault + list.job_uuid
+        window.open(url,'_blank');
         
     }
 

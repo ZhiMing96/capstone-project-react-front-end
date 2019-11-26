@@ -233,7 +233,6 @@ export default function Reco(props) {
                     enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
                 }
             })
-            */
     }
 
     const getRecoRequests = () => {
@@ -430,10 +429,12 @@ export default function Reco(props) {
                                     </List>
                                 </Grid>
                                 :
+                                <div style={{}}>
                                 <Typography color='textSecondary' variant="subtitle1">
                                     Complete A Meetup to Request for a Recommendation!
                                 </Typography>
-                        }
+                                </div>
+                            }
                     </Grid>
                 </Grid>
                 <div>
