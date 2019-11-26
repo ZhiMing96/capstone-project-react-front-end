@@ -287,7 +287,11 @@ console.log(event)
                         <Grid item xs={12} container style={{}} justify="space-between">
                           <Grid item xs={11}>
                             <Typography style={{ fontWeight: 'bold', fontSize: 12, textAlign: 'left' }}>
-                              { event && recommended ? event.job_phase : event && !recommended ?  event.job_phase : ""}
+                              { event && recommended 
+                              ? event.job_phase === "GROW_CAREER" ? 'Grow Your Career' : 'Searching For Jobs'
+                              : event && !recommended 
+                              ? event.job_phase === "GROW_CAREER" ? 'Grow Your Career' : 'Searching For Jobs'
+                              : ""}
                             </Typography>
                             <Typography style={{ paddingTop: 1 }}>
                               <Box className={classes.eventTitle}>
