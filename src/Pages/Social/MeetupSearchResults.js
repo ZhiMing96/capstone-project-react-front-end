@@ -22,7 +22,7 @@ export default function MeetupSearchResults(props) {
                 {list.length>0 ?
                     [list.map(item => (
                         <Grid item xs={7} >
-                        <MeetupCard item={item} redirectProfile={props.redirectProfile} />
+                        <MeetupCard item={item} redirectProfile={props.redirectProfile} fetchData={props.fetchData}/>
                         </Grid>
                     ))]
                     :

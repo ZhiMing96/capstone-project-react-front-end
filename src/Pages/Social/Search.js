@@ -112,8 +112,7 @@ function Search(props) {
 
     const locationsList = ["North", "South", "East", "West", "Central"]
 
-    const handleSubmit = (event) => {
-        event.preventDefault()
+    const handleSearch = ()=>{
         api.meetups.search({
             keyword: newSearch.keyword,
             objective: newSearch.objective,
@@ -148,6 +147,10 @@ function Search(props) {
             .catch(err => {
                 console.log(err)
             })
+    }
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        handleSearch()
     }
 
     const handleDialogOpen = () => {
@@ -278,7 +281,7 @@ function Search(props) {
             </form>
             <Grid container xs={12} justify="center" style={{ textAlign: "-webkit-center"}}>
                 {searchResults?
-                <MeetupSearchResults searchResults={searchResults} redirectProfile={props.redirectProfile} />
+                <MeetupSearchResults searchResults={searchResults} redirectProfile={props.redirectProfile} fetchData={handleSearch} />
                 :
                 <MeetupSuggestions redirectProfile={props.redirectProfile}/>
                 }

@@ -154,7 +154,7 @@ export default function MeetupSuggestions(props) {
                             </Typography>
                             
                                 {stageSuggestions.map(item => (
-                                    <MeetupCard item={item} redirectProfile={props.redirectProfile} />
+                                    <MeetupCard item={item} redirectProfile={props.redirectProfile} fetchData={fetchData}/>
                                 ))}
                             
                         </Grid>
@@ -176,7 +176,7 @@ export default function MeetupSuggestions(props) {
                             </Typography>
                             
                                 {locationSuggestions.map(item => (
-                                    <MeetupCard item={item} redirectProfile={props.redirectProfile} />
+                                    <MeetupCard item={item} redirectProfile={props.redirectProfile} fetchData={fetchData}/>
                                 ))}
                         </Grid>
                         :

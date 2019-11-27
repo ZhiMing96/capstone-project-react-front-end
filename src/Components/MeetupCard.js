@@ -72,6 +72,7 @@ const useStyles = makeStyles(theme => ({
 
 
 function MeetupCard(props) {
+    const {fetchData} = props
     const classes = useStyles();
     const user = props.item.user
     const [openDialog, setOpenDialog] = React.useState(false)//
@@ -119,6 +120,7 @@ function MeetupCard(props) {
                 //setMessageSent(true)               
                 enqueueSnackbar('Invitation sent!',  { variant: "success", action } )
                 setMessage('')
+                fetchData()
             }else{
                 enqueueSnackbar('Error sending invitation',  { variant: "error", action } )
             }
