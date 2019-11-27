@@ -1,5 +1,5 @@
 import React, { useState, Fragment} from 'react';
-import { Grid, Typography, Box, Card, CardActions, CardContent, CardHeader, Avatar, IconButton, Collapse, Button, Paper,TextField } from '@material-ui/core'
+import { Grid, Typography, Box, Card, CardActions, CardContent, CardHeader, Avatar, IconButton, Collapse, Button, Paper,TextField, Divider, Tooltip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import api from '../api';
@@ -12,7 +12,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { useSnackbar } from 'notistack';
 import ClearIcon from '@material-ui/icons/Clear'
-
+import defaultImg from '../images/defaultImg.jpg'
+import viewProfileBG from '../images/viewProfileBG.jpg'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -36,6 +37,8 @@ const useStyles = makeStyles(theme => ({
         marginTop: -10,
         width: 100,
         height: 100,
+        backgroundImage: `url(${viewProfileBG})` ,
+        backgroundSize: 'cover'
     },
     close: {
         float: "right",
@@ -47,7 +50,19 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         padding: theme.spacing(1.5),
-        maxWidth: 400
+        width: '30%',
+        maxWidth: 350,
+        minWidth: '226px',
+        overflowWrap: 'break-word',
+    },
+    carouselAvatarImg : {
+        width: 'inherit',
+        border: 0,
+        height: 'fit-content',
+        objectFit : 'contain' ,
+        '&:hover': {
+            opacity: 0.55,
+        }
     },
 }));
 
@@ -114,12 +129,19 @@ export default function RecoRequestCard(props) {
     return (
         <div>
             <Card className={classes.card}>
+            <Tooltip title="Delete Request" placement="bottom-start">
                 <IconButton aria-label="settings" className={classes.close} size='small'>
                     <CloseIcon onClick={handleClose} fontSize="inherit" className={classes.close} />
                 </IconButton>
+                </Tooltip>
                 <CardContent>
                     <Grid container justify="center" alignItems="center">
-                        <Avatar className={classes.avatar} src={props.request.from_user.social.profile_image_link} />
+                        <Avatar className={classes.avatar} 
+                        src={props.request.from_user.social.profile_image_link? props.request.from_user.social.profile_image_link : defaultImg} 
+                        imgProps={{className: classes.carouselAvatarImg }}
+                        onClick={()=> props.redirectProfile(props.request.from_user.profile
+                            ? props.request.from_user.profile.user_id : null)}
+                        />
                     </Grid>
                     <Grid container justify="center" alignItems="center">
                         <Box alignContent='center'>
@@ -139,18 +161,22 @@ export default function RecoRequestCard(props) {
                         </Box>
                     </Grid>
                 </CardContent>
+                <Divider style={{width: '100%', height: '2px', marginTop:'5px',marginBottom:'5px',}}/>
                 <CardActions disableSpacing >
                     <Grid container justify="center" alignItems="center">
                         <Grid item xs={9}>
+                        <Tooltip title="Write Recommendation" placement="bottom">
                             <Button color="primary" variant="outlined" className={classes.button} onClick={handleOpenDialog} size="small">
                                 Recommend
                             </Button>
+                            </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
-
+                        <Tooltip title="Open Message" placement="bottom-end">
                             <IconButton onClick={showMessage} disabled={props.request.message !== null && props.request.message.length > 0 ? false : true}>
                                 <MessageIcon />
                             </IconButton>
+                            </Tooltip>
                         </Grid>
 
                     </Grid>
@@ -172,7 +198,10 @@ export default function RecoRequestCard(props) {
                     horizontal: 'center',
                 }}
             >
-                <Typography variant="body2">{props.request.message}</Typography>
+                <Typography style={{fontSize:20, fontWeight:'bold', paddingBottom:'2%'}}>
+                    Message
+                </Typography>
+                <Typography variant="body2" style={{paddingBottom:'4%'}} >{props.request.message}</Typography>
             </Popover>
             <Dialog
                 open={openDialog}
@@ -183,7 +212,7 @@ export default function RecoRequestCard(props) {
 
             >
                 <DialogContent >
-                    <DialogContentText color="textPrimary" fontWeight="bold">
+                <DialogContentText style={{ marginTop: 10, fontWeight:'bold' }}>
                         {`Endorse ${props.request.from_user.profile.first_name} for his/her interests and skills or simply share how the conversation went!`}
                     </DialogContentText>
                     <TextField

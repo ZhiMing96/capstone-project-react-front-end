@@ -376,7 +376,7 @@ export default function Reco(props) {
                                         {recoRequests.map((value, index) => {
                                             return (
                                                 <Grid item xs={10}>
-                                                    <RecoRequestCard request={value} removeCard={removeRecoRequest} />
+                                                    <RecoRequestCard request={value} removeCard={removeRecoRequest} redirectProfile={props.redirectProfile}/>
                                                 </Grid>
                                             )
                                         })

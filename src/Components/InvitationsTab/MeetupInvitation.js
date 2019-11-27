@@ -241,7 +241,7 @@ export default function MeetupInvitation(props) {
                 <CardActions disableSpacing >
                     <Grid container justify="center" alignItems="center">
                         <Grid item xs={9}>
-                        <Tooltip title="Accept Invitation!" placement="bottom">
+                        <Tooltip title="Accept Invitation" placement="bottom">
                             <Button color="primary" variant="outlined" className={classes.button} onClick={()=>handleOpenAcceptDialog(invitation.request_id)} size="small">
                             Accept
                             </Button>
@@ -249,7 +249,7 @@ export default function MeetupInvitation(props) {
                         </Grid>
                         <Grid item xs={3}>
                         <Tooltip title={invitation.from_user && invitation.from_user.profile
-                            ? `Open ${invitation.from_user.profile.username}'s Message!`: "Open Message!"} placement="bottom-end">
+                            ? `Open ${invitation.from_user.profile.username}'s Message`: "Open Message"} placement="bottom-end">
                             <IconButton onClick={showMessage} disabled={invitation.message !== null && invitation.message.length > 0 ? false : true}>
                                 <MessageIcon />
                             </IconButton>
@@ -275,10 +275,10 @@ export default function MeetupInvitation(props) {
                     horizontal: 'center',
                 }}
             >
-                <Typography style={{fontSize:20, fontWeight:'bolder', paddingBottom:'2%'}}>
+                <Typography style={{fontSize:20, fontWeight:'bold', paddingBottom:'2%'}}>
                     Message
                 </Typography>
-                <Typography style={{fontSize:15, fontWeight:100, paddingBottom:'4%'}} >
+                <Typography variant="body2" style={{paddingBottom:'4%'}} >
                     {invitation.message && invitation.message.length!==0 ? invitation.message  : "No Message Available"}
                 </Typography>
                 
@@ -340,9 +340,9 @@ export default function MeetupInvitation(props) {
             aria-describedby="alert-dialog-slide-description"
             >
                 <DialogContent style={{ overflowY: 'hidden', margin:40}}>
-                <DialogContentText color="textPrimary" fontWeight="bold">
+                <DialogContentText style={{ marginTop: 10, fontWeight:'bold' }}>
                 <Box m={3} textAlign="center"> {invitation.from_user && invitation.from_user.profile 
-                        ? `Decline Invitation From ${invitation.from_user.profile.username} ?`
+                        ? `Decline Invitation From ${invitation.from_user.profile.username}?`
                         : "Decline Invitation? "
                         }
                 </Box>
