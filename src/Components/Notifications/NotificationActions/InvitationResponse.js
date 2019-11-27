@@ -183,7 +183,9 @@ export default function InvitationResponse(props) {
                             </Typography> 
                             <Tooltip title="You Can Change it Later!" placement="right-start">
                                 <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                                    Suggested Date: <u><b>{formatDate(alert.meetup_invite.suggested_datetime)}</b></u>
+                                {alert.meetup_invite.suggested_datetime 
+                                ? <span>Suggested Date: <u><b>{  formatDate(alert.meetup_invite.suggested_datetime)} </b></u></span>
+                                : '' }
                                 </Typography>
                             </Tooltip>
                         </CardContent>

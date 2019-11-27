@@ -315,7 +315,7 @@ function JobFilterSideBar(props) {
                 ))}
                 </TextField>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                 <FormControl component="fieldset" className={classes.formControl}>
                     <FormLabel component="legend"> Select Government Scheme</FormLabel>
                     <FormGroup>
@@ -329,7 +329,7 @@ function JobFilterSideBar(props) {
                     </FormGroup>
                 </FormControl>
             </Grid>
-            <Divider style={{width:'85%', backgroundColor:'grey', height:1, marginLeft:'5%'}}/>
+            <Divider style={{width:'85%', backgroundColor:'grey', height:1, marginLeft:'5%'}}/> */}
             <Grid item xs={12}>
                 <FormControl component="fieldset" className={classes.formControl}>
                     <FormLabel component="legend"> Select Job Level </FormLabel>
@@ -347,7 +347,7 @@ function JobFilterSideBar(props) {
             <Divider style={{width:'85%', backgroundColor:'grey', height:1, marginLeft:'5%'}}/>
             <Grid item xs={12}>
                 <FormControl component="fieldset" className={classes.formControl}>
-                    <FormLabel component="legend"> Select Government Scheme</FormLabel>
+                    <FormLabel component="legend"> Select Preferred Location</FormLabel>
                     <FormGroup>
                         {location.map((option, areaIndex) => (
                             <div>

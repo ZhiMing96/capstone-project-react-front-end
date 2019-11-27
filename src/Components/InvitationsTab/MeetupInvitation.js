@@ -182,6 +182,7 @@ export default function MeetupInvitation(props) {
 
     const formatDate = (dateString) => {
         console.log("Entered FormatDate in MeetupInvitation")
+        console.log(dateString);
         const date = new Date(dateString)
         var day = date.getDate();
         console.log(day)
@@ -286,7 +287,12 @@ export default function MeetupInvitation(props) {
                 ? 
                 <Tooltip title="You can change it later!" placement="right-start">
                     <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                        Suggested Date: <u><b>{formatDate(invitation.suggested_datetime)}</b></u>
+                        {
+                        invitation.suggested_datetime 
+                        ? <span>Suggested Date: <u><b>{ formatDate(invitation.suggested_datetime)}</b></u></span>
+                        : ''
+                        }
+                        
                     </Typography>
                 </Tooltip>
                 :

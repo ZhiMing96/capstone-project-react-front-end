@@ -251,7 +251,7 @@ function Events() {
         }
         
       }).catch(err=>{
-          enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
+          enqueueSnackbar("Unable to Retrieve Recommended Events in Catch!",  { variant: "error", action } );
       })
     } else {
       api.dailyDigest.getPublic()

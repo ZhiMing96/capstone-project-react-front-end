@@ -215,11 +215,11 @@ export default function AlignItemsList(props) {
                                         ?
                                         <Typography>
                                             {meetup.other_user.work_experience.job_title}
-                                            <EmploymentDetails jobDetails={meetup.other_user.work_experience}
+                                            {/* <EmploymentDetails jobDetails={meetup.other_user.work_experience}
                                             username={meetup.other_user && meetup.other_user.profile
                                                 ? meetup.other_user.profile.username 
                                                 : 'User'
-                                                }/>
+                                                }/> */}
                                         </Typography> 
                                         
                                         : ""}
@@ -234,7 +234,7 @@ export default function AlignItemsList(props) {
                                             color="textSecondary"
                                             style={{ fontSize: 'medium' }}
                                         >
-                                            {formatDate(meetup.suggested_datetime,'short')}
+                                            {meetup.suggested_datetime ? formatDate(meetup.suggested_datetime,'short') : ''}
                                         </Typography>
                                     </Grid>
                                     
@@ -276,20 +276,20 @@ export default function AlignItemsList(props) {
                         <Grid item container xs={12}>
                             <Grid item xs={12} sm={3} className={classes.avatarGrid}>
                                 <Avatar
-                                src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                                src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
                                 alt='list'
                                 className={classes.dialogAvatar}/>
                             </Grid>
                             <Grid item container xs={12} sm={8} style={{}}>
                                 <Grid item container xs={12}>
                                     <Grid item xs={4} className={classes.headers}>
-                                        Name:
+                                        Name
                                     </Grid>
                                     <Grid item xs={8} style={{ paddingLeft:'3%' }}>
                                         <Typography gutterBottom>
                                             {meetup.other_user && meetup.other_user.profile
-                                            ? meetup.other_user.profile.username.toUpperCase()
-                                            : 'USER' 
+                                            ? meetup.other_user.profile.username
+                                            : 'User ' 
                                             }
                                         </Typography>
                                     </Grid>

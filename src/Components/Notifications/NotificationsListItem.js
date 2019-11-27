@@ -14,6 +14,7 @@ import MeetupCompleteResponse from './NotificationActions/MeetupCompleteResponse
 import WriteRecommendation from './NotificationActions/WriteRecommendation' ; 
 import ViewDetails from './NotificationActions/ViewDetails';
 import { useSnackbar } from 'notistack';
+import defaultImg from '../../images/defaultImg.jpg'
 
 
 
@@ -77,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 
   }));
 
-  const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+//   const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function NotificationsListItem(props) {
     const classes = useStyles();
@@ -267,7 +268,7 @@ export default function NotificationsListItem(props) {
                                     <HelpOutlineIcon className={classes.icon}/>
                                 </IconButton>
                                 {openMessage 
-                                ?  <EmploymentDetails buttonExist={true} jobDetails={alert.work_experience} anchorEl={anchorEl} openMessage={openMessage} handleCloseEmploymentDetails={handleCloseEmploymentDetails}/>
+                                ?  <EmploymentDetails buttonExist={true} jobDetails={alert.work_experience} anchorEl={anchorEl} openMessage={openMessage} handleCloseEmploymentDetails={handleCloseEmploymentDetails} username={alert && alert.from_user && alert.from_user.profile  ? alert.from_user.profile.username : ''}/>
                                 : ""
                                 }
                             </Typography>
