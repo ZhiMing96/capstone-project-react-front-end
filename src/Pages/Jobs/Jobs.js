@@ -508,7 +508,7 @@ function Jobs (props) {
             setBypass(false)
             setSearchResults([])
         }
-    },[props])
+    },[props.refresh])
 
     useEffect(()=>{
         console.log("ENTERED USE EFFECT FOR SORTING")

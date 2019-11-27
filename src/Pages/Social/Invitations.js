@@ -584,7 +584,7 @@ function Invitations(props) {
                         : 
                         <div>
                             <Typography variant='subtitle1' style={{color:'grey', marginTop:'5%'}}>
-                                No Upcoming Meetups at the Moment ..
+                                No Upcoming Meetups Without a Date 
                             </Typography>
                         </div>
                         }

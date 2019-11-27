@@ -32,6 +32,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function InvitationResponse(props) {
+    console.log("Path Name in Invitation Response ")
+    var pathname = window.location.pathname; 
+    console.log(pathname)
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes=useStyles();
@@ -77,8 +80,11 @@ export default function InvitationResponse(props) {
             if(res.data.response_code === 200){
                 console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Accepted',  { variant: "success", action } );
-                props.handleSeen();
-                props.enableRedirect();
+                props.handleSeen(false);
+                if (pathname.includes("/profile/social")) {
+                    console.log("REDIRECT")
+                    props.enableRedirect();
+                }
             } else {
                 console.log("**** UNABLE TO ACCEPT INVITATION ****")
                 enqueueSnackbar('Unable to Accept Invitation', { variant: "error", action  });
@@ -103,9 +109,11 @@ export default function InvitationResponse(props) {
             if(res.data.response_code === 200){
                 console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Cancelled Successfully',  { variant: "success", action } );
-                props.handleSeen();
-                props.enableRedirect();
-                // props.enableRedirect();
+                props.handleSeen(false);
+                if (pathname.includes("/profile/social")) {
+                    console.log("REDIRECT")
+                    props.enableRedirect();
+                }
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****");
                 enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
