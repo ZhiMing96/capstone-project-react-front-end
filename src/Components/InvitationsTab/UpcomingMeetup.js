@@ -26,7 +26,7 @@ import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom'
 import viewProfileBG from '../../images/viewProfileBG.jpg'
 import EmploymentDetails from '../EmploymentDetails';
 import { useSnackbar } from 'notistack';
-
+import defaultImg from '../../images/defaultImg.jpg'
 
 
 const theme = createMuiTheme({
@@ -124,7 +124,7 @@ const useStyles = makeStyles(theme => ({
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
+// const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 export default function UpcomingMeetup(props) {
 
     
@@ -185,7 +185,7 @@ export default function UpcomingMeetup(props) {
                     <Grid item xs={3}> 
                     
                         <Avatar
-                            src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                            src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
                             imgProps={{className: classes.listAvatarImg}}
                             onClick={()=> {props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}}

@@ -152,11 +152,7 @@ function Bookmarks() {
             } 
         })
         .catch(err=>{
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            enqueueSnackbar("Unable to Retrieve Bookmarks! ",  { variant: "error", action } );
         })
     }
     
@@ -262,13 +258,8 @@ function Bookmarks() {
             }
         })
         .catch(err => {
-            if(err.response) {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-              }
+                enqueueSnackbar("Error in deleting Bookmark",  { variant: "error", action } );
+              
         })
     }
 

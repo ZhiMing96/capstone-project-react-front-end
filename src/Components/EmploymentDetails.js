@@ -101,17 +101,15 @@ export default function EmploymentDetails(props) {
                 </Typography>
                 
                 
-                <Tooltip title="You Can Change it Later!" placement="right-start">
+                {/* <Tooltip title="You Can Change it Later!" placement="right-start">
                     <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                {/* Career Categories:  */}
-                    {/* <u> */}
+                
                         {jobDetails && jobDetails.job_category_1 ? jobDetails.job_category_1 + " " :""} 
                         {jobDetails && jobDetails.job_category_2 ? jobDetails.job_category_2 + " " :""}
                         {jobDetails && jobDetails.job_category_3 ? jobDetails.job_category_3 + " " :""}
-                    {/* </u> */}
+                  
                     </Typography>
-                </Tooltip>
-            {/* </Popper> */}
+                </Tooltip> */}
             </Popover> 
         </span>
     )

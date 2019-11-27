@@ -308,15 +308,9 @@ function DailyDigest(props) {
                   }
                 } 
               ).catch(err => {
-                if(err.response) {
-                    if(err.response) {
-                        const status = err.response.status
-                        const statusText = err.response.statusText
-                        console.log(status);
-                        console.log(statusText);
-                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                    }
-                  }
+               
+                enqueueSnackbar("Invalid Token",  { variant: "error", action } );
+                   
               })
         }
         
@@ -351,13 +345,8 @@ function DailyDigest(props) {
                         props.history.push("/",{tokenInvalid:true})
                     }
                 }).catch(err=> {
-                    if(err.response){
-                        const status = err.response.status
-                        const statusText = err.response.statusText
-                        console.log(status);
-                        console.log(statusText);
-                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                    }
+                   
+                    enqueueSnackbar("Unable To Retrieve Daily Digest!",  { variant: "error", action } );
                     props.history.push("/",{tokenInvalid:true})
                 });
 
@@ -380,13 +369,7 @@ function DailyDigest(props) {
                         props.history.push("/",{tokenInvalid:true})
                     }
                 }).catch(err=> {
-                    if(err.response){
-                        const status = err.response.status
-                        const statusText = err.response.statusText
-                        console.log(status);
-                        console.log(statusText);
-                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                    }
+                    enqueueSnackbar("Unable To Retrieve Daily Digest!",  { variant: "error", action } );
                     props.history.push("/",{tokenInvalid:true})
                 });
             }
@@ -419,22 +402,11 @@ function DailyDigest(props) {
                     }
                     
                 }).catch(err => {
-                    if(err.response) {
-                        const status = err.response.status
-                        const statusText = err.response.statusText
-                        console.log(status);
-                        console.log(statusText);
-                        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                      }
+                    
+                    enqueueSnackbar("Unable To Login!",  { variant: "error", action } );
                 })
             }).catch(err=> {
-                if(err.response) {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                  }
+                enqueueSnackbar("Unable To Login!",  { variant: "error", action } );;
                 props.history.push("/",{tokenInvalid:true})
             });
         }

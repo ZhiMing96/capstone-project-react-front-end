@@ -467,11 +467,8 @@ function Jobs (props) {
 
                 }
             }).catch( err  => {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                
+                enqueueSnackbar("Unable to Retrieve Recommended Jobs", { variant: "error", action } );
             });
         }
         console.log('*** Getting Public Daily Digest NOW')
@@ -483,13 +480,7 @@ function Jobs (props) {
             setPopularJobs(results.recommended_jobs);
             setLoadingHome(false);
         }).catch(err => {
-            if(err.response) {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-              }
+            enqueueSnackbar("Unable to Retrieve Popular Jobs", { variant: "error", action } );
         });
 
         console.log("Printing URL PARAMS")
@@ -559,11 +550,8 @@ function Jobs (props) {
                 
             })
             .catch(err=>{
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                
+                enqueueSnackbar("Unable to get Search results",  { variant: "error", action } );
                 setLoadingResults(false);
             })
         } else {
@@ -585,11 +573,7 @@ function Jobs (props) {
                 }
                 setLoadingResults(false);
             }).catch(err=>{
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+                enqueueSnackbar("No Listings Available!",  { variant: "", action } );
                 setLoadingResults(false);
             })
         }

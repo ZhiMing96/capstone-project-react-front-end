@@ -147,13 +147,8 @@ export default function NotificationsListItem(props) {
         
         }).catch (err => {
             console.log(err)
-            if(err.response) {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-              }
+      
+                enqueueSnackbar("Unable to mark as seen",  { variant: "error", action } );
         })
     }
 

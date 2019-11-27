@@ -10,7 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu'
-import DefaultImgLink from '../../images/defaultImgLink.svg'
+import DefaultImgLink from '../../images/defaultImg.jpg'
 import Logo from '../../images/logo.png'
 import { Avatar, IconButton, Grid } from '@material-ui/core';
 import { Link, Route, BrowserRouter, Switch } from 'react-router-dom';

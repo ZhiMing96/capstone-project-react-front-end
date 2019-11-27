@@ -226,13 +226,7 @@ export default function Reco(props) {
 
                 setLoadingCompletedMeetups(false)
             }).catch(err => {
-                if (err.response) {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
-                }
+                enqueueSnackbar('Unable to Retrieve Completed Meetups', { variant: "error", action });
             })
     }
 
@@ -348,11 +342,7 @@ export default function Reco(props) {
                     enqueueSnackbar('Unable to Perform Operation', { variant: "error", action });
                 }
             }).catch(err => {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
+                enqueueSnackbar('Unable to Perform Operation', { variant: "error", action });
             })
     }
 

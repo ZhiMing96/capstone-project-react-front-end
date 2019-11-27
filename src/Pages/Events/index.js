@@ -234,14 +234,8 @@ function Events() {
         enqueueSnackbar("Unable to Retrieve All Events!",  { variant: "error", action } );
       }
     }).catch(err=>{
-      if(err.response){
-        const status = err.response.status
-        const statusText = err.response.statusText
-        console.log(status);
-        console.log(statusText);
-        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-      }
-        
+        enqueueSnackbar("Unable to Retrieve All Events!",  { variant: "error", action } );
+
     })
 
     if(token){
@@ -257,11 +251,7 @@ function Events() {
         }
         
       }).catch(err=>{
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+          enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
       })
     } else {
       api.dailyDigest.getPublic()
@@ -275,11 +265,7 @@ function Events() {
           enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
         }
       }).catch(err=>{
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+          enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
       })
     }
   }, []);
@@ -298,15 +284,15 @@ function Events() {
   }
 
   const handleSelectedEvent = (event) => {
-    const venueArray = event.venue ? event.venue.split('·') : null
+    const venueArray = event && event.venue ? event.venue.split('·') : null
     console.log(venueArray)
 
     const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
     console.log(formattedVenue)
     
     setMarkerAddress(formattedVenue);
-    setSelectedEventLocation(event.venue);
-    setSelectedUrl(event.url ? event.url : null);
+    setSelectedEventLocation(event && event.venue ? event.venue :null);
+    setSelectedUrl(event && event.url ? event.url : null);
     setSelectedEvent(event)
   }
 

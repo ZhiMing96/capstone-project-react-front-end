@@ -90,15 +90,8 @@ export default function InvitationResponse(props) {
         }).catch(err => {
             console.log(err);
 
-            if(err.response) {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-            } else  {
             enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
-            }
+            
         })
         
     }
@@ -111,6 +104,7 @@ export default function InvitationResponse(props) {
                 console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Cancelled Successfully',  { variant: "success", action } );
                 props.handleSeen();
+                props.enableRedirect();
                 // props.enableRedirect();
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****");
@@ -123,17 +117,20 @@ export default function InvitationResponse(props) {
             
         }).catch(err => {
             console.log(err);
-            if(err.response) {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-            } else {
                 enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
-            }
             
         })
+    }
+    const formatDate = (dateString) => {
+        console.log("Entered FormatDate in MeetupInvitation")
+        const date = new Date(dateString)
+        var day = date.getDate();
+        console.log(day)
+        var year = date.getFullYear();
+        var month = date.toLocaleString('en-GB', { month: 'short' });
+
+        return day + " " + month + " " + year
+
     }
 
     console.log("RENDERING INVITATION RESPONSE");
@@ -184,6 +181,11 @@ export default function InvitationResponse(props) {
                             <Typography variant="subtitle2" style={{width:'85%'}} >
                                 {alert && alert.meetup_invite ? alert.meetup_invite.message : 'User did not write a message'}
                             </Typography> 
+                            <Tooltip title="You Can Change it Later!" placement="right-start">
+                                <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
+                                    Suggested Date: <u><b>{formatDate(alert.meetup_invite.suggested_datetime)}</b></u>
+                                </Typography>
+                            </Tooltip>
                         </CardContent>
                         <CardActions style={{ justifyContent : 'flex-end' }}>
                             <Tooltip title="Proceed">

@@ -24,6 +24,7 @@ import ClearIcon from '@material-ui/icons/Clear'
 import EmploymentDetails from './EmploymentDetails'
 import viewProfileBG from '../images/viewProfileBG.jpg'
 import { useSnackbar } from 'notistack';
+import defaultImg from '../images/defaultImg.jpg'
 
 
 const useStyles = makeStyles(theme => ({
@@ -87,7 +88,7 @@ const useStyles = makeStyles(theme => ({
     
 }));
 
-const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+// const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function AlignItemsList(props) {
 
@@ -184,7 +185,7 @@ export default function AlignItemsList(props) {
         <div>
             <ListItem alignItems="flex">
                 <ListItemAvatar className={classes.root}>
-                    <Avatar src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                    <Avatar src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link? meetup.other_user.social.profile_image_link : defaultImg} 
                     className={classes.avatar} 
                     imgProps={{className: classes.avatarImg}}
                     onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
