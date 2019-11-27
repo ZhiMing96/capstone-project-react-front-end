@@ -203,8 +203,8 @@ function MeetupCard(props) {
                         <Grid container justify="center" xs={12}>
                             <ErrorIcon color='error' style={{fontSize:"3rem"}}/>
                         </Grid>
-                        <DialogContentText>
-                <Box m={3} textAlign="center"> You have sent an invitation request to {user.profile.first_name} before. </Box>
+                        <DialogContentText style={{ marginTop: 10, fontWeight:'bold' }}>
+                        <Box m={3} textAlign="center"> You have sent an invitation request to {user.profile.first_name} before.. </Box>                           
                         </DialogContentText> 
                     </DialogContent>
                     :

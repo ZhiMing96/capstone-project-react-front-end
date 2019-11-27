@@ -92,6 +92,15 @@ function Search(props) {
             }
         )
         setSearchResults(props.results)
+        if(window.localStorage.getItem('authToken') ===null){ //log out
+            setNewSearch({
+                keyword: '',
+                objective: '',
+                category: '',
+                locations: []
+            })
+            setSearchResults(null)
+        }
     },[props.keyword, props.objective, props.category, props.locations,props.results])
 
     const handleChange = name => (event) => {
