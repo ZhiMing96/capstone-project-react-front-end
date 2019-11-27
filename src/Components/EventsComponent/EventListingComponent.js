@@ -224,7 +224,7 @@ export default function EventListingComponent(props) {
 
   const viewDetails = () => {
     if(recommended){
-      handleSelectedEvent(event[0]);
+      handleSelectedEvent(event);
     } else {
       handleSelectedEvent(event);
     }
