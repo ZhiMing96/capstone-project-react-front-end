@@ -185,7 +185,7 @@ export default function AlignItemsList(props) {
         <div>
             <ListItem alignItems="flex">
                 <ListItemAvatar className={classes.root}>
-                    <Avatar src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                    <Avatar src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link? meetup.other_user.social.profile_image_link : defaultImg} 
                     className={classes.avatar} 
                     imgProps={{className: classes.avatarImg}}
                     onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}

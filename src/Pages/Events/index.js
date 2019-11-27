@@ -291,8 +291,8 @@ function Events() {
     console.log(formattedVenue)
     
     setMarkerAddress(formattedVenue);
-    setSelectedEventLocation(event.venue);
-    setSelectedUrl(event.url ? event.url : null);
+    setSelectedEventLocation(event && event.venue ? event.venue :null);
+    setSelectedUrl(event && event.url ? event.url : null);
     setSelectedEvent(event)
   }
 
