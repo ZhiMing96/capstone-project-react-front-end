@@ -278,7 +278,7 @@ console.log(event)
                   <div style={{ display: 'inline-flex', width: '100%' }}>
                     <CardMedia
                       className={classes.cover}
-                      image = { event && recommended ? event.logo : event && !recommended ? event.logo : defaultImg }
+                      image = { event && recommended && event.logo ? event.logo : event && !recommended && event.logo ? event.logo : defaultImg }
                       title={event.event_title}
                     />
                     <CardContent style={{ paddingLeft: 20, width: '100%' }}>
