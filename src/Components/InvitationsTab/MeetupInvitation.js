@@ -306,13 +306,13 @@ export default function MeetupInvitation(props) {
             aria-describedby="alert-dialog-slide-description"
             >
                 <DialogContent style={{ overflowY: 'hidden', margin:40}}>
-                <DialogContentText color="textPrimary" fontWeight="bold" >
-                <Box m={3} textAlign="center"> {invitation.from_user && invitation.from_user.profile 
+                <DialogContentText style={{ marginTop: 10, fontWeight:'bold' }}>
+                        <Box m={3} textAlign="center"> {invitation.from_user && invitation.from_user.profile 
                         ? `Accept Invitation From ${invitation.from_user.profile.username}?`
                         : "Accept Invitation? "
-                        }
+                        } 
                 </Box>
-                    </DialogContentText>
+                </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                 <Button 
