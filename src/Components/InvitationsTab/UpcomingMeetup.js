@@ -26,7 +26,7 @@ import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom'
 import viewProfileBG from '../../images/viewProfileBG.jpg'
 import EmploymentDetails from '../EmploymentDetails';
 import { useSnackbar } from 'notistack';
-
+import defaultImg from '../../images/defaultImg.jpg'
 
 
 const theme = createMuiTheme({
@@ -124,7 +124,7 @@ const useStyles = makeStyles(theme => ({
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
+// const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 export default function UpcomingMeetup(props) {
 
     

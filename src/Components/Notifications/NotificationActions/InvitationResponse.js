@@ -90,15 +90,8 @@ export default function InvitationResponse(props) {
         }).catch(err => {
             console.log(err);
 
-            if(err.response) {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-            } else  {
             enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
-            }
+            
         })
         
     }
@@ -111,6 +104,7 @@ export default function InvitationResponse(props) {
                 console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Cancelled Successfully',  { variant: "success", action } );
                 props.handleSeen();
+                props.enableRedirect();
                 // props.enableRedirect();
             } else {
                 console.log("**** UNABLE TO CANCEL INVITATION ****");
@@ -123,15 +117,7 @@ export default function InvitationResponse(props) {
             
         }).catch(err => {
             console.log(err);
-            if(err.response) {
-                const status = err.response.status
-                const statusText = err.response.statusText
-                console.log(status);
-                console.log(statusText);
-                enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-            } else {
                 enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
-            }
             
         })
     }

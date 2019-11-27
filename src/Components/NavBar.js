@@ -95,11 +95,7 @@ class NavTabs extends React.Component {
           this.props.doLogin(userId) //HYDRATE
         }
       }).catch(err => {
-        if(err.response) {
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
+       
           const action = key => (
             <Fragment>
                 <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
@@ -107,12 +103,12 @@ class NavTabs extends React.Component {
                 </IconButton>
             </Fragment>
           );
-          this.props.enqueueSnackbar(`Error ${status}: ${statusText}`, {
+          this.props.enqueueSnackbar("Unable to get profile", {
             variant: 'error',
             autoHideDuration: 5000,
             action,
           });
-        }
+        
       })
     }
     if(this.props.location.pathname==="/jobs"){
@@ -161,11 +157,6 @@ class NavTabs extends React.Component {
             });
           }
       }).catch(err => {
-        if(err.response) {
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
           const action = key => (
             <Fragment>
                 <IconButton size="small" onClick={() => { this.props.closeSnackbar(key) }} style={{ color:'white' }}>
@@ -173,12 +164,11 @@ class NavTabs extends React.Component {
                 </IconButton>
             </Fragment>
           );
-          this.props.enqueueSnackbar(`Error ${status}: ${statusText}`, {
+          this.props.enqueueSnackbar("Unable to Retrieve Notifications!", {
             variant: 'error',
             autoHideDuration: 5000,
             action,
           });
-        }
       })
     }
 
@@ -263,7 +253,6 @@ class NavTabs extends React.Component {
           
       }).catch(err => {
         console.log(err)
-        if(err.response) {
           const action = key => (
             <Fragment>
                 <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" style={{ color:'white' }}>
@@ -276,7 +265,6 @@ class NavTabs extends React.Component {
             autoHideDuration: 5000,
             action,
           });
-        }
       })
     }
   }
@@ -464,20 +452,20 @@ class NavTabs extends React.Component {
             </Typography>
           </Grid>
           <Hidden xsDown>
-          <Grid item xs={5} sm={6} md={7} container justify="flex-end">
+          <Grid item xs={5} sm={5} md={6} lg={7} container justify="space-around" style={{ justifyContent: "flex-end"}}>
             <Tabs
               value={this.state.value}
               onChange={this.handleChange}
               textColor ="primary"
-              variant ='fullWidth'
+              // variant ='fullWidth'
               indicatorColor=""
             >
               
-                <Tab label={<span style={{color:'#0091ea',fontSize:18, fontWeight:jobsFont}}>JOBS</span>} component={Link} to="/jobs" />
+                <Tab style={{minWidth:0}} label={<span style={{color:'#0091ea',fontSize:18, fontWeight:jobsFont}}>JOBS</span>} component={Link} to="/jobs" />
 
-                <Tab label={<span style={{color:'#0091ea', fontSize:18, fontWeight:eventsFont}}>EVENTS</span>} component={Link} to="/events" />
+                <Tab style={{minWidth:0}} label={<span style={{color:'#0091ea', fontSize:18, fontWeight:eventsFont}}>EVENTS</span>} component={Link} to="/events" />
 
-                <Tab label={<span style={{color:'#0091ea',fontSize:18, fontWeight:articlesFont}}>ARTICLES</span>} component={Link} to="/articles"/>
+                <Tab style={{minWidth:0}}  label={<span style={{color:'#0091ea',fontSize:18, fontWeight:articlesFont}}>ARTICLES</span>} component={Link} to="/articles"/>
             </Tabs>
             <Grid item onClick = {()=> 
             
@@ -508,7 +496,7 @@ class NavTabs extends React.Component {
             
           </Hidden>
           <Hidden xsDown>
-            <Grid item onClick = {()=> this.setState({value: false})} container xs={8} sm={3} md={2} justify="flex-end" >
+            <Grid item onClick = {()=> this.setState({value: false})} container xs={8} sm={4} md={3} lg={2} justify="flex-end" >
               <Grid item>
                 {this.props.userId ==='' 
                 ? 

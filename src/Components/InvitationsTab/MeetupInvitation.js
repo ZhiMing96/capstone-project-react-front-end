@@ -21,6 +21,7 @@ import EmploymentDetails from '../EmploymentDetails'
 import FaceIcon from '@material-ui/icons/Face';
 import viewProfileBG from '../../images/viewProfileBG.jpg'
 import { useSnackbar } from 'notistack';
+import defaultImg from '../../images/defaultImg.jpg'
 
 const useStyles = makeStyles(theme => ({
     root:{
@@ -139,7 +140,7 @@ const useStyles = makeStyles(theme => ({
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-  const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+//   const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function MeetupInvitation(props) {
     const classes=useStyles();
@@ -208,12 +209,12 @@ export default function MeetupInvitation(props) {
                 <CardContent>
                     <Grid container justify="center" alignItems="center">
                         <Avatar className={classes.avatar} src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
-                    defaultImg
-                    }  
-                    imgProps={{className: classes.carouselAvatarImg }}
-                    onClick={()=> props.redirectProfile(invitation.from_user && invitation.from_user.profile
-                        ? invitation.from_user.profile.user_id : null)}
-                    />
+                        defaultImg
+                        }  
+                        imgProps={{className: classes.carouselAvatarImg }}
+                        onClick={()=> props.redirectProfile(invitation.from_user && invitation.from_user.profile
+                            ? invitation.from_user.profile.user_id : null)}
+                        />
                     </Grid>
                     <Grid container justify="center" alignItems="center">
                         <Box alignContent='center'>

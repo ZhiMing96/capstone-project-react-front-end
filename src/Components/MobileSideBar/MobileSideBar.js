@@ -109,13 +109,9 @@ function MobileSideBar(props) {
         }
       }
     ).catch(err => {
-      if (err.response) {
-        const status = err.response.status
-        const statusText = err.response.statusText
-        console.log(status);
-        console.log(statusText);
-        enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
-      }
+      
+        enqueueSnackbar("Unable to get profile", { variant: "error", action });
+      
     })
   }
 
@@ -185,17 +181,10 @@ function MobileSideBar(props) {
           enqueueSnackbar('Unable to Perform Operation', { variant: "error", action });
         }
       }).catch(err => {
-        if (err.response) {
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          if (status === 413) {
+        
             enqueueSnackbar('File Size Too Large', { variant: "error", action });
-          } else {
-            enqueueSnackbar(`Error ${status}: ${statusText}`, { variant: "error", action });
-          }
-        }
+
+        
       })
   }
   // console.log(file)

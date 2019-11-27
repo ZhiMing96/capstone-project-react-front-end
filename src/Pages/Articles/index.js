@@ -337,13 +337,9 @@ function Articles()
         enqueueSnackbar("Unable to Retrieve Articles!",  { variant: "error", action } );
       }
     }).catch(err => {
-      if(err.response) {
-        const status = err.response.status
-        const statusText = err.response.statusText
-        console.log(status);
-        console.log(statusText);
-        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-      }
+      
+        enqueueSnackbar("Unable to Retrieve Articles!",  { variant: "error", action } );
+      
     });
 
     if(token){
@@ -361,13 +357,9 @@ function Articles()
         setLoading(false)
       })
       .catch(err => {
-        if(err.response) {
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-        }
+       
+          enqueueSnackbar("Unable to Retrieve Recommended Articles!",  { variant: "error", action } );
+        
       })
     } else {
       api.dailyDigest.getPublic()
@@ -383,13 +375,9 @@ function Articles()
         }
         setLoading(false);
       }).catch(err => {
-        if(err.response) {
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-        }
+       
+          enqueueSnackbar("Unable to Retrieve Recommended Articles!",  { variant: "error", action } );
+        
       })
     }
   }, []);

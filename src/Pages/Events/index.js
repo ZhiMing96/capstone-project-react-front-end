@@ -234,14 +234,8 @@ function Events() {
         enqueueSnackbar("Unable to Retrieve All Events!",  { variant: "error", action } );
       }
     }).catch(err=>{
-      if(err.response){
-        const status = err.response.status
-        const statusText = err.response.statusText
-        console.log(status);
-        console.log(statusText);
-        enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-      }
-        
+        enqueueSnackbar("Unable to Retrieve All Events!",  { variant: "error", action } );
+
     })
 
     if(token){
@@ -257,11 +251,7 @@ function Events() {
         }
         
       }).catch(err=>{
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+          enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
       })
     } else {
       api.dailyDigest.getPublic()
@@ -275,11 +265,7 @@ function Events() {
           enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
         }
       }).catch(err=>{
-          const status = err.response.status
-          const statusText = err.response.statusText
-          console.log(status);
-          console.log(statusText);
-          enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+          enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
       })
     }
   }, []);

@@ -257,13 +257,7 @@ function Invitations(props) {
                 }
             }).catch(err => {
                 console.log(err);
-                if(err.response) {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                  }
+                    enqueueSnackbar('Unable to Retrieve Invitations',  { variant: "error", action } );
             })
         }
         
@@ -314,13 +308,7 @@ function Invitations(props) {
                     enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
                 }
             }).catch(err => {
-                if(err.response) {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                  }
+                enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
                 // enqueueSnackbar('Unable to Retrieve Meetups',  { variant: "error", action } );
                 setMeetupsLoading(false);
             })
@@ -377,11 +365,7 @@ function Invitations(props) {
                 enqueueSnackbar('Unable to Accept Invitation',  { variant: "error", action } );
             }
         }).catch(err=> {
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            enqueueSnackbar('Unable to Accept Invitation',  { variant: "error", action } );
         })
         // handleCloseDialog();
     } 
@@ -402,11 +386,7 @@ function Invitations(props) {
                 enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
             }
         }).catch(err=> {
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
         })
     }
 
@@ -444,11 +424,7 @@ function Invitations(props) {
             }
            
         }).catch(err=> {
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
         })
     }; 
 
@@ -474,11 +450,7 @@ function Invitations(props) {
             }
             // handleCloseDialog();
         }).catch(err=> {
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             // handleCloseDialog();
         });
     }
@@ -501,11 +473,7 @@ function Invitations(props) {
             }
             // handleCloseDialog()
         }).catch(err=> {
-            const status = err.response.status
-            const statusText = err.response.statusText
-            console.log(status);
-            console.log(statusText);
-            enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
+            enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             // handleCloseDialog();
         });
     }
@@ -523,13 +491,7 @@ function Invitations(props) {
                     enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
                 }
             }).catch(err => {
-                if(err.response) {
-                    const status = err.response.status
-                    const statusText = err.response.statusText
-                    console.log(status);
-                    console.log(statusText);
-                    enqueueSnackbar(`Error ${status}: ${statusText}`,  { variant: "error", action } );
-                  }
+                enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             })
         }
     }
