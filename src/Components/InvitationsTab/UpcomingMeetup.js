@@ -185,7 +185,7 @@ export default function UpcomingMeetup(props) {
                     <Grid item xs={3}> 
                     
                         <Avatar
-                            src={meetup.other_user && meetup.other_user.social ? meetup.other_user.social.profile_image_link : defaultImg} 
+                            src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
                             imgProps={{className: classes.listAvatarImg}}
                             onClick={()=> {props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}}

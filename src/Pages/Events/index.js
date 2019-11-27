@@ -284,7 +284,7 @@ function Events() {
   }
 
   const handleSelectedEvent = (event) => {
-    const venueArray = event.venue ? event.venue.split('·') : null
+    const venueArray = event && event.venue ? event.venue.split('·') : null
     console.log(venueArray)
 
     const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
