@@ -67,6 +67,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function RecoRequestCard(props) {
+    const { getRecoRequests } = props 
     const classes = useStyles()
     const [recoMessage, setRecoMessage] = useState('')
     const [openDialog, setOpenDialog] = useState(false);
@@ -114,7 +115,7 @@ export default function RecoRequestCard(props) {
                 if (res.data.response_code === 200) {
                     setRecoMessage('')
                     enqueueSnackbar('Recommendation sucessfully submitted!',  { variant: "success", action } );
-
+                    getRecoRequests();
                 } else {
                     console.log("error submitting reco")
                     enqueueSnackbar('Error submitting recommendation',  { variant: "error", action } );
