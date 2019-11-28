@@ -81,6 +81,17 @@ const useStyles = makeStyles(theme => ({
 //   const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function NotificationsListItem(props) {
+    console.log("Entered NotificationsList  ITEM ")
+    console.log(props)
+    console.log("Path Name ")
+    var pathname = window.location.pathname; 
+    console.log(pathname)
+    // if (pathname.includes("/profile/social")) {
+    //     console.log("REDIRECT")
+    // } else {
+    //     console.log("DONT REDIRECT")
+    // }
+
     const classes = useStyles();
     const { alert } = props;
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
@@ -133,7 +144,7 @@ export default function NotificationsListItem(props) {
         }
     }
 
-    const handleSeen = () => { 
+    const handleSeen = (showSnackbar) => { 
         console.log("ENTERED HANDLE SEEN METHOD")
         // setLoadingNotifications(true);
         api.alerts.seen({"alert_id": alert.alert_id })
@@ -142,14 +153,17 @@ export default function NotificationsListItem(props) {
             if(res.data.response_code === 200){
                 console.log("** SUCCESSFULLY MARKED AS SEEN **")
                 console.log("Loading Status = " + loadingNotifications)
-                enqueueSnackbar("Marked as Seen",  { variant: "", action } );
+                if(showSnackbar){
+                    enqueueSnackbar("Marked as Seen",  { variant: "", action } );
+                }
                 props.retrieveAlerts();
             }
         
         }).catch (err => {
             console.log(err)
-      
+            if(showSnackbar){
                 enqueueSnackbar("Unable to mark as seen",  { variant: "error", action } );
+            }
         })
     }
 
@@ -187,7 +201,7 @@ export default function NotificationsListItem(props) {
     }
 
     const enableRedirect = () => {
-        handleSeen();
+        handleSeen(false);
         setRedirect(true);
     }
 
@@ -200,32 +214,37 @@ export default function NotificationsListItem(props) {
 
 
     const handleRedirect = (alertType) => {
-        // handleSeen();
         props.handleClosePopover();
-        if(alertType==="MEETUP_INVITE" || alertType==="ACCEPT_INVITE" || alertType==="CANCEL_MEETUP" || alertType==="CHANGE_MEETUP_DATE"  ) {
-            
-            return (
-                <Redirect
-                  to={{
-                      pathname: "/profile/social",
-                      state: {tabIndex: 1}
-                  }}
-                />
-            )
-        } else if (alertType === ""){
-            return;
-        } else {
-            
-            return (
-                <Redirect
-                  to={{
-                      pathname: "/profile/social",
-                      state: {tabIndex: 2}
-                  }}
-                />
-            )
-        }
 
+
+        // if (pathname.includes("/profile/social")) {
+        //     console.log("REDIRECT")
+            if(alertType==="MEETUP_INVITE" || alertType==="ACCEPT_INVITE" || alertType==="CANCEL_MEETUP" || alertType==="CHANGE_MEETUP_DATE"  ) {
+            
+                return (
+                    <Redirect
+                      to={{
+                          pathname: "/profile/social",
+                          state: {tabIndex: 1}
+                      }}
+                    />
+                )
+            } else if (alertType === ""){
+                return;
+            } else {
+                
+                return (
+                    <Redirect
+                      to={{
+                          pathname: "/profile/social",
+                          state: {tabIndex: 2}
+                      }}
+                    />
+                )
+            }
+        // } else {
+        //     console.log("DONT REDIRECT")
+        // }
     }
 
     // const closePopover = () => {
@@ -282,7 +301,7 @@ export default function NotificationsListItem(props) {
                     <Grid item xs={1} container direction="column" justify="space-between" alignItems="center" style={{textAlign:'end', alignSelf: "flex-start", height:'13vh'}}>
                         <Grid item style={{}}>
                             <Tooltip title="Mark as Seen" placement="bottom-start">
-                                <IconButton size="small" onClick={()=> handleSeen()}  style={{ backgroundColor:'transparent' }}>
+                                <IconButton size="small" onClick={()=> handleSeen(true)}  style={{ backgroundColor:'transparent' }}>
                                     <ClearIcon className={classes.closeIcon}/>
                                 </IconButton>
                             </Tooltip>

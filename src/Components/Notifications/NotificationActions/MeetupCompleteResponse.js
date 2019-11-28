@@ -44,6 +44,10 @@ export default function MeetupCompleteResponse(props) {
     const [ requestMessage, setRequestMessage ] = useState()
     const { alert } = props
 
+    console.log("Path Name in Write a Recommendation ")
+    var pathname = window.location.pathname; 
+    console.log(pathname)
+
     const action = key => (
         <Fragment>
             <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
@@ -107,8 +111,11 @@ export default function MeetupCompleteResponse(props) {
                     variant: "success",
                     action 
                 });
-                props.handleSeen();
-                props.enableRedirect();
+                props.handleSeen(false);
+                if (pathname.includes("/profile/social")) {
+                    console.log("REDIRECT")
+                    props.enableRedirect();
+                }
             } else {
                 enqueueSnackbar('Unable to send Recommendation Request',  { variant: "error", action });
             }
@@ -131,8 +138,11 @@ export default function MeetupCompleteResponse(props) {
                     variant: "success" , 
                     action  
                 });
-                // props.handleSeen();
-                props.enableRedirect();
+                props.handleSeen(false);
+                if (pathname.includes("/profile/social")) {
+                    console.log("REDIRECT")
+                    props.enableRedirect();
+                }
             } else {
                 enqueueSnackbar('Unable to Cancel Recommendation Request',  { 
                     variant: "error" , 

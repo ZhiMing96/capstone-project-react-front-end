@@ -83,6 +83,8 @@ const useStyles = makeStyles(theme => ({
   const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function Notifications(props) {
+    console.log("Entered Notifications Component ")
+    console.log(props)
     const classes = useStyles();
     const [ alerts, setAlerts ] = useState();
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);

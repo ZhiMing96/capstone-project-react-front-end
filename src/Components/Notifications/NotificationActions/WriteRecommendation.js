@@ -50,9 +50,13 @@ export default function MeetupCompleteResponse(props) {
     const [ recoMessage, setRecoMessage ] = useState();
     const { alert } = props
 
+    console.log("Path Name in Write a Recommendation ")
+    var pathname = window.location.pathname; 
+    console.log(pathname)
+
     const action = key => (
         <Fragment>
-            <IconButton onClick={() => { closeSnackbar(key) }}>
+            <IconButton onClick={() => { closeSnackbar(key) }}  size="small" style={{ color:'white' }}>
                 <ClearIcon/>
             </IconButton>
         </Fragment>
@@ -120,8 +124,11 @@ export default function MeetupCompleteResponse(props) {
             if(res.data.response_code === 200){
                 console.log('**** Successfully Submitted the Recommendation ****')
                 enqueueSnackbar('Recommendation Sent Successfully',  { variant: "success", action } );
-                props.handleSeen();
-                // props.enableRedirect();
+                props.handleSeen(false);
+                if (pathname.includes("/profile/social")) {
+                    console.log("REDIRECT")
+                    props.enableRedirect();
+                }
             } else {
                 enqueueSnackbar('Unable to Send Recommendation', { variant: "error", action  } );
             }
@@ -141,8 +148,11 @@ export default function MeetupCompleteResponse(props) {
             if(res.data.response_code===200){
                 console.log('**** Successfully Rejected the Recommendation ****')
                 enqueueSnackbar('Recommendation Rejected Successfully', { variant: "success", action } );
-                props.handleSeen();
-                // props.enableRedirect();
+                props.handleSeen(false);
+                if (pathname.includes("/profile/social")) {
+                    console.log("REDIRECT")
+                    props.enableRedirect();
+                }
             } else {
                 enqueueSnackbar('Unable to Reject Recommendation',  { variant: "error", action  } );
             }

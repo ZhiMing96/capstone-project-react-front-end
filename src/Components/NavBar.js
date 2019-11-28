@@ -79,7 +79,9 @@ class NavTabs extends React.Component {
       messageInfo: "You have a new Notification!",
       notificationLoading: true, 
       fillAlertIcon:false,
+      refresh: false,
     };
+    console.log("Navbar Props")
     console.log(this.props)
     console.log(this.props.location.pathname)
     this.notificationIcon = React.createRef();
@@ -488,7 +490,7 @@ class NavTabs extends React.Component {
               : 
               <Grid item onClick = {()=> this.setState({value: false})} container xs={8} justify="flex-end" > 
                 <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12, height:'fit-content', alignSelf:'center'}}>
-                   <NotificationsNoneIcon onClick={this.handleClick} ref={this.notificationIcon} className={classes.notificationIcon}/>
+                   <NotificationsNoneIcon onClick={this.handleClick} ref={this.notificationIcon} className={classes.notificationIcon} {...this.props}/>
                 </Badge>
                 <Logout handleLogout={this.handleLogout}/>
               </Grid>
@@ -520,7 +522,7 @@ class NavTabs extends React.Component {
                   <PersonIcon />
                 </IconButton>
                 <Badge badgeContent={this.state.alerts  ? this.state.alerts.length : null} color="error" style={{marginRight:12, height:'fit-content', alignSelf:'center'}}>
-                   <NotificationsNoneIcon onClick={this.handleClick} ref={this.notificationIcon} className={classes.notificationIcon} />
+                   <NotificationsNoneIcon onClick={this.handleClick} ref={this.notificationIcon} className={classes.notificationIcon} {...this.props}/>
                 </Badge>
                 
                 <Logout handleLogout={this.handleLogout}/>
@@ -559,8 +561,11 @@ class NavTabs extends React.Component {
       
       <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/jobs" component={Jobs} />
+          {/* <Route exact path="/jobs" component={Jobs} /> */}
+          <Route exact path="/jobs" render={()=> <Jobs refresh={this.state.refresh} {...this.props} />}/>
+
           <Route path="/events" component={Events} />
+
           <Route path="/articles" component={Articles} />
           <Route exact path="/dailydigest" component={DailyDigest} />
           <Route path="/auth/signin" component={Login} />
