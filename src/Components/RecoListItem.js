@@ -59,7 +59,7 @@ export default function AlignItemsList(props) {
                                 style={{ fontWeight: 'bold', lineHeight: 1.1 }}
                                 color="textPrimary"
                             >
-                                {author.profile.first_name}
+                                {author.profile.username}
                             </Typography>
                             <Typography
                                 component="span"
