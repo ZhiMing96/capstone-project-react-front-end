@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('sm')]: {
         width:'350px'
         },
+        [theme.breakpoints.down('xs')]: {
+        width:'330px'
+        },
         height:"fit-content",
         backgroundColor:'white',
         maxHeight: 500, 
