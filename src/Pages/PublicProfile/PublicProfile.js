@@ -9,6 +9,7 @@ import RecoListItem from '../../Components/RecoListItem';
 import WorkExList from './WorkExList';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading'
+import userInvalid from '../../images/userInvalid.png'
 
 const useStyles = makeStyles(theme => ({
     avatar: {
@@ -103,9 +104,12 @@ export default function PublicProfile(props) {
 
     if (user_id === null) {
         return (
+            <div>
+                <img src={userInvalid} style={{ width: '60%' }} />
             <Typography color='textSecondary' variant="h6" style={{ marginTop: 20 }}>
                 User invalid.
             </Typography>
+            </div>
         )
     }
     if (isLoaded) {

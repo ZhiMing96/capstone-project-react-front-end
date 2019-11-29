@@ -22,7 +22,7 @@ export default function WorkExList(props) {
 
     return (
         <List >
-            {props.list.map((experience, index) => {
+            { props && props.list && props.list.map((experience, index) => {
                 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 const startArr = experience.start_date.split("-")
                 const startDate = months[startArr[1] - 1] + " " + startArr[0]
@@ -74,7 +74,7 @@ export default function WorkExList(props) {
                                                 {experience.description}
                                             </Typography>
                                         </Grid>
-                                        {experience.categories.map(val => (
+                                        {experience && experience.categories && experience.categories.map(val => (
                                             <Chip variant="outlined" label={val} style={{ margin: 4, padding: 2 }} size="small" />
                                         ))}
 

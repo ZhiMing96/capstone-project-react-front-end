@@ -42,7 +42,7 @@ export default function AlignItemsList(props) {
         <div>
             <ListItem alignItems="flex">
                 <ListItemAvatar className={classes.root}>
-                    {author.social.profile_image_link !== null && author.social.profile_image_link !== ''
+                    {author && author.social && author.social.profile_image_link !== null && author.social.profile_image_link !== ''
                         ?
                         <Avatar src={author.social.profile_image_link} className={classes.avatar} />
                         :
@@ -59,7 +59,7 @@ export default function AlignItemsList(props) {
                                 style={{ fontWeight: 'bold', lineHeight: 1.1 }}
                                 color="textPrimary"
                             >
-                                {author.profile.first_name}
+                                {author && author.profile? author.profile.username: null}
                             </Typography>
                             <Typography
                                 component="span"
@@ -67,7 +67,7 @@ export default function AlignItemsList(props) {
                                 color="textSecondary"
                                 style={{ fontSize: 'medium' }}
                             >
-                                {author.job_title}
+                                {author ? author.job_title: null}
                             </Typography>
                         </div>
                     }
@@ -79,7 +79,7 @@ export default function AlignItemsList(props) {
                             color="textPrimary"
                             style={{ fontSize: 'medium' }}
                         >
-                            {props.reco.message}
+                            {props && props.reco? props.reco.message: null}
                         </Typography>
                     }
                 />
