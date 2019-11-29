@@ -396,6 +396,9 @@ function Jobs (props) {
     console.log('PROPS FOR JOBS COMPONENT')
     console.log(props)
 
+    
+   
+
     const searchLimit = 100;
     const token= window.localStorage.getItem('authToken');
     console.log(token)
@@ -434,6 +437,14 @@ function Jobs (props) {
     const [anchorEl, setAnchorEl] = useState(null);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+    useEffect(()=>{
+        if(window.location.pathname === "/jobs" && props.searchResults === null) {
+            console.log('Entered props.location && props.location.pathname == "/jobs" && props.searchResults === null')
+             setSearchResults([]);
+        }
+    },[props])
+    
+
     const action = key => (
         <Fragment>
             <IconButton onClick={() => { closeSnackbar(key) }} size="small" style={{ color:'white' }}>
@@ -451,6 +462,7 @@ function Jobs (props) {
     };
     
     const openDetails = Boolean(anchorEl);
+
 
     useEffect(()=>{
         setLoadingHome(true);
@@ -491,7 +503,7 @@ function Jobs (props) {
         if(window.location.pathname !== "/jobs") {
             if(searchResults.length !== 0) {
 
-            } else if (urlParams !== undefined && urlParams !== '') {
+            } else if (urlParams !== undefined && urlParams !== '') { // There is 
 
                 const params = urlParams.split('&')
                 const keywordString = params[0].split('=')
@@ -505,6 +517,7 @@ function Jobs (props) {
             }
             
         }  else { //(window.location.pathname === "/jobs")
+            console.log("ENTERED window.location.pathname === /jobs")
             setBypass(false)
             setSearchResults([])
         }
@@ -536,7 +549,7 @@ function Jobs (props) {
                     console.log('Entered Zero Length Method');
                     setSearchResults(result);
                     enqueueSnackbar("No Listings Available!",  { variant: "", action } );
-                    // openSnackbar();
+                    props.history.push({pathname: "/jobs",})
                 } else if (result !==undefined && result.length!==0){ //Good to go 
                     // const sortedResults = result.sort(compareValues('skills_match', 'desc')) //DEFAULT SORTING
                     // setSearchResults(sortedResults);
@@ -580,7 +593,11 @@ function Jobs (props) {
     }
 
     const handleChange = name => event => {
-        setState({ ...state, [name]: (event.target.value) });
+        var value = event.target.value 
+        if(name ==='minSalary' && value < 0){
+            value = value * -1
+        }
+        setState({ ...state, [name]: (value) });
     };
     
     const handleClickOpen = () => {
@@ -791,7 +808,7 @@ function Jobs (props) {
                                 type="number"
                                 className={classes.textField}
                                 margin="dense"
-                                
+                                InputProps={{ inputProps: { min: 0, max: 10 } }}
                             /> <br/>
                             <TextField
                                 select
@@ -869,7 +886,7 @@ function Jobs (props) {
                                         <JobListingsSkeletonLoading/>
                                         : 
                                         <div>
-                                            <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit}/>
+                                            <JobListings searchResults={currentPosts} keyword={keyword} submitFilter={submitFilter} handleSidebarSubmit={handleSidebarSubmit} refresh={props.refresh}/>
 
                                             <Pagination currentPage={currentPage} postsPerPage={postsPerPage} totalPosts={searchResults.length} paginate={paginate}/> 
                                         </div>

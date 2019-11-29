@@ -184,14 +184,14 @@ export default function InvitationResponse(props) {
                     <Card elevation={0} >
                         <CardContent style={{padding:0, paddingLeft:'8%'}}>
                             <Typography style={{width:'85%', fontSize:20, fontWeight: 'bold'}} gutterBottom >
-                                {alert.from_user ? alert.from_user.profile.username:'User'}'s Message
+                                { alert && alert.from_user ? alert.from_user.profile.username:'User'}'s Message
                             </Typography>
                             <Typography variant="subtitle2" style={{width:'85%'}} >
                                 {alert && alert.meetup_invite ? alert.meetup_invite.message : 'User did not write a message'}
                             </Typography> 
                             <Tooltip title="You Can Change it Later!" placement="right-start">
                                 <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                                {alert.meetup_invite.suggested_datetime 
+                                { alert && alert.meetup_invite && alert.meetup_invite.suggested_datetime
                                 ? <span>Suggested Date: <u><b>{  formatDate(alert.meetup_invite.suggested_datetime)} </b></u></span>
                                 : '' }
                                 </Typography>

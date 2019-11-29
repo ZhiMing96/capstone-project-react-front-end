@@ -66,7 +66,7 @@ export default function NotificationCategory(props) {
                     </Typography>
                 
                 <span style={{display:'inline-flex'}}>
-                    {alerts.length !== 0
+                    {alerts && alerts.length !== 0
                         ? 
                         <span style={{borderRadius:25, paddingLeft:'7%', paddingRight:'7%', borderStyle:'solid', borderWidth:1, alignSelf:'center', width:'90px', borderColor:'maroon'}}>
                             <Typography style={{fontSize:10, textAlign:'center', color:'maroon'}}> 
@@ -75,8 +75,8 @@ export default function NotificationCategory(props) {
                         </span>
                         : ""
                     } 
-                    <IconButton disabled={alerts.length === 0 ? true : false} style={{ padding:0 }}>
-                        {openSection && alerts.length !== 0 ? <ExpandLess /> : <ExpandMore /> }
+                    <IconButton disabled={alerts && alerts.length === 0 ? true : false} style={{ padding:0 }}>
+                        {openSection && alerts && alerts.length !== 0 ? <ExpandLess /> : <ExpandMore /> }
                     </IconButton>
                     
                 </span>

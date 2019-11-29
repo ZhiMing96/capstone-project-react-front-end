@@ -185,21 +185,21 @@ export default function UpcomingMeetup(props) {
                     <Grid item xs={3}> 
                     
                         <Avatar
-                            src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
+                            src={meetup &&  meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
                             className={classes.listAvatar} 
                             imgProps={{className: classes.listAvatarImg}}
-                            onClick={()=> {props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}}
+                            onClick={()=> {props.redirectProfile(meetup &&  meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}}
                         />
                     </Grid>
                     <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
                         <Typography>
-                        {meetup.other_user && meetup.other_user.profile
+                        { meetup &&  meetup.other_user && meetup.other_user.profile
                             ? meetup.other_user.profile.username
                             : ''
                         }
                         </Typography>
                         <Typography>
-                        {meetup.other_user && meetup.other_user.work_experience
+                        { meetup && meetup.other_user && meetup.other_user.work_experience
                         ? meetup.other_user.work_experience.job_title
                         : ""
                         }
@@ -230,7 +230,7 @@ export default function UpcomingMeetup(props) {
                     <Grid container item xs={3} direction="row" justify="space-between"> 
                         <Grid item  xs={12} style={ daysLeft < 5 ? {color:"maroon"} : daysLeft <20 ? {color:"green" } : {color:'grey'}}>
                             <Typography style={{fontWeight:'bold'}}>
-                                {meetup.suggested_datetime
+                                { meetup &&  meetup.suggested_datetime
                                 ?
                                 `${daysLeft} Days left` 
                                 : ""
@@ -243,7 +243,7 @@ export default function UpcomingMeetup(props) {
                                 <Avatar
                                 className={classes.controlButtons}
                                 onClick={() => handleTelegramRedirect(
-                                    meetup.other_user && meetup.other_user.profile
+                                    meetup && meetup.other_user && meetup.other_user.profile
                                     ? meetup.other_user.profile.telegram_id 
                                     : null
                                 )}
@@ -286,7 +286,7 @@ export default function UpcomingMeetup(props) {
                         </Grid>
                         <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%',paddingRight:'7%'}}>
                             <Typography style={{fontSize:'150%', fontWeight:'lighter'}}>
-                                {meetup.other_user && meetup.other_user.profile 
+                                { meetup && meetup.other_user && meetup.other_user.profile 
                                 ? `How was your meetup with ${meetup.other_user.profile.username}?`
                                 : 'How was your meetup? '
                                 }

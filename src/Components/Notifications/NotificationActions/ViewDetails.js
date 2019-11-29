@@ -95,24 +95,24 @@ export default function ViewDetails(props) {
                 }}
             >
                 <div style={{ justifyContent:'space-between' , display:'flex' }}>
-                    {alert.alert_type === "WRITE_RECOMMENDATION" 
+                    {alert && alert.alert_type === "WRITE_RECOMMENDATION" 
                     ?
                     <Card elevation={0} >
                         <CardContent style={{ padding:0, paddingLeft:'3%' }}>
                             <Typography style={{ fontSize:20, fontWeight: 'bold', minWidth:270, maxWidth:315 }} gutterBottom >
-                                {alert.from_user ? alert.from_user.profile.username:'User'}'s Recommendation to You
+                                { alert && alert.from_user ? alert.from_user.profile.username:'User'}'s Recommendation to You
                             </Typography>
                             <Typography variant="subtitle2" style={{}} >
                                 {alert && alert.recommendation_request ?alert.recommendation_request.message : "Empty Recommendation"}
                             </Typography> 
                         </CardContent>
                     </Card>
-                    : alert.alert_type === "CHANGE_MEETUP_DATE" 
+                    : alert && alert.alert_type === "CHANGE_MEETUP_DATE" 
                     ?
                     <Card elevation={0}>
                         <CardContent style={{ padding:0, paddingLeft:'3%' }}>
                             <Typography style={{ fontSize:18, fontWeight: 300, minWidth:270, maxWidth:315, paddingTop:'3%' }} gutterBottom >
-                                Meetup with <b>{alert.from_user ? alert.from_user.profile.username:'User'}</b> resescheduled to <b>{alert && alert.meetup_invite ?
+                                Meetup with <b>{ alert && alert.from_user ? alert.from_user.profile.username:'User'}</b> resescheduled to <b>{alert && alert.meetup_invite ?
                                 formatDate(alert.meetup_invite.suggested_datetime, "short") : 'Unknown Date' }</b>
                             </Typography>
                         </CardContent>

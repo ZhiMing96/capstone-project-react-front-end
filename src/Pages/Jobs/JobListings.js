@@ -126,13 +126,20 @@ function addBookmark(job){
     }
     
 
+    // useEffect(()=>{
+    //     console.log("ENTERED USE EFFECT IN JOBLISTING");
+    //     const results = props.searchResults
+    //     console.log(results);
+    //     setListings(results);
+    //     window.scrollTo(0, 0);
+    // },[props.searchResults])
     useEffect(()=>{
         console.log("ENTERED USE EFFECT IN JOBLISTING");
         const results = props.searchResults
         console.log(results);
         setListings(results);
         window.scrollTo(0, 0);
-    },[props.searchResults])
+    },[props.refresh])
 
     const getDate =(date) => {
         const list = date.split('-')

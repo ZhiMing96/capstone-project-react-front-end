@@ -138,7 +138,7 @@ export default function RecoRequestCard(props) {
                 <CardContent>
                     <Grid container justify="center" alignItems="center">
                         <Avatar className={classes.avatar} 
-                        src={props.request.from_user.social.profile_image_link? props.request.from_user.social.profile_image_link : defaultImg} 
+                        src={props.request.from_user.social && props.request.from_user.social.profile_image_link? props.request.from_user.social.profile_image_link : defaultImg} 
                         imgProps={{className: classes.carouselAvatarImg }}
                         onClick={()=> props.redirectProfile(props.request.from_user.profile
                             ? props.request.from_user.profile.user_id : null)}
