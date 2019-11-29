@@ -137,7 +137,7 @@ function MeetupCard(props) {
                     <CardContent className={classes.content}>
                         <ListItem alignItems="flex" key={user}>
                             <ListItemAvatar className={classes.root}>
-                                {user.social.profile_image_link !== null && user.social.profile_image_link !== ''
+                                {user.social && user.social.profile_image_link !== null && user.social.profile_image_link !== ''
                                     ?
                                     <Avatar src={user.social.profile_image_link} className={classes.avatar} />
                                     :
@@ -154,7 +154,7 @@ function MeetupCard(props) {
                                             style={{ fontWeight: 'bold', lineHeight: 1.1 }}
                                             color="textPrimary"
                                         >
-                                            {user.profile.first_name}
+                                            {user.profile? user.profile.first_name:''}
                                         </Typography>
                                         <Typography
                                             component="span"
@@ -162,7 +162,7 @@ function MeetupCard(props) {
                                             color="textSecondary"
                                             style={{ fontSize: 'medium' }}
                                         >
-                                            {props.item.job_title} 
+                                            {props.item? props.item.job_title:''} 
                                         </Typography>
                                     </div>
                                 }
@@ -174,7 +174,7 @@ function MeetupCard(props) {
                                         color="textPrimary"
                                         style={{ fontSize: 'small' }}
                                     >
-                                        {user.social.description}
+                                        {user.social? user.social.description:''}
                                     </Typography>
                                 }
                             />
@@ -217,7 +217,7 @@ function MeetupCard(props) {
                             <Grid container justify="center" spacing={3}>
 
                                 <Grid item xs={2} style={{ textAlign: '-webkit-center' }}>
-                                    {user.social.profile_image_link !== null && user.social.profile_image_link !== ''
+                                    {user.social && user.social.profile_image_link !== null && user.social.profile_image_link !== ''
                                         ?
                                         <Avatar src={user.social.profile_image_link} className={classes.dialogAvatar} />
                                         :

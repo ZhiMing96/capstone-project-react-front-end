@@ -446,7 +446,7 @@ function CustomisedListItem(props) {
                                     {props.item.description}
                                 </Typography>
                                 </Grid>
-                                {props.item.categories.map(val=>(
+                                {props && props.items && props.items.categories && props.item.categories.map(val=>(
                                     <Chip variant="outlined" label={val} style={{ margin: 4, padding:2 }} size="small"/>
                                 ))}
                                 

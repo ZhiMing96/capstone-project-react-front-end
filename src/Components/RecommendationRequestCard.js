@@ -138,7 +138,7 @@ export default function RecoRequestCard(props) {
                 <CardContent>
                     <Grid container justify="center" alignItems="center">
                         <Avatar className={classes.avatar} 
-                        src={props.request.from_user.social.profile_image_link? props.request.from_user.social.profile_image_link : defaultImg} 
+                        src={props.request && props.request.from_user && props.request.from_user.social && props.request.from_user.social.profile_image_link? props.request.from_user.social.profile_image_link : defaultImg} 
                         imgProps={{className: classes.carouselAvatarImg }}
                         onClick={()=> props.redirectProfile(props.request.from_user.profile
                             ? props.request.from_user.profile.user_id : null)}
@@ -153,10 +153,10 @@ export default function RecoRequestCard(props) {
                                 className={classes.inline}
                                 color="textPrimary"
                             >
-                                {props.request.from_user.profile.username}
+                                {props.request.from_user && props.request.from_user.social? props.request.from_user.profile.username: null}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" gutterBottom style={{ fontSize: 'medium' }}>
-                                {props.request.from_user.job_title}
+                                {props.request.from_user? props.request.from_user.job_title: null}
                                 &nbsp;
                             </Typography>
                         </Box>
