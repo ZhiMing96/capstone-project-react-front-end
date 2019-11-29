@@ -5,6 +5,7 @@ import api from '../../api'
 import { makeStyles } from '@material-ui/core/styles';
 import CircularLoading from '../../Components/LoadingBars/CircularLoading'
 
+/*
 const result = [
     {
         user: {
@@ -75,6 +76,7 @@ const result = [
         }
     }
 ]
+*/
 
 const useStyles = makeStyles(theme => ({
     col: {
