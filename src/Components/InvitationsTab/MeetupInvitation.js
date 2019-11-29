@@ -209,11 +209,11 @@ export default function MeetupInvitation(props) {
                 
                 <CardContent>
                     <Grid container justify="center" alignItems="center">
-                        <Avatar className={classes.avatar} src={invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
+                        <Avatar className={classes.avatar} src={ invitation && invitation.from_user && invitation.from_user.social && invitation.from_user.social.profile_image_link? invitation.from_user.social.profile_image_link : 
                         defaultImg
                         }  
                         imgProps={{className: classes.carouselAvatarImg }}
-                        onClick={()=> props.redirectProfile(invitation.from_user && invitation.from_user.profile
+                        onClick={()=> props.redirectProfile( invitation && invitation.from_user && invitation.from_user.profile
                             ? invitation.from_user.profile.user_id : null)}
                         />
                     </Grid>
@@ -226,13 +226,13 @@ export default function MeetupInvitation(props) {
                                 className={classes.inline}
                                 color="textPrimary"
                             >
-                                {invitation.from_user && invitation.from_user.profile
+                                { invitation && invitation.from_user && invitation.from_user.profile
                             ? invitation.from_user.profile.username 
                             : ''
                         }
                             </Typography>
                             <Typography variant="body2" color="textSecondary" gutterBottom style={{ fontSize: 'medium' }}>
-                            {invitation.from_user.work_experience && invitation.from_user.work_experience.job_title}
+                            { invitation && invitation.from_user && invitation.from_user.work_experience && invitation.from_user.work_experience.job_title}
                             &nbsp;
                             </Typography>
                         </Box>
@@ -243,15 +243,15 @@ export default function MeetupInvitation(props) {
                     <Grid container justify="center" alignItems="center">
                         <Grid item xs={9}>
                         <Tooltip title="Accept Invitation" placement="bottom">
-                            <Button color="primary" variant="outlined" className={classes.button} onClick={()=>handleOpenAcceptDialog(invitation.request_id)} size="small">
+                            <Button color="primary" variant="outlined" className={classes.button} onClick={()=>handleOpenAcceptDialog( invitation ? invitation.request_id : null)} size="small">
                             Accept
                             </Button>
                             </Tooltip>
                         </Grid>
                         <Grid item xs={3}>
-                        <Tooltip title={invitation.from_user && invitation.from_user.profile
+                        <Tooltip title={ invitation && invitation.from_user && invitation.from_user.profile
                             ? `Open ${invitation.from_user.profile.username}'s Message`: "Open Message"} placement="bottom-end">
-                            <IconButton onClick={showMessage} disabled={invitation.message !== null && invitation.message.length > 0 ? false : true}>
+                            <IconButton onClick={showMessage} disabled={ invitation && invitation.message !== null && invitation.message.length > 0 ? false : true}>
                                 <MessageIcon />
                             </IconButton>
                             </Tooltip>
@@ -280,19 +280,14 @@ export default function MeetupInvitation(props) {
                     Message
                 </Typography>
                 <Typography variant="body2" style={{paddingBottom:'4%'}} >
-                    {invitation.message && invitation.message.length!==0 ? invitation.message  : "No Message Available"}
+                    { invitation && invitation.message && invitation.message.length!==0 ? invitation.message  : "No Message Available"}
                 </Typography>
                 
-                {invitation.suggested_datetime 
+                { invitation &&  invitation.suggested_datetime 
                 ? 
                 <Tooltip title="You can change it later!" placement="right-start">
                     <Typography style={{width:'fit-content', fontSize:12, fontWeight:500}}>
-                        {
-                        invitation.suggested_datetime 
-                        ? <span>Suggested Date: <u><b>{ formatDate(invitation.suggested_datetime)}</b></u></span>
-                        : ''
-                        }
-                        
+                        <span>Suggested Date: <u><b>{ formatDate(invitation.suggested_datetime)}</b></u></span>
                     </Typography>
                 </Tooltip>
                 :
@@ -314,7 +309,7 @@ export default function MeetupInvitation(props) {
             >
                 <DialogContent style={{ overflowY: 'hidden', margin:40}}>
                 <DialogContentText style={{ marginTop: 10, fontWeight:'bold' }}>
-                        <Box m={3} textAlign="center"> {invitation.from_user && invitation.from_user.profile 
+                        <Box m={3} textAlign="center"> { invitation && invitation.from_user && invitation.from_user.profile 
                         ? `Accept Invitation From ${invitation.from_user.profile.username}?`
                         : "Accept Invitation? "
                         } 
@@ -329,7 +324,7 @@ export default function MeetupInvitation(props) {
                         Cancel
                 </Button>
                 <Button 
-                    onClick={() => handleAcceptInvitation(invitation.request_id)} color="primary"
+                    onClick={() => handleAcceptInvitation( invitation ? invitation.request_id : null)} color="primary"
                     //className={classes.dialogButtons}
                 >
                         Confirm
@@ -347,7 +342,7 @@ export default function MeetupInvitation(props) {
             >
                 <DialogContent style={{ overflowY: 'hidden', margin:40}}>
                 <DialogContentText style={{ marginTop: 10, fontWeight:'bold' }}>
-                <Box m={3} textAlign="center"> {invitation.from_user && invitation.from_user.profile 
+                <Box m={3} textAlign="center"> { invitation && invitation.from_user && invitation.from_user.profile 
                         ? `Decline Invitation From ${invitation.from_user.profile.username}?`
                         : "Decline Invitation? "
                         }

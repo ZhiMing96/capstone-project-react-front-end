@@ -93,15 +93,15 @@ const useStyles = makeStyles(theme => ({
 export default function AlignItemsList(props) {
 
     const { meetup, handleProcessRequestFromCompletedMeetup, getCompletedMeetups } = props 
+
+    console.log("printing in RecoRequest List Item");
+    console.log(meetup);
+
+
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     const [requestMessage, setRequestMessage] = useState()
     const [openDialog, setOpenDialog] = useState(false);
-    // const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
-    // const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-    const errorMsg = "An Error Has Occured! Request was Unsucessful"
-    const successMsg = "Requst Sent! "
-    const [ hoverOnPic, setHoverOnPic ] = useState(false);
 
     const action = key => (
         <Fragment>
@@ -129,7 +129,7 @@ export default function AlignItemsList(props) {
         console.log(meetup)
         console.log(requestMessage)
         const targetUser = 
-        meetup.other_user && meetup.other_user.profile
+        meetup && meetup.other_user && meetup.other_user.profile
         ? meetup.other_user.profile.user_id
         : null ;
 
@@ -185,10 +185,10 @@ export default function AlignItemsList(props) {
         <div>
             <ListItem alignItems="flex">
                 <ListItemAvatar className={classes.root}>
-                    <Avatar src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link? meetup.other_user.social.profile_image_link : defaultImg} 
+                    <Avatar src={meetup &&  meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link? meetup.other_user.social.profile_image_link : defaultImg} 
                     className={classes.avatar} 
                     imgProps={{className: classes.avatarImg}}
-                    onClick={()=> props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
+                    onClick={()=> props.redirectProfile(meetup &&  meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}
                     />
                 </ListItemAvatar>
                 <Grid container alignItems="center" justify="space-between">
@@ -202,7 +202,7 @@ export default function AlignItemsList(props) {
                                     className={classes.inline}
                                     color="textPrimary"
                                 >
-                                    {meetup.other_user && meetup.other_user.profile
+                                    {meetup &&  meetup.other_user && meetup.other_user.profile
                                     ? meetup.other_user.profile.username
                                     : 'USER' 
                                     }
@@ -211,7 +211,7 @@ export default function AlignItemsList(props) {
                             secondary={
                                 <Grid container >
                                     <Grid item style={{paddingBottom:'3%'}}>
-                                        {meetup.other_user && meetup.other_user.work_experience 
+                                        {meetup &&  meetup.other_user && meetup.other_user.work_experience 
                                         ?
                                         <Typography>
                                             {meetup.other_user.work_experience.job_title}
@@ -234,7 +234,7 @@ export default function AlignItemsList(props) {
                                             color="textSecondary"
                                             style={{ fontSize: 'medium' }}
                                         >
-                                            {meetup.suggested_datetime ? formatDate(meetup.suggested_datetime,'short') : ''}
+                                            {meetup &&  meetup.suggested_datetime ? formatDate(meetup.suggested_datetime,'short') : ''}
                                         </Typography>
                                     </Grid>
                                     
@@ -245,7 +245,7 @@ export default function AlignItemsList(props) {
 
                     <Grid item xs={4} container direction="column">
                         <Grid item style={{textAlign:'end'}}>
-                        <Tooltip title={`Remove If Recommendation From ${meetup.other_user && meetup.other_user.profile? meetup.other_user.profile.username:'User'} Is Not Needed`}  
+                        <Tooltip title={`Remove If Recommendation From ${meetup &&  meetup.other_user && meetup.other_user.profile? meetup.other_user.profile.username:'User'} Is Not Needed`}  
                         placement="top-start">
                             <IconButton style={{ padding:0, backgroundColor:'transparent' }} onClick={()=> handleProcessRequestFromCompletedMeetup(meetup)} size="small">
                                 <CloseIcon className={classes.closeIcon}/>
@@ -276,7 +276,7 @@ export default function AlignItemsList(props) {
                         <Grid item container xs={12}>
                             <Grid item xs={12} sm={3} className={classes.avatarGrid}>
                                 <Avatar
-                                src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
+                                src={meetup &&  meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
                                 alt='list'
                                 className={classes.dialogAvatar}/>
                             </Grid>
@@ -287,7 +287,7 @@ export default function AlignItemsList(props) {
                                     </Grid>
                                     <Grid item xs={8} style={{ paddingLeft:'3%' }}>
                                         <Typography gutterBottom>
-                                            {meetup.other_user && meetup.other_user.profile
+                                            { meetup && meetup.other_user && meetup.other_user.profile
                                             ? meetup.other_user.profile.username
                                             : 'User ' 
                                             }

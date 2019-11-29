@@ -83,7 +83,7 @@ export default function MeetupCompleteResponse(props) {
         console.log(alert)
         console.log(requestMessage)
         const targetUser = 
-        alert.from_user && alert.from_user.profile
+        alert && alert.from_user && alert.from_user.profile
         ? alert.from_user.profile.user_id
         : null ;
 
@@ -225,7 +225,7 @@ export default function MeetupCompleteResponse(props) {
                                     margin="normal"
                                     variant="outlined"
                                     onChange={handleChange}
-                                    label={`Request message for ${alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User" }`}
+                                    label={`Request message for ${alert && alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User" }`}
                                     required
                                     inputProps={{ maxLength: 2000 }}
                                 />

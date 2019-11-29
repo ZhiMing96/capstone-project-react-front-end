@@ -37,6 +37,7 @@ const CarouselArrowNext = (props) => {
   
   const { className, style, onClick } = props;
   console.log(style)
+  if(onClick !== null){
   return (
     <div 
       className={className}
@@ -52,8 +53,10 @@ const CarouselArrowNext = (props) => {
       <KeyboardArrowRightIcon style={{color:'white',marginTop:6}}/>
     </Fab>
     </div>
-    
   );
+  } else {
+    return(<div></div>)
+  }
 }
 const CarouselArrowPrev = (props) => {
   const classes = useStyles();

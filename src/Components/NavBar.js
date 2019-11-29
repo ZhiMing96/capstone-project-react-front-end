@@ -562,7 +562,7 @@ class NavTabs extends React.Component {
       <Switch>
           <Route exact path="/" component={Home} />
           {/* <Route exact path="/jobs" component={Jobs} /> */}
-          <Route exact path="/jobs" render={()=> <Jobs refresh={this.state.refresh} {...this.props} />}/>
+          <Route exact path="/jobs" render={()=> <Jobs searchResults={null} refresh={this.state.refresh} {...this.props} />}/>
 
           <Route path="/events" component={Events} />
 

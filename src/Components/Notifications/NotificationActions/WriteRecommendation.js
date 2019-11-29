@@ -215,7 +215,7 @@ export default function MeetupCompleteResponse(props) {
                     <Card elevation={0} >
                         <CardContent style={{padding:0, paddingLeft:'3%'}}>
                             <Typography style={{width:'85%', fontSize:20, fontWeight: 'bold'}} gutterBottom >
-                                {alert.from_user ? alert.from_user.profile.username:'User'}'s Message
+                                {alert && alert.from_user ? alert.from_user.profile.username:'User'}'s Message
                             </Typography>
                             <Typography variant="subtitle2" style={{width:'85%'}} >
                                 {alert && alert.recommendation_request ? alert.recommendation_request.message : 'User did not write a message'}
@@ -234,7 +234,7 @@ export default function MeetupCompleteResponse(props) {
                     <Card elevation={0} style={{}}>
                         <CardContent>
                             <Typography style={{ textAlign: 'center', fontSize:20, fontWeigh:'bold', width:'90%'}}>
-                                Write a Recommendation for <b>{alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User"}</b> ?
+                                Write a Recommendation for <b>{alert && alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User"}</b> ?
                             </Typography>
                         </CardContent>
                         <CardActions style={{ justifyContent : 'flex-end' }}>
@@ -265,7 +265,7 @@ export default function MeetupCompleteResponse(props) {
                                     margin="normal"
                                     variant="outlined"
                                     onChange={handleChange}
-                                    label={`Recommendation for ${alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User" }`}
+                                    label={`Recommendation for ${alert && alert.from_user && alert.from_user.profile ? alert.from_user.profile.username : "User" }`}
                                     required
                                     inputProps={{ maxLength: 2000 }}
                                 />

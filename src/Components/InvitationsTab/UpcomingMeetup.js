@@ -185,35 +185,25 @@ export default function UpcomingMeetup(props) {
                     <Grid item xs={3}>
 
                         <Avatar
-                            src={meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg}
-                            className={classes.listAvatar}
-                            imgProps={{ className: classes.listAvatarImg }}
-                            onClick={() => { props.redirectProfile(meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null) }}
+                            src={meetup &&  meetup.other_user && meetup.other_user.social && meetup.other_user.social.profile_image_link ? meetup.other_user.social.profile_image_link : defaultImg} 
+                            className={classes.listAvatar} 
+                            imgProps={{className: classes.listAvatarImg}}
+                            onClick={()=> {props.redirectProfile(meetup &&  meetup.other_user && meetup.other_user.profile ? meetup.other_user.profile.user_id : null)}}
                         />
                     </Grid>
-                    <Grid item xs={6} style={{ textAlign: 'left', paddingLeft: '2%' }}>
-                        <Typography
-                            component="div"
-                            variant="h6"
-                            style={{ fontWeight: 'bold', lineHeight: 1.1 }}
-                            color="textPrimary"
-                        >
-                            {meetup.other_user && meetup.other_user.profile
-                                ? meetup.other_user.profile.username
-                                : ''
-                            }
+                    <Grid item xs={6} style={{textAlign:'left', paddingLeft:'2%'}}> 
+                        <Typography>
+                        { meetup &&  meetup.other_user && meetup.other_user.profile
+                            ? meetup.other_user.profile.username
+                            : ''
+                        }
                         </Typography>
-                        <Typography
-                            component="div"
-                            variant="subtitle1"
-                            color="textSecondary"
-                            style={{ fontSize: 'medium' }}
-                        >
-                            {meetup.other_user && meetup.other_user.work_experience
-                                ? meetup.other_user.work_experience.job_title
-                                : ""
-                            }
-                            {/* <EmploymentDetails jobDetails={meetup && meetup.other_user ? meetup.other_user.work_experience  : null} username={meetup.other_user && meetup.other_user.profile
+                        <Typography>
+                        { meetup && meetup.other_user && meetup.other_user.work_experience
+                        ? meetup.other_user.work_experience.job_title
+                        : ""
+                        }
+                        {/* <EmploymentDetails jobDetails={meetup && meetup.other_user ? meetup.other_user.work_experience  : null} username={meetup.other_user && meetup.other_user.profile
                             ? meetup.other_user.profile.username 
                             : 'User'
                         }/> */}
@@ -237,13 +227,13 @@ export default function UpcomingMeetup(props) {
                             </MuiPickersUtilsProvider>
                         </ThemeProvider>
                     </Grid>
-                    <Grid container item xs={3} direction="row" justify="space-between">
-                        <Grid item xs={12} style={daysLeft < 5 ? { color: "maroon" } : daysLeft < 20 ? { color: "green" } : { color: 'grey' }}>
-                            <Typography style={{ fontWeight: 'bold' }}>
-                                {meetup.suggested_datetime
-                                    ?
-                                    `${daysLeft} Days left`
-                                    : ""
+                    <Grid container item xs={3} direction="row" justify="space-between"> 
+                        <Grid item  xs={12} style={ daysLeft < 5 ? {color:"maroon"} : daysLeft <20 ? {color:"green" } : {color:'grey'}}>
+                            <Typography style={{fontWeight:'bold'}}>
+                                { meetup &&  meetup.suggested_datetime
+                                ?
+                                `${daysLeft} Days left` 
+                                : ""
                                 }
 
                             </Typography>
@@ -251,14 +241,14 @@ export default function UpcomingMeetup(props) {
                         <Grid item container xs={12}>
                             <Grid item xs={6} style={{ textAlign: '-webkit-center', alignSelf: 'center' }}>
                                 <Avatar
-                                    className={classes.controlButtons}
-                                    onClick={() => handleTelegramRedirect(
-                                        meetup.other_user && meetup.other_user.profile
-                                            ? meetup.other_user.profile.telegram_id
-                                            : null
-                                    )}
-                                    src={TelegramIcon}
-                                    imgProps={{ className: classes.listAvatarImg }}
+                                className={classes.controlButtons}
+                                onClick={() => handleTelegramRedirect(
+                                    meetup && meetup.other_user && meetup.other_user.profile
+                                    ? meetup.other_user.profile.telegram_id 
+                                    : null
+                                )}
+                                src={TelegramIcon}
+                                imgProps={{className: classes.listAvatarImg }}
                                 />
                             </Grid>
                             <Grid item xs={6} style={{ textAlign: '-webkit-center', alignSelf: 'center' }}>
@@ -294,11 +284,11 @@ export default function UpcomingMeetup(props) {
                                 <ClearIcon style={{ width: 45, height: 45 }} />
                             </IconButton>
                         </Grid>
-                        <Grid item xs={12} style={{ textAlign: 'center', marginBottom: '5%', paddingRight: '7%' }}>
-                            <Typography style={{ fontSize: '150%', fontWeight: 'lighter' }}>
-                                {meetup.other_user && meetup.other_user.profile
-                                    ? `How was your meetup with ${meetup.other_user.profile.username}?`
-                                    : 'How was your meetup? '
+                        <Grid item xs={12} style={{textAlign:'center', marginBottom:'5%',paddingRight:'7%'}}>
+                            <Typography style={{fontSize:'150%', fontWeight:'lighter'}}>
+                                { meetup && meetup.other_user && meetup.other_user.profile 
+                                ? `How was your meetup with ${meetup.other_user.profile.username}?`
+                                : 'How was your meetup? '
                                 }
                             </Typography>
                         </Grid>

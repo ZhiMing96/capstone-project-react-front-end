@@ -259,7 +259,7 @@ export default function NotificationsListItem(props) {
         <ListItem  className={classes.listItem} style={{ paddingLeft:0, }} >
                                 
             <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15,marginLeft:'10%' }} >
-                <Avatar src={alert.from_user && alert.from_user.social && alert.from_user.social.profile_image_link ? alert.from_user.social.profile_image_link : defaultImg } style={{width:50, height:50}} imgProps={{className: classes.imgProps}}/>
+                <Avatar src={alert && alert.from_user && alert.from_user.social && alert.from_user.social.profile_image_link ? alert.from_user.social.profile_image_link : defaultImg } style={{width:50, height:50}} imgProps={{className: classes.imgProps}}/>
             </ListItemAvatar>
             
             <ListItemText>
@@ -267,10 +267,10 @@ export default function NotificationsListItem(props) {
                     <Grid item xs={11} style={{maxWidth:'inherit'}}>
                         <div onClick={() => enableRedirect() } >
                             <Typography style={{fontSize:17, fontWeight:'bold'}} >
-                                { alertHeaders[alertTypes.indexOf(alert.alert_type)].title }
+                                { alertHeaders[alertTypes.indexOf(alert ? alert.alert_type : 0)].title }
                             </Typography>
                             <Typography>
-                                {alert.from_user && alert.from_user.profile 
+                                {alert && alert.from_user && alert.from_user.profile 
                                 ? `${ alertHeaders[alertTypes.indexOf(alert.alert_type)].verb } ${alert.from_user.profile.username}`
                                 
                                 : 'From Unidentified Member'
@@ -278,7 +278,7 @@ export default function NotificationsListItem(props) {
                             </Typography>
                         </div>
                     
-                        { alert.work_experience 
+                        {alert && alert.work_experience 
                         ? 
                         <div>
                             <Typography style={{}}>
