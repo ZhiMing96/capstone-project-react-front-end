@@ -37,7 +37,7 @@ const Page = styled.div`
 const CarouselArrowNext = (props) => {
 
     const { className, style, onClick} = props;
-    // console.log(props)
+    // // console.log(props)
 
     if(onClick !== null){
     return (
@@ -233,21 +233,21 @@ function Invitations(props) {
     );
 
     const getPendingInvitation = () => {
-        console.log("ENTERED PEDNING INVITATION ")
+        // console.log("ENTERED PEDNING INVITATION ")
         if(window.localStorage.getItem('authToken') !== null){
             setInvitationsLoading(true);
             api.invitations.getPending()
             .then(res=>{
-                console.log(res.data)
+                // console.log(res.data)
                 if(res.data.response_code === 200) {
                     // setTimeout(() => {
                         const invitesSent = res.data.invites_sent
                         const invitesReceived = res.data.invites_received
-                        console.log('****** Invitations Sent *****')
-                        console.log(invitesSent);
+                        // console.log('****** Invitations Sent *****')
+                        // console.log(invitesSent);
     
-                        console.log('****** Invitations Received *****')
-                        console.log(invitesReceived);
+                        // console.log('****** Invitations Received *****')
+                        // console.log(invitesReceived);
                         setPendingInvitations(invitesReceived);
                         setInvitationsLoading(false);
                         // props.updatePendingInvitations(invitesReceived)
@@ -256,7 +256,7 @@ function Invitations(props) {
                     enqueueSnackbar('Unable to Retrieve Invitations',  { variant: "error", action } );
                 }
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                     enqueueSnackbar('Unable to Retrieve Invitations',  { variant: "error", action } );
             })
         }
@@ -264,24 +264,24 @@ function Invitations(props) {
     }
 
     const getUpcomingMeetups = () => {
-        console.log("ENTERED UPCOMING MEETUPS ")
+        // console.log("ENTERED UPCOMING MEETUPS ")
         if(window.localStorage.getItem('authToken') !== null){
             setMeetupsLoading(true);
             api.invitations.getCurrent()
             .then(res=> {
-                console.log(res.data)
+                // console.log(res.data)
                 if(res.data.response_code === 200) {
                     
                     // setTimeout(() => {
                         var invitesSent = res.data.invites_sent
                         var invitesReceived = res.data.invites_received
-                        console.log('****** Invitations Sent *****')
-                        console.log(invitesSent);
-                        console.log('****** Invitations Received *****')
-                        console.log(invitesReceived);
+                        // console.log('****** Invitations Sent *****')
+                        // console.log(invitesSent);
+                        // console.log('****** Invitations Received *****')
+                        // console.log(invitesReceived);
                         var combined = invitesSent.concat(invitesReceived)
-                        console.log('****** Combined Invitations *****')
-                        console.log(combined);
+                        // console.log('****** Combined Invitations *****')
+                        // console.log(combined);
                         // props.updateUpcomingMeetups(combined)
     
                         var tempWithDate = [];
@@ -289,9 +289,9 @@ function Invitations(props) {
         
                         for(let i=0; i<combined.length;i++){
                             const invitation = combined[i]
-                            console.log(invitation)
+                            // console.log(invitation)
                             if(invitation.accepted === 1 && invitation.is_completed === null){
-                                console.log(invitation.suggested_datetime)
+                                // console.log(invitation.suggested_datetime)
                                 if(invitation.suggested_datetime !== null){
                                     tempWithDate.push(invitation)
                                 } else {
@@ -318,49 +318,49 @@ function Invitations(props) {
 
     
     useEffect(()=>{
-        console.log("Getting Upcoming Meetups");
+        // console.log("Getting Upcoming Meetups");
         // setTimeout(() => {getUpcomingMeetups() } , 1000);
         getUpcomingMeetups();
         
-        console.log("Getting Pending Invitations");
+        // console.log("Getting Pending Invitations");
        
         // setInvitationsLoading(true);
         // setTimeout(() => {getPendingInvitation() } , 3000);
         getPendingInvitation()
-        console.log("INVITATION PROPS")
-        console.log(props)
+        // console.log("INVITATION PROPS")
+        // console.log(props)
     },[props.tabChange]) 
 
     useEffect(()=>{
-        console.log("Getting Upcoming Meetups");
+        // console.log("Getting Upcoming Meetups");
         // setTimeout(() => {getUpcomingMeetups() } , 1000);
         getUpcomingMeetups();
         
-        console.log("Getting Pending Invitations");
+        // console.log("Getting Pending Invitations");
        
         // setInvitationsLoading(true);
         // setTimeout(() => {getPendingInvitation() } , 3000);
         getPendingInvitation()
-        console.log("INVITATION PROPS")
-        console.log(props)
+        // console.log("INVITATION PROPS")
+        // console.log(props)
     },[props.refresh]) 
 
     const handleAcceptInvitation = (requestId) => {
-        console.log(requestId)
+        // console.log(requestId)
         api.invitations.acceptInvitation({request_id: requestId})
         .then(res=>{
             if(res.data.response_code === 200){
-                console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
+                // console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Accepted',  { variant: "success", action } );
                 
-                console.log("Getting Pending Invitations");
+                // console.log("Getting Pending Invitations");
                 getPendingInvitation();
-                console.log("Getting Upcoming Meetups");
+                // console.log("Getting Upcoming Meetups");
                 getUpcomingMeetups();
                 
             } else {
-                console.log("**** UNABLE TO ACCEPT INVITATION ****")
-                console.log(res.data.response_code + res.data.response_message)
+                // console.log("**** UNABLE TO ACCEPT INVITATION ****")
+                // console.log(res.data.response_code + res.data.response_message)
 
                 enqueueSnackbar('Unable to Accept Invitation',  { variant: "error", action } );
             }
@@ -372,17 +372,17 @@ function Invitations(props) {
 
     const handleDeclineInvitation = invitation =>{
 
-        console.log(invitation)
+        // console.log(invitation)
         api.invitations.rejectInvitation({request_id: invitation.request_id})
         .then(res => {
             if(res.data.response_code === 200){
-                console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
+                // console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Cancelled Successfully',  { variant: "success", action } );
                 getPendingInvitation();
                 // setReloadInvitation(true);
             } else {
-                console.log("**** UNABLE TO CANCEL INVITATION ****")
-                console.log(res.data.response_code + res.data.response_message)
+                // console.log("**** UNABLE TO CANCEL INVITATION ****")
+                // console.log(res.data.response_code + res.data.response_message)
                 enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
             }
         }).catch(err=> {
@@ -391,35 +391,35 @@ function Invitations(props) {
     }
 
     const handleSelectedMeetup = meetup => {
-        console.log("***** Entered Handled Select Meetup ****");
-        console.log(meetup);
+        // console.log("***** Entered Handled Select Meetup ****");
+        // console.log(meetup);
         setSelectedMeetup(meetup);
 
     }
     
     const handleDateChange = date => {
-        console.log('*** ENTERED handleDateChange ****')
+        // console.log('*** ENTERED handleDateChange ****')
         const processDate = new Date(date)
 
         const formattedDate= processDate.getFullYear() + "-" + (processDate.getMonth()+1) + "-" + processDate.getDate() + " " + + processDate.getHours() + ":" + processDate.getMinutes() + ":" + processDate.getSeconds() 
-        console.log(formattedDate)  
-        console.log(selectedMeetup ?selectedMeetup.request_id:'NO SELECTED MEETUP')
+        // console.log(formattedDate)  
+        // console.log(selectedMeetup ?selectedMeetup.request_id:'NO SELECTED MEETUP')
 
         api.meetups.changeDate({
             request_id: selectedMeetup ? selectedMeetup.request_id : null,
             datetime: formattedDate,
         })
         .then(res=>{
-            console.log(res.data);
+            // console.log(res.data);
             if(res.data.response_code === 200){
 
-                console.log('***** DATE CHANGE RECORDED SUCESSFULLY ****');
+                // console.log('***** DATE CHANGE RECORDED SUCESSFULLY ****');
                 enqueueSnackbar('Meetup Date Changed',  { variant: "success", action } );
                 setSelectedMeetup(null);
                 getUpcomingMeetups()
 
             } else {
-                console.log('***** DATE CHANGE NOT RECORDED ****')
+                // console.log('***** DATE CHANGE NOT RECORDED ****')
                 enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
            
@@ -433,18 +433,18 @@ function Invitations(props) {
     
 
     const handleMeetupConfirmation = (meetup) => {
-        console.log(meetup)
+        // console.log(meetup)
 
         api.meetups.completeMeetup({request_id: meetup.request_id})
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             if(res.data.response_code===200){
                 enqueueSnackbar('Meetup Completed',  { variant: "success", action } );
                 getUpcomingMeetups()
                 // setReloadMeetup(!reloadMeetup);
                 // setOpenMeetupDialog(false);
             } else {
-                console.log('**** ERROR IN CONFIRMING MEETUP ***');
+                // console.log('**** ERROR IN CONFIRMING MEETUP ***');
 
                 enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
@@ -455,11 +455,11 @@ function Invitations(props) {
         });
     }
     const handleMeetupCancellation = (meetup) => {
-        console.log(meetup)
+        // console.log(meetup)
 
         api.meetups.cancelMeetup({request_id: meetup.request_id})
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             if(res.data.response_code===200){
                 enqueueSnackbar('Meetup Cancelled',  { variant: "success", action } );
 
@@ -468,7 +468,7 @@ function Invitations(props) {
                 // setOpenMeetupDialog(false);
                 // setOpenMeetupCancellation(true);
             } else {
-                console.log('**** ERROR IN CANCELLING MEETUP ***');
+                // console.log('**** ERROR IN CANCELLING MEETUP ***');
                 enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             }
             // handleCloseDialog()
@@ -481,7 +481,7 @@ function Invitations(props) {
         if(telegramId!==null){
             api.meetups.getTeleLink({telegram_id : telegramId})
             .then(res=>{
-                console.log(res.data)
+                // console.log(res.data)
                 if(res.data.response_code === 200){
                     const teleLink = res.data.telegram_link
                     if(teleLink){

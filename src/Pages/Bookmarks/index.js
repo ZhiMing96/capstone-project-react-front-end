@@ -128,7 +128,7 @@ function Bookmarks() {
     function getBookmarks() {
         setLoading(true);
         const token = window.localStorage.getItem('authToken');
-        console.log(token);
+        // console.log(token);
         const options ={
             headers: {"Authorization" : "Token " + token}
         }
@@ -136,10 +136,10 @@ function Bookmarks() {
         api.bookmarks.get()
         .then(response=>{
             setLoading(false);
-            console.log(response);
+            // console.log(response);
             const data = response.data
             if(data.response_code===200){
-                console.log(data.bookmark_list)
+                // console.log(data.bookmark_list)
                 const list = data.bookmark_list
                 if(list.length!==0){
                     setBookmarksAvailable(true);
@@ -200,12 +200,12 @@ function Bookmarks() {
     // };
 
     const handleClick = () => {
-        console.log("Entered SnackBar open")
+        // console.log("Entered SnackBar open")
         if(currentPosts.length === 0 && currentPage===1){
             setBookmarksAvailable(false);
         }
         setOpenDialog(false);
-        console.log("id= "+state.id +" and index= "+ state.index);
+        // console.log("id= "+state.id +" and index= "+ state.index);
         deleteBookmark();
 
         // const message = `${state.job_data.title} Deleted from bookmarks!`
@@ -223,8 +223,8 @@ function Bookmarks() {
     };
 
     function deleteBookmark(){
-        console.log("ENTERED DELETE BOOKMARKS METHOD");
-        console.log("index = "+ state.index) ;
+        // console.log("ENTERED DELETE BOOKMARKS METHOD");
+        // console.log("index = "+ state.index) ;
         var updatedList = [];
 
         if(state.index===(bookmarks.length-1)){
@@ -236,8 +236,8 @@ function Bookmarks() {
        
 
         
-        console.log("after remove = ");
-        console.log(updatedList);
+        // console.log("after remove = ");
+        // console.log(updatedList);
         const token = window.localStorage.getItem('authToken');
 
         const options ={
@@ -247,10 +247,10 @@ function Bookmarks() {
         
         api.bookmarks.remove({ "bookmark_id": state.id })
         .then(response => {
-            console.log(response)
+            // console.log(response)
             if(response.data.response_code === 200){
                 setBookmarks(updatedList);
-                console.log('bookmark deleted successfully')
+                // console.log('bookmark deleted successfully')
                 enqueueSnackbar(`${state.job_data.title} Deleted from bookmarks!`,  { variant: "", action } );
                 
             } else {
@@ -281,7 +281,7 @@ function Bookmarks() {
             job_data: bookmark,
         })
         setOpenDialog(true);
-        console.log(state);
+        // console.log(state);
 
     }
     const handleClickClose = () =>{
@@ -301,12 +301,12 @@ function Bookmarks() {
     },[currentPosts])
 
     useEffect(()=>{
-        console.log("Bookmarks Availability: " +bookmarksAvailable)
+        // console.log("Bookmarks Availability: " +bookmarksAvailable)
     },[bookmarksAvailable])
 
     //Change Page 
     
-    console.log("page number = " + currentPage)
+    // console.log("page number = " + currentPage)
 
     return (
         <ThemeProvider theme={theme}> 

@@ -29,18 +29,18 @@ export default function EmploymentDetails(props) {
     
 
     const showMessage = (event) => {
-        console.log("ENTERED show Message in employmentDetails.js")
+        // console.log("ENTERED show Message in employmentDetails.js")
         event.preventDefault();
-        console.log(event)
-        console.log(event.currentTarget)
-        console.log(event.relatedTarget)
+        // console.log(event)
+        // console.log(event.currentTarget)
+        // console.log(event.relatedTarget)
         const anchor = event.currentTarget
         setAnchorEl(anchor );
         setOpenMessage(true)
     }
 
     const closeMessage = () => {
-        console.log("ENTERED closeMessage in employmentDetails.js")
+        // console.log("ENTERED closeMessage in employmentDetails.js")
         setOpenMessage(false)
         // setAnchorEl(null)
     }
@@ -52,10 +52,10 @@ export default function EmploymentDetails(props) {
 
     },[props])
 
-    console.log("PRINTING FKIN ANCHOR EL")
-    console.log(anchorEl)
-    console.log(props.anchorEl)
-    console.log(jobDetails)
+    // console.log("PRINTING FKIN ANCHOR EL")
+    // console.log(anchorEl)
+    // console.log(props.anchorEl)
+    // console.log(jobDetails)
     return (
         <span>
             {!props.buttonExist

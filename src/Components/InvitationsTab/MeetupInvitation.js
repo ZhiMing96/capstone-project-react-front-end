@@ -144,7 +144,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function MeetupInvitation(props) {
     const classes=useStyles();
-    // console.log(props)
+    // // console.log(props)
     const { invitation, handleDeclineInvitation, handleAcceptInvitation } = props
     const [OpenAcceptInvitationDialog, setOpenAcceptInvitationDialog] = useState(false); 
     const [OpenRejectInvitationDialog, setOpenRejectInvitationDialog] = useState(false); 
@@ -155,7 +155,7 @@ export default function MeetupInvitation(props) {
 
     
 
-    console.log(props)
+    // console.log(props)
 
     const handleOpenRejectDialog = () => {
         setOpenRejectInvitationDialog(true);
@@ -171,7 +171,7 @@ export default function MeetupInvitation(props) {
     }
 
     const showMessage = (event) => {
-        console.log(event.currentTarget)
+        // console.log(event.currentTarget)
         setAnchorEl(event.currentTarget);
         setOpenMessage(true)
     }
@@ -181,11 +181,11 @@ export default function MeetupInvitation(props) {
     }
 
     const formatDate = (dateString) => {
-        console.log("Entered FormatDate in MeetupInvitation")
-        console.log(dateString);
+        // console.log("Entered FormatDate in MeetupInvitation")
+        // console.log(dateString);
         const date = new Date(dateString)
         var day = date.getDate();
-        console.log(day)
+        // console.log(day)
         var year = date.getFullYear();
         var month = date.toLocaleString('en-GB', { month: 'short' });
 

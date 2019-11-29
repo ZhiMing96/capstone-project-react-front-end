@@ -170,28 +170,28 @@ function JobFilterSideBar(props) {
     const [ selectedJobCategory, setSelectedJobCategory ] = useState('')
 
     const handleSchemeChange = index => event => {
-        console.log('*** ENTERED HANDLE SCHEME CHANGE METHOD  ***')
-        console.log(index)
-        console.log(event.target.value)
+        // console.log('*** ENTERED HANDLE SCHEME CHANGE METHOD  ***')
+        // console.log(index)
+        // console.log(event.target.value)
         var tempArray = [...governmentSchemes];
         tempArray[index].value = !tempArray[index].value;
         setGovernmentSchemes(tempArray)
         formQuery();
     };
     const handleJobLevelChange = (name , index) => event => {
-        console.log('*** ENTERED HANDLE JOB LEVEL CHANGE METHOD  ***')
-        console.log(name)
-        console.log(event.target.value)
+        // console.log('*** ENTERED HANDLE JOB LEVEL CHANGE METHOD  ***')
+        // console.log(name)
+        // console.log(event.target.value)
         var tempArray = [...jobLevels];
         tempArray[index].value = !tempArray[index].value;
         setJobLevels(tempArray)
         formQuery();
     };
     const handleDistrictChange = (areaIndex, districtIndex) => event => {
-        console.log('*** ENTERED HANDLE LOCATION CHANGE METHOD  ***')
-        console.log(areaIndex)
-        console.log(districtIndex)
-        console.log(event.target.value)
+        // console.log('*** ENTERED HANDLE LOCATION CHANGE METHOD  ***')
+        // console.log(areaIndex)
+        // console.log(districtIndex)
+        // console.log(event.target.value)
         var tempArray = [...location];
         tempArray[areaIndex].districts[districtIndex].value = !tempArray[areaIndex].districts[districtIndex].value;
         setLocation(tempArray)
@@ -204,9 +204,9 @@ function JobFilterSideBar(props) {
     }
 
     const handleSelectArea = index => event => {
-        console.log('*** ENTERED HANDLE SELECT AREA METHOD  ***')
-        console.log(index)
-        console.log(event.target.value)
+        // console.log('*** ENTERED HANDLE SELECT AREA METHOD  ***')
+        // console.log(index)
+        // console.log(event.target.value)
         var tempArray = [...location];
         tempArray[index].value = !tempArray[index].value;
 
@@ -223,7 +223,7 @@ function JobFilterSideBar(props) {
 
     const formQuery = (category) => {
 
-        console.log("!!! ENTERED FORM QUERY METHOD ")
+        // console.log("!!! ENTERED FORM QUERY METHOD ")
 
 
         var query = ''
@@ -261,13 +261,13 @@ function JobFilterSideBar(props) {
         }
         
 
-        console.log("<<< Query Formed in JobFilter Sidebar = ")
-        console.log(query)
+        // console.log("<<< Query Formed in JobFilter Sidebar = ")
+        // console.log(query)
         handleSidebarSubmit(query)
     }
 
      const handleChange = e => {
-         console.log(e.target.value)
+         // console.log(e.target.value)
          const value = e.target.value
          setSelectedJobCategory(value)
          formQuery(value);

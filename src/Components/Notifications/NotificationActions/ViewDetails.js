@@ -51,13 +51,13 @@ export default function ViewDetails(props) {
     },[props])
 
     const closeAction = () => {
-        console.log("ENTERED closeAction in RecommendationResponse.js")
+        // console.log("ENTERED closeAction in RecommendationResponse.js")
         setOpenAction(false)
     }
 
 
     const formatDate = (stringDate, length) => {
-        console.log(stringDate)
+        // console.log(stringDate)
         const date = new Date(stringDate)
         if(length === "short") {
            var month = date.toLocaleString('en-GB', { month: 'short' });
@@ -100,7 +100,7 @@ export default function ViewDetails(props) {
                     <Card elevation={0} >
                         <CardContent style={{ padding:0, paddingLeft:'3%' }}>
                             <Typography style={{ fontSize:20, fontWeight: 'bold', minWidth:270, maxWidth:315 }} gutterBottom >
-                                { alert && alert.from_user ? alert.from_user.profile.username:'User'}'s Recommendation to You
+                                { alert && alert.user_id ? alert.user_id.profile.username:'User'}'s Recommendation to You
                             </Typography>
                             <Typography variant="subtitle2" style={{}} >
                                 {alert && alert.recommendation_request ?alert.recommendation_request.message : "Empty Recommendation"}

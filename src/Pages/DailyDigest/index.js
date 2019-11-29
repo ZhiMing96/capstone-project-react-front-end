@@ -241,10 +241,10 @@ function DailyDigest(props) {
     if(props.match !== undefined){
         urlToken = props.match.params.token;
 
-        console.log('urlToken = ' + urlToken);
+        // console.log('urlToken = ' + urlToken);
     } 
-    console.log('PROPS FOR Daily Digest COMPONENT')
-    console.log(props)
+    // console.log('PROPS FOR Daily Digest COMPONENT')
+    // console.log(props)
 
     const classes = useStyles();
     const token = window.localStorage.getItem('authToken');
@@ -279,7 +279,7 @@ function DailyDigest(props) {
     },[])
 
     const handleOpen = () =>{
-        console.log('HANDLE OPEN')
+        // console.log('HANDLE OPEN')
     }
 
 
@@ -289,7 +289,7 @@ function DailyDigest(props) {
         const currentMonth = currentDate.toLocaleString('en-GB',{month: 'long'});
         const currentYear = currentDate.getFullYear();
         const currentWeekday = currentDate.toLocaleString('en-GB',{weekday: 'long'});
-        console.log(currentMonth)
+        // console.log(currentMonth)
         setDate(`${currentDay} ${currentMonth} ${currentYear}, ${currentWeekday}`)
     },[token])
 
@@ -298,7 +298,7 @@ function DailyDigest(props) {
             api.profile.get().then(
                 res=>{
                   if(res.data.profile){
-                    console.log(res.data.profile.first_name)
+                    // console.log(res.data.profile.first_name)
                     const firstName = res.data.profile.first_name
                     setName(firstName);
                     
@@ -318,26 +318,26 @@ function DailyDigest(props) {
 
 
     useEffect(()=>{
-        console.log(window.localStorage.getItem('authToken'));
-        console.log(urlToken)
+        // console.log(window.localStorage.getItem('authToken'));
+        // console.log(urlToken)
         // setLoading(true);
-        console.log('****** ENTERED METHOD ********')
+        // console.log('****** ENTERED METHOD ********')
         if(urlToken === undefined){
             if(token){
-                console.log('****** ENTERED IF TOKEN  ********')
+                // console.log('****** ENTERED IF TOKEN  ********')
                 api.dailyDigest.get()
                 .then(res => {
-                    console.log("GOT RESPONSE");
-                    console.log(res.data)
+                    // console.log("GOT RESPONSE");
+                    // console.log(res.data)
                     const results = res.data
                     if(results.response_code === 200){
-                        console.log('Daily Digest Retrieved Successfully!')
+                        // console.log('Daily Digest Retrieved Successfully!')
                         setRecommendedArticles(results.articles);
                         setsearchHistoryJobs(results.recommended_jobs_search);
                         setskillsJobs(results.recommended_jobs_skills);
 
-                        console.log('***** EVENTS RESULTS *******')
-                        console.log(results.events)
+                        // console.log('***** EVENTS RESULTS *******')
+                        // console.log(results.events)
                         setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
@@ -351,17 +351,17 @@ function DailyDigest(props) {
                 });
 
             } else {
-                console.log('****** ENTERED ELSE ********')
+                // console.log('****** ENTERED ELSE ********')
                 api.dailyDigest.getPublic()
                 .then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     const results = res.data
                     if(results.response_code === 200){
-                        console.log('Daily Digest Retrieved Successfully!')
+                        // console.log('Daily Digest Retrieved Successfully!')
                         setRecommendedArticles(results.articles);
                         setPopularJobs(results.recommended_jobs);
-                        console.log('***** EVENTS RESULTS *******')
-                        console.log(results.events)
+                        // console.log('***** EVENTS RESULTS *******')
+                        // console.log(results.events)
                          setRecommendedEvents(results.events);
                         setLoading(false);
                     } else {
@@ -374,14 +374,14 @@ function DailyDigest(props) {
                 });
             }
         } else {
-            console.log('Entered Getting DAILY DIGEST From URL ')
-            console.log(urlToken)
+            // console.log('Entered Getting DAILY DIGEST From URL ')
+            // console.log(urlToken)
             api.dailyDigest.getFromUrl(urlToken)
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 const results = res.data
                 if(results.response_code === 200){
-                    console.log('Daily Digest Retrieved Successfully!')
+                    // console.log('Daily Digest Retrieved Successfully!')
                     setRecommendedArticles(results.articles);
                     setsearchHistoryJobs(results.recommended_jobs_search);
                     setskillsJobs(results.recommended_jobs_skills);
@@ -413,25 +413,25 @@ function DailyDigest(props) {
     }, [] )
 
     const handleHrefClick = list => {
-        console.log('***** HREF CLICK *****')
-        console.log(list)
-        console.log(list.job_uuid)
-        console.log(token);
+        // console.log('***** HREF CLICK *****')
+        // console.log(list)
+        // console.log(list.job_uuid)
+        // console.log(token);
         if(token !== null){
-            console.log('TRACKING CLICK')
+            // console.log('TRACKING CLICK')
             api.searchJobsAcct.click({ uuid: list.job_uuid })
             .then(response => {
-                console.log(response);
+                // console.log(response);
                 if(response.data.response_code===200){
-                    console.log("Click Stored SUCCESSFULLY ");
+                    // console.log("Click Stored SUCCESSFULLY ");
                 }
             })
             .catch(error =>{
-                console.log(error);
+                // console.log(error);
             })
             
         } else {
-            console.log('NOT TRACKING CLICK') 
+            // console.log('NOT TRACKING CLICK') 
         }
         
         const url = jobUrlDefault + list.job_uuid
@@ -444,10 +444,10 @@ function DailyDigest(props) {
         var time = date.getHours();
         if (time <= 12) {
           time = `${time}am`
-          //console.log(time);
+          //// console.log(time);
         } else {
           time = `${time - 12}pm`
-          //console.log(time);
+          //// console.log(time);
         }
     
         var month = date.toLocaleString('en-GB', { month: 'short' });
@@ -459,14 +459,14 @@ function DailyDigest(props) {
 
 
     
-    // console.log('Recommended Articles:')
-    // console.log(recommendedArticles);
-    // console.log('Recommended Jobs:')
-    // console.log(searchHistoryJobs)
-    // console.log(skillsJobs)
-    // console.log('Recommended Events:')
-    // console.log(recommendedEvents)
-    // console.log('NAME = ' + name)
+    // // console.log('Recommended Articles:')
+    // // console.log(recommendedArticles);
+    // // console.log('Recommended Jobs:')
+    // // console.log(searchHistoryJobs)
+    // // console.log(skillsJobs)
+    // // console.log('Recommended Events:')
+    // // console.log(recommendedEvents)
+    // // console.log('NAME = ' + name)
 
 
     return (

@@ -44,9 +44,9 @@ export default function MeetupCompleteResponse(props) {
     const [ requestMessage, setRequestMessage ] = useState()
     const { alert } = props
 
-    console.log("Path Name in Write a Recommendation ")
+    // console.log("Path Name in Write a Recommendation ")
     var pathname = window.location.pathname; 
-    console.log(pathname)
+    // console.log(pathname)
 
     const action = key => (
         <Fragment>
@@ -63,7 +63,7 @@ export default function MeetupCompleteResponse(props) {
     },[props])
 
     const closeAction = () => {
-        console.log("ENTERED closeAction in RecommendationResponse.js")
+        // console.log("ENTERED closeAction in RecommendationResponse.js")
         setOpenAction(false)
     }
 
@@ -79,9 +79,9 @@ export default function MeetupCompleteResponse(props) {
 
     const handleSendRequest = event => {
         event.preventDefault();
-        console.log('**** Entered handleSendRequest ****')
-        console.log(alert)
-        console.log(requestMessage)
+        // console.log('**** Entered handleSendRequest ****')
+        // console.log(alert)
+        // console.log(requestMessage)
         const targetUser = 
         alert && alert.from_user && alert.from_user.profile
         ? alert.from_user.profile.user_id
@@ -97,23 +97,23 @@ export default function MeetupCompleteResponse(props) {
         i++
         }
 
-        console.log(targetUser)
+        // console.log(targetUser)
 
         api.recommendations.request({
             target_user: targetUser,
             message: message
         })
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             if(res.data.response_code === 200){
-                console.log('**** Successfully Send Recommendation Request ****')
+                // console.log('**** Successfully Send Recommendation Request ****')
                 enqueueSnackbar('Recommendation Request Sent Successfully',  { 
                     variant: "success",
                     action 
                 });
                 props.handleSeen(false);
                 if (pathname.includes("/profile/social")) {
-                    console.log("REDIRECT")
+                    // console.log("REDIRECT")
                     props.enableRedirect();
                 }
             } else {
@@ -121,26 +121,26 @@ export default function MeetupCompleteResponse(props) {
             }
             props.handleCloseActions ? props.handleCloseActions() : closeAction()
         }).catch(err=>{
-            console.log(err)
+            // console.log(err)
             enqueueSnackbar('Unable to send Recommendation Request',  { variant: "error", action });
         })
     }
 
     const handleProcessMeetup = (meetup) => {
-        console.log("Entered Handle Cancel Request Method")
-        console.log(meetup)
+        // console.log("Entered Handle Cancel Request Method")
+        // console.log(meetup)
         api.recommendations.processRecord({ "request_id" : meetup.request_id })
         .then(res=>{
-            console.log(res.data);
+            // console.log(res.data);
             if(res.data.response_code===200){
-                console.log("Meetup Record Processed SUCCESSFULLY - OPEN SNACK BAR TO INFORM")
+                // console.log("Meetup Record Processed SUCCESSFULLY - OPEN SNACK BAR TO INFORM")
                 enqueueSnackbar('Recommendation Request Cancelled Successfully',  { 
                     variant: "success" , 
                     action  
                 });
                 props.handleSeen(false);
                 if (pathname.includes("/profile/social")) {
-                    console.log("REDIRECT")
+                    // console.log("REDIRECT")
                     props.enableRedirect();
                 }
             } else {
@@ -152,15 +152,15 @@ export default function MeetupCompleteResponse(props) {
             props.handleCloseActions ? props.handleCloseActions() : closeAction()
         
         }).catch(err=>{
-            console.log(err)
+            // console.log(err)
             enqueueSnackbar('Unable to Cancel Recommendation Request',  { variant: "error", action });
         })
     }
 
     
 
-    console.log("Rendering Recommendation Response")
-    console.log(alert);
+    // console.log("Rendering Recommendation Response")
+    // console.log(alert);
     return (
         <span>
             <Popover

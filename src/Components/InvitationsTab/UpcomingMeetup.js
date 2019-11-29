@@ -129,7 +129,7 @@ export default function UpcomingMeetup(props) {
 
 
     const classes = useStyles();
-    console.log(props);
+    // console.log(props);
     const { meetup, handleDateChange, handleSelectedMeetup, handleMeetupCancellation, handleMeetupConfirmation, handleTelegramRedirect } = props;
     const [daysLeft, setDaysLeft] = useState();
     const [openMeeetupDialog, setOpenMeeetupDialog] = useState(false);
@@ -166,8 +166,8 @@ export default function UpcomingMeetup(props) {
     const calculateDaysLeft = (date) => {
         const meetupDate = new Date(date);
         const currentDate = new Date();
-        console.log("Suggested Date = " + meetupDate)
-        console.log("Current Date = " + currentDate)
+        // console.log("Suggested Date = " + meetupDate)
+        // console.log("Current Date = " + currentDate)
 
         const calculatedDaysLeft = Math.floor((Date.UTC(meetupDate.getFullYear(), meetupDate.getMonth(), meetupDate.getDate()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())) / (1000 * 60 * 60 * 24))
         return calculatedDaysLeft;
@@ -177,7 +177,7 @@ export default function UpcomingMeetup(props) {
         setDaysLeft(calculateDaysLeft(meetup.suggested_datetime))
     }, [meetup.suggested_datetime])
 
-    // console.log(meetup.other_user.social)
+    // // console.log(meetup.other_user.social)
     return (
         <div>
             <Card style={{ width: '100%', height: 'fit-content', padding: '5%', marginBottom: '4%' }}>

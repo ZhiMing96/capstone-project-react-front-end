@@ -3,11 +3,11 @@ import { Grid, Box, Paper } from '@material-ui/core';
 
 const Pagination = ({ currentPage, postsPerPage, totalPosts, paginate }) => {
 
-    console.log("ENTERED PAGINATION props = ");
-    console.log("postsPerPage" + postsPerPage)
-    console.log("totalPosts" + totalPosts)
-    console.log("Current Selected Page= "+currentPage)
-    console.log(paginate)
+    // console.log("ENTERED PAGINATION props = ");
+    // console.log("postsPerPage" + postsPerPage)
+    // console.log("totalPosts" + totalPosts)
+    // console.log("Current Selected Page= "+currentPage)
+    // console.log(paginate)
     const pageNumbers = [];
     const [selectedPage, setSelectedPage] = useState(1);
 
@@ -21,7 +21,7 @@ const Pagination = ({ currentPage, postsPerPage, totalPosts, paginate }) => {
     }
 
     useEffect(()=>{
-        console.log('Entered Use Effect for Pagination')
+        // console.log('Entered Use Effect for Pagination')
         setSelectedPage(currentPage)
     },[currentPage])
 

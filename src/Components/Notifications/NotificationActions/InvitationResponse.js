@@ -32,9 +32,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function InvitationResponse(props) {
-    console.log("Path Name in Invitation Response ")
+    // console.log("Path Name in Invitation Response ")
     var pathname = window.location.pathname; 
-    console.log(pathname)
+    // console.log(pathname)
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes=useStyles();
@@ -59,7 +59,7 @@ export default function InvitationResponse(props) {
     },[props])
 
     const closeAction = () => {
-        console.log("ENTERED closeMessage in employmentDetails.js")
+        // console.log("ENTERED closeMessage in employmentDetails.js")
         setOpenAction(false)
     } 
 
@@ -72,29 +72,29 @@ export default function InvitationResponse(props) {
     }
 
     const handleAcceptInvitation = (meetup) => {
-        console.log("ENTERED ACCEPT INVITATION ");
-        console.log(meetup)
+        // console.log("ENTERED ACCEPT INVITATION ");
+        // console.log(meetup)
         
         api.invitations.acceptInvitation({request_id: meetup.request_id})
         .then(res=>{
             if(res.data.response_code === 200){
-                console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
+                // console.log("*** INVITATION ACCEPTED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Accepted',  { variant: "success", action } );
                 props.handleSeen(false);
                 if (pathname.includes("/profile/social")) {
-                    console.log("REDIRECT")
+                    // console.log("REDIRECT")
                     props.enableRedirect();
                 }
             } else {
-                console.log("**** UNABLE TO ACCEPT INVITATION ****")
+                // console.log("**** UNABLE TO ACCEPT INVITATION ****")
                 enqueueSnackbar('Unable to Accept Invitation', { variant: "error", action  });
-                console.log(res.data.response_code + res.data.response_message);
+                // console.log(res.data.response_code + res.data.response_message);
             }
             
             props.handleCloseActions ? props.handleCloseActions() : closeAction()
             
         }).catch(err => {
-            console.log(err);
+            // console.log(err);
 
             enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             
@@ -102,38 +102,38 @@ export default function InvitationResponse(props) {
         
     }
     const handleRejectInvitation = (meetup) => {
-        console.log("ENTERED REJECT INVITATION ");
-        console.log(meetup)
+        // console.log("ENTERED REJECT INVITATION ");
+        // console.log(meetup)
         api.invitations.rejectInvitation({request_id: meetup.request_id})
         .then(res => {
             if(res.data.response_code === 200){
-                console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
+                // console.log("*** INVITATION CANCELLED *** INSERT A SNACKBAR TO INFORM USER");
                 enqueueSnackbar('Invitation Cancelled Successfully',  { variant: "success", action } );
                 props.handleSeen(false);
                 if (pathname.includes("/profile/social")) {
-                    console.log("REDIRECT")
+                    // console.log("REDIRECT")
                     props.enableRedirect();
                 }
             } else {
-                console.log("**** UNABLE TO CANCEL INVITATION ****");
+                // console.log("**** UNABLE TO CANCEL INVITATION ****");
                 enqueueSnackbar('Unable to Cancel Invitation',  { variant: "error", action } );
 
-                console.log(res.data.response_code + res.data.response_message);
+                // console.log(res.data.response_code + res.data.response_message);
             }
 
             props.handleCloseActions ? props.handleCloseActions() : closeAction()
             
         }).catch(err => {
-            console.log(err);
+            // console.log(err);
                 enqueueSnackbar('Unable to Perform Operation',  { variant: "error", action } );
             
         })
     }
     const formatDate = (dateString) => {
-        console.log("Entered FormatDate in MeetupInvitation")
+        // console.log("Entered FormatDate in MeetupInvitation")
         const date = new Date(dateString)
         var day = date.getDate();
-        console.log(day)
+        // console.log(day)
         var year = date.getFullYear();
         var month = date.toLocaleString('en-GB', { month: 'short' });
 
@@ -141,8 +141,8 @@ export default function InvitationResponse(props) {
 
     }
 
-    console.log("RENDERING INVITATION RESPONSE");
-    console.log(alert)
+    // console.log("RENDERING INVITATION RESPONSE");
+    // console.log(alert)
 
     return (
         <span>

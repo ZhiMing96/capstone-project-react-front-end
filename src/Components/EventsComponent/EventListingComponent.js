@@ -210,7 +210,7 @@ export default function EventListingComponent(props) {
   },[props])
 
   const handleExpandClick = () => {
-    console.log("Entered handleExpandClick in events listing component");
+    // console.log("Entered handleExpandClick in events listing component");
     setExpanded(!expanded);
   };
 
@@ -233,10 +233,10 @@ export default function EventListingComponent(props) {
 
   const handleFormatVenue = () => {
     const venueArray = event.venue ? event.venue.split('·') : null
-    // console.log(venueArray)
+    // // console.log(venueArray)
 
     const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    // console.log(formattedVenue)
+    // // console.log(formattedVenue)
     
     setMarkerAddress(formattedVenue);
   }
@@ -245,23 +245,23 @@ export default function EventListingComponent(props) {
 
   const getDate =(dateString) => {
     var date = new Date(dateString);
-    //console.log(date)
+    //// console.log(date)
 
     var time = date.getHours();
-    //console.log(time)
+    //// console.log(time)
     if (time <= 12) {
       time = `${time}am`
-      //console.log(time);
+      //// console.log(time);
     } else {
       time = `${time - 12}pm`
-      //console.log(time);
+      //// console.log(time);
     }
 
     var month = date.toLocaleString('en-GB', { month: 'short' });
-    //console.log(month)
+    //// console.log(month)
 
     var day = date.getDate();
-    //console.log(day)
+    //// console.log(day)
 
     var year = date.getFullYear();
     return(`${day} ${month} ${year}: ${time}`);
@@ -269,8 +269,8 @@ export default function EventListingComponent(props) {
 
   
 
-console.log("PRINTING EVENT IN LISTING COMPONENT")
-console.log(event)
+// console.log("PRINTING EVENT IN LISTING COMPONENT")
+// console.log(event)
     return (
         <div>
             <Card className={classes.eventLisiting}

@@ -315,7 +315,7 @@ const employmentTypes = [
   };
 
 function compareValues(key, order='asc') {
-    console.log('ENTERED COMPARE VALUES METHOD with key= '+ key)
+    // console.log('ENTERED COMPARE VALUES METHOD with key= '+ key)
     return function(c, d) {
         var a = c; 
         var b = d;
@@ -349,7 +349,7 @@ function compareValues(key, order='asc') {
             !b.hasOwnProperty(key)) {
                 return 0; 
             }
-            // console.log(a[key])
+            // // console.log(a[key])
 
             const varA = (typeof a[key] === 'string') ?
             a[key].toUpperCase() : a[key];
@@ -382,26 +382,26 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 function Jobs (props) {
-    console.log("ENTERED JOB SEARCH COMPONENT"); 
+    // console.log("ENTERED JOB SEARCH COMPONENT"); 
     // let location = useLocation();
-    //     console.log("PRINTING FROM USELOCATION METHOD")
-    //     console.log(location)
+    //     // console.log("PRINTING FROM USELOCATION METHOD")
+    //     // console.log(location)
 
-    console.log(props)
+    // console.log(props)
     var urlParams=''
     if(props.match !== undefined){
-        console.log(props.match.params.queryString);
+        // console.log(props.match.params.queryString);
         urlParams = props.match.params.queryString;
     } 
-    console.log('PROPS FOR JOBS COMPONENT')
-    console.log(props)
+    // console.log('PROPS FOR JOBS COMPONENT')
+    // console.log(props)
 
     
    
 
     const searchLimit = 100;
     const token= window.localStorage.getItem('authToken');
-    console.log(token)
+    // console.log(token)
     const classes=useStyles();
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false);   // for snackbar
@@ -439,7 +439,7 @@ function Jobs (props) {
 
     useEffect(()=>{
         if(window.location.pathname === "/jobs" && props.searchResults === null) {
-            console.log('Entered props.location && props.location.pathname == "/jobs" && props.searchResults === null')
+            // console.log('Entered props.location && props.location.pathname == "/jobs" && props.searchResults === null')
              setSearchResults([]);
         }
     },[props])
@@ -471,8 +471,8 @@ function Jobs (props) {
             .then(res=>{
                 const results = res.data;
                 if(results.response_code === 200){
-                    console.log("> Displaying Daily Digest Information From Job Component")
-                    console.log(results);
+                    // console.log("> Displaying Daily Digest Information From Job Component")
+                    // console.log(results);
                     setSkillsJobs(results.recommended_jobs_skills);
                     setSearchHistoryJobs(results.recommended_jobs_search);
                 } else {
@@ -483,22 +483,22 @@ function Jobs (props) {
                 enqueueSnackbar("Unable to Retrieve Recommended Jobs", { variant: "error", action } );
             });
         }
-        console.log('*** Getting Public Daily Digest NOW')
+        // console.log('*** Getting Public Daily Digest NOW')
         api.dailyDigest.getPublic()
         .then(res=>{
             const results = res.data
-            console.log(res.data)
-            console.log('>> Displaying Popular Jobs From DAILY DIGEST getPublic() Method')
+            // console.log(res.data)
+            // console.log('>> Displaying Popular Jobs From DAILY DIGEST getPublic() Method')
             setPopularJobs(results.recommended_jobs);
             setLoadingHome(false);
         }).catch(err => {
             enqueueSnackbar("Unable to Retrieve Popular Jobs", { variant: "error", action } );
         });
 
-        console.log("Printing URL PARAMS")
-        console.log(urlParams);
-        console.log("Printing Pathname from javascript")
-        console.log( window.location.pathname);
+        // console.log("Printing URL PARAMS")
+        // console.log(urlParams);
+        // console.log("Printing Pathname from javascript")
+        // console.log( window.location.pathname);
 
         if(window.location.pathname !== "/jobs") {
             if(searchResults.length !== 0) {
@@ -508,7 +508,7 @@ function Jobs (props) {
                 const params = urlParams.split('&')
                 const keywordString = params[0].split('=')
                 const keywordUrl = keywordString[1];
-                console.log('keyword = ' + keywordUrl)
+                // console.log('keyword = ' + keywordUrl)
                 setKeyword(keywordUrl); 
                 // setState({ ...state, keyword: 'Facebook'});
                 setBypass(true)
@@ -517,15 +517,15 @@ function Jobs (props) {
             }
             
         }  else { //(window.location.pathname === "/jobs")
-            console.log("ENTERED window.location.pathname === /jobs")
+            // console.log("ENTERED window.location.pathname === /jobs")
             setBypass(false)
             setSearchResults([])
         }
     },[props.refresh])
 
     useEffect(()=>{
-        console.log("ENTERED USE EFFECT FOR SORTING")
-        console.log(searchResults);
+        // console.log("ENTERED USE EFFECT FOR SORTING")
+        // console.log(searchResults);
         // //get current page lisitngs
         const indexOfLastPost = currentPage * postsPerPage;
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -534,19 +534,19 @@ function Jobs (props) {
 
 
     function getSearchResults(queryString){
-        console.log("<<<<<<<< Entered GET SEARCH RESULTS")
-        console.log(queryString)
+        // console.log("<<<<<<<< Entered GET SEARCH RESULTS")
+        // console.log(queryString)
         setLoadingResults(true);
         if(token !== null) {
-            console.log("GOT TOKEN");
+            // console.log("GOT TOKEN");
             //axios.get(query, {headers: {"Authorization" : "Token "+token}})
             api.searchJobsAcct.get(queryString)
             .then(res=>{  
                 const result = res.data.results;
-                console.log("RESULTS FROM GET  REQUEST  = ")
-                // console.log(result)
+                // console.log("RESULTS FROM GET  REQUEST  = ")
+                // // console.log(result)
                 if(result!== undefined && result.length===0){ //empty  results 
-                    console.log('Entered Zero Length Method');
+                    // console.log('Entered Zero Length Method');
                     setSearchResults(result);
                     enqueueSnackbar("No Listings Available!",  { variant: "", action } );
                     props.history.push({pathname: "/jobs",})
@@ -568,15 +568,15 @@ function Jobs (props) {
                 setLoadingResults(false);
             })
         } else {
-            console.log("NO TOKEN");
+            // console.log("NO TOKEN");
             
             api.searchJobs.get(queryString)
             .then(res=>{  
                 const result = res.data.results;
-                console.log("RESULTS FROM GET  REQUEST  = ")
-                // console.log(result)
+                // console.log("RESULTS FROM GET  REQUEST  = ")
+                // // console.log(result)
                 if(result!== undefined && result.length===0){ //empty  results 
-                    console.log('Entered Zero Length Method');
+                    // console.log('Entered Zero Length Method');
                     setSearchResults(result);
                     enqueueSnackbar("No Listings Available!",  { variant: "", action } );
                     // openSnackbar();
@@ -609,12 +609,12 @@ function Jobs (props) {
     };
 
     const handleSubmit = event => {
-        console.log(event.target)
+        // console.log(event.target)
         // setLoadingResults(true);
-        console.log("Entered Handle Submit")
+        // console.log("Entered Handle Submit")
         setCurrentPage(1);
 
-        console.log(token)
+        // console.log(token)
         
         event.preventDefault();
         var tempString = ""
@@ -624,19 +624,19 @@ function Jobs (props) {
         tempString += state.minSalary  ? ('&salary=' + state.minSalary) :'';
         tempString += (`&limit=${searchLimit}`)
 
-        console.log("Query String = " + tempString);
+        // console.log("Query String = " + tempString);
         setKeyword(state.keyword);
         setState({ ...state, queryString: tempString });
 
         getSearchResults(tempString)
         
         //const query=url+tempString
-        // //console.log(query);
+        // //// console.log(query);
         // handleRedirect();
         
     }
 
-    searchResults ? console.log('searchResults.length = ' + searchResults.length) : console.log("No Results")
+    searchResults ?  console.log('searchResults.length = ' + searchResults.length) : console.log("No Results")
    
 
     //get current page lisitngs
@@ -646,34 +646,34 @@ function Jobs (props) {
 
     //Change Page 
     const paginate = pageNumber => setCurrentPage(pageNumber);
-    console.log("CURRENT PAGE NUMBER = " + currentPage)
+    // console.log("CURRENT PAGE NUMBER = " + currentPage)
 
     const submitFilter = (filter,order) => {
         //const sorted = searchResults.sort(compareValues(filter,order));
         setSearchResults(searchResults.sort(compareValues(filter,order)))
-        console.log('passed setSearchResult method')
+        // console.log('passed setSearchResult method')
         setSorted(!sorted);
     }
         
 
-    console.log("search results = ")
-    console.log(searchResults)
+    // console.log("search results = ")
+    // console.log(searchResults)
 
     useEffect(()=>{
-        console.log('SEARCH RESULTS HAS BEEN MODIFIED')
+        // console.log('SEARCH RESULTS HAS BEEN MODIFIED')
     },[searchResults])
 
 
     const handleHrefClick = list => {
-        console.log('***** HREF CLICK *****')
-        console.log(list)
-        console.log(list.job_uuid)
-        console.log(token);
+        // console.log('***** HREF CLICK *****')
+        // console.log(list)
+        // console.log(list.job_uuid)
+        // console.log(token);
         if(token !== null){
-            console.log('TRACKING CLICK')
+            // console.log('TRACKING CLICK')
             api.searchJobsAcct.click({ uuid: list.job_uuid })
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 if(response.data.response_code===200){
                     console.log("Click Stored SUCCESSFULLY ");
                 }
@@ -713,23 +713,23 @@ function Jobs (props) {
 
     const handleSidebarSubmit = (queryString) => {
         
-        console.log("*** ENTERED HANDLE SIDEBAR SUBMIT IN JOBS COMPONENT")
+        // console.log("*** ENTERED HANDLE SIDEBAR SUBMIT IN JOBS COMPONENT")
         
-        console.log("!!! QueryString = " + queryString)
+        // console.log("!!! QueryString = " + queryString)
         //getCurrentUrl and append then call API
-        console.log(props.location)
+        // console.log(props.location)
         // const currentPath = props.location && props.location.pathname ?  props.location.pathname.slice(15) : ''
         
-        console.log(state.queryString)
+        // console.log(state.queryString)
         var currentPath = state.queryString
         var currentPathArray = currentPath.split("&")
         currentPath = currentPathArray[0] + "&" + currentPathArray[1]
 
 
 
-        console.log("!!! Current Path = " + currentPath)
+        // console.log("!!! Current Path = " + currentPath)
         const newQuery = currentPath + queryString
-        console.log("<<< newQuery = " + newQuery)
+        // console.log("<<< newQuery = " + newQuery)
         getSearchResults(newQuery)
         setState({ ...state, queryString: newQuery });
     }
@@ -738,10 +738,10 @@ function Jobs (props) {
         props.history.push({pathname : `/jobs/listings/${state.queryString}`})
     }
 
-    //console.log('Keyword Before Render = ');
-    console.log('State Before Render =')
-    console.log(state)
-    console.log(jobTitles);
+    //// console.log('Keyword Before Render = ');
+    // console.log('State Before Render =')
+    // console.log(state)
+    // console.log(jobTitles);
 
 
   return (

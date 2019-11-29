@@ -67,24 +67,24 @@ const useStyles = makeStyles(theme => ({
 
 function addBookmark(job){
     const token = window.localStorage.getItem('authToken');
-    console.log(token);
+    // console.log(token);
 
     const options ={
         headers: { 'Authorization' : 'Token '+ token }
     }
-    console.log("Entered Add Bookmarks");
-    console.log(`adding bookmark for ${job.title}`)
+    // console.log("Entered Add Bookmarks");
+    // console.log(`adding bookmark for ${job.title}`)
 
 
     api.bookmarks.add({ job_uuid: job.uuid })
     .then(response => {
-        console.log(response);
+        // console.log(response);
         if(response.data.response_code===200){
-            console.log("BOOKMARK ADDED SUCCESSFULLY ");
+            // console.log("BOOKMARK ADDED SUCCESSFULLY ");
         }
     })
     .catch(error =>{
-        console.log(error);
+        // console.log(error);
     })
 }
 
@@ -92,8 +92,8 @@ function addBookmark(job){
 
  function JobListings(props) {
     const token = window.localStorage.getItem('authToken');
-    console.log("ENTERED JOBLISTING COMPONENT Props = ")
-    console.log(props)
+    // console.log("ENTERED JOBLISTING COMPONENT Props = ")
+    // console.log(props)
     const queueRef = useRef([]);
     const [open, setOpen] = useState(false); // for snackbar
     const [messageInfo, setMessageInfo] = useState(undefined);
@@ -105,38 +105,38 @@ function addBookmark(job){
         'Customer Service'
     ]
 
-    console.log(props.handleSidebarSubmit)
+    // console.log(props.handleSidebarSubmit)
 
     const classes = useStyles();
 
     const handleHrefClick = list => {
-        console.log(list.uuid)
+        // console.log(list.uuid)
         api.searchJobsAcct.click({ uuid: list.uuid })
         .then(response => {
-            console.log(response);
+            // console.log(response);
             if(response.data.response_code===200){
-                console.log("Click Stored SUCCESSFULLY ");
+                // console.log("Click Stored SUCCESSFULLY ");
                 const url = list.metadata.jobDetailsUrl
                 window.open(url,'_blank');
             }
         })
         .catch(error =>{
-            console.log(error);
+            // console.log(error);
         })
     }
     
 
     // useEffect(()=>{
-    //     console.log("ENTERED USE EFFECT IN JOBLISTING");
+    //     // console.log("ENTERED USE EFFECT IN JOBLISTING");
     //     const results = props.searchResults
-    //     console.log(results);
+    //     // console.log(results);
     //     setListings(results);
     //     window.scrollTo(0, 0);
     // },[props.searchResults])
     useEffect(()=>{
-        console.log("ENTERED USE EFFECT IN JOBLISTING");
+        // console.log("ENTERED USE EFFECT IN JOBLISTING");
         const results = props.searchResults
-        console.log(results);
+        // console.log(results);
         setListings(results);
         window.scrollTo(0, 0);
     },[props.refresh])
@@ -181,8 +181,8 @@ function addBookmark(job){
     };
     
     const handleClick = (listing) => {
-        console.log("Entered Handle Click open")
-        console.log(listing);
+        // console.log("Entered Handle Click open")
+        // console.log(listing);
         if(token){
             addBookmark(listing);
             const message = `${listing.title} added to bookmarks!`

@@ -49,10 +49,11 @@ export default function MeetupCompleteResponse(props) {
     const [ showConfirmation , setShowConfirmation ] = useState(false);
     const [ recoMessage, setRecoMessage ] = useState();
     const { alert } = props
+    // console.log(alert)
 
-    console.log("Path Name in Write a Recommendation ")
+    // console.log("Path Name in Write a Recommendation ")
     var pathname = window.location.pathname; 
-    console.log(pathname)
+    // console.log(pathname)
 
     const action = key => (
         <Fragment>
@@ -69,7 +70,7 @@ export default function MeetupCompleteResponse(props) {
     },[props])
 
     const closeAction = () => {
-        console.log("ENTERED closeAction in RecommendationResponse.js")
+        // console.log("ENTERED closeAction in RecommendationResponse.js")
         setOpenAction(false)
     }
 
@@ -94,16 +95,16 @@ export default function MeetupCompleteResponse(props) {
 
     const handleSendRecommendation = event => {
         event.preventDefault();
-        console.log('**** Entered handleSendRequest ****')
-        // console.log(alert)
+        // console.log('**** Entered handleSendRequest ****')
+        // // console.log(alert)
 
-        console.log(recoMessage)
+        // console.log(recoMessage)
         const targetUser = 
-        alert.from_user && alert.from_user.profile
+        alert && alert.from_user && alert.from_user.profile
         ? alert.from_user.profile.user_id
         : null ;
 
-        console.log(targetUser)
+        // console.log(targetUser)
 
         const message = recoMessage
         let i;
@@ -120,13 +121,13 @@ export default function MeetupCompleteResponse(props) {
             message: message
         })
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             if(res.data.response_code === 200){
-                console.log('**** Successfully Submitted the Recommendation ****')
+                // console.log('**** Successfully Submitted the Recommendation ****')
                 enqueueSnackbar('Recommendation Sent Successfully',  { variant: "success", action } );
                 props.handleSeen(false);
                 if (pathname.includes("/profile/social")) {
-                    console.log("REDIRECT")
+                    // console.log("REDIRECT")
                     props.enableRedirect();
                 }
             } else {
@@ -134,35 +135,35 @@ export default function MeetupCompleteResponse(props) {
             }
             props.handleCloseActions ? props.handleCloseActions() : closeAction()
         }).catch(err=>{
-            console.log(err)
+            // console.log(err)
         })
     }
 
 
     const removeRecoRequest=(meetup)=>{
-        console.log("received request_id" + meetup.request_id)
+        // console.log("received request_id" + meetup.request_id)
         api.recommendations.reject({
             "request_id": meetup.request_id
             }
         ).then(res=>{
             if(res.data.response_code===200){
-                console.log('**** Successfully Rejected the Recommendation ****')
+                // console.log('**** Successfully Rejected the Recommendation ****')
                 enqueueSnackbar('Recommendation Rejected Successfully', { variant: "success", action } );
                 props.handleSeen(false);
                 if (pathname.includes("/profile/social")) {
-                    console.log("REDIRECT")
+                    // console.log("REDIRECT")
                     props.enableRedirect();
                 }
             } else {
                 enqueueSnackbar('Unable to Reject Recommendation',  { variant: "error", action  } );
             }
         }).catch(err=>{
-            console.log(err)
+            // console.log(err)
         })
     }
 
-    console.log("Rendering Recommendation Response")
-    console.log(alert);
+    // console.log("Rendering Recommendation Response")
+    // console.log(alert);
     return (
         <span>
             <Popover

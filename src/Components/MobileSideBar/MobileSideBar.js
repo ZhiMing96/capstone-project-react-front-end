@@ -72,7 +72,7 @@ const defaultImg = "https://image.flaticon.com/icons/svg/149/149071.svg"
 
 function MobileSideBar(props) {
   const classes = useStyles();
-  console.log("Props for Mobile Side Bar = " + props.show);
+  // console.log("Props for Mobile Side Bar = " + props.show);
   let sideBarClasses = 'mobileSideBar';
 
   const [value, setValue] = React.useState(0);
@@ -97,12 +97,12 @@ function MobileSideBar(props) {
   };
 
   const getProfile = () => {
-    console.log("ENTERED GET PROFILE IN  MOBILE SIDEBAR")
+    // console.log("ENTERED GET PROFILE IN  MOBILE SIDEBAR")
     api.profile.get().then(
       res => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.profile) {
-          console.log(res.data.profile.first_name)
+          // console.log(res.data.profile.first_name)
           const firstName = res.data.profile.first_name
           setName(firstName);
           setProfile(res.data.social);
@@ -135,24 +135,24 @@ function MobileSideBar(props) {
 
 
 
-  console.log('name = ' + name)
+  // console.log('name = ' + name)
 
   if (props.show) {
     sideBarClasses = 'mobileSideBar open';
   }
 
   const handleImageChange = e => {
-    console.log("Entered Handle Change");
-    console.log(e.target.files[0]);
+    // console.log("Entered Handle Change");
+    // console.log(e.target.files[0]);
     e.preventDefault();
     let file = e.target.files[0];
-    console.log(file)
+    // console.log(file)
     if (file) {
       let reader = new FileReader();
-      console.log(reader)
+      // console.log(reader)
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        console.log(reader.result)
+        // console.log(reader.result)
         setFile(file)
         const base64String = reader.result.substring(23)
         setBase64(base64String)
@@ -163,21 +163,21 @@ function MobileSideBar(props) {
     e.target.value = null
   }
   const handleSubmitNewImg = (base64String) => {
-    console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
-    console.log(base64String)
+    // console.log('ENTERED HANDLE SUBMIT METHOD FOR IMAGE ')
+    // console.log(base64String)
     api.profile.uploadImage({
       "image": base64String
     })
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.response_code === 200) {
-          console.log(res.data.image_link);
+          // console.log(res.data.image_link);
           setProfileImageLink(res.data.image_link);
           // getProfile();
           changeSideBarProfilePicture(res.data.image_link);
           enqueueSnackbar('Profile Picture Updated', { variant: "", action });
         } else {
-          console.log(res.data.response_message)
+          // console.log(res.data.response_message)
           enqueueSnackbar('Unable to Perform Operation', { variant: "error", action });
         }
       }).catch(err => {
@@ -187,9 +187,9 @@ function MobileSideBar(props) {
         
       })
   }
-  // console.log(file)
-  console.log("PRINTING PROPS.IMG LINK  IN MOBILE SIDEBARs")
-  console.log(props.profile_image_link)
+  // // console.log(file)
+  // console.log("PRINTING PROPS.IMG LINK  IN MOBILE SIDEBARs")
+  // console.log(props.profile_image_link)
 
   return (
     <div>

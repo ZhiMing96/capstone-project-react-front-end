@@ -81,15 +81,15 @@ const useStyles = makeStyles(theme => ({
 //   const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function NotificationsListItem(props) {
-    console.log("Entered NotificationsList  ITEM ")
-    console.log(props)
-    console.log("Path Name ")
+    // console.log("Entered NotificationsList  ITEM ")
+    // console.log(props)
+    // console.log("Path Name ")
     var pathname = window.location.pathname; 
-    console.log(pathname)
+    // console.log(pathname)
     // if (pathname.includes("/profile/social")) {
-    //     console.log("REDIRECT")
+    //     // console.log("REDIRECT")
     // } else {
-    //     console.log("DONT REDIRECT")
+    //     // console.log("DONT REDIRECT")
     // }
 
     const classes = useStyles();
@@ -145,14 +145,14 @@ export default function NotificationsListItem(props) {
     }
 
     const handleSeen = (showSnackbar) => { 
-        console.log("ENTERED HANDLE SEEN METHOD")
+        // console.log("ENTERED HANDLE SEEN METHOD")
         // setLoadingNotifications(true);
         api.alerts.seen({"alert_id": alert.alert_id })
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             if(res.data.response_code === 200){
-                console.log("** SUCCESSFULLY MARKED AS SEEN **")
-                console.log("Loading Status = " + loadingNotifications)
+                // console.log("** SUCCESSFULLY MARKED AS SEEN **")
+                // console.log("Loading Status = " + loadingNotifications)
                 if(showSnackbar){
                     enqueueSnackbar("Marked as Seen",  { variant: "", action } );
                 }
@@ -160,7 +160,7 @@ export default function NotificationsListItem(props) {
             }
         
         }).catch (err => {
-            console.log(err)
+            // console.log(err)
             if(showSnackbar){
                 enqueueSnackbar("Unable to mark as seen",  { variant: "error", action } );
             }
@@ -168,35 +168,35 @@ export default function NotificationsListItem(props) {
     }
 
     const showMessage = (event) => {
-        console.log("ENTERED show Message in Notification.js")
+        // console.log("ENTERED show Message in Notification.js")
         event.preventDefault();
-        console.log(event)
-        // console.log(event.currentTarget)
-        // console.log(event.relatedTarget)
+        // console.log(event)
+        // // console.log(event.currentTarget)
+        // // console.log(event.relatedTarget)
         const anchor = event.currentTarget
-        // console.log(anchor)
+        // // console.log(anchor)
         setAnchorEl(anchor);
         setTimeout(()=> {setOpenMessage(true)},200)
         
     }
 
     const handleCloseEmploymentDetails = () => {
-        console.log("ENTERED Handle handleCloseEmploymentDetails in Notification.js")
+        // console.log("ENTERED Handle handleCloseEmploymentDetails in Notification.js")
         setOpenMessage(false);
     }
 
     const openActions =(event)=> {
-        console.log("ENTERED show Actions in Notification.js")
+        // console.log("ENTERED show Actions in Notification.js")
         event.preventDefault();
-        console.log(event)
+        // console.log(event)
         const anchor = event.currentTarget
-        console.log(anchor)
+        // console.log(anchor)
         setAnchorEl(anchor);
         setTimeout(()=> {setOpenAction(true)},200)
     }
 
     const handleCloseActions = () =>{
-        console.log("ENTERED handleCloseActions in Notification.js")
+        // console.log("ENTERED handleCloseActions in Notification.js")
         setOpenAction(false);
     }
 
@@ -218,7 +218,7 @@ export default function NotificationsListItem(props) {
 
 
         // if (pathname.includes("/profile/social")) {
-        //     console.log("REDIRECT")
+        //     // console.log("REDIRECT")
             if(alertType==="MEETUP_INVITE" || alertType==="ACCEPT_INVITE" || alertType==="CANCEL_MEETUP" || alertType==="CHANGE_MEETUP_DATE"  ) {
             
                 return (
@@ -243,7 +243,7 @@ export default function NotificationsListItem(props) {
                 )
             }
         // } else {
-        //     console.log("DONT REDIRECT")
+        //     // console.log("DONT REDIRECT")
         // }
     }
 
@@ -251,15 +251,21 @@ export default function NotificationsListItem(props) {
     //     handleClosePopover();
     // }
 
-    console.log("RENDERING Notification LIST ITEM")
-    console.log(alert)
+    // console.log("RENDERING Notification LIST ITEM")
+    // console.log(alert)
     
     return (
         <div style={{marginBottom:'2%'}}>
         <ListItem  className={classes.listItem} style={{ paddingLeft:0, }} >
                                 
             <ListItemAvatar style={{alignSelf:'flex-start', marginTop:9, marginRight:15,marginLeft:'10%' }} >
+                { alert && alert.alert_type === "WRITE_RECOMMENDATION"
+                ?
+                <Avatar src={alert && alert.user_id && alert.user_id.social && alert.user_id.social.profile_image_link ? alert.user_id.social.profile_image_link : defaultImg } style={{width:50, height:50}} imgProps={{className: classes.imgProps}}/>
+                :
                 <Avatar src={alert && alert.from_user && alert.from_user.social && alert.from_user.social.profile_image_link ? alert.from_user.social.profile_image_link : defaultImg } style={{width:50, height:50}} imgProps={{className: classes.imgProps}}/>
+                }
+                
             </ListItemAvatar>
             
             <ListItemText>
@@ -270,11 +276,21 @@ export default function NotificationsListItem(props) {
                                 { alertHeaders[alertTypes.indexOf(alert ? alert.alert_type : 0)].title }
                             </Typography>
                             <Typography>
-                                {alert && alert.from_user && alert.from_user.profile 
-                                ? `${ alertHeaders[alertTypes.indexOf(alert.alert_type)].verb } ${alert.from_user.profile.username}`
-                                
-                                : 'From Unidentified Member'
+                                {alert && alert.alert_type === "WRITE_RECOMMENDATION"
+                                ?
+                                alert && alert.user_id && alert.user_id.profile 
+                                    ? `${ alertHeaders[alertTypes.indexOf(alert.alert_type)].verb } ${alert.user_id.profile.username}`
+                                    
+                                    : 'From Unidentified Member'
+                            
+                                :
+                                alert && alert.from_user && alert.from_user.profile 
+                                    ? `${ alertHeaders[alertTypes.indexOf(alert.alert_type)].verb } ${alert.from_user.profile.username}`
+                                    
+                                    : 'From Unidentified Member'
+                                    
                                 }
+                                
                             </Typography>
                         </div>
                     

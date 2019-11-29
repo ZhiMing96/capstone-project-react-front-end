@@ -36,7 +36,7 @@ const CarouselArrowNext = (props) => {
   const classes = carouselStyles();
   
   const { className, style, onClick } = props;
-  console.log(style)
+  // console.log(style)
   if(onClick !== null){
   return (
     <div 
@@ -283,7 +283,7 @@ const useStyles = makeStyles(theme => ({
 
 function Articles()
 {
-  console.log("Entered GetArticles Function");
+  // console.log("Entered GetArticles Function");
   const [articles, setArticles] = useState([]);
   const [recommendedArticles, setRecommendedArticles] = useState([]);
   const classes = useStyles();
@@ -312,13 +312,13 @@ function Articles()
 
 
   const handleRecommendedExpandClick = (index) => {
-    console.log(index);
+    // console.log(index);
     setSelectedRecommendedIndex(index);
     setselectedIndex(null);
     setExpanded(!expanded);
   };
   const handleExpandClick = (index) => {
-    console.log(index);
+    // console.log(index);
     setselectedIndex(index);
     setSelectedRecommendedIndex(null);
     setExpanded(!expanded);
@@ -329,14 +329,14 @@ function Articles()
     api.articles.get()
     .then(res => {
       const results = res.data;
-      console.log(results);
-      //console.log(results[0]._links['wp:attachment'][0].href);
+      // console.log(results);
+      //// console.log(results[0]._links['wp:attachment'][0].href);
       if(results.response_code === 200){
-        console.log('*** LATEST ARTICLES ARE')
-        console.log(results.articles)
+        // console.log('*** LATEST ARTICLES ARE')
+        // console.log(results.articles)
         setArticles(results.articles);
       } else {
-        console.log('RESPONSE CODE' + results.response_code);
+        // console.log('RESPONSE CODE' + results.response_code);
         enqueueSnackbar("Unable to Retrieve Articles!",  { variant: "error", action } );
       }
     }).catch(err => {
@@ -349,10 +349,10 @@ function Articles()
       api.dailyDigest.get()
       .then(res => {
         const results = res.data;
-        console.log(results);
+        // console.log(results);
         if(results.response_code===200){
-          console.log('RECOMMENDED ARTICLES ARE')
-          console.log(results.articles)
+          // console.log('RECOMMENDED ARTICLES ARE')
+          // console.log(results.articles)
           setRecommendedArticles(results.articles);
         } else {
           enqueueSnackbar("Unable to Retrieve Recommended Articles!",  { variant: "error", action } );
@@ -368,10 +368,10 @@ function Articles()
       api.dailyDigest.getPublic()
       .then(res=>{
         const results = res.data;
-        console.log(results);
+        // console.log(results);
         if(results.response_code===200){
-          console.log('RECOMMENDED ARTICLES ARE')
-          console.log(results.articles)
+          // console.log('RECOMMENDED ARTICLES ARE')
+          // console.log(results.articles)
           setRecommendedArticles(results.articles);
         } else {
           enqueueSnackbar("Unable to Retrieve Recommended Articles!",  { variant: "error", action } );
@@ -388,15 +388,15 @@ function Articles()
   const formatDate = (dateString) => {
     var date = new Date(dateString);
     var month = date.toLocaleString('en-GB', {month: 'short'});
-    //console.log(month);
+    //// console.log(month);
     var day = date.getMonth();
-    //console.log(day);
+    //// console.log(day);
     var year = date.getFullYear();
 
     return(`${day} ${month} ${year}`)
   }
-  console.log('Selected Index = ' + selectedIndex)
-  console.log(recommendedArticles);
+  // console.log('Selected Index = ' + selectedIndex)
+  // console.log(recommendedArticles);
 
 
   return(

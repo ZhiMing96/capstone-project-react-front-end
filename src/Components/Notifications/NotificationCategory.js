@@ -48,7 +48,7 @@ export default function NotificationCategory(props) {
     const vertical = 'center';
 
     useEffect(()=>{
-        console.log("ENTERED Use Effect for NotificationCATEGORY")
+        // console.log("ENTERED Use Effect for NotificationCATEGORY")
     },[props])
 
 

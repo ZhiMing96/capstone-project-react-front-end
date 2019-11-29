@@ -86,8 +86,8 @@ const useStyles = makeStyles(theme => ({
   const defaultImg = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
 
 export default function Notifications(props) {
-    console.log("Entered Notifications Component ")
-    console.log(props)
+    // console.log("Entered Notifications Component ")
+    // console.log(props)
     const classes = useStyles();
     const [ alerts, setAlerts ] = useState();
     const [ loadingNotifications, setLoadingNotifications ] = useState(false);
@@ -125,7 +125,7 @@ export default function Notifications(props) {
     ])
 
 
-    console.log(props);
+    // console.log(props);
 
     const resetAlerts = () =>{
         for(let b=0 ; b < sorttedAlerts.length  ; b++) {
@@ -136,15 +136,15 @@ export default function Notifications(props) {
     }
 
     const sortArray = (array) => {
-        console.log("$$$$ Entered Sort Array Method")
-        console.log(array)
+        // console.log("$$$$ Entered Sort Array Method")
+        // console.log(array)
         resetAlerts();
 
         if(array && array.length!==0) {
             for(let i=0; i < array.length ; i++ ) {
-                // console.log("Start of I FOR Loop Number " + i)
+                // // console.log("Start of I FOR Loop Number " + i)
                 for(let a=0; a<sorttedAlerts.length ; a++){
-                    // console.log("Start of A FOR Loop Number " + a)
+                    // // console.log("Start of A FOR Loop Number " + a)
                     if(array[i].alert_type === sorttedAlerts[a].type){
                         var temp = [...sorttedAlerts]
                         if(!temp[a].alerts.includes(array[i])){
@@ -160,18 +160,18 @@ export default function Notifications(props) {
     }
 
     useEffect(()=>{
-        console.log("ENTERED Use Effect for Notifications")
+        // console.log("ENTERED Use Effect for Notifications")
         const tempAlerts = props.alerts
         setAlerts(tempAlerts);
-        console.log(tempAlerts)
+        // console.log(tempAlerts)
         resetAlerts();
-        // console.log("**** Sorrting Array ****")
-        console.log("KEYWORD = " + keyword)
+        // // console.log("**** Sorrting Array ****")
+        // console.log("KEYWORD = " + keyword)
         if(keyword) {
-            // console.log("ENTERED SEARCH")
+            // // console.log("ENTERED SEARCH")
             handleSearch(keyword);
         } else {
-            // console.log("ENTERED SORT")
+            // // console.log("ENTERED SORT")
             sortArray(tempAlerts);
         }
 
@@ -180,17 +180,17 @@ export default function Notifications(props) {
     }, [props.alerts])
 
     const handleChange = event => {
-        console.log("Entered Handle Change")
+        // console.log("Entered Handle Change")
         event.preventDefault();
         const valueInSearchBar = event.target.value !== '' ? event.target.value.toLowerCase()  : event.target.value
-        console.log(valueInSearchBar);
+        // console.log(valueInSearchBar);
         handleSearch(valueInSearchBar)
         setKeyword(valueInSearchBar);
     }
 
     const handleSearch = (valueInSearchBar)  => {
 
-        console.log("Entered Handle Search")
+        // console.log("Entered Handle Search")
 
         // Variable to hold the original version of the list
         let currentList = [];
@@ -202,8 +202,8 @@ export default function Notifications(props) {
             
             // Assign the original list to currentList
             currentList = alerts;
-            console.log('Printing CURRENT LIST: ')
-            console.log(currentList)
+            // console.log('Printing CURRENT LIST: ')
+            // console.log(currentList)
             // Use .filter() to determine which items should be displayed
             // based on the search terms
             
@@ -215,10 +215,10 @@ export default function Notifications(props) {
                 const jobTitleKeywords = item.work_experience ? item.work_experience.job_title.toLowerCase() : '' ;
                 const companyKeywords = item.work_experience ? item.work_experience.company_name.toLowerCase(): '';
                 const monthKeyword = item.meetup_invite ? getDate(item.meetup_invite.suggested_datetime) : item.recommendation_request ? getDate(item.recommendation_request.create_datetime) : ""
-                console.log("+++++ LOGGING DATE")
-                console.log(monthKeyword)
+                // console.log("+++++ LOGGING DATE")
+                // console.log(monthKeyword)
                 
-                console.log("Search Term = " + filter )
+                // console.log("Search Term = " + filter )
 
                 const userNameMatch = usernameKeywords.includes(filter);
                 const firstNameMatch = firstNameKeywords.includes(filter);
@@ -227,19 +227,19 @@ export default function Notifications(props) {
                 const companyMatch = companyKeywords.includes(filter);
                 const monthMatch = monthKeyword.includes(filter);
 
-                console.log("Value of userNameMatch = " + userNameMatch)
-                console.log("Value of firstNameMatch = " + firstNameMatch)
-                console.log("Value of lastNameMatch = " + lastNameMatch)
-                console.log("Value of jobTitleMatch = " + jobTitleMatch)
-                console.log("Value of companyMatch = " + companyMatch)
-                console.log("Value of monthMatch = " + monthMatch)
+                // console.log("Value of userNameMatch = " + userNameMatch)
+                // console.log("Value of firstNameMatch = " + firstNameMatch)
+                // console.log("Value of lastNameMatch = " + lastNameMatch)
+                // console.log("Value of jobTitleMatch = " + jobTitleMatch)
+                // console.log("Value of companyMatch = " + companyMatch)
+                // console.log("Value of monthMatch = " + monthMatch)
 
                 
                 return (userNameMatch || firstNameMatch || lastNameMatch || jobTitleMatch || companyMatch || monthMatch);
             });
 
-            // console.log('Printing NEW LIST: ')
-            // console.log(newList)
+            // // console.log('Printing NEW LIST: ')
+            // // console.log(newList)
         } else {
             newList = alerts; // If the search bar is empty, set newList to original task list
         }

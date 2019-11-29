@@ -221,13 +221,13 @@ function Events() {
  
 
   useEffect(() => {
-    console.log('*** MARKER ADDRESS ***')
-    console.log(markerAddress);
+    // console.log('*** MARKER ADDRESS ***')
+    // console.log(markerAddress);
     api.events.get()
     .then(res=>{
       const results = res.data;
-      console.log('******* RESULTS FROM EVENTS API CALL ********')
-      console.log(results);
+      // console.log('******* RESULTS FROM EVENTS API CALL ********')
+      // console.log(results);
       if(results.response_code === 200){
         setAllEvents(results.events)
       } else {
@@ -243,8 +243,8 @@ function Events() {
       .then(res=>{
         const results = res.data;
         if(results.response_code === 200){
-          console.log('**** RESULTS FROM DAILY DIGEST W TOKEN  *****')
-          console.log(results);
+          // console.log('**** RESULTS FROM DAILY DIGEST W TOKEN  *****')
+          // console.log(results);
           setRecommendedEvents(results.events);
         } else {
           enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
@@ -258,8 +258,8 @@ function Events() {
       .then(res=>{
         const results = res.data;
         if(results.response_code === 200){
-          console.log('**** RESULTS FROM DAILY DIGEST W/O TOKEN  *****')
-          console.log(results);
+          // console.log('**** RESULTS FROM DAILY DIGEST W/O TOKEN  *****')
+          // console.log(results);
           setRecommendedEvents(results.events);
         } else {
           enqueueSnackbar("Unable to Retrieve Recommended Events!",  { variant: "error", action } );
@@ -277,7 +277,7 @@ function Events() {
 
   //Change Page 
   const paginate = pageNumber => setCurrentPage(pageNumber);
-  console.log("CURRENT PAGE NUMBER = " + currentPage)
+  // console.log("CURRENT PAGE NUMBER = " + currentPage)
 
   const handleHrefClick = url => {
     window.open(url, '_blank');
@@ -285,10 +285,10 @@ function Events() {
 
   const handleSelectedEvent = (event) => {
     const venueArray = event && event.venue ? event.venue.split('·') : null
-    console.log(venueArray)
+    // console.log(venueArray)
 
     const formattedVenue = venueArray ? venueArray[0] +', Singapore' : null
-    console.log(formattedVenue)
+    // console.log(formattedVenue)
     
     setMarkerAddress(formattedVenue);
     setSelectedEventLocation(event && event.venue ? event.venue :null);
@@ -298,8 +298,8 @@ function Events() {
 
   
 
-  console.log("!!!! EVENT = ")
-  console.log(allEvents)
+  // console.log("!!!! EVENT = ")
+  // console.log(allEvents)
 
   return (
     <div style={{ backgroundColor: '#FFFFFF' }}>
